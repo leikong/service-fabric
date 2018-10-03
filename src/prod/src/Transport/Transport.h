@@ -10,7 +10,6 @@
 
 #ifdef PLATFORM_UNIX
 #include <utility>
-#include <ext/hash_map>
 #else
 #include "Api/Definitions/ApiDefinitions.h"
 #define SECURITY_WIN32
