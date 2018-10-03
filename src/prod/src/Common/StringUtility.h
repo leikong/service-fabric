@@ -8,6 +8,7 @@
 #include <cwctype>
 #include <string>
 #include <objbase.h>
+#include <limits>
 
 #include "Common/TextWriter.h"
 
@@ -536,7 +537,7 @@ namespace Common
         }
 
         template <>
-        static bool TryFromWString<bool>(
+        bool TryFromWString<bool>(
             std::wstring const & string,
             __out bool & parsed)
         {
@@ -562,7 +563,7 @@ namespace Common
         }
 
         template <>
-        static bool TryFromWString<double>(
+        bool TryFromWString<double>(
             std::wstring const & string,
             __out double & parsed)
         {

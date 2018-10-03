@@ -2173,7 +2173,9 @@ NTSTATUS FabricSerializableStream::ReadCompressableValue(T & field)
         return STATUS_SUCCESS;
     }
 
-    return Compressor::ReadAndUncompress<T>(this, field);   
+    // src/prod/shared/serialization/src/FabricSerializableStream.cpp:2176:24: warning: use 'template' keyword to treat 'ReadAndUncompress' as a dependent template name
+    //
+    return Compressor::template ReadAndUncompress<T>(this, field);   
 }
 
 template <class T, FabricSerializationTypes::Enum ST, class Compressor>
@@ -2328,7 +2330,9 @@ NTSTATUS FabricSerializableStream::ReadCompressableArray(T * field, ULONG & coun
         }
         else
         {
-            status = Compressor::ReadAndUncompress<T>(this, field[i]);
+            // src/prod/shared/serialization/src/FabricSerializableStream.cpp:2331:34: warning: use 'template' keyword to treat 'ReadAndUncompress' as a dependent template name
+            //
+            status = Compressor::template ReadAndUncompress<T>(this, field[i]);
         }
         
         if (NT_ERROR(status))

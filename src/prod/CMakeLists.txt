@@ -3,16 +3,20 @@ cmake_minimum_required(VERSION 3.10)
 project(Horizon)
 
 # Includes
+include_directories("src") # src/prod/src/pal/src/internal/pal.cpp:16:10: fatal error: 'Common/Common.h' file not found
 include_directories("src/pal/src")
 include_directories("shared")
 include_directories("shared/serialization/inc") # Serialization.h error: 'FabricIOBuffer.h' file not found with <angled> include; use "quotes" instead
 include_directories("ktl/src/inc")
 include_directories("ktl/src/linuxinc")
+include_directories("ktl/src/logger/inc") # src/prod/shared/ktlwf/logger/com/dll/../../../../../src/ktllogger/sys/inc/ktllogger.h:15:10: fatal error: 'KtlPhysicalLog.h' file not found
 include_directories("src/prebuilt/sdk") # FabricTypes.h
 include_directories("src/prebuilt/internal") # FabricTypes_.h
 
 # Variables
-set(PROJECT_BINARY_DIR "/media/alexwun/Data_Ext4/Horizon/build" CACHE STRING "Project binary directory")
+message(STATUS "CMAKE_CURRENT_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}")
+message(STATUS "CMAKE_CURRENT_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}")
+set(PROJECT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE STRING "Project binary directory")
 set(LIBRARY_OUTPUT_DIR ${PROJECT_BINARY_DIR}/lib CACHE STRING "Library output directory")
 
 # Horizon library names
@@ -32,6 +36,7 @@ add_compile_options(-fshort-wchar) # 2-byte wchar
 add_compile_options(-fexceptions) # generate unwind info
 add_compile_options(-fcoroutines-ts) # KTL
 add_compile_options(-fdelayed-template-parsing)
+add_compile_options(-fPIC) # shared/ktlwf/logger
 
 # Disable warnings
 #
@@ -55,6 +60,7 @@ add_compile_options(-Wno-extra-tokens)
 add_compile_options(-Wno-duplicate-decl-specifier)
 add_compile_options(-Wno-logical-op-parentheses)
 add_compile_options(-Wno-logical-not-parentheses)
+add_compile_options(-Wno-delete-incomplete)
 # src/pal/src
 add_compile_options(-Wno-macro-redefined)
 add_compile_options(-Wno-ignored-attributes)
@@ -65,6 +71,8 @@ add_compile_options(-Wno-constant-conversion)
 add_compile_options(-Wno-invalid-offsetof)
 add_compile_options(-Wno-writable-strings)
 add_compile_options(-Wno-int-to-void-pointer-cast)
+# shared/ktlwf/logger
+add_compile_options(-Wno-enum-compare)
 
 # Definitions
 #
@@ -75,9 +83,15 @@ add_definitions(-DUSE_STL=1)
 add_definitions(-DUSE_STDLIB=1)
 add_definitions(-DUNICODE=1)
 add_definitions(-DUSE_PLATFORM_MATH=1)
+# PAL
+add_definitions(-DLP64COMPATIBLE=1)
+add_definitions(-DCORECLR=1)
+add_definitions(-DPIC=1)
+add_definitions(-DBIT64=1)
+add_definitions(-D_WIN64=1)
+add_definitions(-DPAL_STDCPP_COMPAT=1)
 # KTL
 add_definitions(-DKTL_USER_MODE=1)
-#add_definitions(-DK_UseResumable)
 
 # Subdirectories (order matters in CMakeLists.txt - add subdirectories last)
 #

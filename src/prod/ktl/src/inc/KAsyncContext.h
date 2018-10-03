@@ -1601,6 +1601,13 @@ namespace ktl
             _state.ResultReady();
         }
 
+        // TODO:
+        // src/prod/ktl/src/inc/KAsyncContext.h:1893:46: error: 'Promise<void>' is required to declare the member 'unhandled_exception()'
+        //
+        void unhandled_exception()
+        {
+        }
+
         Awaitable<_RetT> get_return_object();
         // Called when allocation fails in operator new above
         static Awaitable<_RetT> get_return_object_on_allocation_failure();
@@ -1627,6 +1634,13 @@ namespace ktl
         {
             // Safely mark as return void yielded (ready)
             _state.ResultReady();
+        }
+
+        // TODO:
+        // src/prod/ktl/src/inc/KAsyncContext.h:1893:46: error: 'Promise<void>' is required to declare the member 'unhandled_exception()'
+        //
+        void unhandled_exception()
+        {
         }
 
         Awaitable<void> get_return_object();
@@ -2043,7 +2057,11 @@ namespace ktl
     //         if (Aw2.IsReady()) co_wait Aw2; ...;
     //
     template <typename _AwrT1, typename _AwrT2>
-    ktl::Awaitable<void> EitherReady(KtlSystem& Sys, typename _AwrT1& Awaiter1, typename _AwrT2& Awaiter2)
+    //
+    // src/prod/ktl/src/inc/KAsyncContext.h:2053:63: warning: expected a qualified name after 'typename'
+    //
+    // ktl::Awaitable<void> EitherReady(KtlSystem& Sys, typename _AwrT1& Awaiter1, typename _AwrT2& Awaiter2)
+    ktl::Awaitable<void> EitherReady(KtlSystem& Sys, _AwrT1& Awaiter1, _AwrT2& Awaiter2)
     {
         bool ready[] = { Awaiter1.IsReady(), Awaiter2.IsReady() };
         if (std::any_of(std::begin(ready), std::end(ready), [](bool b) {return b; }))

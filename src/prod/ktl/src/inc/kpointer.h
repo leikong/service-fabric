@@ -417,7 +417,8 @@ KSharedPtr<T>::~KSharedPtr()
 }
 
 template <class T> inline
-KSharedPtr<typename T>& KSharedPtr<T>::operator=(
+//KSharedPtr<typename T>& KSharedPtr<T>::operator=(
+KSharedPtr<T>& KSharedPtr<T>::operator=(
     __in KSharedPtr const & Src
     )
 {
@@ -438,7 +439,8 @@ KSharedPtr<typename T>& KSharedPtr<T>::operator=(
 }
 
 template <class T> inline
-KSharedPtr<typename T>& KSharedPtr<T>::operator=(
+//KSharedPtr<typename T>& KSharedPtr<T>::operator=(
+KSharedPtr<T>& KSharedPtr<T>::operator=(
     __in_opt T* Src
     )
 {
@@ -460,7 +462,8 @@ KSharedPtr<typename T>& KSharedPtr<T>::operator=(
 
 // Move assignment
 template <class T> inline
-KSharedPtr<typename T>& KSharedPtr<T>::operator=(
+//KSharedPtr<typename T>& KSharedPtr<T>::operator=(
+KSharedPtr<T>& KSharedPtr<T>::operator=(
     __in KSharedPtr&& Src
     )
 {

@@ -289,6 +289,24 @@ namespace Ktl
     struct enable_if<true, T> { typedef T type; };
 }
 
+// Ktl::Remove*::type - type conversions to remove type modifiers
+//
+namespace Ktl
+{
+    // Remove outer "const"
+    template<typename T>
+    struct RemoveConst         // non-const normalization
+    {
+        typedef T type;
+    };
+
+    template<typename T>
+    struct RemoveConst<const T>
+    {
+        typedef T type;
+    };
+}
+
 #include <kpointer.h>
 #include <krtt.h>
 
@@ -557,24 +575,6 @@ struct KMemRef : public _KMemRef
         // Never delete the memory
     }
 };
-
-// Ktl::Remove*::type - type conversions to remove type modifiers
-//
-namespace Ktl
-{
-    // Remove outer "const"
-    template<typename T>
-    struct RemoveConst         // non-const normalization
-    {
-        typedef T type;
-    };
-
-    template<typename T>
-    struct RemoveConst<const T>
-    {
-        typedef T type;
-    };
-}
 
 #include <knt.h>
 

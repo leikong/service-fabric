@@ -48,7 +48,7 @@ namespace Common
             static_assert(false, "Unknown object format");
         }
         template<>
-        static HRESULT Set<bool>(JsonReaderVisitor* pVisitor, void* pData)
+        HRESULT Set<bool>(JsonReaderVisitor* pVisitor, void* pData)
         {
             JsonTokenType tokenType = JsonTokenType_NotStarted;
             HRESULT hr = pVisitor->m_pReader->GetTokenType(&tokenType);
@@ -65,7 +65,7 @@ namespace Common
         }
 
         template<>
-        static HRESULT Set<byte>(JsonReaderVisitor* pVisitor, void* pData)
+        HRESULT Set<byte>(JsonReaderVisitor* pVisitor, void* pData)
         {
             double dblValue = 0.0;
             HRESULT hr = pVisitor->m_pReader->GetNumberValue(&dblValue);
@@ -80,7 +80,7 @@ namespace Common
         }
                 
         template<>
-        static HRESULT Set<double>(JsonReaderVisitor* pVisitor, void* pData)
+        HRESULT Set<double>(JsonReaderVisitor* pVisitor, void* pData)
         {
             double dblValue = 0.0;
             HRESULT hr = pVisitor->m_pReader->GetNumberValue(&dblValue);
@@ -93,7 +93,7 @@ namespace Common
 
 #if !defined(PLATFORM_UNIX)
         template<>
-        static HRESULT Set<LONG>(JsonReaderVisitor* pVisitor, void* pData)
+        HRESULT Set<LONG>(JsonReaderVisitor* pVisitor, void* pData)
         {
             double dblValue = 0.0;
             HRESULT hr = pVisitor->m_pReader->GetNumberValue(&dblValue);
@@ -108,7 +108,7 @@ namespace Common
         }
 
         template<>
-        static HRESULT Set<ULONG>(JsonReaderVisitor* pVisitor, void* pData)
+        HRESULT Set<ULONG>(JsonReaderVisitor* pVisitor, void* pData)
         {
             double dblValue = 0.0;
             HRESULT hr = pVisitor->m_pReader->GetNumberValue(&dblValue);
@@ -123,7 +123,7 @@ namespace Common
         }
 #else
         template<>
-        static HRESULT Set<INT64>(JsonReaderVisitor* pVisitor, void* pData)
+        HRESULT Set<INT64>(JsonReaderVisitor* pVisitor, void* pData)
         {
             std::wstring strValue;
             HRESULT hr = Set<std::wstring>(pVisitor, &strValue);
@@ -138,7 +138,7 @@ namespace Common
         }
 
         template<>
-        static HRESULT Set<UINT64>(JsonReaderVisitor* pVisitor, void* pData)
+        HRESULT Set<UINT64>(JsonReaderVisitor* pVisitor, void* pData)
         {
             std::wstring strValue;
             HRESULT hr = Set<std::wstring>(pVisitor, &strValue);
@@ -154,7 +154,7 @@ namespace Common
 #endif
 
         template<>
-        static HRESULT Set<int>(JsonReaderVisitor* pVisitor, void* pData)
+        HRESULT Set<int>(JsonReaderVisitor* pVisitor, void* pData)
         {
             double dblValue = 0.0;
             HRESULT hr = pVisitor->m_pReader->GetNumberValue(&dblValue);
@@ -169,7 +169,7 @@ namespace Common
         }
 
         template<>
-        static HRESULT Set<unsigned int>(JsonReaderVisitor* pVisitor, void* pData)
+        HRESULT Set<unsigned int>(JsonReaderVisitor* pVisitor, void* pData)
         {
             double dblValue = 0.0;
             HRESULT hr = pVisitor->m_pReader->GetNumberValue(&dblValue);
@@ -184,7 +184,7 @@ namespace Common
         }
 
         template<>
-        static HRESULT SetInt64AsNumber<INT64>(JsonReaderVisitor* pVisitor, void* pData)
+        HRESULT SetInt64AsNumber<INT64>(JsonReaderVisitor* pVisitor, void* pData)
         {
             double dblValue = 0.0;
             HRESULT hr = pVisitor->m_pReader->GetNumberValue(&dblValue);
@@ -199,7 +199,7 @@ namespace Common
         }
 
         template<>
-        static HRESULT SetInt64AsNumber<UINT64>(JsonReaderVisitor* pVisitor, void* pData)
+        HRESULT SetInt64AsNumber<UINT64>(JsonReaderVisitor* pVisitor, void* pData)
         {
             double dblValue = 0.0;
             HRESULT hr = pVisitor->m_pReader->GetNumberValue(&dblValue);
@@ -214,7 +214,7 @@ namespace Common
         }
 
         template<>
-        static HRESULT Set<Guid>(JsonReaderVisitor* pVisitor, void* pData)
+        HRESULT Set<Guid>(JsonReaderVisitor* pVisitor, void* pData)
         {
             ULONG nLength = 0;
             HRESULT hr = pVisitor->m_pReader->GetStringLength(&nLength);
@@ -235,7 +235,7 @@ namespace Common
         }
 
         template<>
-        static HRESULT Set<DateTime>(JsonReaderVisitor* pVisitor, void* pData)
+        HRESULT Set<DateTime>(JsonReaderVisitor* pVisitor, void* pData)
         {
             std::wstring strValue;
             HRESULT hr = Set<std::wstring>(pVisitor, &strValue);
@@ -259,7 +259,7 @@ namespace Common
         }
         
         template<>
-        static HRESULT Set<TimeSpan>(JsonReaderVisitor* pVisitor, void* pData)
+        HRESULT Set<TimeSpan>(JsonReaderVisitor* pVisitor, void* pData)
         {
             std::wstring strValue;
             HRESULT hr = Set<std::wstring>(pVisitor, &strValue);
@@ -279,7 +279,7 @@ namespace Common
         }
 
         template<>
-        static HRESULT Set<std::wstring>(JsonReaderVisitor* pVisitor, void* pData)
+        HRESULT Set<std::wstring>(JsonReaderVisitor* pVisitor, void* pData)
         {
             //
             // This code to read numbers as wstring exists only to support deserializing enum's given as
@@ -322,7 +322,7 @@ namespace Common
         }
 
         template<>
-        static HRESULT Set<LargeInteger>(JsonReaderVisitor* pVisitor, void *pData)
+        HRESULT Set<LargeInteger>(JsonReaderVisitor* pVisitor, void *pData)
         {
             ULONG nLength = 0;
             HRESULT hr = pVisitor->m_pReader->GetStringLength(&nLength);
@@ -343,7 +343,7 @@ namespace Common
         }
 
         template<>
-        static HRESULT Set<Uri>(JsonReaderVisitor *pVisitor, void *pData)
+        HRESULT Set<Uri>(JsonReaderVisitor *pVisitor, void *pData)
         {
             ULONG nLength = 0;
             HRESULT hr = pVisitor->m_pReader->GetStringLength(&nLength);
@@ -364,7 +364,7 @@ namespace Common
         }
 
         template<>
-        static HRESULT Set<NamingUri>(JsonReaderVisitor *pVisitor, void *pData)
+        HRESULT Set<NamingUri>(JsonReaderVisitor *pVisitor, void *pData)
         {
             ULONG nLength = 0;
             HRESULT hr = pVisitor->m_pReader->GetStringLength(&nLength);
@@ -385,7 +385,7 @@ namespace Common
         }
 
         template<>
-        static HRESULT Set<FabricConfigVersion>(JsonReaderVisitor *pVisitor, void *pData)
+        HRESULT Set<FabricConfigVersion>(JsonReaderVisitor *pVisitor, void *pData)
         {
             ULONG nLength = 0;
             HRESULT hr = pVisitor->m_pReader->GetStringLength(&nLength);
@@ -407,7 +407,7 @@ namespace Common
 
 #if !defined(PLATFORM_UNIX) 
         template<>
-        static HRESULT Set<__int64>(JsonReaderVisitor *pVisitor, void *pData)
+        HRESULT Set<__int64>(JsonReaderVisitor *pVisitor, void *pData)
         {
             std::wstring strValue;
             HRESULT hr = Set<std::wstring>(pVisitor, &strValue);
@@ -422,7 +422,7 @@ namespace Common
         }
 
         template<>
-        static HRESULT Set<unsigned __int64>(JsonReaderVisitor *pVisitor, void *pData)
+        HRESULT Set<unsigned __int64>(JsonReaderVisitor *pVisitor, void *pData)
         {
             std::wstring strValue;
             HRESULT hr = Set<std::wstring>(pVisitor, &strValue);
@@ -439,7 +439,7 @@ namespace Common
 
         // Specialcasing NodeId since vftable cannot be added to nodeid without breaking compat.
         template<>
-        static HRESULT Set<Federation::NodeId>(JsonReaderVisitor *pVisitor, void *pData)
+        HRESULT Set<Federation::NodeId>(JsonReaderVisitor *pVisitor, void *pData)
         {
             InternalNodeId nodeIdInternal;
             
@@ -819,7 +819,7 @@ namespace Common
         // array deserialization for it.
         //
         template<>
-        static HRESULT SetArray<BYTE>(JsonReaderVisitor *pVisitor, void *pData)
+        HRESULT SetArray<BYTE>(JsonReaderVisitor *pVisitor, void *pData)
         {
             JsonTokenType tokenType;
 
@@ -917,7 +917,7 @@ namespace Common
 #if defined(PLATFORM_UNIX)
 #define EXPLICIT_INTRINSIC_SETSHAREDPOINTER(T) \
         template<>\
-        static HRESULT SetSharedPointer<T>(JsonReaderVisitor *pVisitor, void *pData)\
+        HRESULT SetSharedPointer<T>(JsonReaderVisitor *pVisitor, void *pData)\
         {\
             std::shared_ptr<T> *sharedPtr = static_cast<std::shared_ptr<T>*>(pData);\
             *sharedPtr = std::make_shared<T>();\
@@ -926,7 +926,7 @@ namespace Common
 
         EXPLICIT_INTRINSIC_SETSHAREDPOINTER(LONG)
         EXPLICIT_INTRINSIC_SETSHAREDPOINTER(bool)
-#undef EXPLICIT_INTRINSIC_SETSHAREDPOINTER^M
+#undef EXPLICIT_INTRINSIC_SETSHAREDPOINTER
 #endif
 
         template<typename T>
@@ -961,7 +961,7 @@ namespace Common
 #if defined(PLATFORM_UNIX)
 #define EXPLICIT_INTRINSIC_SETUNIQUEPOINTER(T) \
     template<>\
-    static HRESULT SetUniquePointer<T>(JsonReaderVisitor *pVisitor, void *pData)\
+    HRESULT SetUniquePointer<T>(JsonReaderVisitor *pVisitor, void *pData)\
         {\
         std::unique_ptr<T> *uniquePtr = static_cast<std::unique_ptr<T>*>(pData); \
         *uniquePtr = make_unique<T>(); \
@@ -970,7 +970,7 @@ namespace Common
 
         EXPLICIT_INTRINSIC_SETUNIQUEPOINTER(LONG)
             EXPLICIT_INTRINSIC_SETUNIQUEPOINTER(bool)
-#undef EXPLICIT_INTRINSIC_SETUNIQUEPOINTER^M
+#undef EXPLICIT_INTRINSIC_SETUNIQUEPOINTER
 #endif
         
         template<typename T>
@@ -1255,7 +1255,7 @@ namespace Common
 #if defined(PLATFORM_UNIX)
 #define INTRINSIC_SPECIALIZATION(type) \
         template<> \
-        static __forceinline HRESULT Dispatch<type>(JsonReaderVisitor& reader, Common::WStringLiteral pszName, type &value, bool conditional) \
+        __forceinline HRESULT Dispatch<type>(JsonReaderVisitor& reader, Common::WStringLiteral pszName, type &value, bool conditional) \
         { \
             return reader.Visit(pszName.begin(), value, conditional); \
         }

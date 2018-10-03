@@ -12,6 +12,8 @@
 
 --*/
 
+#include <signal.h>
+
 #include "ktl.h"
 #include "string.h"
 

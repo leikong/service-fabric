@@ -43,6 +43,7 @@ namespace Common
 #include <pwd.h>
 #include <grp.h>
 #include <sys/epoll.h>
+#include <sys/time.h>
 #include "PAL.h" // from prod/src/inc/clr
 
 #undef __in    // is used in stdlib
@@ -63,12 +64,6 @@ typedef int pid_t;
 #include <list>
 #include <map>
 #include <stack>
-#if defined(PLATFORM_UNIX)
-#include <ext/hash_map>
-#else
-#include <hash_map>
-#include <iterator>
-#endif
 #include <unordered_set>
 #include <unordered_map>
 #include <memory>
@@ -109,7 +104,7 @@ typedef int pid_t;
 #include <fwpvi.h>
 #include <fwpmu.h>
 #include <fwpmtypes.h>
-#include <xmllite.h>
+//#include <xmllite.h>
 #include <Shlwapi.h>
 #include <shlobj.h>
 #include <system_error>
@@ -202,9 +197,9 @@ typedef int pid_t;
 
 #ifdef PLATFORM_UNIX
 #include "ProcessInfo.h"
-#include "minizip/zip.h"
-#include "minizip/unzip.h"
-#include "Common/Zip/Zip_Linux.h"
+//#include "minizip/zip.h"
+//#include "minizip/unzip.h"
+//#include "Common/Zip/Zip_Linux.h"
 #else
 #include "Common/CertificateManager.h"
 #include "Common/CertStore.h"
@@ -271,15 +266,15 @@ typedef int pid_t;
 
 // XML reading and writing
 #if defined(PLATFORM_UNIX)
-#include "Common/XmlLiteReader.Linux.h"
-#include "Common/XmlLiteWriter.Linux.h"
+//#include "Common/XmlLiteReader.Linux.h"
+//#include "Common/XmlLiteWriter.Linux.h"
 #endif
 #include "Common/XmlException.h"
 #include "Common/ComXmlFileStream.h"
-#include "Common/ComProxyXmlLiteReader.h"
-#include "Common/ComProxyXmlLiteWriter.h"
-#include "Common/XmlReader.h"
-#include "Common/XmlWriter.h"
+//#include "Common/ComProxyXmlLiteReader.h"
+//#include "Common/ComProxyXmlLiteWriter.h"
+//#include "Common/XmlReader.h"
+//#include "Common/XmlWriter.h"
 
 // convienence/windows utility type headers
 #include "Common/ActivityId.h"
@@ -322,8 +317,8 @@ typedef int pid_t;
 #include "Common/TimedAsyncOperation.h"
 #include "Common/AsyncWaitHandle.h"
 #include "Common/AllocableAsyncOperation.h"
-#include "Common/KtlAwaitableProxyAsyncOperation.h"
-#include "Common/KtlProxyAsyncOperation.h"
+//#include "Common/KtlAwaitableProxyAsyncOperation.h"
+//#include "Common/KtlProxyAsyncOperation.h"
 
 // configuration headers
 #include "Common/ConfigEntryUpgradePolicy.h"

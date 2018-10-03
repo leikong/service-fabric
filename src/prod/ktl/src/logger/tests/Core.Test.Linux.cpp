@@ -4,7 +4,9 @@
 
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE KtlLoggerTest
-#include <boost/test/unit_test.hpp>
+//#include <boost/test/unit_test.hpp> // compile errors in Boost unit test framework itself when using installed package
+                                      // instead of building from source
+#include <boost/test/included/unit_test.hpp>
 #include "boost-taef.h"
 
 #include <ktl.h>

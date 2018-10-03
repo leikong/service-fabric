@@ -13,8 +13,13 @@ using namespace std;
 X509PubKey::X509PubKey(PCCertContext certContext)
 {
     auto* x509PubKey = X509_get_X509_PUBKEY(certContext);
-    algorithm_ = X509_ALGOR_dup(x509PubKey->algor);
-    pubKey_ = ASN1_STRING_dup(x509PubKey->public_key);
+
+    // src/prod/src/Common/X509PubKey.cpp:16:43: error: member access into incomplete type 'X509_pubkey_st'
+    //
+    //algorithm_ = X509_ALGOR_dup(x509PubKey->algor);
+    //pubKey_ = ASN1_STRING_dup(x509PubKey->public_key);
+    //
+    Assert::CodingError("Not implemented due to build errors");
 }
 
 X509PubKey::~X509PubKey()

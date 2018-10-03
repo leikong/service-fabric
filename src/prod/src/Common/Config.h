@@ -34,28 +34,28 @@ namespace Common
         static bool TryParse(T & result, std::wstring const & value);
 
         template<>
-        static bool TryParse<std::wstring>(std::wstring & result, std::wstring const & value)
+        bool TryParse<std::wstring>(std::wstring & result, std::wstring const & value)
         {
             result = value;
             return true;
         }
 
         template<>
-        static bool TryParse<std::string>(std::string & result, std::wstring const & value)
+        bool TryParse<std::string>(std::string & result, std::wstring const & value)
         {
             StringUtility::UnicodeToAnsi(value, result);
             return true;
         }
 
         template<>
-        static bool TryParse<SecureString>(SecureString & result, std::wstring const & value)
+        bool TryParse<SecureString>(SecureString & result, std::wstring const & value)
         {
             result = SecureString(value);
             return true;
         }
 
         template<>
-        static bool TryParse<int64>(int64 & result, std::wstring const & value)
+        bool TryParse<int64>(int64 & result, std::wstring const & value)
         {
             if (!TryParseInt64(value, result))
             {
@@ -66,7 +66,7 @@ namespace Common
         }
 
         template<>
-        static bool TryParse<int>(int & result, std::wstring const & value)
+        bool TryParse<int>(int & result, std::wstring const & value)
         {
             int64 temp;
             if (!TryParseInt64(value, temp))
@@ -79,7 +79,7 @@ namespace Common
         }
 
         template<>
-        static bool TryParse<uint>(uint & result, std::wstring const & value)
+        bool TryParse<uint>(uint & result, std::wstring const & value)
         {
             int64 temp;
             if (!TryParseInt64(value, temp) || temp < 0)
@@ -92,7 +92,7 @@ namespace Common
         }
         
         template<>
-        static bool TryParse<double>(double & result, std::wstring const & value)
+        bool TryParse<double>(double & result, std::wstring const & value)
         {
             // TODO: not handling incorrect format yet
             result = Double_Parse(value);
@@ -100,7 +100,7 @@ namespace Common
         }
 
         template<>
-        static bool TryParse<TimeSpan>(TimeSpan & result, std::wstring const & value)
+        bool TryParse<TimeSpan>(TimeSpan & result, std::wstring const & value)
         {
             double seconds;
             if (!TryParse<double>(seconds, value) || seconds < 0.0)
@@ -113,28 +113,28 @@ namespace Common
         }
 
         template<>
-        static bool TryParse<bool>(bool & result, std::wstring const & value)
+        bool TryParse<bool>(bool & result, std::wstring const & value)
         {
             result = StringUtility::AreEqualCaseInsensitive(value, L"true");
             return true;
         }
 
         template<>
-        static bool TryParse<StringCollection>(StringCollection & result, std::wstring const & value)
+        bool TryParse<StringCollection>(StringCollection & result, std::wstring const & value)
         {
             StringUtility::Split<std::wstring>(value, result, L",");
             return true;
         }
 
         template<>
-        static bool TryParse<FabricVersionInstance>(FabricVersionInstance & result, std::wstring const & value)
+        bool TryParse<FabricVersionInstance>(FabricVersionInstance & result, std::wstring const & value)
         {
             auto error = FabricVersionInstance::FromString(value, result);
             return error.IsSuccess();
         }
 		
 		template<>
-        static bool TryParse<X509StoreLocation::Enum>(X509StoreLocation::Enum & result, std::wstring const & value)
+        bool TryParse<X509StoreLocation::Enum>(X509StoreLocation::Enum & result, std::wstring const & value)
         {
             auto error = X509StoreLocation::Parse(value, result);
             return error.IsSuccess();

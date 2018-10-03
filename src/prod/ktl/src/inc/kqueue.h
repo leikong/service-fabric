@@ -209,7 +209,8 @@ KQueue<T>::KQueue(
 }
 
 template <class T> inline
-KQueue<typename T>& KQueue<T>::operator=(
+//KQueue<typename T>& KQueue<T>::operator=(
+KQueue<T>& KQueue<T>::operator=(
     __in const KQueue& Src
         )
 {

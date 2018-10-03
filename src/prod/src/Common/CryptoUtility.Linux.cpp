@@ -414,7 +414,15 @@ X509Context LinuxCryptUtil::LoadCertificate(std::string const& filepath) const
     KFinally([=] { free(subjectName); });
     auto issuerName = X509_NAME_oneline(X509_get_issuer_name(x.get()), nullptr, 0);
     KFinally([=] { free(issuerName); });
-    uint64 certSerialNo = ASN1_INTEGER_get(x->cert_info->serialNumber);
+
+    // There are build-breaking changes from OpenSSL 1.0 -> 1.1
+    //
+    // src/prod/src/Common/CryptoUtility.Linux.cpp:417:45: error: member access into incomplete type 'x509_st'
+    //
+    // uint64 certSerialNo = ASN1_INTEGER_get(x->cert_info->serialNumber);
+    //
+    Assert::CodingError("Not implemented due to build errors");
+    uint64 certSerialNo = 0;
 
     WriteInfo(
         TraceType,
@@ -1124,6 +1132,13 @@ ErrorCode LinuxCryptUtil::DeriveKey(ByteBuffer const & input, ByteBuffer & key) 
 
 ErrorCode LinuxCryptUtil::ComputeHmac(ByteBuffer const& data, ByteBuffer const& key, ByteBuffer & output) const
 {
+    // There are build-breaking changes from OpenSSL 1.0 -> 1.1
+    //
+    // src/prod/src/Common/CryptoUtility.Linux.cpp:1128:14: error: variable has incomplete type 'HMAC_CTX' (aka 'hmac_ctx_st')
+    //
+    Assert::CodingError("Not implemented due to build errors");
+
+    /*
     ErrorCode error;
     HMAC_CTX ctx = {};
     HMAC_CTX_init(&ctx);
@@ -1156,10 +1171,18 @@ ErrorCode LinuxCryptUtil::ComputeHmac(ByteBuffer const& data, ByteBuffer const& 
 
     output.resize(len);
     return error;
+    */
 }
 
 ErrorCode LinuxCryptUtil::ComputeHash(ByteBuffer const & input, ByteBuffer & output) const
 {
+    // There are build-breaking changes from OpenSSL 1.0 -> 1.1
+    //
+    // src/prod/src/Common/CryptoUtility.Linux.cpp:1175:16: error: variable has incomplete type 'EVP_MD_CTX' (aka 'evp_md_ctx_st')
+    //
+    Assert::CodingError("Not implemented due to build errors");
+
+    /*
     EVP_MD_CTX ctx = {};
     EVP_MD_CTX_init(&ctx);
     KFinally([&] { EVP_MD_CTX_cleanup(&ctx); });
@@ -1190,6 +1213,7 @@ ErrorCode LinuxCryptUtil::ComputeHash(ByteBuffer const & input, ByteBuffer & out
 
     output.resize(mdLen);
     return ErrorCode(); 
+    */
 }
 
 ErrorCode LinuxCryptUtil::GetOpensslErr(uint64 err) const
@@ -1461,7 +1485,12 @@ vector<pair<X509_NAME const*, uint64>> LinuxCryptUtil::GetPkcs7Recipients(PKCS7*
             rIssuerName,
             rSerialNo);
 
-        results.emplace_back(ri->issuer_and_serial->issuer, rSerialNo);
+        
+        // src/prod/src/Common/CryptoUtility.Linux.cpp:1518:32: error: member access into incomplete type 'x509_st'
+        //
+        //results.emplace_back(ri->issuer_and_serial->issuer, rSerialNo);
+        //
+        Assert::CodingError("Not implemented due to build errors");
     }
 
     return results;
@@ -1473,8 +1502,12 @@ ErrorCode LinuxCryptUtil::LoadIssuerChain(PCCertContext certContext, std::vector
 
     auto subjectCert = certContext;
     X509_check_purpose(subjectCert, -1, 0);
-    if (subjectCert->ex_flags & EXFLAG_SS) //self signed?
-        return ErrorCodeValue::Success; 
+
+    // src/prod/src/Common/CryptoUtility.Linux.cpp:1503:20: error: member access into incomplete type 'x509_st'
+    //
+    // if (subjectCert->ex_flags & EXFLAG_SS) //self signed?
+    //     return ErrorCodeValue::Success; 
+    Assert::CodingError("Not implemented due to build errors");
 
     vector<X509Context> allCerts;
     for (auto const& file : GetCertFiles()) 
@@ -1503,8 +1536,13 @@ ErrorCode LinuxCryptUtil::LoadIssuerChain(PCCertContext certContext, std::vector
                 issuerChain.emplace_back(move(issuerCandicate));
 
                 X509_check_purpose(subjectCert, -1, 0);
-                if (subjectCert->ex_flags & EXFLAG_SS) //self signed?
-                   return ErrorCodeValue::Success; 
+
+                ///media/alexwun/Data_Ext4/Horizon/service-fabric/src/prod/src/Common/CryptoUtility.Linux.cpp:1518:32: error: member access into incomplete type 'x509_st'
+                //
+                //if (subjectCert->ex_flags & EXFLAG_SS) //self signed?
+                //   return ErrorCodeValue::Success; 
+                //
+                Assert::CodingError("Not implemented due to build errors");
 
                 shouldContinue = true;
                 break;
@@ -1532,7 +1570,14 @@ ErrorCode LinuxCryptUtil::LoadDecryptionCertificate(PKCS7* p7, wstring const & c
         auto certIssuerName = X509_get_issuer_name(cert.get());
         auto nameToPrint = X509_NAME_oneline(certIssuerName, nullptr, 0);
         KFinally([=] { free(nameToPrint); });
-        uint64 certSerialNo = ASN1_INTEGER_get(cert->cert_info->serialNumber);
+
+        //src/prod/src/Common/CryptoUtility.Linux.cpp:1547:52: error: member access into incomplete type 'x509_st'
+        //
+        // uint64 certSerialNo = ASN1_INTEGER_get(cert->cert_info->serialNumber);
+        //
+        Assert::CodingError("Not implemented due to build errors");
+        uint64 certSerialNo = 0;
+
         WriteInfo(
             TraceType,
             "FindMatchingCertFile: cert: issuer='{0}', serialno={1:x}",

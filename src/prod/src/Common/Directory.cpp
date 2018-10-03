@@ -1173,7 +1173,8 @@ namespace Common
         wchar_t * errorMessageBuffer,
         int errorMessageBufferSize)
     {
-        return Zip::TryZipDirectory(srcDirectoryPath, destZipFileName, errorMessageBuffer, errorMessageBufferSize);
+        return 1;
+        //return Zip::TryZipDirectory(srcDirectoryPath, destZipFileName, errorMessageBuffer, errorMessageBufferSize);
     }
 #else
 extern "C" DllImport int TryZipDirectory(
@@ -1222,7 +1223,8 @@ extern "C" DllImport int TryZipDirectory(
         wchar_t * errorMessageBuffer,
         int errorMessageBufferSize)
     {
-        return Zip::TryUnzipDirectory(srcFileName, destDirectoryPath, errorMessageBuffer, errorMessageBufferSize);
+        return 1;
+        //return Zip::TryUnzipDirectory(srcFileName, destDirectoryPath, errorMessageBuffer, errorMessageBufferSize);
     }
 #else
 extern "C" DllImport int TryUnzipDirectory(

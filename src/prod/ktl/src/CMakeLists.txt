@@ -198,7 +198,8 @@ include_directories(${BOOST_INCLUDEDIR})
 link_directories(${BOOST_LIBRARY_DIRS})
 
 find_package(Boost REQUIRED COMPONENTS random chrono system thread regex filesystem)
-find_library(BoostTest2 boost_unit_test_framework PATHS ${BOOST_LIBRARY_DIRS} NO_DEFAULT_PATH)
+#find_library(BoostTest2 boost_unit_test_framework PATHS ${BOOST_LIBRARY_DIRS} NO_DEFAULT_PATH)
+find_library(BoostTest2 NAMES boost_unit_test_framework)
 
 # libraries
 # for Cxx 
@@ -216,9 +217,12 @@ if (BUILD_THIRD_PARTY)
     find_library(Cxx c++ PATHS ${CXX_LIB_PATH} NO_DEFAULT_PATH)
     find_library(CxxABI c++abi PATHS ${CXX_LIB_PATH} NO_DEFAULT_PATH)
 else()
-    find_library(Cxx cxx PATHS ${CXX_LIB_PATH} NO_DEFAULT_PATH)
-    find_library(CxxABI cxxabi PATHS ${CXX_LIB_PATH} NO_DEFAULT_PATH)
+    #find_library(Cxx cxx PATHS ${CXX_LIB_PATH} NO_DEFAULT_PATH)
+    #find_library(CxxABI cxxabi PATHS ${CXX_LIB_PATH} NO_DEFAULT_PATH)
+    find_library(Cxx NAMES c++)
+    find_library(CxxABI NAMES c++abi)
 endif()
+
 set (CMAKE_CXX_STANDARD_LIBRARIES "${Cxx} ${CxxABI}")
 
 # Create a lib directory for output during config time

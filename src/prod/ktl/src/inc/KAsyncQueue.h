@@ -398,7 +398,10 @@ private:
     UnsafeEnqueueOrGetWaiter(IType& ItemToQueue, ULONG Priority);
 
 protected:
-    class NodeList : public KNodeList<typename IType>
+    // src/prod/ktl/src/inc/KAsyncQueue.h:401:48: warning: expected a qualified name after 'typename'
+    //
+    //class NodeList : public KNodeList<typename IType>
+    class NodeList : public KNodeList<IType>
     {
     public:
         VOID

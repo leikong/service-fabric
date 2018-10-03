@@ -34,8 +34,8 @@ set( LINUX_SOURCES
   ../componentroot.cpp
   ../ComProxyAsyncOperation.cpp
   ../ComProxyConfigStore.cpp
-  ../ComProxyXmlLiteReader.cpp
-  ../ComProxyXmlLiteWriter.cpp
+  #../ComProxyXmlLiteReader.cpp
+  #../ComProxyXmlLiteWriter.cpp
   ../ComStringResult.cpp
   ../ComUnknownBase.cpp
   ../ComUtility.cpp
@@ -97,9 +97,9 @@ set( LINUX_SOURCES
   ../JobQueuePerfCounters.cpp
   ../JobQueueConfigSettingsHolder.cpp
   ../JobQueueDequePolicyHelper.cpp
-  ../KtlSF.Common.cpp
-  ../KtlAwaitableProxyAsyncOperation.cpp
-  ../KtlProxyAsyncOperation.cpp
+  #../KtlSF.Common.cpp
+  #../KtlAwaitableProxyAsyncOperation.cpp
+  #../KtlProxyAsyncOperation.cpp
   ../LargeInteger.cpp
   ../LinkableAsyncOperation.cpp
   ../CryptoUtility.Linux.cpp
@@ -194,11 +194,11 @@ set( LINUX_SOURCES
   ../X509Identity.cpp
   ../X509PubKey.cpp
   ../X509StoreLocation.cpp
-  ../XmlLiteReader.Linux.cpp
-  ../XmlLiteWriter.Linux.cpp
-  ../XmlReader.cpp
-  ../XmlWriter.cpp
-  ../Zip/Zip_Linux.cpp
+  #../XmlLiteReader.Linux.cpp
+  #../XmlLiteWriter.Linux.cpp
+  #../XmlReader.cpp
+  #../XmlWriter.cpp
+  #../Zip/Zip_Linux.cpp
   
 #Not Migrated
  ../AccessToken.cpp
@@ -230,22 +230,13 @@ set (LINUX_SOURCES_THREADPOOL
   ../Threadpool/UnfairSemaphore.cpp
 )
 
-add_library(objects_Common_Threadpool OBJECT ${LINUX_SOURCES_THREADPOOL})
-
 include_directories("..")
+include_directories("../..")
+#add_precompiled_header(objects_Common ../stdafx.h)
 
+add_library(objects_Common_Threadpool OBJECT ${LINUX_SOURCES_THREADPOOL})
 add_library(objects_Common OBJECT ${LINUX_SOURCES})
-
-add_precompiled_header(objects_Common ../stdafx.h)
-
-#add_library(${lib_Common} STATIC $<TARGET_OBJECTS:objects_Common>)
 add_library(${lib_Common} STATIC $<TARGET_OBJECTS:objects_Common> $<TARGET_OBJECTS:objects_Common_Threadpool>)
-target_link_libraries(${lib_Common}
-    ${Ktlfull}
-    ${lib_Pal}
-    minizip
-    z
-)
 
-set_target_properties(${lib_Common} PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY ${LIBRARY_OUTPUT_DIR})
+#target_link_libraries(${lib_Common})
+set_target_properties(${lib_Common} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${LIBRARY_OUTPUT_DIR})

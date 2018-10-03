@@ -478,7 +478,7 @@ namespace Common
 #if defined(PLATFORM_UNIX)
 #define INTRINSIC_SPECIALIZATION(type) \
         template<> \
-        static __forceinline HRESULT Dispatch<type>(JsonWriterVisitor& writer, Common::WStringLiteral pszName, type &value, bool conditional) \
+        __forceinline HRESULT Dispatch<type>(JsonWriterVisitor& writer, Common::WStringLiteral pszName, type &value, bool conditional) \
         { \
             return writer.Visit(pszName.begin(), value, conditional); \
         }
