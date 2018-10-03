@@ -406,3 +406,10 @@ external/
 ossbuild/packageList.props
 # p4merge
 *.orig
+
+# Linux
+CMakeCache.txt
+CMakeFiles
+CMakeFiles/*
+Makefile
+cmake_install.cmake
