@@ -13,11 +13,10 @@ using namespace Federation;
 FederationSubsystem::FederationSubsystem(
     NodeConfig const& config,
     FabricCodeVersion const & codeVersion,
-    Store::IStoreFactorySPtr const & storeFactory,
     Common::Uri const & nodeFaultDomainId,
     Transport::SecuritySettings const& securitySettings,
     ComponentRoot const & root)
-    : Common::RootedObject(root), siteNode_(SiteNode::Create(config, codeVersion, storeFactory, nodeFaultDomainId, securitySettings))
+    : Common::RootedObject(root), siteNode_(SiteNode::Create(config, codeVersion, nodeFaultDomainId, securitySettings))
 {
 }
 
@@ -80,6 +79,7 @@ wstring const & FederationSubsystem::getRingName() const
     return siteNode_->RingName; 
 }
 
+/*
 void FederationSubsystem::SetHealthClient(Client::HealthReportingComponentSPtr const & value) 
 { 
     siteNode_->SetHealthClient(value);
@@ -89,6 +89,7 @@ Client::HealthReportingComponentSPtr FederationSubsystem::GetHealthClient() cons
 {
     return siteNode_->GetHealthClient();
 }
+*/
 
 ErrorCode FederationSubsystem::SetSecurity(SecuritySettings const & securitySettings)
 {

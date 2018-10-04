@@ -18,7 +18,6 @@ namespace Federation
         FederationSubsystem(
             NodeConfig const& config,
             Common::FabricCodeVersion const & codeVersion,
-            Store::IStoreFactorySPtr const & storeFactory,
             Common::Uri const & nodeFaultDomainId,
             Transport::SecuritySettings const& securitySettings,
             Common::ComponentRoot const & root);
@@ -48,8 +47,8 @@ namespace Federation
         __declspec (property(get=get_LeaseAgent)) LeaseWrapper::LeaseAgent const & LeaseAgent;
         LeaseWrapper::LeaseAgent const & get_LeaseAgent() const;
 
-        void SetHealthClient(Client::HealthReportingComponentSPtr const & value);
-        Client::HealthReportingComponentSPtr GetHealthClient() const;
+        //void SetHealthClient(Client::HealthReportingComponentSPtr const & value);
+        //Client::HealthReportingComponentSPtr GetHealthClient() const;
 
         Common::ErrorCode SetSecurity(Transport::SecuritySettings const &);
 

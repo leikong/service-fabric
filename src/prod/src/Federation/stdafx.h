@@ -5,7 +5,7 @@
 
 #include "Federation/Federation.h"
 
-#include "client/HealthClient.h"
+//#include "client/HealthClient.h"
 #include "LeaseAgent/LeaseAgent.h"
 
 #include "Transport/UnreliableTransportSpecification.h"

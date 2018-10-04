@@ -37,7 +37,6 @@ namespace Federation
         static std::shared_ptr<SiteNode> Create(
             NodeConfig const& config,
             Common::FabricCodeVersion const & codeVersion,
-            Store::IStoreFactorySPtr const & storeFactory,
             Common::Uri const & nodeFaultDomainId = Common::Uri(),
             Transport::SecuritySettings const& securitySettings = Transport::SecuritySettings());
 
@@ -66,10 +65,9 @@ namespace Federation
         __declspec (property(get=getRoutingTable)) RoutingTable & Table;
         __declspec (property(get=getCodeVersion)) Common::FabricCodeVersion const & CodeVersion;
         __declspec (property(get=getChannel)) std::shared_ptr<Transport::IDatagramTransport> const & Channel;
-        __declspec (property(get=getStoreFactory)) Store::IStoreFactorySPtr const & StoreFactory;
 
-        Client::HealthReportingComponentSPtr GetHealthClient();
-        void SetHealthClient(Client::HealthReportingComponentSPtr const & value);
+        //Client::HealthReportingComponentSPtr GetHealthClient();
+        //void SetHealthClient(Client::HealthReportingComponentSPtr const & value);
 
         Common::ErrorCode SetSecurity(Transport::SecuritySettings const &);
 
@@ -151,8 +149,6 @@ namespace Federation
         GlobalStore & GetGlobalStore() const { return *globalStoreUPtr_; }
 
         std::shared_ptr<Transport::IDatagramTransport> const & getChannel() { return channelSPtr_; }
-
-        Store::IStoreFactorySPtr const & getStoreFactory() const { return storeFactory_; }
 
         Common::HHandler RegisterRoutingTokenChangedEvent(Common::EventHandler handler);
         bool UnRegisterRoutingTokenChangeEvent(Common::HHandler hHandler);
@@ -266,7 +262,6 @@ namespace Federation
         SiteNode(
             NodeConfig const & nodeInfo,
             Common::FabricCodeVersion const & codeVersion,
-            Store::IStoreFactorySPtr const & storeFactory,
             Common::Uri const & nodeFaultDomainId,
             Transport::SecuritySettings const& securitySettings);
 
@@ -353,12 +348,10 @@ namespace Federation
 		RWLOCK(Federation.LeaseAgentOpen, leaseAgentOpenLock_);
         bool isAborted;
 
-        Client::HealthReportingComponentSPtr healthClient_;
-        Common::RwLock healthClientLock_;
+        //Client::HealthReportingComponentSPtr healthClient_;
+        //Common::RwLock healthClientLock_;
 
         volatile LONG arbitrationFailure_;
-
-        Store::IStoreFactorySPtr storeFactory_;
 
         void PreSendDepartMessageCleanup();
         void PostSendDepartMessageCleanup();

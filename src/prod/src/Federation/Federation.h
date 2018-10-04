@@ -9,13 +9,13 @@
 
 #include "Common/Common.h"
 #include "Transport/Transport.h"
-#include "Store/Store.Public.h"
+//#include "Store/Store.Public.h"
 
 #include "ServiceModel/federation/NodeInstance.h"
 #include "ServiceModel/federation/NodeId.h"
 #include "ServiceModel/federation/NodeIdGenerator.h"
 
-#include "client/ClientPointers.h"
+//#include "client/ClientPointers.h"
 
 #include "Federation/Types.h"
 #include "Federation/IMessageFilter.h"

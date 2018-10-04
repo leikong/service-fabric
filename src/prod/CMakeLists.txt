@@ -21,9 +21,11 @@ set(LIBRARY_OUTPUT_DIR ${PROJECT_BINARY_DIR}/lib CACHE STRING "Library output di
 
 # Horizon library names
 set(lib_Common "Common" CACHE STRING "Common library")
-set(lib_Transport "Transport" CACHE STRING "Transport library")
+set(lib_Federation "Federation" CACHE STRING "Federation library")
 set(lib_KComAdapter "KComAdapter" CACHE STRING "KComAdapter library")
 set(lib_KPhysicalLog "KPhysicalLog" CACHE STRING "KPhysicalLog adapter")
+set(lib_LeaseAgent "LeaseAgent" CACHE STRING "LeaseAgent library")
+set(lib_Transport "Transport" CACHE STRING "Transport library")
 
 # Compilerflags
 #
@@ -76,6 +78,8 @@ add_compile_options(-Wno-int-to-void-pointer-cast)
 add_compile_options(-Wno-enum-compare)
 # src/prod/src/Transport
 add_compile_options(-Wno-redeclared-class-member)
+# src/prod/src/Federation
+add_compile_options(-Wno-pragma-once-outside-header)
 
 # Definitions
 #

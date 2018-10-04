@@ -208,11 +208,10 @@ int const MaxRoutingRetryCount = 3;
 SiteNodeSPtr SiteNode::Create(
     NodeConfig const & config, 
     FabricCodeVersion const & codeVersion,
-    Store::IStoreFactorySPtr const & storeFactory,
     Common::Uri const & nodeFaultDomainId,
     SecuritySettings const& securitySettings)
 {
-    SiteNodeSPtr siteNodeSPtr(new SiteNode(config, codeVersion, storeFactory, nodeFaultDomainId, securitySettings));
+    SiteNodeSPtr siteNodeSPtr(new SiteNode(config, codeVersion, nodeFaultDomainId, securitySettings));
     siteNodeSPtr->InitializeInternal();
 
     auto votes = FederationConfig::GetConfig().Votes;
@@ -233,7 +232,6 @@ SiteNodeSPtr SiteNode::Create(
 SiteNode::SiteNode(
     NodeConfig const& config,
     FabricCodeVersion const & codeVersion,
-    Store::IStoreFactorySPtr const & storeFactory,
     Common::Uri const & nodeFaultDomainId,
     SecuritySettings const& securitySettings)
     : 
@@ -247,8 +245,7 @@ SiteNode::SiteNode(
     securitySettings_(securitySettings),
     globalStoreUPtr_(make_unique<GlobalStore>()),
     isAborted(false),
-    arbitrationFailure_(0),
-    storeFactory_(storeFactory)
+    arbitrationFailure_(0)
 {
     // register all Federation message header types here for dumping.
     REGISTER_MESSAGE_HEADER(BroadcastHeader);
@@ -302,7 +299,8 @@ ErrorCode SiteNode::SetSecurity(Transport::SecuritySettings const & securitySett
     auto newSettings = securitySettings;
     newSettings.EnablePeerToPeerMode();
     {
-        AcquireWriteLock lock(healthClientLock_);
+        // Why is this using the healthClientLock_?
+        //AcquireWriteLock lock(healthClientLock_);
         securitySettings_ = newSettings; 
     }
 
@@ -315,6 +313,7 @@ ErrorCode SiteNode::SetSecurity(Transport::SecuritySettings const & securitySett
     return this->channelSPtr_->SetSecurity(newSettings);
 }
 
+/*
 Client::HealthReportingComponentSPtr SiteNode::GetHealthClient()
 {
     AcquireReadLock lock(healthClientLock_);
@@ -326,6 +325,7 @@ void SiteNode::SetHealthClient(Client::HealthReportingComponentSPtr const & valu
     AcquireWriteLock lock(healthClientLock_);
     healthClient_ = value;
 }
+*/
 
 ErrorCode SiteNode::Initialize(SiteNodeSPtr & siteNodeSPtr)
 {

@@ -6,7 +6,7 @@
 #include "stdafx.h"
 #include "Federation/VoteProxy.h"
 #include "Federation/SeedNodeProxy.h"
-#include "Federation/SharableProxy.h"
+//#include "Federation/SharableProxy.h"
 #include "Federation/VoteEntry.h"
 #include "Federation/VoteManager.h"
 #include "Federation/ArbitrationOperation.h"
@@ -17,7 +17,7 @@ using namespace Common;
 using namespace Transport;
 using namespace Federation;
 using namespace LeaseWrapper;
-using namespace Store;
+//using namespace Store;
 
 StringLiteral const TraceConfig("Config");
 StringLiteral const TraceGlobalTickets("Tickets");
@@ -164,11 +164,14 @@ bool VoteManager::LoadConfig(bool isUpdate)
                 return false;
             }
 
+            ASSERT_IF(type == Constants::SqlServerVoteType, "SqlStore not supported");
+
             VoteProxySPtr proxy;
             if (type == Constants::SeedNodeVoteType)
             {
                 proxy = make_shared<SeedNodeProxy>(NodeConfig(voteId, connectionString, L"", siteNode_.WorkingDir, ringName), siteNode_.Id);
             }
+/*
             else if (type == Constants::SqlServerVoteType)
             {
                 Store::StoreFactoryParameters parameters;
@@ -184,6 +187,7 @@ bool VoteManager::LoadConfig(bool isUpdate)
 
                 proxy = make_shared<SharableProxy>(move(store), ringName, voteId, siteNode_.Id);
             }
+*/
             else if (type == Constants::WindowsAzureVoteType)
             {
                 proxy = make_shared<WindowsAzureProxy>(voteId, connectionString, ringName, siteNode_.Id);

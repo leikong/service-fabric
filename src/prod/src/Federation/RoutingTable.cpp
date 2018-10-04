@@ -3493,6 +3493,7 @@ namespace Federation
         TimeSpan timeout = TimeSpan::FromTicks(ttl.Ticks / 2);
         if (now > gapReportTime_ + timeout)
         {
+/* TODO
             Client::HealthReportingComponentSPtr healthClient = site_.GetHealthClient();
             if (healthClient)
             {
@@ -3504,6 +3505,7 @@ namespace Federation
                     ttl,
                     ServiceModel::AttributeList()));
             }
+*/
 
             WriteInfo(TraceGap, "{0} reporting neighborhood loss: {1}",
                 site_.Id, extraDescription);
@@ -3514,6 +3516,7 @@ namespace Federation
 
     void RoutingTable::ReportNeighborhoodRecovered()
     {
+/*
         Client::HealthReportingComponentSPtr healthClient = site_.GetHealthClient();
         if (healthClient)
         {
@@ -3522,6 +3525,7 @@ namespace Federation
                 ServiceModel::EntityHealthInformation::CreateClusterEntityHealthInformation(),
                 site_.IdString));
         }
+*/
 
         WriteInfo(TraceGap, "{0} reporting neighborhood recovered", site_.Id);
         gapReportTime_ = StopwatchTime::Zero;
