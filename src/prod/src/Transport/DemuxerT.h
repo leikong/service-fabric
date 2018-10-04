@@ -16,7 +16,7 @@ namespace Transport
 
         typedef std::unique_ptr<TReceiverContext> TReceiverContextUPtr;
         typedef std::function<void(MessageUPtr & message, TReceiverContextUPtr &)> MessageHandler;
-        typedef std::pair<typename MessageHandler, bool/*dispatchOnTransportThread*/> MessageHandlerEntry;
+        typedef std::pair<MessageHandler, bool/*dispatchOnTransportThread*/> MessageHandlerEntry;
 
         DemuxerT(Common::ComponentRoot const & root, IDatagramTransportSPtr const & datagramTransport);
         

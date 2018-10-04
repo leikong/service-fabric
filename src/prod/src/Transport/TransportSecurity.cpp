@@ -576,10 +576,11 @@ void TransportSecurity::ReportCertHealthIfNeeded_LockHeld(bool newCredentialLoad
 
 #ifdef PLATFORM_UNIX
 
+static const Common::Global<wstring> EmptyWindowsIdentity = Common::make_global<wstring>(L"");
 wstring const & TransportSecurity::LocalWindowsIdentity()
 {
     ASSERT_IFNOT(this->SecurityProvider == SecurityProvider::None, "Not implemented");
-    return L"";
+    return *EmptyWindowsIdentity;
 }
 
 bool TransportSecurity::RunningAsMachineAccount()

@@ -577,7 +577,12 @@ int SecurityContextSsl::CertVerifyCallback(int preverify_ok, X509_STORE_CTX* ctx
     auto issuerName = X509_NAME_oneline(X509_get_issuer_name(cert), nullptr, 0);
     Invariant(issuerName);
     KFinally([=] { free(issuerName); });
-    uint64 certSerialNo = ASN1_INTEGER_get(cert->cert_info->serialNumber);
+
+    // src/prod/src/Transport/SecurityContextSsl.cpp:580:48: error: member access into incomplete type 'X509' (aka 'x509_st')
+    //
+    //uint64 certSerialNo = ASN1_INTEGER_get(cert->cert_info->serialNumber);
+    Assert::CodingError("Not implemented due to build error");
+    uint64 certSerialNo = 0;
 
     if (preverify_ok)
     {

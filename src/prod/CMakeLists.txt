@@ -21,6 +21,7 @@ set(LIBRARY_OUTPUT_DIR ${PROJECT_BINARY_DIR}/lib CACHE STRING "Library output di
 
 # Horizon library names
 set(lib_Common "Common" CACHE STRING "Common library")
+set(lib_Transport "Transport" CACHE STRING "Transport library")
 set(lib_KComAdapter "KComAdapter" CACHE STRING "KComAdapter library")
 set(lib_KPhysicalLog "KPhysicalLog" CACHE STRING "KPhysicalLog adapter")
 
@@ -40,7 +41,7 @@ add_compile_options(-fPIC) # shared/ktlwf/logger
 
 # Disable warnings
 #
-# src/prod/Common
+# src/prod/src/Common
 add_compile_options(-Wno-microsoft-extra-qualification)
 add_compile_options(-Wno-microsoft-template)
 add_compile_options(-Wno-microsoft-pure-definition)
@@ -61,7 +62,7 @@ add_compile_options(-Wno-duplicate-decl-specifier)
 add_compile_options(-Wno-logical-op-parentheses)
 add_compile_options(-Wno-logical-not-parentheses)
 add_compile_options(-Wno-delete-incomplete)
-# src/pal/src
+# src/prod/src/pal/src
 add_compile_options(-Wno-macro-redefined)
 add_compile_options(-Wno-ignored-attributes)
 # src/prod/ktl
@@ -71,8 +72,10 @@ add_compile_options(-Wno-constant-conversion)
 add_compile_options(-Wno-invalid-offsetof)
 add_compile_options(-Wno-writable-strings)
 add_compile_options(-Wno-int-to-void-pointer-cast)
-# shared/ktlwf/logger
+# src/prod/shared/ktlwf/logger
 add_compile_options(-Wno-enum-compare)
+# src/prod/src/Transport
+add_compile_options(-Wno-redeclared-class-member)
 
 # Definitions
 #

@@ -88,9 +88,8 @@ set(headers
 include_directories("..")
 
 add_library(objects_Transport OBJECT ${LINUX_SOURCES})
-add_precompiled_header(objects_Transport ../stdafx.h)
+#add_precompiled_header(objects_Transport ../stdafx.h)
 add_library(${lib_Transport} STATIC $<TARGET_OBJECTS:objects_Transport>)
 
-set_target_properties(${lib_Transport} PROPERTIES 
-    ARCHIVE_OUTPUT_DIRECTORY ${LIBRARY_OUTPUT_DIR}) 
+set_target_properties(${lib_Transport} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${LIBRARY_OUTPUT_DIR}) 
 
