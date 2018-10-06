@@ -1,5 +1,7 @@
 add_subdirectory (Common)
 add_subdirectory (Federation)
 add_subdirectory (LeaseAgent)
+add_subdirectory (Lease)
 add_subdirectory (pal)
+add_subdirectory (ServiceModel) 
 add_subdirectory (Transport) 

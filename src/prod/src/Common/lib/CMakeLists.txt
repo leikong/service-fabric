@@ -97,7 +97,7 @@ set( LINUX_SOURCES
   ../JobQueuePerfCounters.cpp
   ../JobQueueConfigSettingsHolder.cpp
   ../JobQueueDequePolicyHelper.cpp
-  #../KtlSF.Common.cpp
+  ../KtlSF.Common.cpp
   #../KtlAwaitableProxyAsyncOperation.cpp
   #../KtlProxyAsyncOperation.cpp
   ../LargeInteger.cpp

@@ -19,6 +19,85 @@ namespace
     std::once_flag getOnceFlag, initConfigStoreFlag, initSymbolPathFlag;
 }
 
+#ifdef PLATFORM_UNIX
+namespace Common
+{
+    ConfigStoreDescriptionUPtr CreateConfigStore()
+    {
+        return make_unique<ConfigStoreDescription>(
+            make_shared<ConfigSettingsConfigStore>(move(ConfigSettings())),
+            L"",
+            L"");
+/*
+        ConfigStoreType::Enum storeType;
+        wstring storeLocation;
+
+        auto error = FabricEnvironment::GetStoreTypeAndLocation(nullptr, storeType, storeLocation);
+        ASSERT_IF(!error.IsSuccess(), "FabricEnvironment::GetStoreTypeAndLocation failed with {0}", error);
+
+        ConfigEventSource::Events.ConfigStoreInitialized(ConfigStoreType::ToString(storeType), storeLocation);
+
+        if (storeType == ConfigStoreType::Cfg)
+        {
+            return make_unique<ConfigStoreDescription>(
+                make_shared<FileConfigStore>(storeLocation),
+                *FabricEnvironment::FileConfigStoreEnvironmentVariable,
+                storeLocation);
+        }
+
+        if (storeType == ConfigStoreType::Package)
+        {
+            auto store = PackageConfigStore::Create(
+                storeLocation, 
+                L"Fabric.Config",
+                [](Common::ConfigSettings & settings) { ConfigLoader::ProcessFabricConfigSettings(settings); });
+
+            return make_unique<ConfigStoreDescription>(
+                store,
+                *FabricEnvironment::PackageConfigStoreEnvironmentVariable,
+                storeLocation);
+        }
+
+        if (storeType == ConfigStoreType::SettingsFile)
+        {
+            auto store = FileXmlSettingsStore::Create(
+                storeLocation,
+                [](Common::ConfigSettings & settings) { ConfigLoader::ProcessFabricConfigSettings(settings); });
+
+            return make_unique<ConfigStoreDescription>(
+                store,
+                *FabricEnvironment::SettingsConfigStoreEnvironmentVariable,
+                storeLocation);
+        }
+
+        if (storeType == ConfigStoreType::None)
+        {
+            return make_unique<ConfigStoreDescription>(
+                make_shared<ConfigSettingsConfigStore>(move(ConfigSettings())),
+                L"",
+                L"");
+        }
+
+        Assert::CodingError("unknown config store type {0}", static_cast<int>(storeType));
+*/
+    }
+}
+
+void FabricGetGlobals(void ** globals)
+{
+    static std::once_flag fabricGlobalsInitFlag;
+
+    std::call_once(
+        fabricGlobalsInitFlag,
+        []()
+        {
+            FabricGlobals::InitializeAsMaster(&Common::CreateConfigStore);
+        });
+
+    *globals = reinterpret_cast<void*>(&FabricGlobals::Get());
+}
+#endif
+
 FabricGlobals & FabricGlobals::Get()
 {
     // Already know where the real instance is

@@ -11,6 +11,7 @@ namespace ServiceModel
         Common::TextTraceComponent<Common::TraceTaskCodes::ServiceModel>
     {
     public:
+/*
         static Common::ErrorCode ParseServicePackage(
             std::wstring const & fileName,
             __out ServicePackageDescription & servicePackage);
@@ -59,6 +60,7 @@ namespace ServiceModel
             __in Common::ComPointer<IFabricConfigurationPackage> configPackageCPtr,
             __in std::wstring const & sectionName,
             __in std::wstring const & hostName);
+*/
 
         static Common::ErrorCode ReadSettingsValue(
             __in Common::ComPointer<IFabricConfigurationPackage> configPackageCPtr,
@@ -102,6 +104,7 @@ namespace ServiceModel
             __out std::map<wstring, wstring> & values,
             __out bool & hasValue);
 
+/*
         static Common::ErrorCode IsServiceManifestFile(
             std::wstring const & fileName,
             __out bool & result);
@@ -127,6 +130,7 @@ namespace ServiceModel
             std::wstring const & attrName,
             byte & value);
         };
+*/
 
     private:
         template <typename ElementType>

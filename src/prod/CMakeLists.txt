@@ -18,6 +18,7 @@ message(STATUS "CMAKE_CURRENT_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}")
 message(STATUS "CMAKE_CURRENT_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}")
 set(PROJECT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE STRING "Project binary directory")
 set(LIBRARY_OUTPUT_DIR ${PROJECT_BINARY_DIR}/lib CACHE STRING "Library output directory")
+set(EXECUTABLE_OUTPUT_DIR ${PROJECT_BINARY_DIR}/exe CACHE STRING "Executable output directory")
 
 # Horizon library names
 set(lib_Common "Common" CACHE STRING "Common library")
@@ -25,11 +26,14 @@ set(lib_Federation "Federation" CACHE STRING "Federation library")
 set(lib_KComAdapter "KComAdapter" CACHE STRING "KComAdapter library")
 set(lib_KPhysicalLog "KPhysicalLog" CACHE STRING "KPhysicalLog adapter")
 set(lib_LeaseAgent "LeaseAgent" CACHE STRING "LeaseAgent library")
+set(lib_Lease "Lease" CACHE STRING "Lease library")
+set(lib_Serialization "Serialization" CACHE STRING "Serialization library")
+set(lib_ServiceModel "ServiceModel" CACHE STRING "Service Model library")
 set(lib_Transport "Transport" CACHE STRING "Transport library")
 
-# Compilerflags
+# Compiler flags
 #
-# src/pal/wc16.c compiles with Clang rather than Clang++ (compile error applying c++14 to Clang)
+# src/pal/wc16.c compiles with Clang rather than Clang++ (compile error applying -std=c++* to Clang)
 set(CMAKE_CXX_FLAGS, "${CMAKE_CXX_FLAGS} -std=c++14") 
 
 add_compile_options(-stdlib=libc++)
@@ -64,6 +68,7 @@ add_compile_options(-Wno-duplicate-decl-specifier)
 add_compile_options(-Wno-logical-op-parentheses)
 add_compile_options(-Wno-logical-not-parentheses)
 add_compile_options(-Wno-delete-incomplete)
+add_compile_options(-Wno-user-defined-warnings)
 # src/prod/src/pal/src
 add_compile_options(-Wno-macro-redefined)
 add_compile_options(-Wno-ignored-attributes)

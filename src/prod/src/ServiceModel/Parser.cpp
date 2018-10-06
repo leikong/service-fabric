@@ -11,6 +11,7 @@ using namespace ServiceModel;
 
 StringLiteral const TraceType_Parser("Parser");
 
+/*
 ErrorCode Parser::ParseServicePackage(
     wstring const & fileName, 
     __out ServicePackageDescription & servicePackage)
@@ -198,6 +199,7 @@ void Parser::Utility::ReadPercentageAttribute(
     
     value = (byte)intValue;
 }
+*/
 
 ErrorCode Parser::ReadSettingsValue(
     __in ComPointer<IFabricConfigurationPackage> configPackageCPtr,
@@ -227,7 +229,7 @@ ErrorCode Parser::ReadSettingsValue(
             StringWriter messageWriter(errorMessage);
 
             messageWriter.Write("Failed to find section {0} in configuration package name = {1}", sectionName, configPackageCPtr->get_Description()->Name);
-            ServiceModelEventSource::Trace->ConfigurationParseError(errorMessage);
+            //ServiceModelEventSource::Trace->ConfigurationParseError(errorMessage);
         }
         return ErrorCode::FromHResult(hr);
     }
@@ -259,7 +261,7 @@ ErrorCode Parser::ReadSettingsValue(
         StringWriter messageWriter(errorMessage);
 
         messageWriter.Write("Failed to parse config entry {0} with value {1} in section {2}. Config Package Name = {3}", paramName, configValue, sectionName, configPackageCPtr->get_Description()->Name);
-        ServiceModelEventSource::Trace->ConfigurationParseError(errorMessage);
+        //ServiceModelEventSource::Trace->ConfigurationParseError(errorMessage);
 
         return ErrorCode(ErrorCodeValue::InvalidConfiguration);
     }
@@ -289,7 +291,7 @@ ErrorCode Parser::ReadSettingsValue(
         StringWriter messageWriter(errorMessage);
 
         messageWriter.Write("Failed to parse config entry {0} with value {1} in section {2}. Config Package Name = {3}", paramName, configValue, sectionName, configPackageCPtr->get_Description()->Name);
-        ServiceModelEventSource::Trace->ConfigurationParseError(errorMessage);
+        //ServiceModelEventSource::Trace->ConfigurationParseError(errorMessage);
 
         return ErrorCode(ErrorCodeValue::InvalidConfiguration);
     }
@@ -322,7 +324,7 @@ ErrorCode Parser::ReadSettingsValue(
         StringWriter messageWriter(errorMessage);
 
         messageWriter.Write("Failed to parse config entry {0} with value {1} in section {2}. Config Package Name = {3}", paramName, configValue, sectionName, configPackageCPtr->get_Description()->Name);
-        ServiceModelEventSource::Trace->ConfigurationParseError(errorMessage);
+        //ServiceModelEventSource::Trace->ConfigurationParseError(errorMessage);
 
         return ErrorCode(ErrorCodeValue::InvalidConfiguration);
     }
@@ -365,7 +367,7 @@ ErrorCode Parser::ReadSettingsValue(
         StringWriter messageWriter(errorMessage);
 
         messageWriter.Write("Failed to parse config entry {0} with value {1} in section {2}. Config Package Name = {3}", paramName, configValue, sectionName, configPackageCPtr->get_Description()->Name);
-        ServiceModelEventSource::Trace->ConfigurationParseError(errorMessage);
+        //ServiceModelEventSource::Trace->ConfigurationParseError(errorMessage);
 
         return ErrorCode(ErrorCodeValue::InvalidConfiguration);
     }
@@ -398,7 +400,7 @@ ErrorCode Parser::ReadSettingsValue(
             StringWriter messageWriter(errorMessage);
 
             messageWriter.Write("Failed to find section {0} in configuration package name = {1}", sectionName, configPackageCPtr->get_Description()->Name);
-            ServiceModelEventSource::Trace->ConfigurationParseError(errorMessage);
+            //ServiceModelEventSource::Trace->ConfigurationParseError(errorMessage);
         }
         return ErrorCode::FromHResult(hr);
     }
@@ -415,6 +417,7 @@ ErrorCode Parser::ReadSettingsValue(
     return ErrorCode::Success();
 }
 
+/*
 ErrorCode Parser::IsServiceManifestFile(
     wstring const & fileName,
     __out bool & result)
@@ -539,3 +542,4 @@ ErrorCode Parser::ParseContinuationToken<ApplicationTypeQueryContinuationToken>(
 
     return error;
 }
+*/

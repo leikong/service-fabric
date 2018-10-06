@@ -13,7 +13,7 @@ cmake $CMakeGenerator \
     -DCMAKE_CXX_COMPILER=$CXX \
     $SourceDirectory 2>&1 | tee $OutputFile
 
-if (( $? -ne 0 )); then
+if [[ $? -ne 0 ]]; then
     echo "cmake failed - see errors in ${OutputFile}"
     exit 1
 fi
