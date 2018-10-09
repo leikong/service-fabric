@@ -10,6 +10,12 @@ using namespace Common;
 
 StringLiteral TraceComponent = "StringResource";
 
+// TODO: support string resources?
+int LoadStringResource(UINT id, __out_ecount(bufferMax) LPWSTR buffer, int bufferMax)
+{
+    return 0;
+}
+
 wstring StringResource::Get(uint id)
 {
     wstring buffer;

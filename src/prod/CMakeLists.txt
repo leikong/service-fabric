@@ -22,11 +22,13 @@ set(EXECUTABLE_OUTPUT_DIR ${PROJECT_BINARY_DIR}/exe CACHE STRING "Executable out
 
 # Horizon library names
 set(lib_Common "Common" CACHE STRING "Common library")
+set(lib_FabricCommon "FabricCommon" CACHE STRING "FabricCommon library")
+set(lib_FabricResources "FabricResources" CACHE STRING "Fabric Resources library")
 set(lib_Federation "Federation" CACHE STRING "Federation library")
 set(lib_KComAdapter "KComAdapter" CACHE STRING "KComAdapter library")
 set(lib_KPhysicalLog "KPhysicalLog" CACHE STRING "KPhysicalLog adapter")
-set(lib_LeaseAgent "LeaseAgent" CACHE STRING "LeaseAgent library")
 set(lib_Lease "Lease" CACHE STRING "Lease library")
+set(lib_LeaseAgent "LeaseAgent" CACHE STRING "LeaseAgent library")
 set(lib_Serialization "Serialization" CACHE STRING "Serialization library")
 set(lib_ServiceModel "ServiceModel" CACHE STRING "Service Model library")
 set(lib_Transport "Transport" CACHE STRING "Transport library")
@@ -39,7 +41,12 @@ set(CMAKE_CXX_FLAGS, "${CMAKE_CXX_FLAGS} -std=c++14")
 add_compile_options(-stdlib=libc++)
 add_compile_options(-fdeclspec) 
 add_compile_options(-fms-extensions)
-add_compile_options(-fshort-wchar) # 2-byte wchar
+#
+# SF Linux docs say that our PAL layer has hardcoded assumptions
+# about wchar_t being 2 bytes, but turning this on results
+# in erroneous wstring/string conversions elsewhere?
+#
+#add_compile_options(-fshort-wchar) # 2-byte wchar
 add_compile_options(-fexceptions) # generate unwind info
 add_compile_options(-fcoroutines-ts) # KTL
 add_compile_options(-fdelayed-template-parsing)
@@ -85,6 +92,8 @@ add_compile_options(-Wno-enum-compare)
 add_compile_options(-Wno-redeclared-class-member)
 # src/prod/src/Federation
 add_compile_options(-Wno-pragma-once-outside-header)
+# src/prod/src/resources
+add_compile_options(-Wno-implicit-function-declaration)
 
 # Definitions
 #
@@ -104,6 +113,24 @@ add_definitions(-D_WIN64=1)
 add_definitions(-DPAL_STDCPP_COMPAT=1)
 # KTL
 add_definitions(-DKTL_USER_MODE=1)
+
+# TODO: Can these custom functions be moved into another file?
+find_program(AWK awk)
+if (AWK STREQUAL "AWK-NOTFOUND")
+    message(FATAL_ERROR "AWK not found")
+endif()
+
+function(generate_exports_file tgt inFile outFile)
+  set(AWK_SCRIPT symexports.awk)
+  add_custom_command(
+    TARGET ${tgt} PRE_LINK
+    COMMAND ${AWK} -f ${PROJECT_SOURCE_DIR}/tools/linux/cmake/${AWK_SCRIPT} ${inFile} > ${outFile} 2>${tgt}.err
+    DEPENDS ${inFile} ${PROJECT_SOURCE_DIR}/tools/linux/cmake/${AWK_SCRIPT}
+    COMMENT "Generating exports file ${outFile}"
+  )
+  set_source_files_properties(${outFile}
+                              PROPERTIES GENERATED TRUE)
+endfunction()
 
 # Subdirectories (order matters in CMakeLists.txt - add subdirectories last)
 #

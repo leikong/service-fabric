@@ -3,7 +3,8 @@
 // Licensed under the MIT License (MIT). See License.txt in the repo root for license information.
 // ------------------------------------------------------------
 
-#include <iostream>
+
+#include <stdio.h>
 
 #include "Common/Common.h"
 #include "Federation/Federation.h"
@@ -13,6 +14,19 @@ using namespace Federation;
 using namespace std;
 using namespace Transport;
 
+StringLiteral const TraceComponent("Main");
+
+string ToString(wstring const & in)
+{
+    string result;
+    for (auto const & ch : in)
+    {
+        result.push_back(ch);
+    }
+
+    return result;
+}
+
 int main(int argc, char* argv[])
 {
     // TODO: read from arguments
@@ -21,24 +35,45 @@ int main(int argc, char* argv[])
     wstring leaseAgentAddress = L"localhost:8081";
     wstring workingDirectory = L"./";
 
-    NodeId nodeId;
-    if(!NodeId::TryParse(nodeIdString, nodeId))
+    printf("Running at %s. Press any key to continue... \n", ToString(nodeAddress).c_str());
+
+    getchar();
+
+    Trace.WriteInfo(TraceComponent, "Running main...");
+
+    NodeId nodeId(LargeInteger(0, 0));
+    if (!NodeId::TryParse(nodeIdString, nodeId))
     {
-        wcerr << L"Failed to parse '" << nodeIdString << L"' as NodeId" << endl;
+        printf("Failed to parse '%s' as NodeId \n", ToString(nodeIdString).c_str());
         return 1;
     }
 
     ComponentRoot mockRoot;
-
     auto federation = std::make_shared<Federation::FederationSubsystem>(
-        NodeConfig(nodeId, nodeAddress, leaseAgentAddress, workingDirectory),
+        NodeConfig(
+            nodeId, 
+            nodeAddress, 
+            leaseAgentAddress, 
+            workingDirectory),
         FabricCodeVersion(),
         Uri(),
         SecuritySettings(),
         mockRoot);
 
-    wcout << L"Created FederationSubsystem" << endl;
+    printf("Created FederationSubsystem \n");
 
-    wcin.ignore();
+    AutoResetEvent event(false);
+
+    auto operation = federation->BeginOpen(
+        TimeSpan::MaxValue,
+        [&event](AsyncOperationSPtr const &) { event.Set(); },
+        AsyncOperationSPtr());
+
+    event.WaitOne();
+
+    auto error = federation->EndOpen(operation);
+
+    printf("Opened FederationSubsystem: %s \n", ToString(error.ErrorCodeValueToString()).c_str());
+
+    cin.ignore();
 }
-

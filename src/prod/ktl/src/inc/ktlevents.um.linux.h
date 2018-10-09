@@ -67,11 +67,13 @@ extern "C" {
         }
         DestW[si] = 0;
 
+        /* TODO: LTTng-UST: Error (-17) while registering tracepoint probe. Duplicate registration of tracepoint probes having the same name is not allowed.
         LttngTraceWrapper(KTRACE_TASKNAME_KTL,
                       (const char*)event->name,
                       (int)event->level,
                       (const char*)L"",
                       (const char*)DestW);
+        */
         return ERROR_SUCCESS;
     }
 

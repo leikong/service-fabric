@@ -114,7 +114,7 @@ add_compile_options(-fdelayed-template-parsing)
 add_compile_options(-fno-limit-debug-info)
 
 # 2-byte wchar
-add_compile_options(-fshort-wchar)
+#add_compile_options(-fshort-wchar)
 # debugging support
 add_compile_options(-gdwarf-3)
 add_compile_options(-dD)

@@ -11,14 +11,21 @@ target_link_libraries(${exe_Federation}
   ${lib_Federation}
   ${lib_LeaseAgent}
   ${lib_Lease}
-  ${lib_Transport}
   ${lib_Serialization}
+  ${lib_Common}
+  ${lib_Transport}
+  ${lib_Pal}
+  ${lib_FabricCommon}
+# link lib_Common again after lib_Pal to fix:
+# lib/libPal.a(pal.cpp.o): In function `ForkExec(char const*, char const*, char const*, char const*, int*, int*)':
+# pal.cpp:(.text+0x38ca): undefined reference to `Common::ProcessWait::Setup()'
   ${lib_Common}
   ${lib_Pal}
   ${lib_ServiceModel}
-  ${lib_ktlcore}
   ${lib_ktlfull}
-  rt # undefined symbol timer_settime
+  ${lib_ktlcore}
+  ${lib_KtlLttng}
+  rt
   ssh2
   ssl
   crypto

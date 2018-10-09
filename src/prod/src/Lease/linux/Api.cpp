@@ -1120,6 +1120,60 @@ Return Value:
     UNREFERENCED_PARAMETER(Context);
 }
 
+// TODO: Undefined StringCchCopy linking errors even with libLease.a and libktlcore.a
+//       specified in the correct order. nm shows that symbol exists as well?
+//
+STRSAFEAPI
+_StringCopyWorkerW(wchar_t* pszDest, size_t cchDest, const wchar_t* pszSrc)
+{
+    HRESULT hr = S_OK;
+
+    if (cchDest == 0)
+    {
+        // can not null terminate a zero-byte dest buffer
+        hr = STRSAFE_E_INVALID_PARAMETER;
+    }
+    else
+    {
+        while (cchDest && (*pszSrc != L'\0'))
+        {
+            *pszDest++ = *pszSrc++;
+            cchDest--;
+        }
+
+        if (cchDest == 0)
+        {
+            // we are going to truncate pszDest
+            pszDest--;
+            hr = STRSAFE_E_INSUFFICIENT_BUFFER;
+        }
+
+        *pszDest= L'\0';
+    }
+
+    return hr;
+}
+
+STRSAFEAPI
+_StringCchCopy(
+        _Out_writes_(cchDest) _Always_(_Post_z_) STRSAFE_LPWSTR pszDest,
+        _In_ size_t cchDest,
+        _In_ STRSAFE_LPCWSTR pszSrc)
+{
+    HRESULT hr;
+
+    if (cchDest > STRSAFE_MAX_CCH)
+    {
+        hr = STRSAFE_E_INVALID_PARAMETER;
+    }
+    else
+    {
+        hr = _StringCopyWorkerW(pszDest, cchDest, pszSrc);
+    }
+
+    return hr;
+}
+
 HANDLE WINAPI 
 RegisterLeasingApplication(
     __in PTRANSPORT_LISTEN_ENDPOINT SocketAddress,
@@ -1256,7 +1310,7 @@ Return Value:
     // Populate device IOCTL input buffer.
     //
     DeviceIoctlCreateInputBuffer.LeaseAgentHandle = LeaseAgent;
-    WcharStringResult = StringCchCopy(
+    WcharStringResult = _StringCchCopy(
         DeviceIoctlCreateInputBuffer.LeasingApplicationIdentifier,
         MAX_PATH + 1,
         LeasingApplicationIdentifier
@@ -1530,7 +1584,7 @@ Return Value:
         return NULL;
     }
 
-    WcharStringResult = StringCchCopy(
+    WcharStringResult = _StringCchCopy(
         DeviceIoctlEstablishInputBuffer.RemoteLeasingApplicationIdentifier,
         MAX_PATH + 1,
         RemoteApplicationIdentifier
@@ -1639,7 +1693,7 @@ Return Value:
     
     DeviceIoctlInputBuffer.LeaseHandle = Lease;
 
-    WcharStringResult = StringCchCopy(
+    WcharStringResult = _StringCchCopy(
         DeviceIoctlInputBuffer.RemoteLeasingApplicationIdentifier,
         MAX_PATH + 1,
         RemoteApplicationIdentifier
@@ -1863,7 +1917,7 @@ GetRemoteLeaseExpirationTime(
     ZeroMemory(&DeviceIoctlGetRemoteExpirationTimeOutputBuffer, sizeof(REMOTE_LEASE_EXPIRATION_RESULT_OUTPUT_BUFFER));
 
     DeviceIoctlGetRemoteExpirationTimeInputBuffer.LeasingApplicationHandle = LeasingApplication;
-    WcharStringResult = StringCchCopy(
+    WcharStringResult = _StringCchCopy(
         DeviceIoctlGetRemoteExpirationTimeInputBuffer.RemoteLeasingApplicationIdentifier,
         MAX_PATH + 1,
         RemoteApplicationIdentifier
