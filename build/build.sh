@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SourceDirectory="/media/alexwun/Data_Ext4/Horizon/service-fabric/src/prod"
+SourceDirectory="../src/prod"
 ClangVersion=6.0
 CMakeGenerator="-G Ninja"
 OutputFile="cmake.out"
