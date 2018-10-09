@@ -36,6 +36,7 @@ namespace Common
     Config::Config(HMODULE dllModule)
         : store_()
     {
+        // TODO: Why does this parameter exist then?
         UNREFERENCED_PARAMETER(dllModule);
 
         try

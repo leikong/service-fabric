@@ -1484,7 +1484,9 @@ namespace Common
 
     bool File::Exists(const std::wstring& path)
     {
-        ::DWORD result = ::GetFileAttributesW(Path::ConvertToNtPath(path).c_str());
+        auto ntPath = Path::ConvertToNtPath(path);
+
+        ::DWORD result = ::GetFileAttributesW(ntPath.c_str());
 
         if (result != INVALID_FILE_ATTRIBUTES) {
             return (result & FILE_ATTRIBUTE_DIRECTORY) == 0; // not a directory

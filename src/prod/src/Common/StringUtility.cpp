@@ -70,11 +70,16 @@ namespace Common
         }
     }
 
+// TODO: This conversion code has been found duplicated in at least three places:
+//       ktlpal.cpp, pal_string_util.cpp, and here
+//
+using lchar_t = wchar_t;
+
     void StringUtility::Utf16ToUtf8(std::wstring const & utf16String, std::string & utf8String)
     {
 #ifdef PLATFORM_UNIX
-        wstring_convert<codecvt_utf8_utf16<char16_t>, char16_t> convertor;
-        utf8String = convertor.to_bytes((const char16_t *)utf16String.c_str());
+        wstring_convert<codecvt_utf8_utf16<lchar_t>, lchar_t> convertor;
+        utf8String = convertor.to_bytes((const lchar_t *)utf16String.c_str());
 #else
         wstring_convert<codecvt_utf8_utf16<unsigned short>, unsigned short> convertor;
         utf8String = convertor.to_bytes((const unsigned short *)utf16String.c_str());
@@ -91,7 +96,7 @@ namespace Common
     void StringUtility::Utf8ToUtf16(std::string const & utf8String, std::wstring & utf16String)
     {
 #ifdef PLATFORM_UNIX
-        wstring_convert<codecvt_utf8_utf16<char16_t>, char16_t> convertor;
+        wstring_convert<codecvt_utf8_utf16<lchar_t>, lchar_t> convertor;
 #else
         wstring_convert<codecvt_utf8_utf16<unsigned short>, unsigned short> convertor;
 #endif

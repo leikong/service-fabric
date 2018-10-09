@@ -10,10 +10,16 @@
 using namespace std;
 using namespace Pal;
 
+// 
+// char16_t needs to be used if -fshort-wchar is enabled
+//
+//using lchar_t = char16_t;
+using lchar_t = wchar_t;
+
 wstring Pal::utf8to16(const char *str)
 {
-    wstring_convert<codecvt_utf8_utf16<char16_t>, char16_t> conv;
-    u16string u16str = conv.from_bytes(str);
+    wstring_convert<codecvt_utf8_utf16<wchar_t>, wchar_t> conv;
+    auto u16str = conv.from_bytes(str);
     basic_string<wchar_t> result;
     for(int index = 0; index < u16str.length(); index++)
     {
@@ -24,6 +30,6 @@ wstring Pal::utf8to16(const char *str)
 
 string Pal::utf16to8(const wchar_t *wstr)
 {
-    wstring_convert<codecvt_utf8_utf16<char16_t>, char16_t> conv;
-    return conv.to_bytes((const char16_t *) wstr);
+    wstring_convert<codecvt_utf8_utf16<wchar_t>, wchar_t> conv;
+    return conv.to_bytes((const wchar_t *) wstr);
 }

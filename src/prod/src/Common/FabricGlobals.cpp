@@ -24,8 +24,10 @@ namespace Common
 {
     ConfigStoreDescriptionUPtr CreateConfigStore()
     {
+        wstring configFilePath = L"config.ini";
+
         return make_unique<ConfigStoreDescription>(
-            make_shared<ConfigSettingsConfigStore>(move(ConfigSettings())),
+            make_shared<FileConfigStore>(configFilePath),
             L"",
             L"");
 /*

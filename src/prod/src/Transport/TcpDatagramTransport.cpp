@@ -836,7 +836,15 @@ ErrorCode TcpDatagramTransport::Start(bool completeStart)
         else
         {
             error = TcpTransportUtility::TryResolveHostNameAddress(listenAddress_, hostnameResolveOption_, listenEndpoints_);
-            if (!error.IsSuccess())
+            if (error.IsSuccess())
+            {
+                WriteInfo(
+                    Constants::TcpTrace, traceId_,
+                    "{0} resolved to {1}",
+                    listenAddress_,
+                    listenEndpoints_);
+            }
+            else
             {
                 WriteError(
                     Constants::TcpTrace, traceId_,

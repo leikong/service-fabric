@@ -144,10 +144,18 @@ void ReleaseKxmHandle()
     }
 }
 
+// 
+// char16_t needs to be used if -fshort-wchar is enabled
+//
+// Also, these conversion functions are duplicated from pal_string_util.cpp
+//
+//using lchar_t = char16_t;
+using lchar_t = wchar_t;
+
 static wstring utf8to16(const char *str)
 {
-    wstring_convert<codecvt_utf8_utf16<char16_t>, char16_t> conv;
-    u16string u16str = conv.from_bytes(str);
+    wstring_convert<codecvt_utf8_utf16<lchar_t>, lchar_t> conv;
+    auto u16str = conv.from_bytes(str);
     basic_string<wchar_t> result;
     for(int index = 0; index < u16str.length(); index++)
     {
@@ -158,8 +166,8 @@ static wstring utf8to16(const char *str)
 
 static wstring utf8to16(const char *str, int length)
 {
-    wstring_convert<codecvt_utf8_utf16<char16_t>, char16_t> conv;
-    u16string u16str = conv.from_bytes(str, str+length);
+    wstring_convert<codecvt_utf8_utf16<lchar_t>, lchar_t> conv;
+    auto u16str = conv.from_bytes(str, str+length);
     basic_string<wchar_t> result;
     for(int index = 0; index < u16str.length(); index++)
     {
@@ -170,8 +178,8 @@ static wstring utf8to16(const char *str, int length)
 
 static string utf16to8(const wchar_t *wstr)
 {
-    wstring_convert<codecvt_utf8_utf16<char16_t>, char16_t> conv;
-    return conv.to_bytes((const char16_t *) wstr);
+    wstring_convert<codecvt_utf8_utf16<lchar_t>, lchar_t> conv;
+    return conv.to_bytes((const lchar_t *)wstr);
 }
 
 PALIMPORT

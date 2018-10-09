@@ -3,8 +3,9 @@
 // Licensed under the MIT License (MIT). See License.txt in the repo root for license information.
 // ------------------------------------------------------------
 
-
 #include <stdio.h>
+#include <codecvt>
+#include <locale>
 
 #include "Common/Common.h"
 #include "Federation/Federation.h"
@@ -18,13 +19,8 @@ StringLiteral const TraceComponent("Main");
 
 string ToString(wstring const & in)
 {
-    string result;
-    for (auto const & ch : in)
-    {
-        result.push_back(ch);
-    }
-
-    return result;
+    static wstring_convert<codecvt_utf8_utf16<wchar_t>, wchar_t> cvt;
+    return cvt.to_bytes(in.c_str());
 }
 
 int main(int argc, char* argv[])
@@ -75,5 +71,8 @@ int main(int argc, char* argv[])
 
     printf("Opened FederationSubsystem: %s \n", ToString(error.ErrorCodeValueToString()).c_str());
 
-    cin.ignore();
+    if (error.IsSuccess())
+    {
+        cin.ignore();
+    }
 }

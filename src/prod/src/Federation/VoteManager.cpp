@@ -244,8 +244,9 @@ bool VoteManager::LoadConfig(bool isUpdate)
         count_ = static_cast<int>(entries_.size());
         quorumCount_ = count_ / 2 + 1;
 
-        ASSERT_IF(entries_.size() == 0,
-            "Invalid vote configuration for {0}",
+        ASSERT_IF(
+            entries_.size() == 0,
+            "Empty list of vote configurations for {0}",
             this->siteNode_.Id);
     }
 
