@@ -280,7 +280,7 @@ namespace Common
                 StringWriterA w2(eventName);
                 w2.Write(type);
 
-                TraceWrapper(taskName.c_str(), eventName.c_str(), level_, (char *)id.c_str(), (char *)text.c_str());
+                TraceWrapper(taskName.c_str(), eventName.c_str(), level_, (char *)id.c_str(), const_cast<wchar_t *>(text.c_str()));
             }
 #endif
         }
@@ -343,7 +343,7 @@ namespace Common
             StringWriterA w2(eventName);
             w2.Write(eventName_);
 
-            TraceWrapper(taskName.c_str(), eventName.c_str(), level_, (char *)id.c_str(), (char *)data.c_str());
+            TraceWrapper(taskName.c_str(), eventName.c_str(), level_, (char *)id.c_str(), const_cast<wchar_t *>(data.c_str()));
 #endif
         }
         if (useFile)
