@@ -4,6 +4,7 @@ SourceDirectory="../src/prod"
 ClangVersion=6.0
 CMakeGenerator="-G Ninja"
 OutputFile="cmake.out"
+CUR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 CC=/usr/lib/llvm-${ClangVersion}/bin/clang
 CXX=/usr/lib/llvm-${ClangVersion}/bin/clang++
@@ -19,7 +20,7 @@ if [[ $? -ne 0 ]]; then
 fi
 
 if [[ $CMakeGenerator == "" ]]; then
-    ./make.sh
+    $CUR_DIR/make.sh
 else
-    ./ninja.sh
+    $CUR_DIR/ninja.sh
 fi

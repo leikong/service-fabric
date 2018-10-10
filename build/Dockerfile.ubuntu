@@ -1,0 +1,68 @@
+# Increment version number in UBUNTUIMAGE_VERSION file after any changes in this file.
+
+FROM ubuntu:18.04
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    autoconf \
+    automake \
+    bison \
+    btrfs-tools \
+    build-essential \
+    chrpath \
+    cmake \
+    curl \
+    flex \
+    git \
+    go-md2man \
+    libassuan-dev \
+    libboost-thread-dev \
+    libboost-random-dev \
+    libboost-regex-dev \
+    libboost-filesystem-dev \
+    libc++-dev \
+    libc++abi-dev \
+    libc6-dev \
+    libcgroup-dev \
+    libcurl4 \
+    libcurl4-openssl-dev \
+    libdevmapper-dev \
+    libedit-dev \
+    libglib2.0-0 \
+    libglib2.0-dev \
+    libgpg-error-dev \
+    libgpgme11-dev \
+    libib-util \
+    liblttng-ust-dev \
+    liblttng-ctl-dev \
+    libncurses5-dev \
+    libncursesw5-dev \
+    libpopt-dev \
+    libseccomp-dev \
+    libselinux1-dev \
+    libssh2-1-dev \
+    libssl-dev \
+    libtool \
+    libtool \
+    libxml2-dev \
+    locales \
+    lttng-modules-dkms \
+    lttng-tools \
+    ninja-build \
+    openssh-server \
+    pkg-config \
+    runc \
+    software-properties-common \
+    sudo \
+    swig \
+    unzip \
+    uuid-dev \
+    wget \
+    acl \
+    clang-6.0
+
+RUN locale-gen en_US.UTF-8
+
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+
