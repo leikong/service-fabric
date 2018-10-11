@@ -17,10 +17,11 @@ include_directories("src/prebuilt/internal") # FabricTypes_.h
 message(STATUS "CMAKE_CURRENT_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}")
 message(STATUS "CMAKE_CURRENT_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}")
 set(PROJECT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE STRING "Project binary directory")
-set(LIBRARY_OUTPUT_DIR ${PROJECT_BINARY_DIR}/lib CACHE STRING "Library output directory")
+set(LIBRARY_OUTPUT_DIR ${PROJECT_BINARY_DIR}/lib CACHE STRING "Static library output directory")
+set(DLL_OUTPUT_DIR ${PROJECT_BINARY_DIR}/dll CACHE STRING "Dynamic library output directory")
 set(EXECUTABLE_OUTPUT_DIR ${PROJECT_BINARY_DIR}/exe CACHE STRING "Executable output directory")
 
-# Horizon library names
+# Horizon static library names
 set(lib_Common "Common" CACHE STRING "Common library")
 set(lib_FabricCommon "FabricCommon" CACHE STRING "FabricCommon library")
 set(lib_FabricResources "FabricResources" CACHE STRING "Fabric Resources library")
@@ -32,6 +33,9 @@ set(lib_LeaseAgent "LeaseAgent" CACHE STRING "LeaseAgent library")
 set(lib_Serialization "Serialization" CACHE STRING "Serialization library")
 set(lib_ServiceModel "ServiceModel" CACHE STRING "Service Model library")
 set(lib_Transport "Transport" CACHE STRING "Transport library")
+
+# Horizon dynamic library names
+set(dll_PyHost "PyHost" CACHE STRING "Python embedded hosting library")
 
 # Compiler flags
 #

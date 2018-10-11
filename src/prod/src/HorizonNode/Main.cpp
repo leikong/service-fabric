@@ -4,41 +4,24 @@
 // ------------------------------------------------------------
 
 #include <stdio.h>
-#include <codecvt>
-#include <locale>
 
 #include "Common/Common.h"
 #include "Federation/Federation.h"
+#include "PyHost/dll/dll.h"
 
 using namespace Common;
 using namespace Federation;
-using namespace std;
 using namespace Transport;
+using namespace std;
 
 StringLiteral const TraceComponent("Main");
 
-using lchar_t = wchar_t;
-
-wstring ToWString(string const & in)
-{
-    static wstring_convert<codecvt_utf8_utf16<lchar_t>, lchar_t> cvt;
-
-    wstring result;
-    for (auto const & ch : cvt.from_bytes(in))
-    {
-        result.push_back(ch);
-    }
-
-    return result;
-}
-
-string ToString(wstring const & in)
-{
-    static wstring_convert<codecvt_utf8_utf16<lchar_t>, lchar_t> cvt;
-    return cvt.to_bytes(in.c_str());
-}
-
 const size_t MaxArgLen = 128;
+
+void OnRoutingTokenChanged(shared_ptr<FederationSubsystem> const & fs)
+{
+    PyHost_OnRoutingTokenChanged(fs);
+}
 
 int main(int argc, char* argv[])
 {
@@ -74,7 +57,7 @@ int main(int argc, char* argv[])
     }
 
     NodeId nodeId;
-    if (!NodeId::TryParse(ToWString(nodeIdString), nodeId))
+    if (!NodeId::TryParse(StringUtility::Utf8ToUtf16(nodeIdString), nodeId))
     {
         printf("Failed to parse '%s' as NodeId \n", nodeIdString.c_str());
         return 1;
@@ -88,11 +71,11 @@ int main(int argc, char* argv[])
         nodeAddress.c_str());
 
     ComponentRoot mockRoot;
-    auto federation = std::make_shared<Federation::FederationSubsystem>(
+    auto federation = make_shared<Federation::FederationSubsystem>(
         NodeConfig(
             nodeId, 
-            ToWString(nodeAddress), 
-            ToWString(leaseAddress), 
+            StringUtility::Utf8ToUtf16(nodeAddress), 
+            StringUtility::Utf8ToUtf16(leaseAddress), 
             workingDirectory),
         FabricCodeVersion(1, 0, 960, 0), // minimum acceptable version at Federation layer
         Uri(),
@@ -100,6 +83,13 @@ int main(int argc, char* argv[])
         mockRoot);
 
     printf("Created FederationSubsystem \n");
+
+    PyHost_Initialize();
+
+    printf("Initialized Python host\n");
+
+    auto unusedHandlerId = federation->RegisterRoutingTokenChangedEvent(
+        [federation](EventArgs const &) { OnRoutingTokenChanged(federation); });
 
     AutoResetEvent event(false);
 
@@ -112,7 +102,7 @@ int main(int argc, char* argv[])
 
     auto error = federation->EndOpen(operation);
 
-    printf("Opened FederationSubsystem: %s \n", ToString(error.ErrorCodeValueToString()).c_str());
+    printf("Opened FederationSubsystem: %s \n", StringUtility::Utf16ToUtf8(error.ErrorCodeValueToString()).c_str());
 
     if (error.IsSuccess())
     {

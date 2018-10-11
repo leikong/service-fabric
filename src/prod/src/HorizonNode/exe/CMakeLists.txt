@@ -1,13 +1,14 @@
 include_directories(".")
 
-set(exe_Federation "FederationRuntime.exe" CACHE STRING "Federation executable")
+set(exe_Horizon "Horizon.exe" CACHE STRING "Horizon node executable")
 
-add_executable(${exe_Federation} Main.cpp)
+add_executable(${exe_Horizon} ../Main.cpp)
 
-set_target_properties(${exe_Federation} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_DIR}) 
-set_target_properties(${exe_Federation} PROPERTIES LINK_FLAGS "-stdlib=libc++")
+set_target_properties(${exe_Horizon} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_DIR}) 
+set_target_properties(${exe_Horizon} PROPERTIES LINK_FLAGS "-stdlib=libc++")
 
-target_link_libraries(${exe_Federation}
+target_link_libraries(${exe_Horizon}
+  ${dll_PyHost}
   ${lib_Federation}
   ${lib_LeaseAgent}
   ${lib_Lease}
@@ -25,6 +26,7 @@ target_link_libraries(${exe_Federation}
   ${lib_ktlfull}
   ${lib_ktlcore}
   ${lib_KtlLttng}
+  python3.6m
   rt
   ssh2
   ssl
