@@ -7,6 +7,6 @@
 
 extern "C" 
 {
-    void PyHost_Initialize();
-    void PyHost_OnRoutingTokenChanged(std::shared_ptr<Federation::FederationSubsystem> const &);
+    void PyHost_Initialize(std::shared_ptr<Federation::FederationSubsystem> const &);
+    void PyHost_OnRoutingTokenChanged();
 }

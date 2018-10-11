@@ -12,8 +12,8 @@ namespace PyHost
     public:
         Host();
 
-        void Initialize();
-        void OnRoutingTokenChanged(std::shared_ptr<Federation::FederationSubsystem> const & fs);
+        void Initialize(std::shared_ptr<Federation::FederationSubsystem> const &);
+        void OnRoutingTokenChanged();
 
     private:
         class Impl;

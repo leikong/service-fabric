@@ -14,12 +14,12 @@ using namespace Federation;
 using namespace PyHost;
 using namespace std;
 
-void PyHost_Initialize()
+void PyHost_Initialize(shared_ptr<FederationSubsystem> const & fs)
 {
-    SingletonHost::GetInstance().Initialize();
+    SingletonHost::GetInstance().Initialize(fs);
 }
 
-void PyHost_OnRoutingTokenChanged(shared_ptr<FederationSubsystem> const & fs)
+void PyHost_OnRoutingTokenChanged()
 {
-    SingletonHost::GetInstance().OnRoutingTokenChanged(fs);
+    SingletonHost::GetInstance().OnRoutingTokenChanged();
 }

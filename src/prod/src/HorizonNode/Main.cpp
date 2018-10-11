@@ -18,16 +18,16 @@ StringLiteral const TraceComponent("Main");
 
 const size_t MaxArgLen = 128;
 
-void OnRoutingTokenChanged(shared_ptr<FederationSubsystem> const & fs)
+void OnRoutingTokenChanged()
 {
-    PyHost_OnRoutingTokenChanged(fs);
+    PyHost_OnRoutingTokenChanged();
 }
 
 int main(int argc, char* argv[])
 {
     if (argc < 3)
     {   
-        printf("usage: %s -n <node ID> -p [port] -h [hostname/ip (default='localhost')] \n", argv[0]);
+        printf("usage: %s -n <node ID> -p [port] -h [hostname/ip (default='localhost')]\n", argv[0]);
         printf("example: %s -n 10 -p 19000\n", argv[0]);
         return 1;
     }
@@ -59,14 +59,14 @@ int main(int argc, char* argv[])
     NodeId nodeId;
     if (!NodeId::TryParse(StringUtility::Utf8ToUtf16(nodeIdString), nodeId))
     {
-        printf("Failed to parse '%s' as NodeId \n", nodeIdString.c_str());
+        printf("Failed to parse '%s' as NodeId\n", nodeIdString.c_str());
         return 1;
     }
 
     string nodeAddress = hostname + ":" + to_string(port);
     string leaseAddress = hostname + ":" + to_string(port + 1);
 
-    printf("Running node %s at %s...\n",
+    printf("Starting node %s at %s...\n",
         nodeIdString.c_str(), 
         nodeAddress.c_str());
 
@@ -82,15 +82,6 @@ int main(int argc, char* argv[])
         SecuritySettings(),
         mockRoot);
 
-    printf("Created FederationSubsystem \n");
-
-    PyHost_Initialize();
-
-    printf("Initialized Python host\n");
-
-    auto unusedHandlerId = federation->RegisterRoutingTokenChangedEvent(
-        [federation](EventArgs const &) { OnRoutingTokenChanged(federation); });
-
     AutoResetEvent event(false);
 
     auto operation = federation->BeginOpen(
@@ -102,10 +93,18 @@ int main(int argc, char* argv[])
 
     auto error = federation->EndOpen(operation);
 
-    printf("Opened FederationSubsystem: %s \n", StringUtility::Utf16ToUtf8(error.ErrorCodeValueToString()).c_str());
+    printf("Opened FederationSubsystem: %s\n", StringUtility::Utf16ToUtf8(error.ErrorCodeValueToString()).c_str());
 
     if (error.IsSuccess())
     {
+        PyHost_Initialize(federation);
+
+        printf("Initialized Python host\n");
+
+        auto unusedHandlerId = federation->RegisterRoutingTokenChangedEvent([](EventArgs const &) { OnRoutingTokenChanged(); });
+
+        printf("Running %s...\n", argv[0]);
+
         cin.ignore();
     }
 }

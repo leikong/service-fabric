@@ -7,23 +7,23 @@
 
 namespace PyHost
 {
-	class PyInterpreter
-	{
-	public:
-		//
-		// C++ -> Python
-		//
-		static void Execute(
+    class PyInterpreter
+    {
+    public:
+        //
+        // C++ -> Python
+        //
+        Common::ErrorCode Execute(
             std::wstring const & moduleName, 
             std::wstring const & funcName, 
             std::vector<std::wstring> const & args);
 
-	public:
-		//
-		// Python -> C++
-		//
-		using SetNodeIdOwnershipCallback = std::function<void(std::wstring const &, std::wstring const &)>;
+    public:
+        //
+        // Python -> C++
+        //
+        using SetNodeIdOwnershipCallback = std::function<Common::ErrorCode(std::wstring const &, std::wstring const &)>;
 
-		void Register_SetNodeIdOwnership(SetNodeIdOwnershipCallback const &);
-	};
+        void Register_SetNodeIdOwnership(SetNodeIdOwnershipCallback const &);
+    };
 }
