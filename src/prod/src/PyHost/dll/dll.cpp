@@ -10,16 +10,23 @@
 #include "../Host.h"
 #include "../SingletonHost.h"
 
+using namespace Common;
 using namespace Federation;
 using namespace PyHost;
 using namespace std;
+using namespace Transport;
 
-void PyHost_Initialize(shared_ptr<FederationSubsystem> const & fs)
+ErrorCode PyHost_Initialize(shared_ptr<FederationSubsystem> const & fs)
 {
-    SingletonHost::GetInstance().Initialize(fs);
+    return SingletonHost::GetInstance().Initialize(fs);
 }
 
-void PyHost_OnRoutingTokenChanged()
+ErrorCode PyHost_OnRoutingTokenChanged()
 {
-    SingletonHost::GetInstance().OnRoutingTokenChanged();
+    return SingletonHost::GetInstance().OnRoutingTokenChanged();
+}
+
+ErrorCode PyHost_OnBroadcast(MessageUPtr & msg)
+{
+    return SingletonHost::GetInstance().OnBroadcast(msg);
 }

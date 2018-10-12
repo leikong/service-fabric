@@ -11,7 +11,7 @@ namespace PyHost
     {
     public:
 
-        ScopedPyObject GetOrAddFunctionInModule(std::string const & moduleName, std::string const & funcName);
+        ScopedPyObject GetOrAddFunctionInModule(std::string const & moduleName, std::string const & funcName, bool strict);
         void Remove(std::string const & moduleName);
         void Clear();
 

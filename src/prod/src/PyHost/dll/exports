@@ -2,5 +2,6 @@ V1.0 {
     global:
              PyHost_Initialize;
              PyHost_OnRoutingTokenChanged;
+             PyHost_OnBroadcast;
     local: *;
 };

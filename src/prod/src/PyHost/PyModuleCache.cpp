@@ -26,7 +26,7 @@ public:
     {
     }
 
-    ScopedPyObject GetOrAddFunction(string const & moduleName, string const & funcName)
+    ScopedPyObject GetOrAddFunction(string const & moduleName, string const & funcName, bool strict)
     {
         lock_guard<mutex> lock(lock_);
 
@@ -36,7 +36,14 @@ public:
             auto pFunc = ScopedPyObject::CreateFromNew(PyObject_GetAttrString(module_.Get(), funcName.c_str()));
             if (pFunc.Get() == nullptr)
             {
-                PyUtils::ThrowOnFailure(moduleName, funcName, "PyObject_GetAttrString");
+                if (strict)
+                {
+                    PyUtils::ThrowOnFailure(moduleName, funcName, "PyObject_GetAttrString");
+                }
+                else
+                {
+                    return pFunc;
+                }
             }
 
             functions_.insert(make_pair(funcName, ScopedPyObject(pFunc)));
@@ -59,7 +66,7 @@ private:
 // PyModuleCache
 //
 
-ScopedPyObject PyModuleCache::GetOrAddFunctionInModule(string const & moduleName, string const & funcName)
+ScopedPyObject PyModuleCache::GetOrAddFunctionInModule(string const & moduleName, string const & funcName, bool strict)
 {
     lock_guard<mutex> lock(lock_);
 
@@ -89,7 +96,7 @@ ScopedPyObject PyModuleCache::GetOrAddFunctionInModule(string const & moduleName
         moduleEntry = findModule->second;
     }
     
-    return moduleEntry->GetOrAddFunction(moduleName, funcName);
+    return moduleEntry->GetOrAddFunction(moduleName, funcName, strict);
 }
 
 void PyModuleCache::Remove(string const & moduleName)

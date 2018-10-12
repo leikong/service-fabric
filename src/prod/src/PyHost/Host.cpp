@@ -12,10 +12,12 @@
 #include "Host.h"
 #include "PyInterpreter.h"
 #include "PyHostConfig.h"
+#include "BroadcastMessageBody.h"
 
 using namespace Common;
 using namespace Federation;
 using namespace std;
+using namespace Transport;
 
 using namespace PyHost;
 
@@ -24,6 +26,7 @@ StringLiteral const TraceComponent("Host");
 wstring const PyCallback_OnInitialize = L"OnInitialize";
 wstring const PyCallback_OnNodeIdAcquired = L"OnNodeIdAcquired";
 wstring const PyCallback_OnNodeIdReleased = L"OnNodeIdReleased";
+wstring const PyCallback_OnBroadcast = L"OnBroadcast";
 
 //
 // Impl
@@ -35,13 +38,10 @@ public:
     Impl() 
         : pyInterpreter_()
         , fs_()
-        , nodeIdOwners_()
+        , modules_()
         , lock_()
     {
-        pyInterpreter_.Register_SetNodeIdOwnership([this](wstring const & moduleName, wstring const & nodeId)
-        {
-            return SetNodeIdOwnership(moduleName, nodeId);
-        });
+        Register_PyCallbacks();
     }
 
 public:
@@ -50,7 +50,7 @@ public:
     // DLL exported functions
     //
 
-    void Initialize(shared_ptr<FederationSubsystem> const & fs)
+    ErrorCode Initialize(shared_ptr<FederationSubsystem> const & fs)
     {
         fs_ = fs;
 
@@ -59,6 +59,7 @@ public:
         if (moduleName.empty())
         {
             Trace.WriteInfo(TraceComponent, "No Python module to initialize");
+            return ErrorCodeValue::Success;
         }
         else
         {
@@ -66,43 +67,109 @@ public:
 
             vector<wstring> args;
             args.push_back(fs->IdString);
-            pyInterpreter_.Execute(moduleName, PyCallback_OnInitialize, args);
+            auto error = pyInterpreter_.Execute(moduleName, PyCallback_OnInitialize, args);
+
+            if (error.IsSuccess())
+            {
+                AcquireWriteLock lock(lock_);
+
+                auto findIter = modules_.find(moduleName);
+                if (findIter == modules_.end())
+                {
+                    Trace.WriteWarning(TraceComponent, "Python module '{0}' added to node {1} ...", moduleName, fs->Id);
+
+                    modules_.insert(make_pair(moduleName, nullptr));
+                }
+            }
+
+            return error;
         }
     }
 
-    void OnRoutingTokenChanged()
+    ErrorCode OnRoutingTokenChanged()
     {
+        ErrorCode finalError;
+
         AcquireWriteLock lock(lock_);
 
-        for (auto const & mapEntry : nodeIdOwners_)
+        for (auto const & module : modules_)
         {
-            auto const & entry = mapEntry.second;
+            auto const & moduleName = module.first;
+            auto const & entry = module.second;
+
+            if (entry.get() == nullptr)
+            {
+                continue;
+            }
 
             if (entry->IsOwned && !IsNodeIdOwned(entry->Id))
             {
-                auto error = NotifyNodeIdReleased(mapEntry.first, entry->Id);
+                auto error = NotifyNodeIdReleased(moduleName, entry->Id);
                 if (error.IsSuccess())
                 {
-                    Trace.WriteInfo(TraceComponent, "NotifyNodeIdReleased({0}, {1}) succeeded", mapEntry.first, entry->Id);
+                    Trace.WriteInfo(TraceComponent, "NotifyNodeIdReleased({0}, {1}) succeeded", moduleName, entry->Id);
                 }
                 else
                 {
-                    Trace.WriteWarning(TraceComponent, "NotifyNodeIdReleased({0}, {1}) failed: {2}", mapEntry.first, entry->Id, error);
+                    Trace.WriteWarning(TraceComponent, "NotifyNodeIdReleased({0}, {1}) failed: {2}", moduleName, entry->Id, error);
+
+                    finalError = ErrorCode::FirstError(finalError, error);
                 }
             }
             else if (!entry->IsOwned && IsNodeIdOwned(entry->Id))
             {
-                auto error = NotifyNodeIdAcquired(mapEntry.first, entry->Id);
+                auto error = NotifyNodeIdAcquired(moduleName, entry->Id);
                 if (error.IsSuccess())
                 {
-                    Trace.WriteInfo(TraceComponent, "NotifyNodeIdAcquired({0}, {1}) succeeded", mapEntry.first, entry->Id);
+                    Trace.WriteInfo(TraceComponent, "NotifyNodeIdAcquired({0}, {1}) succeeded", moduleName, entry->Id);
                 }
                 else
                 {
-                    Trace.WriteWarning(TraceComponent, "NotifyNodeIdAcquired({0}, {1}) failed: {2}", mapEntry.first, entry->Id, error);
+                    Trace.WriteWarning(TraceComponent, "NotifyNodeIdAcquired({0}, {1}) failed: {2}", moduleName, entry->Id, error);
+
+                    finalError = ErrorCode::FirstError(finalError, error);
                 }
             }
         }
+
+        return finalError;
+    }
+
+    ErrorCode OnBroadcast(MessageUPtr & msg)
+    {
+        ErrorCode finalError;
+
+        auto contents = BroadcastMessageBody::DeserializeBody(msg).GetContents();
+
+        AcquireReadLock lock(lock_);
+
+        for (auto const & module : modules_)
+        {
+            vector<wstring> args;
+            args.push_back(contents);
+
+            auto error = pyInterpreter_.ExecuteIfFound(module.first, PyCallback_OnBroadcast, args);
+            if (!error.IsSuccess())
+            {
+                finalError = ErrorCode::FirstError(finalError, error);
+            }
+        }
+
+        return finalError;
+    }
+
+private:
+    void Register_PyCallbacks()
+    {
+        pyInterpreter_.Register_SetNodeIdOwnership([this](wstring const & moduleName, wstring const & nodeId)
+        {
+            return SetNodeIdOwnership(moduleName, nodeId);
+        });
+
+        pyInterpreter_.Register_Broadcast([this](wstring const & contents)
+        {
+            return Broadcast(contents);
+        });
     }
 
 private:
@@ -123,12 +190,12 @@ private:
             return ErrorCode(ErrorCodeValue::InvalidArgument, move(msg));
         }
 
-        shared_ptr<NodeIdOwnershipEntry> entry;
-        auto findIter = nodeIdOwners_.find(moduleName);
-        if (findIter == nodeIdOwners_.end())
+        shared_ptr<ModuleEntry> entry;
+        auto findIter = modules_.find(moduleName);
+        if (findIter == modules_.end())
         {
-            entry = make_shared<NodeIdOwnershipEntry>(nodeId, false);
-            nodeIdOwners_.insert(make_pair(moduleName, entry));
+            entry = make_shared<ModuleEntry>(nodeId, false);
+            modules_.insert(make_pair(moduleName, entry));
         }
         else
         {
@@ -149,6 +216,24 @@ private:
         }
     }
 
+    ErrorCode Broadcast(wstring const & contents)
+    {
+        auto msg = BroadcastMessageBody::CreateMessage(contents);
+
+        auto fs = fs_.lock();
+
+        if (fs.get() == nullptr)
+        {
+            Trace.WriteInfo(TraceComponent, "Broadcast: federation is closed");
+
+            return ErrorCodeValue::ObjectClosed;
+        }
+
+        fs->Broadcast(move(msg));
+
+        return ErrorCodeValue::Success;
+    }
+
 private:
 
     bool IsNodeIdOwned(NodeId const & nodeId)
@@ -156,7 +241,8 @@ private:
         auto fs = fs_.lock();
         if (fs.get() == nullptr)
         {
-            Trace.WriteInfo(TraceComponent, "Federation is closed"); 
+            Trace.WriteInfo(TraceComponent, "IsNodeIdOwned: federation is closed"); 
+
             return false;
         }
 
@@ -179,9 +265,9 @@ private:
 
 private:
 
-    struct NodeIdOwnershipEntry
+    struct ModuleEntry
     {
-        NodeIdOwnershipEntry(NodeId const & id, bool isOwned)
+        ModuleEntry(NodeId const & id, bool isOwned)
             : Id(id)
             , IsOwned(isOwned)
         {
@@ -193,7 +279,7 @@ private:
 
     PyInterpreter pyInterpreter_;
     weak_ptr<FederationSubsystem> fs_;
-    unordered_map<wstring, shared_ptr<NodeIdOwnershipEntry>> nodeIdOwners_;
+    unordered_map<wstring, shared_ptr<ModuleEntry>> modules_;
     RwLock lock_;
 };
 
@@ -205,12 +291,17 @@ Host::Host() : impl_(make_shared<Impl>())
 {
 }
 
-void Host::Initialize(shared_ptr<FederationSubsystem> const & fs)
+ErrorCode Host::Initialize(shared_ptr<FederationSubsystem> const & fs)
 {
-    impl_->Initialize(fs);
+    return impl_->Initialize(fs);
 }
 
-void Host::OnRoutingTokenChanged()
+ErrorCode Host::OnRoutingTokenChanged()
 {
-    impl_->OnRoutingTokenChanged();
+    return impl_->OnRoutingTokenChanged();
+}
+
+ErrorCode Host::OnBroadcast(MessageUPtr & msg)
+{
+    return impl_->OnBroadcast(msg);
 }

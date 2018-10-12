@@ -12,6 +12,35 @@
 #include "PyModuleCache.h"
 #include "PyUtils.h"
 
+#define DEFINE_PY_CALLBACK( Name ) \
+    PyObject * Global_##Name(PyObject * self, PyObject * args) \
+    { \
+        return SingletonImpl::GetInstance().GetImpl()->Name(self, args); \
+    } \
+    void PyInterpreter::Register_##Name(Name##Callback const & callback) \
+    { \
+        SingletonImpl::GetInstance().GetImpl()->Register_##Name(callback); \
+    } \
+
+#define DEFINE_PY_METHOD_ENTRY( Name, Description ) \
+    { #Name, Global_##Name, METH_VARARGS, Description }, \
+
+#define DEFINE_PY_CALLBACK_IMPL( Name ) \
+    private: \
+        PyInterpreter::Name##Callback Name##Callback_; \
+    public: \
+        void Register_##Name(PyInterpreter::Name##Callback const & callback) \
+        { \
+            Name##Callback_ = callback; \
+        } \
+        PyObject * Name(PyObject * self, PyObject * args) \
+        { \
+            if (Name##Callback_ == nullptr) \
+            { \
+                PyErr_SetString(PyExc_RuntimeError, "Callback not registered"); \
+                return NULL; \
+            } \
+
 using namespace Common;
 using namespace PyHost;
 using namespace std;
@@ -32,7 +61,6 @@ public:
     Impl()
         : mainThreadState_(nullptr)
         , moduleCache_()
-        , setNodeIdOwnershipCallback_()
     {
         Initialize();
     }
@@ -87,9 +115,28 @@ public:
         wstring const & funcName,
         vector<wstring> const & args)
     {
+        return ExecuteWrapper(moduleName, funcName, args, true); // strict
+    }
+
+    ErrorCode ExecuteIfFound(
+        wstring const & moduleName,
+        wstring const & funcName,
+        vector<wstring> const & args)
+    {
+        return ExecuteWrapper(moduleName, funcName, args, false); // strict=false
+    }
+
+private:
+
+    ErrorCode ExecuteWrapper(
+        wstring const & moduleName,
+        wstring const & funcName,
+        vector<wstring> const & args,
+        bool strict)
+    {
         try
         {
-            InternalExecute(moduleName, funcName, args);
+            Execute_Throws(moduleName, funcName, args, strict);
 
             return ErrorCodeValue::Success;
         }
@@ -101,12 +148,11 @@ public:
         }
     }
 
-private:
-
-    void InternalExecute(
+    void Execute_Throws(
         wstring const & moduleNameW,
         wstring const & funcNameW,
-        vector<wstring> const & args)
+        vector<wstring> const & args,
+        bool strict)
     {
         Trace.WriteInfo(TraceComponent, "Execute({0}, {1}, {2})", moduleNameW, funcNameW, args);
 
@@ -123,8 +169,13 @@ private:
             PyUtils::ThrowOnFailure(moduleName, funcName, "PyUnicode_DecodeFSDefault");
         }
 
-        auto pFunc = moduleCache_.GetOrAddFunctionInModule(moduleName, funcName);
-        if (!PyCallable_Check(pFunc.Get()))
+        auto pFunc = moduleCache_.GetOrAddFunctionInModule(moduleName, funcName, strict);
+        if (pFunc.Get() == nullptr && !strict)
+        {
+            // no-op on function not found
+            return;
+        }
+        else if (!PyCallable_Check(pFunc.Get()))
         {
             PyUtils::ThrowOnFailure(moduleName, funcName, "PyCallable_Check");
         }
@@ -172,19 +223,8 @@ public:
     // Python -> C++ support
     //
 
-    void Register_SetNodeIdOwnership(PyInterpreter::SetNodeIdOwnershipCallback const & callback)
-    {
-        setNodeIdOwnershipCallback_ = callback;
-    }
-
-    PyObject * SetNodeIdOwnership(PyObject * self, PyObject * args)
-    {
-        if (setNodeIdOwnershipCallback_ == nullptr)
-        {
-            PyErr_SetString(PyExc_RuntimeError, "Callback not registered");
-            return NULL;
-        }
-        
+    DEFINE_PY_CALLBACK_IMPL( SetNodeIdOwnership )
+    //{
         wchar_t * moduleName;
         wchar_t * nodeId;
         if (!PyArg_ParseTuple(args, "uu", &moduleName, &nodeId))
@@ -197,7 +237,33 @@ public:
 
         Trace.WriteInfo(TraceComponent, "SetNodeIdOwnership({0}, {1})", parsed_moduleName, parsed_nodeId);
 
-        auto error = setNodeIdOwnershipCallback_(parsed_moduleName, parsed_nodeId);
+        auto error = SetNodeIdOwnershipCallback_(parsed_moduleName, parsed_nodeId);
+
+        if (error.IsSuccess())
+        {
+            Py_RETURN_TRUE;
+        }
+        else
+        {
+            auto msg = wformatString("{0}: {1}", error.ReadValue(), error.Message);
+            PyErr_SetString(PyExc_RuntimeError, StringUtility::Utf16ToUtf8(msg).c_str());
+            return NULL;
+        }
+    }
+
+    DEFINE_PY_CALLBACK_IMPL( Broadcast )
+    //{
+        wchar_t * message;
+        if (!PyArg_ParseTuple(args, "u", &message))
+        {
+            return NULL;
+        }
+
+        TRY_PARSE_PY_STRING( message )
+
+        Trace.WriteInfo(TraceComponent, "Broadcast({0})", parsed_message);
+
+        auto error = BroadcastCallback_(parsed_message);
 
         if (error.IsSuccess())
         {
@@ -215,8 +281,6 @@ private:
 
     PyThreadState * mainThreadState_;
     PyModuleCache moduleCache_;
-
-    PyInterpreter::SetNodeIdOwnershipCallback setNodeIdOwnershipCallback_;
 };
 
 //
@@ -256,14 +320,13 @@ private:
     shared_ptr<Impl> impl_;
 };
 
-PyObject * Global_SetNodeIdOwnership(PyObject * self, PyObject * args)
-{
-    return SingletonImpl::GetInstance().GetImpl()->SetNodeIdOwnership(self, args);
-}
+DEFINE_PY_CALLBACK( SetNodeIdOwnership )
+DEFINE_PY_CALLBACK( Broadcast )
 
 PyMethodDef GlobalMethods[] =
 {
-    { "SetNodeIdOwnership", Global_SetNodeIdOwnership, METH_VARARGS, "Set the node ID ownership for this module." },
+    DEFINE_PY_METHOD_ENTRY( SetNodeIdOwnership, "Set the node ID ownership for this module." )
+    DEFINE_PY_METHOD_ENTRY( Broadcast, "Broadcast a message to all modules." )
     { NULL, NULL, 0, NULL }
 };
 
@@ -286,7 +349,10 @@ ErrorCode PyInterpreter::Execute(
     return SingletonImpl::GetInstance().GetImpl()->Execute(moduleName, funcName, args);
 }
 
-void PyInterpreter::Register_SetNodeIdOwnership(SetNodeIdOwnershipCallback const & callback)
+ErrorCode PyInterpreter::ExecuteIfFound(
+    wstring const & moduleName, 
+    wstring const & funcName, 
+    vector<wstring> const & args)
 {
-    SingletonImpl::GetInstance().GetImpl()->Register_SetNodeIdOwnership(callback);
+    return SingletonImpl::GetInstance().GetImpl()->ExecuteIfFound(moduleName, funcName, args);
 }

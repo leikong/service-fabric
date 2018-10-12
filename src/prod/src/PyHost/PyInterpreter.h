@@ -7,6 +7,11 @@
 
 namespace PyHost
 {
+
+#define DECLARE_PY_CALLBACK( Name, ... ) \
+    using Name##Callback = std::function<Common::ErrorCode( __VA_ARGS__ )>; \
+    void Register_##Name(Name##Callback const &); \
+
     class PyInterpreter
     {
     public:
@@ -18,12 +23,17 @@ namespace PyHost
             std::wstring const & funcName, 
             std::vector<std::wstring> const & args);
 
+        Common::ErrorCode ExecuteIfFound(
+            std::wstring const & moduleName, 
+            std::wstring const & funcName, 
+            std::vector<std::wstring> const & args);
+
     public:
         //
         // Python -> C++
         //
-        using SetNodeIdOwnershipCallback = std::function<Common::ErrorCode(std::wstring const &, std::wstring const &)>;
 
-        void Register_SetNodeIdOwnership(SetNodeIdOwnershipCallback const &);
+        DECLARE_PY_CALLBACK( SetNodeIdOwnership, std::wstring const &, std::wstring const & )
+        DECLARE_PY_CALLBACK( Broadcast, std::wstring const & )
     };
 }

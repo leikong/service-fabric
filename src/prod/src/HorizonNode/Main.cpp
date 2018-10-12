@@ -7,31 +7,22 @@
 
 #include "Common/Common.h"
 #include "Federation/Federation.h"
-#include "PyHost/dll/dll.h"
+#include "Node.h"
 
 using namespace Common;
 using namespace Federation;
-using namespace Transport;
-using namespace std;
-
-StringLiteral const TraceComponent("Main");
+using namespace HorizonNode;
 
 const size_t MaxArgLen = 128;
 
-void OnRoutingTokenChanged()
+void PrintHelp(char* exe)
 {
-    PyHost_OnRoutingTokenChanged();
+    printf("usage: %s [-n <node ID> -p <port> -h <hostname/ip (default='localhost')>]\n", exe);
+    printf("example: %s -n 10 -p 19000\n", exe);
 }
 
 int main(int argc, char* argv[])
 {
-    if (argc < 3)
-    {   
-        printf("usage: %s -n <node ID> -p [port] -h [hostname/ip (default='localhost')]\n", argv[0]);
-        printf("example: %s -n 10 -p 19000\n", argv[0]);
-        return 1;
-    }
-
     string nodeIdString = "0";
     string hostname = "localhost";
     unsigned int port = 19000;
@@ -53,6 +44,11 @@ int main(int argc, char* argv[])
             {
                 hostname = argv[++ix];
             }
+            else if (strncmp(argv[ix], "-?", MaxArgLen) == 0)
+            {
+                PrintHelp(argv[0]);
+                exit(1);
+            }
         }
     }
 
@@ -70,41 +66,22 @@ int main(int argc, char* argv[])
         nodeIdString.c_str(), 
         nodeAddress.c_str());
 
-    ComponentRoot mockRoot;
-    auto federation = make_shared<Federation::FederationSubsystem>(
-        NodeConfig(
-            nodeId, 
-            StringUtility::Utf8ToUtf16(nodeAddress), 
-            StringUtility::Utf8ToUtf16(leaseAddress), 
-            workingDirectory),
-        FabricCodeVersion(1, 0, 960, 0), // minimum acceptable version at Federation layer
-        Uri(),
-        SecuritySettings(),
-        mockRoot);
+    Node node(NodeConfig(
+        nodeId, 
+        StringUtility::Utf8ToUtf16(nodeAddress), 
+        StringUtility::Utf8ToUtf16(leaseAddress), 
+        workingDirectory));
 
-    AutoResetEvent event(false);
-
-    auto operation = federation->BeginOpen(
-        TimeSpan::MaxValue,
-        [&event](AsyncOperationSPtr const &) { event.Set(); },
-        AsyncOperationSPtr());
-
-    event.WaitOne();
-
-    auto error = federation->EndOpen(operation);
-
-    printf("Opened FederationSubsystem: %s\n", StringUtility::Utf16ToUtf8(error.ErrorCodeValueToString()).c_str());
+    auto error = node.Open();
 
     if (error.IsSuccess())
     {
-        PyHost_Initialize(federation);
-
-        printf("Initialized Python host\n");
-
-        auto unusedHandlerId = federation->RegisterRoutingTokenChangedEvent([](EventArgs const &) { OnRoutingTokenChanged(); });
-
         printf("Running %s...\n", argv[0]);
 
         cin.ignore();
+    }
+    else
+    {
+        printf("Failed to start node: %s\n", StringUtility::Utf16ToUtf8(error.ErrorCodeValueToString()).c_str());
     }
 }
