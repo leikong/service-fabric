@@ -3170,7 +3170,7 @@ GetLeasingApplicationTTL(
         TRUE == LeaseAgentContext->IsInDelayTimer ||
         TRUE == LeasingApplicationContext->IsBeingUnregistered)
     {
-        LeaseTrace::WriteInfo("GetLeasingApplicationTTL", "Lease Agent Failed or Is Being Unregistered.");
+        LeaseTrace::TraceInfo("GetLeasingApplicationTT", "Lease Agent Failed or Is Being Unregistered.");
         return;
     }
 
@@ -3260,13 +3260,13 @@ GetLeasingApplicationTTL(
             
             if(RemoteLeaseAgentContextForDebug == NULL)
             {
-                LeaseTrace::WriteWarning("GetLeasingApplicationTTL", "Now: {0}, Min: {1}, GlobalLeaseExpiredTime: {2} ", 
+                LeaseTrace::TraceWarning("GetLeasingApplicationTT", "Now: {0}, Min: {1}, GlobalLeaseExpiredTime: {2} ", 
                     Now.QuadPart, Min.QuadPart, LeasingApplicationContext->GlobalLeaseExpireTime.QuadPart);
             }
             else
             {
-                LeaseTrace::WriteWarning(
-                    "GetLeasingApplicationTTL", "Now: {0}, Min: {1}, GlobalLeaseExpiredTime: {2}, RemoteLeaseAgent {3}, SubjectSuspendTime {4}", 
+                LeaseTrace::TraceWarning(
+                    "GetLeasingApplicationTT", "Now: {0}, Min: {1}, GlobalLeaseExpiredTime: {2}, RemoteLeaseAgent {3}, SubjectSuspendTime {4}", 
                     Now.QuadPart, Min.QuadPart, LeasingApplicationContext->GlobalLeaseExpireTime.QuadPart, 
                     RemoteLeaseAgentContextForDebug->RemoteLeaseAgentIdentifier, RemoteLeaseAgentContextForDebug->LeaseRelationshipContext->SubjectSuspendTime.QuadPart);
             }
@@ -4174,7 +4174,7 @@ Return Value:
                             if (NULL != RemoteLeaseAgentContextActive)
                             {
                                 if (RemoteLeaseAgentContextActive->IsActive == TRUE) {
-                                                                      LeaseTrace::WriteInfo(
+                                                                      LeaseTrace::TraceInfo(
                                                                                         "RemoteLeaseAgentDeactivate2",
                                                                                         "{0}, instance={1}, subject={2}, monitor={3}",
                                                                                         RemoteLeaseAgentContextActive->RemoteLeaseAgentIdentifier,

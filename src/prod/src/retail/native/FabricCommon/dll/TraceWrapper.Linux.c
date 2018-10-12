@@ -14,7 +14,7 @@ void TraceWrapper(
         const char * eventName,
         int level,
         const char * id,
-        const wchar_t * data)
+        const char * data)
 {
     switch (level)
     {
@@ -24,7 +24,7 @@ void TraceWrapper(
                     (char*) taskName,
                     (char*) eventName,
                     (char*) id,
-                    (wchar_t*)data);
+                    (char*)data);
             break;
         case 1:
             tracepoint(service_fabric,
@@ -32,14 +32,14 @@ void TraceWrapper(
                     (char*) taskName,
                     (char*) eventName,
                     (char*) id,
-                    (wchar_t*)data);
+                    (char*)data);
         case 2:
             tracepoint(service_fabric,
                     tracepoint_error,
                     (char*) taskName,
                     (char*) eventName,
                     (char*) id,
-                    (wchar_t*)data);
+                    (char*)data);
             break;
         case 3:
             tracepoint(service_fabric,
@@ -47,7 +47,7 @@ void TraceWrapper(
                     (char*) taskName,
                     (char*) eventName,
                     (char*) id,
-                    (wchar_t*)data);
+                    (char*)data);
             break;
         case 4:
             tracepoint(service_fabric,
@@ -55,7 +55,7 @@ void TraceWrapper(
                     (char*) taskName,
                     (char*) eventName,
                     (char*) id,
-                    (wchar_t*)data);
+                    (char*)data);
             break;
         case 5:
             tracepoint(service_fabric,
@@ -63,7 +63,7 @@ void TraceWrapper(
                     (char*) taskName,
                     (char*) eventName,
                     (char*) id,
-                    (wchar_t*)data);
+                    (char*)data);
             break;
         case 99:
             tracepoint(service_fabric,
@@ -71,7 +71,7 @@ void TraceWrapper(
                     (char*) taskName,
                     (char*) eventName,
                     (char*) id,
-                    (wchar_t*)data);
+                    (char*)data);
             break;
         default:
             printf("Unknown trace loglevel %d\n", level);

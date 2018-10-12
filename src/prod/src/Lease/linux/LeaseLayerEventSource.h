@@ -68,4 +68,30 @@ public:
 };
 
 // Text trace class
-class LeaseTrace : public Common::TextTraceComponent<Common::TraceTaskCodes::Lease> {};
+class LeaseTrace : public Common::TextTraceComponent<Common::TraceTaskCodes::Lease>
+{
+public:
+    template <typename... Args>
+    static void TraceNoise(Common::StringLiteral type, Common::StringLiteral format, Args... args)
+    {
+        WriteNoise(type, format, args...);
+    }
+
+    template <typename... Args>
+    static void TraceInfo(Common::StringLiteral type, Common::StringLiteral format, Args... args)
+    {
+        WriteInfo(type, format, args...);
+    }
+
+    template <typename... Args>
+    static void TraceWarning(Common::StringLiteral type, Common::StringLiteral format, Args... args)
+    {
+        WriteWarning(type, format, args...);
+    }
+
+    template <typename... Args>
+    static void TraceError(Common::StringLiteral type, Common::StringLiteral format, Args... args)
+    {
+        WriteError(type, format, args...);
+    }
+};

@@ -202,7 +202,7 @@ Return Value:
     //
     // Populate leasing application context.
     //
-    Status = RtlStringCchLengthW(
+    Status = StringCchLength(
         LeasingApplicationIdentifier,
         MAX_PATH + 1,
         &WcharLength

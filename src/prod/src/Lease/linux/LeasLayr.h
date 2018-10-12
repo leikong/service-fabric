@@ -223,504 +223,504 @@ Common::TimerQueue & GetLeaseTimerQueue();
 
 //etl mock
 #define EventWriteLeaseAgentCreated(a,b,c,d)  \
-LeaseTrace::WriteInfo("LeaseAgentCreated", "Lease agent {0}/{1} created in state {2}",b,c,d)
+LeaseTrace::TraceInfo("LeaseAgentCreated", "Lease agent {0}/{1} created in state {2}",b,c,d)
 #define EventWriteAllocateFail1(a)  \
-LeaseTrace::WriteInfo("AllocateFail1", "Could not allocate channel state")
+LeaseTrace::TraceInfo("AllocateFail1", "Could not allocate channel state")
 #define EventWriteAllocateFail2(a)  \
-LeaseTrace::WriteInfo("AllocateFail2", "Could not allocate monitor failed accepted list")
+LeaseTrace::TraceInfo("AllocateFail2", "Could not allocate monitor failed accepted list")
 #define EventWriteAllocateFail3(a)  \
-LeaseTrace::WriteInfo("AllocateFail3", "Could not allocate leasing application event")
+LeaseTrace::TraceInfo("AllocateFail3", "Could not allocate leasing application event")
 #define EventWriteAllocateFail4(a)  \
-LeaseTrace::WriteInfo("AllocateFail4", "Could not allocate leasing application context")
+LeaseTrace::TraceInfo("AllocateFail4", "Could not allocate leasing application context")
 #define EventWriteAllocateFail5(a)  \
-LeaseTrace::WriteInfo("AllocateFail5", "Could not allocate leasing application identifier")
+LeaseTrace::TraceInfo("AllocateFail5", "Could not allocate leasing application identifier")
 #define EventWriteAllocateFail6(a)  \
-LeaseTrace::WriteInfo("AllocateFail6", "Could not allocate lease context")
+LeaseTrace::TraceInfo("AllocateFail6", "Could not allocate lease context")
 #define EventWriteAllocateFail7(a)  \
-LeaseTrace::WriteInfo("AllocateFail7", "Could not allocate lease relationship identifier")
+LeaseTrace::TraceInfo("AllocateFail7", "Could not allocate lease relationship identifier")
 #define EventWriteAllocateFail8(a)  \
-LeaseTrace::WriteInfo("AllocateFail8", "Could not allocate lease relationship identifier (remote)")
+LeaseTrace::TraceInfo("AllocateFail8", "Could not allocate lease relationship identifier (remote)")
 #define EventWriteAllocateFail9(a)  \
-LeaseTrace::WriteInfo("AllocateFail9", "Could not allocate lease request message")
+LeaseTrace::TraceInfo("AllocateFail9", "Could not allocate lease request message")
 #define EventWriteAllocateFail10(a)  \
-LeaseTrace::WriteInfo("AllocateFail10", "Could not allocate send Irp")
+LeaseTrace::TraceInfo("AllocateFail10", "Could not allocate send Irp")
 #define EventWriteAllocateFail11(a)  \
-LeaseTrace::WriteInfo("AllocateFail11", "Could not allocate receive Irp")
+LeaseTrace::TraceInfo("AllocateFail11", "Could not allocate receive Irp")
 #define EventWriteAllocateFail12(a)  \
-LeaseTrace::WriteInfo("AllocateFail12", "Could not allocate channel")
+LeaseTrace::TraceInfo("AllocateFail12", "Could not allocate channel")
 #define EventWriteAllocateFail13(a)  \
-LeaseTrace::WriteInfo("AllocateFail13", "Could not allocate listen Irp")
+LeaseTrace::TraceInfo("AllocateFail13", "Could not allocate listen Irp")
 #define EventWriteAllocateFail14(a)  \
-LeaseTrace::WriteInfo("AllocateFail14", "Could not allocate connect Irp")
+LeaseTrace::TraceInfo("AllocateFail14", "Could not allocate connect Irp")
 #define EventWriteAllocateFail15(a)  \
-LeaseTrace::WriteInfo("AllocateFail15", "Could not allocate socket")
+LeaseTrace::TraceInfo("AllocateFail15", "Could not allocate socket")
 #define EventWriteAllocateFail16(a)  \
-LeaseTrace::WriteInfo("AllocateFail16", "Could not allocate close Irp")
+LeaseTrace::TraceInfo("AllocateFail16", "Could not allocate close Irp")
 #define EventWriteAllocateFail17(a)  \
-LeaseTrace::WriteInfo("AllocateFail17", "Could not allocate lease agent")
+LeaseTrace::TraceInfo("AllocateFail17", "Could not allocate lease agent")
 #define EventWriteLeaseAgentInStateForRemote(a,b,c,d)  \
-LeaseTrace::WriteInfo("LeaseAgentInStateForRemote", "Lease agent {0}/{1} is now in state {2}",b,c,d)
+LeaseTrace::TraceInfo("LeaseAgentInStateForRemote", "Lease agent {0}/{1} is now in state {2}",b,c,d)
 #define EventWriteLeaseAgentDelete(a,b,c)  \
-LeaseTrace::WriteInfo("LeaseAgentDelete", "Lease agent {0}/{1} is being deleted",b,c)
+LeaseTrace::TraceInfo("LeaseAgentDelete", "Lease agent {0}/{1} is being deleted",b,c)
 #define EventWriteRemoteLeaseAgentCreated(a,b,c,d)  \
-LeaseTrace::WriteInfo("RemoteLeaseAgentCreated", "Remote lease agent {0}/{1} created in state {2}",b,c,d)
+LeaseTrace::TraceInfo("RemoteLeaseAgentCreated", "Remote lease agent {0}/{1} created in state {2}",b,c,d)
 #define EventWriteTerminateSubLeaseMonitorFailed(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("TerminateSubLeaseMonitorFailed", "Terminating subject lease relationship {0}/{1} on remote lease agent {2}/{3} reason monitor Failed",b,c,d,e)
+LeaseTrace::TraceInfo("TerminateSubLeaseMonitorFailed", "Terminating subject lease relationship {0}/{1} on remote lease agent {2}/{3} reason monitor Failed",b,c,d,e)
 #define EventWriteSubLeaseFailureAcked(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("SubLeaseFailureAcked", "Subject lease relationship {0}/{1} failure acked on remote lease agent {2}/{3}",b,c,d,e)
+LeaseTrace::TraceInfo("SubLeaseFailureAcked", "Subject lease relationship {0}/{1} failure acked on remote lease agent {2}/{3}",b,c,d,e)
 #define EventWriteSubLeaseTerminationAcked(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("SubLeaseTerminationAcked", "Subject lease relationship {0}/{1} termination acked on remote lease agent {2}/{3}",b,c,d,e)
+LeaseTrace::TraceInfo("SubLeaseTerminationAcked", "Subject lease relationship {0}/{1} termination acked on remote lease agent {2}/{3}",b,c,d,e)
 #define EventWriteEstabMonitorLease(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("EstabMonitorLease", "Establishing monitor lease relationship {0}/{1} on remote lease agent {2}/{3}",b,c,d,e)
+LeaseTrace::TraceInfo("EstabMonitorLease", "Establishing monitor lease relationship {0}/{1} on remote lease agent {2}/{3}",b,c,d,e)
 #define EventWriteLeaseRelationRcvMsg(a,b,c,d,e,f,g,h,i,j)  \
-LeaseTrace::WriteInfo("LeaseRelationRcvMsg", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) received lease {7} message {8}",b,c,d,e,f,g,h,i,j)
+LeaseTrace::TraceInfo("LeaseRelationRcvMsg", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) received lease {7} message {8}",b,c,d,e,f,g,h,i,j)
 #define EventWriteMonitorLeaseFailureAcked(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("MonitorLeaseFailureAcked", "Monitor lease relationship {0}/{1} failure acked on remote lease agent {2}/{3}",b,c,d,e)
+LeaseTrace::TraceInfo("MonitorLeaseFailureAcked", "Monitor lease relationship {0}/{1} failure acked on remote lease agent {2}/{3}",b,c,d,e)
 #define EventWriteLeaseRelationRcvTerminationMsg(a,b,c,d,e,f,g,h,i,j)  \
-LeaseTrace::WriteInfo("LeaseRelationRcvTerminationMsg", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) received lease termination {7} message {8}",b,c,d,e,f,g,h,i,j)
+LeaseTrace::TraceInfo("LeaseRelationRcvTerminationMsg", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) received lease termination {7} message {8}",b,c,d,e,f,g,h,i,j)
 #define EventWriteRemoteLeaseAgentChangeInstance(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("RemoteLeaseAgentChangeInstance", "Remote lease agent {0}/{1} changed the instance of lease agent remote {2}-&gt;{3}",b,c,d,e)
+LeaseTrace::TraceInfo("RemoteLeaseAgentChangeInstance", "Remote lease agent {0}/{1} changed the instance of lease agent remote {2}-&gt;{3}",b,c,d,e)
 #define EventWriteLeaseRelationSendingTermination(a,b,c,d,e,f,g,h,i)  \
-LeaseTrace::WriteInfo("LeaseRelationSendingTermination", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) is sending lease termination {6} message {7}",b,c,d,e,f,g,h,i)
+LeaseTrace::TraceInfo("LeaseRelationSendingTermination", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) is sending lease termination {6} message {7}",b,c,d,e,f,g,h,i)
 #define EventWriteLeaseRelationSendingLease(a,b,c,d,e,f,g,h,i)  \
-LeaseTrace::WriteInfo("LeaseRelationSendingLease", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) is sending lease {6} message {7}",b,c,d,e,f,g,h,i)
+LeaseTrace::TraceInfo("LeaseRelationSendingLease", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) is sending lease {6} message {7}",b,c,d,e,f,g,h,i)
 #define EventWriteLeaseRelationSendingLeaseRenewal(a,b,c,d,e,f,g,h,i)  \
-LeaseTrace::WriteInfo("LeaseRelationSendingLeaseRenewal", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) is sending lease {6} renewal message {7}",b,c,d,e,f,g,h,i)
+LeaseTrace::TraceInfo("LeaseRelationSendingLeaseRenewal", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) is sending lease {6} renewal message {7}",b,c,d,e,f,g,h,i)
 #define EventWriteLeaseRelationInStateAfterLeaseMsg(a,b,c,d,e,f,g,h,i,j)  \
-LeaseTrace::WriteInfo("LeaseRelationInStateAfterLeaseMsg", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) after processing lease {7} message {8}",b,c,d,e,f,g,h,i,j)
+LeaseTrace::TraceInfo("LeaseRelationInStateAfterLeaseMsg", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) after processing lease {7} message {8}",b,c,d,e,f,g,h,i,j)
 #define EventWriteLeaseRelationInStateAfterLeaseTermMsg(a,b,c,d,e,f,g,h,i,j)  \
-LeaseTrace::WriteInfo("LeaseRelationInStateAfterLeaseTermMsg", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) after processing lease termination {7} message {8}",b,c,d,e,f,g,h,i,j)
+LeaseTrace::TraceInfo("LeaseRelationInStateAfterLeaseTermMsg", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) after processing lease termination {7} message {8}",b,c,d,e,f,g,h,i,j)
 #define EventWriteDropingLeaseMsgLAFailed(a,b,c,d)  \
-LeaseTrace::WriteInfo("DropingLeaseMsgLAFailed", "Dropping lease {0} message reason lease agent {1}/{2} already failed",b,c,d)
+LeaseTrace::TraceInfo("DropingLeaseMsgLAFailed", "Dropping lease {0} message reason lease agent {1}/{2} already failed",b,c,d)
 #define EventWriteIncomingChnlWithRemoteLA(a,b,c,d)  \
-LeaseTrace::WriteInfo("IncomingChnlWithRemoteLA", "Incoming channel {0} associated with remote lease agent {1}/{2}",b,c,d)
+LeaseTrace::TraceInfo("IncomingChnlWithRemoteLA", "Incoming channel {0} associated with remote lease agent {1}/{2}",b,c,d)
 #define EventWriteRegisterRemoteLAFail(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("RegisterRemoteLAFail", "Could not register remote lease agent {0}/{1} with lease agent {2}/{3}",b,c,d,e)
+LeaseTrace::TraceInfo("RegisterRemoteLAFail", "Could not register remote lease agent {0}/{1} with lease agent {2}/{3}",b,c,d,e)
 #define EventWriteRemoteLAExist(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("RemoteLAExist", "Remote lease agent {0}/{1} already exists on lease agent {2}/{3}",b,c,d,e)
+LeaseTrace::TraceInfo("RemoteLAExist", "Remote lease agent {0}/{1} already exists on lease agent {2}/{3}",b,c,d,e)
 #define EventWriteRegisterRemoteLA(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("RegisterRemoteLA", "Remote lease agent {0}/{1} registered with lease agent {2}/{3}",b,c,d,e)
+LeaseTrace::TraceInfo("RegisterRemoteLA", "Remote lease agent {0}/{1} registered with lease agent {2}/{3}",b,c,d,e)
 #define EventWriteCreateRemoteLAFail(a)  \
-LeaseTrace::WriteInfo("CreateRemoteLAFail", "Could not create remote lease agent")
+LeaseTrace::TraceInfo("CreateRemoteLAFail", "Could not create remote lease agent")
 #define EventWriteTerminateSubLeaseSubTerminated(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("TerminateSubLeaseSubTerminated", "Terminating subject lease relationship {0}/{1} on remote lease agent {2}/{3} reason subject Terminated",b,c,d,e)
+LeaseTrace::TraceInfo("TerminateSubLeaseSubTerminated", "Terminating subject lease relationship {0}/{1} on remote lease agent {2}/{3} reason subject Terminated",b,c,d,e)
 #define EventWriteTerminateSubLeaseSubFailed(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("TerminateSubLeaseSubFailed", "Terminating subject lease relationship {0}/{1} on remote lease agent {2}/{3} reason subject Failed",b,c,d,e)
+LeaseTrace::TraceInfo("TerminateSubLeaseSubFailed", "Terminating subject lease relationship {0}/{1} on remote lease agent {2}/{3} reason subject Failed",b,c,d,e)
 #define EventWriteCannotFailLALeaseAppRegistered(a,b,c,d)  \
-LeaseTrace::WriteInfo("CannotFailLALeaseAppRegistered", "Lease agent {0}/{1} cannot be failed reason leasing application {2} still registered",b,c,d)
+LeaseTrace::TraceInfo("CannotFailLALeaseAppRegistered", "Lease agent {0}/{1} cannot be failed reason leasing application {2} still registered",b,c,d)
 #define EventWriteCannotFailLARemoteLAInState(a,b,c,d,e,f)  \
-LeaseTrace::WriteInfo("CannotFailLARemoteLAInState", "Lease agent {0}/{1} cannot be failed reason remote lease agent {2}/{3} is in state {4}",b,c,d,e,f)
+LeaseTrace::TraceInfo("CannotFailLARemoteLAInState", "Lease agent {0}/{1} cannot be failed reason remote lease agent {2}/{3} is in state {4}",b,c,d,e,f)
 #define EventWriteCanFailLA(a,b,c)  \
-LeaseTrace::WriteInfo("CanFailLA", "Lease agent {0}/{1} can now be failed",b,c)
+LeaseTrace::TraceInfo("CanFailLA", "Lease agent {0}/{1} can now be failed",b,c)
 #define EventWriteCanNotDelLASocNotClosed(a,b,c)  \
-LeaseTrace::WriteInfo("CanNotDelLASocNotClosed", "Lease agent {0}/{1} cannot be deleted reason listening socket is not closed",b,c)
+LeaseTrace::TraceInfo("CanNotDelLASocNotClosed", "Lease agent {0}/{1} cannot be deleted reason listening socket is not closed",b,c)
 #define EventWriteCanNotDelLARemoteLAState(a,b,c,d,e,f)  \
-LeaseTrace::WriteInfo("CanNotDelLARemoteLAState", "Lease agent {0}/{1} cannot be deleted reason remote lease agent {2}/{3} is in state {4}",b,c,d,e,f)
+LeaseTrace::TraceInfo("CanNotDelLARemoteLAState", "Lease agent {0}/{1} cannot be deleted reason remote lease agent {2}/{3} is in state {4}",b,c,d,e,f)
 #define EventWriteCanDelLA(a,b,c)  \
-LeaseTrace::WriteInfo("CanDelLA", "Lease agent {0}/{1} can now be deleted",b,c)
+LeaseTrace::TraceInfo("CanDelLA", "Lease agent {0}/{1} can now be deleted",b,c)
 #define EventWriteRemoteLAStateTransition(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("RemoteLAStateTransition", "Remote lease agent {0}/{1} state transition {2}-&gt;{3}",b,c,d,e)
+LeaseTrace::TraceInfo("RemoteLAStateTransition", "Remote lease agent {0}/{1} state transition {2}-&gt;{3}",b,c,d,e)
 #define EventWriteLeaseAppFailed(a,b,c,d)  \
-LeaseTrace::WriteInfo("LeaseAppFailed", "Leasing application {0} on lease agent {1}/{2} has now failed/expired",b,c,d)
+LeaseTrace::TraceInfo("LeaseAppFailed", "Leasing application {0} on lease agent {1}/{2} has now failed/expired",b,c,d)
 #define EventWriteLeaseAgentInState(a,b,c,d)  \
-LeaseTrace::WriteInfo("LeaseAgentInState", "Lease agent {0}/{1} is already in state {2}",b,c,d)
+LeaseTrace::TraceInfo("LeaseAgentInState", "Lease agent {0}/{1} is already in state {2}",b,c,d)
 #define EventWriteLeaseRelationInState1(a,b,c,d,e,f,g)  \
-LeaseTrace::WriteInfo("LeaseRelationInState1", "OnSubjectExpired: Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5})",b,c,d,e,f,g)
+LeaseTrace::TraceInfo("LeaseRelationInState1", "OnSubjectExpired: Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5})",b,c,d,e,f,g)
 #define EventWriteLeaseRelationInState2(a,b,c,d,e,f,g)  \
-LeaseTrace::WriteInfo("LeaseRelationInState2", "OnMonitorExpired: Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5})",b,c,d,e,f,g)
+LeaseTrace::TraceInfo("LeaseRelationInState2", "OnMonitorExpired: Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5})",b,c,d,e,f,g)
 #define EventWriteLeaseRelationInState3(a,b,c,d,e,f,g)  \
-LeaseTrace::WriteInfo("LeaseRelationInState3", "Starting arbitration for: Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5})",b,c,d,e,f,g)
+LeaseTrace::TraceInfo("LeaseRelationInState3", "Starting arbitration for: Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5})",b,c,d,e,f,g)
 #define EventWriteLeaseRelationInState4(a,b,c,d,e,f,g)  \
-LeaseTrace::WriteInfo("LeaseRelationInState4", " no leasing application found to arbitrate : Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5})",b,c,d,e,f,g)
+LeaseTrace::TraceInfo("LeaseRelationInState4", " no leasing application found to arbitrate : Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5})",b,c,d,e,f,g)
 #define EventWriteArbAbandonedLeaseRelationInState4(a,b,c,d,e,f,g,h)  \
-LeaseTrace::WriteInfo("ArbAbandonedLeaseRelationInState4", "Arbitration abandoned for lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) reason  no leasing application found to arbitrate  {6}",b,c,d,e,f,g,h)
+LeaseTrace::TraceInfo("ArbAbandonedLeaseRelationInState4", "Arbitration abandoned for lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) reason  no leasing application found to arbitrate  {6}",b,c,d,e,f,g,h)
 #define EventWriteLeaseAppChosenLeaseRelationInState(a,b,c,d,e,f,g,h,i,j)  \
-LeaseTrace::WriteInfo("LeaseAppChosenLeaseRelationInState", "Leasing application {0} has been chosen to arbitrate Lease relationship ({1}/{2}, subject = {3}, monitor = {4}) in state ({5}-{6}) with Monitor TTL = {7}, Subject TTL = {8}",b,c,d,e,f,g,h,i,j)
+LeaseTrace::TraceInfo("LeaseAppChosenLeaseRelationInState", "Leasing application {0} has been chosen to arbitrate Lease relationship ({1}/{2}, subject = {3}, monitor = {4}) in state ({5}-{6}) with Monitor TTL = {7}, Subject TTL = {8}",b,c,d,e,f,g,h,i,j)
 #define EventWriteLeaseRelationTransition1(a,b,c,d,e,f,g,h,i)  \
-LeaseTrace::WriteInfo("LeaseRelationTransition1", "Subject Expired  Timer: Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) transition ({4}-{5})-&gt;({6}-{7})",b,c,d,e,f,g,h,i)
+LeaseTrace::TraceInfo("LeaseRelationTransition1", "Subject Expired  Timer: Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) transition ({4}-{5})-&gt;({6}-{7})",b,c,d,e,f,g,h,i)
 #define EventWriteLeaseRelationTransition2(a,b,c,d,e,f,g,h,i)  \
-LeaseTrace::WriteInfo("LeaseRelationTransition2", "Monitor Expired  Timer: Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) transition ({4}-{5})-&gt;({6}-{7})",b,c,d,e,f,g,h,i)
+LeaseTrace::TraceInfo("LeaseRelationTransition2", "Monitor Expired  Timer: Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) transition ({4}-{5})-&gt;({6}-{7})",b,c,d,e,f,g,h,i)
 #define EventWriteLeaseRelationTransition3(a,b,c,d,e,f,g,h,i)  \
-LeaseTrace::WriteInfo("LeaseRelationTransition3", "Renew/Arbitrate  Timer: Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) transition ({4}-{5})-&gt;({6}-{7})",b,c,d,e,f,g,h,i)
+LeaseTrace::TraceInfo("LeaseRelationTransition3", "Renew/Arbitrate  Timer: Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) transition ({4}-{5})-&gt;({6}-{7})",b,c,d,e,f,g,h,i)
 #define EventWriteLeaseRelationTransition4(a,b,c,d,e,f,g,h,i)  \
-LeaseTrace::WriteInfo("LeaseRelationTransition4", "Post Arbitration  Timer: Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) transition ({4}-{5})-&gt;({6}-{7})",b,c,d,e,f,g,h,i)
+LeaseTrace::TraceInfo("LeaseRelationTransition4", "Post Arbitration  Timer: Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) transition ({4}-{5})-&gt;({6}-{7})",b,c,d,e,f,g,h,i)
 #define EventWriteLeaseRelationEnqueue1(a,b,c,d,e,f,g,h)  \
-LeaseTrace::WriteInfo("LeaseRelationEnqueue1", "{0} Timer: Lease relationship ({1}/{2}, subject = {3}, monitor = {4}) was enqueued, ttl = {5}, count = {6}",b,c,d,e,f,g,h)
+LeaseTrace::TraceInfo("LeaseRelationEnqueue1", "{0} Timer: Lease relationship ({1}/{2}, subject = {3}, monitor = {4}) was enqueued, ttl = {5}, count = {6}",b,c,d,e,f,g,h)
 #define EventWriteLeaseRelationEnqueue2(a,b,c,d,e,f)  \
-LeaseTrace::WriteInfo("LeaseRelationEnqueue2", "{0} Timer: Lease relationship ({1}/{2}, subject = {3}, monitor = {4}) was dequeued",b,c,d,e,f)
+LeaseTrace::TraceInfo("LeaseRelationEnqueue2", "{0} Timer: Lease relationship ({1}/{2}, subject = {3}, monitor = {4}) was dequeued",b,c,d,e,f)
 #define EventWriteLeaseRelationTerminateFail1(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("LeaseRelationTerminateFail1", "Monitor lease relationship {0}/{1} could not be terminated on remote lease agent {2}/{3}",b,c,d,e)
+LeaseTrace::TraceInfo("LeaseRelationTerminateFail1", "Monitor lease relationship {0}/{1} could not be terminated on remote lease agent {2}/{3}",b,c,d,e)
 #define EventWriteLeaseRelationTerminateFail2(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("LeaseRelationTerminateFail2", "Subject lease relationship {0}/{1} could not be terminated on remote lease agent {2}/{3}",b,c,d,e)
+LeaseTrace::TraceInfo("LeaseRelationTerminateFail2", "Subject lease relationship {0}/{1} could not be terminated on remote lease agent {2}/{3}",b,c,d,e)
 #define EventWriteLeaseRelationRcvArbitrationTTL(a,b,c,d,e,f,g,h,i,j)  \
-LeaseTrace::WriteInfo("LeaseRelationRcvArbitrationTTL", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) Received arbitration LocalTTL = {6}, RemoteTTL = {7}, IsDelayed = {8}",b,c,d,e,f,g,h,i,j)
+LeaseTrace::TraceInfo("LeaseRelationRcvArbitrationTT", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) Received arbitration LocalTTL = {6}, RemoteTTL = {7}, IsDelayed = {8}",b,c,d,e,f,g,h,i,j)
 #define EventWriteDeviceFailedWith4(a,b)  \
-LeaseTrace::WriteInfo("DeviceFailedWith4", "ObReferenceObjectByHandle failed with 0x{0}",b)
+LeaseTrace::TraceInfo("DeviceFailedWith4", "ObReferenceObjectByHandle failed with 0x{0}",b)
 #define EventWriteLeaseAgentBindingFailedWith(a,b,c,d)  \
-LeaseTrace::WriteInfo("LeaseAgentBindingFailedWith", "Lease agent {0}/{1} binding failed with 0x{2}",b,c,d)
+LeaseTrace::TraceInfo("LeaseAgentBindingFailedWith", "Lease agent {0}/{1} binding failed with 0x{2}",b,c,d)
 #define EventWriteInvalidReq1(a)  \
-LeaseTrace::WriteInfo("InvalidReq1", "Invalid request - unexpected input buffer size")
+LeaseTrace::TraceInfo("InvalidReq1", "Invalid request - unexpected input buffer size")
 #define EventWriteInvalidReq2(a)  \
-LeaseTrace::WriteInfo("InvalidReq2", "Invalid request - unexpected certificate setting")
+LeaseTrace::TraceInfo("InvalidReq2", "Invalid request - unexpected certificate setting")
 #define EventWriteInvalidReq3(a)  \
-LeaseTrace::WriteInfo("InvalidReq3", "Invalid request - unexpected lease agent instance")
+LeaseTrace::TraceInfo("InvalidReq3", "Invalid request - unexpected lease agent instance")
 #define EventWriteInvalidReq4(a)  \
-LeaseTrace::WriteInfo("InvalidReq4", "Invalid request - unexpected remote lease agent instance")
+LeaseTrace::TraceInfo("InvalidReq4", "Invalid request - unexpected remote lease agent instance")
 #define EventWriteInvalidReq5(a)  \
-LeaseTrace::WriteInfo("InvalidReq5", "Invalid request - unexpected output buffer size")
+LeaseTrace::TraceInfo("InvalidReq5", "Invalid request - unexpected output buffer size")
 #define EventWriteInvalidReq6(a)  \
-LeaseTrace::WriteInfo("InvalidReq6", "Invalid request - unexpected socket address")
+LeaseTrace::TraceInfo("InvalidReq6", "Invalid request - unexpected socket address")
 #define EventWriteInvalidReq7(a)  \
-LeaseTrace::WriteInfo("InvalidReq7", "Invalid request - unexpected lease agent handle")
+LeaseTrace::TraceInfo("InvalidReq7", "Invalid request - unexpected lease agent handle")
 #define EventWriteInvalidReq8(a)  \
-LeaseTrace::WriteInfo("InvalidReq8", "Invalid request - unexpected leasing application identifier")
+LeaseTrace::TraceInfo("InvalidReq8", "Invalid request - unexpected leasing application identifier")
 #define EventWriteInvalidReq9(a)  \
-LeaseTrace::WriteInfo("InvalidReq9", "Invalid request - unexpected leasing application handle")
+LeaseTrace::TraceInfo("InvalidReq9", "Invalid request - unexpected leasing application handle")
 #define EventWriteInvalidReq10(a)  \
-LeaseTrace::WriteInfo("InvalidReq10", "Invalid request - unexpected lease duration")
+LeaseTrace::TraceInfo("InvalidReq10", "Invalid request - unexpected lease duration")
 #define EventWriteInvalidReq11(a)  \
-LeaseTrace::WriteInfo("InvalidReq11", "Invalid request - unexpected remote leasing application identifier")
+LeaseTrace::TraceInfo("InvalidReq11", "Invalid request - unexpected remote leasing application identifier")
 #define EventWriteInvalidReq12(a)  \
-LeaseTrace::WriteInfo("InvalidReq12", "Invalid request - unexpected time to live")
+LeaseTrace::TraceInfo("InvalidReq12", "Invalid request - unexpected time to live")
 #define EventWriteRetrieveFail1(a)  \
-LeaseTrace::WriteInfo("RetrieveFail1", "Could not retrieve request Input buffer")
+LeaseTrace::TraceInfo("RetrieveFail1", "Could not retrieve request Input buffer")
 #define EventWriteRetrieveFail2(a)  \
-LeaseTrace::WriteInfo("RetrieveFail2", "Could not retrieve request Output buffer")
+LeaseTrace::TraceInfo("RetrieveFail2", "Could not retrieve request Output buffer")
 #define EventWriteWorkerThread1(a)  \
-LeaseTrace::WriteInfo("WorkerThread1", "Worker thread started")
+LeaseTrace::TraceInfo("WorkerThread1", "Worker thread started")
 #define EventWriteWorkerThread2(a)  \
-LeaseTrace::WriteInfo("WorkerThread2", "Worker thread is exiting")
+LeaseTrace::TraceInfo("WorkerThread2", "Worker thread is exiting")
 #define EventWriteLeaseAppOnLeaseAgent1(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("LeaseAppOnLeaseAgent1", "Leasing application {0} could not be created on lease agent {1}/{2}",b,c,d,e)
+LeaseTrace::TraceInfo("LeaseAppOnLeaseAgent1", "Leasing application {0} could not be created on lease agent {1}/{2}",b,c,d,e)
 #define EventWriteLeaseAppOnLeaseAgent2(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("LeaseAppOnLeaseAgent2", "Leasing application {0} already exists on lease agent {1}/{2}",b,c,d,e)
+LeaseTrace::TraceInfo("LeaseAppOnLeaseAgent2", "Leasing application {0} already exists on lease agent {1}/{2}",b,c,d,e)
 #define EventWriteLeaseAppOnLeaseAgent3(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("LeaseAppOnLeaseAgent3", "Leasing application {0} created on lease agent {1}/{2}",b,c,d,e)
+LeaseTrace::TraceInfo("LeaseAppOnLeaseAgent3", "Leasing application {0} created on lease agent {1}/{2}",b,c,d,e)
 #define EventWriteLeaseAppOnLeaseAgent4(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("LeaseAppOnLeaseAgent4", "Leasing application {0} registered on lease agent {1}/{2}",b,c,d,e)
+LeaseTrace::TraceInfo("LeaseAppOnLeaseAgent4", "Leasing application {0} registered on lease agent {1}/{2}",b,c,d,e)
 #define EventWriteLeaseAppOnLeaseAgent5(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("LeaseAppOnLeaseAgent5", "Leasing application {0} already registered on lease agent {1}/{2}",b,c,d,e)
+LeaseTrace::TraceInfo("LeaseAppOnLeaseAgent5", "Leasing application {0} already registered on lease agent {1}/{2}",b,c,d,e)
 #define EventWriteLeaseAppCreatedOnLeaseAgent3(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("LeaseAppCreatedOnLeaseAgent3", "Leasing application {0} created on lease agent {1}/{2}",b,c,d,e)
+LeaseTrace::TraceInfo("LeaseAppCreatedOnLeaseAgent3", "Leasing application {0} created on lease agent {1}/{2}",b,c,d,e)
 #define EventWriteLeaseAppOnLeaseAgentInState1(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("LeaseAppOnLeaseAgentInState1", "Leasing application {0} could not be created on lease agent {1}/{2} in state {3}",b,c,d,e)
+LeaseTrace::TraceInfo("LeaseAppOnLeaseAgentInState1", "Leasing application {0} could not be created on lease agent {1}/{2} in state {3}",b,c,d,e)
 #define EventWriteLeaseAppOnLeaseAgentInState2(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("LeaseAppOnLeaseAgentInState2", "Leasing application {0} already exists on lease agent {1}/{2} in state {3}",b,c,d,e)
+LeaseTrace::TraceInfo("LeaseAppOnLeaseAgentInState2", "Leasing application {0} already exists on lease agent {1}/{2} in state {3}",b,c,d,e)
 #define EventWriteLeaseAppOnLeaseAgentInState3(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("LeaseAppOnLeaseAgentInState3", "Leasing application {0} created on lease agent {1}/{2} in state {3}",b,c,d,e)
+LeaseTrace::TraceInfo("LeaseAppOnLeaseAgentInState3", "Leasing application {0} created on lease agent {1}/{2} in state {3}",b,c,d,e)
 #define EventWriteLeaseAppOnLeaseAgentInState4(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("LeaseAppOnLeaseAgentInState4", "Leasing application {0} registered on lease agent {1}/{2} in state {3}",b,c,d,e)
+LeaseTrace::TraceInfo("LeaseAppOnLeaseAgentInState4", "Leasing application {0} registered on lease agent {1}/{2} in state {3}",b,c,d,e)
 #define EventWriteLeaseAppOnLeaseAgentInState5(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("LeaseAppOnLeaseAgentInState5", "Leasing application {0} already registered on lease agent {1}/{2} in state {3}",b,c,d,e)
+LeaseTrace::TraceInfo("LeaseAppOnLeaseAgentInState5", "Leasing application {0} already registered on lease agent {1}/{2} in state {3}",b,c,d,e)
 #define EventWriteLeaseAppOnLeaseAgentInState6(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("LeaseAppOnLeaseAgentInState6", "Leasing application {0} could not be registered on lease agent {1}/{2} in state {3}",b,c,d,e)
+LeaseTrace::TraceInfo("LeaseAppOnLeaseAgentInState6", "Leasing application {0} could not be registered on lease agent {1}/{2} in state {3}",b,c,d,e)
 #define EventWriteCleanUpRemoteLeaseAgent(a,b,c)  \
-LeaseTrace::WriteInfo("CleanUpRemoteLeaseAgent", "Cleaning up remote lease agent {0}/{1}",b,c)
+LeaseTrace::TraceInfo("CleanUpRemoteLeaseAgent", "Cleaning up remote lease agent {0}/{1}",b,c)
 #define EventWriteLeaseAgentActionStatus1(a,b,c)  \
-LeaseTrace::WriteInfo("LeaseAgentActionStatus1", "Lease agent {0}/{1} could not be created",b,c)
+LeaseTrace::TraceInfo("LeaseAgentActionStatus1", "Lease agent {0}/{1} could not be created",b,c)
 #define EventWriteLeaseAgentActionStatus2(a,b,c)  \
-LeaseTrace::WriteInfo("LeaseAgentActionStatus2", "Lease agent {0}/{1} already exists",b,c)
+LeaseTrace::TraceInfo("LeaseAgentActionStatus2", "Lease agent {0}/{1} already exists",b,c)
 #define EventWriteLeaseAgentActionStatus3(a,b,c)  \
-LeaseTrace::WriteInfo("LeaseAgentActionStatus3", "Lease agent {0}/{1} created",b,c)
+LeaseTrace::TraceInfo("LeaseAgentActionStatus3", "Lease agent {0}/{1} created",b,c)
 #define EventWriteLeaseAgentActionStatus4(a,b,c)  \
-LeaseTrace::WriteInfo("LeaseAgentActionStatus4", "Lease agent {0}/{1} registered",b,c)
+LeaseTrace::TraceInfo("LeaseAgentActionStatus4", "Lease agent {0}/{1} registered",b,c)
 #define EventWriteLeaseAgentActionError1(a,b,c)  \
-LeaseTrace::WriteInfo("LeaseAgentActionError1", "Lease agent {0}/{1} could not be created",b,c)
+LeaseTrace::TraceInfo("LeaseAgentActionError1", "Lease agent {0}/{1} could not be created",b,c)
 #define EventWriteLeaseAgentActionError2(a,b,c)  \
-LeaseTrace::WriteInfo("LeaseAgentActionError2", "Lease agent {0}/{1} already exists",b,c)
+LeaseTrace::TraceInfo("LeaseAgentActionError2", "Lease agent {0}/{1} already exists",b,c)
 #define EventWriteLeaseAgentActionError3(a,b,c)  \
-LeaseTrace::WriteInfo("LeaseAgentActionError3", "Lease agent {0}/{1} created",b,c)
+LeaseTrace::TraceInfo("LeaseAgentActionError3", "Lease agent {0}/{1} created",b,c)
 #define EventWriteLeaseAgentActionError4(a,b,c)  \
-LeaseTrace::WriteInfo("LeaseAgentActionError4", "Lease agent {0}/{1} registered",b,c)
+LeaseTrace::TraceInfo("LeaseAgentActionError4", "Lease agent {0}/{1} registered",b,c)
 #define EventWriteLeaseAgentActionError5(a,b,c)  \
-LeaseTrace::WriteInfo("LeaseAgentActionError5", "Lease agent {0}/{1} already registered",b,c)
+LeaseTrace::TraceInfo("LeaseAgentActionError5", "Lease agent {0}/{1} already registered",b,c)
 #define EventWriteLeaseAgentActionError6(a,b,c)  \
-LeaseTrace::WriteInfo("LeaseAgentActionError6", "Lease agent {0}/{1} could not be registered",b,c)
+LeaseTrace::TraceInfo("LeaseAgentActionError6", "Lease agent {0}/{1} could not be registered",b,c)
 #define EventWriteLeaseAgentNowInState(a,b,c,d)  \
-LeaseTrace::WriteInfo("LeaseAgentNowInState", "Lease agent {0}/{1} is now in state {2}",b,c,d)
+LeaseTrace::TraceInfo("LeaseAgentNowInState", "Lease agent {0}/{1} is now in state {2}",b,c,d)
 #define EventWriteEstLeaseRelationFail(a,b,c,d,e,f)  \
-LeaseTrace::WriteInfo("EstLeaseRelationFail", "Could not establish lease relationship {0}/{1} on remote lease agent {2}/{3} in state {4}",b,c,d,e,f)
+LeaseTrace::TraceInfo("EstLeaseRelationFail", "Could not establish lease relationship {0}/{1} on remote lease agent {2}/{3} in state {4}",b,c,d,e,f)
 #define EventWriteRemoteLeaseAgentConnectionFail(a,b,c,d)  \
-LeaseTrace::WriteInfo("RemoteLeaseAgentConnectionFail", "Remote lease agent {0}/{1} connection failed with 0x{2}",b,c,d)
+LeaseTrace::TraceInfo("RemoteLeaseAgentConnectionFail", "Remote lease agent {0}/{1} connection failed with 0x{2}",b,c,d)
 #define EventWriteLeaseRelationExistRemoteLA(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("LeaseRelationExistRemoteLA", "Lease relationship identifier {0}/{1} already exists on remote lease agent {2}/{3}",b,c,d,e)
+LeaseTrace::TraceInfo("LeaseRelationExistRemoteLA", "Lease relationship identifier {0}/{1} already exists on remote lease agent {2}/{3}",b,c,d,e)
 #define EventWriteLeaseRelationExistInReverseLeaseEstablish(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("LeaseRelationExistInReverseLeaseEstablish", "Lease relationship identifier {0}/{1} already exists on remote lease agent {2}/{3} when try to establish reverse lease",b,c,d,e)
+LeaseTrace::TraceInfo("LeaseRelationExistInReverseLeaseEstablish", "Lease relationship identifier {0}/{1} already exists on remote lease agent {2}/{3} when try to establish reverse lease",b,c,d,e)
 #define EventWriteReverseLeaseEstablishRLASuspended(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("ReverseLeaseEstablishRLASuspended", "Lease relationship identifier {0}/{1} could not establish reverse side lease on remote lease agent {2}/{3}, because remote lease agent is suspended",b,c,d,e)
+LeaseTrace::TraceInfo("ReverseLeaseEstablishRLASuspended", "Lease relationship identifier {0}/{1} could not establish reverse side lease on remote lease agent {2}/{3}, because remote lease agent is suspended",b,c,d,e)
 #define EventWriteRegisterLRIDSubListFail(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("RegisterLRIDSubListFail", "Could not register lease relationship identifier {0}/{1} in subject list on remote lease agent {2}/{3}",b,c,d,e)
+LeaseTrace::TraceInfo("RegisterLRIDSubListFail", "Could not register lease relationship identifier {0}/{1} in subject list on remote lease agent {2}/{3}",b,c,d,e)
 #define EventWriteRegisterLRIDSubPendingListFail(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("RegisterLRIDSubPendingListFail", "Could not register lease relationship identifier {0}/{1} in subject pending list on remote lease agent {2}/{3}",b,c,d,e)
+LeaseTrace::TraceInfo("RegisterLRIDSubPendingListFail", "Could not register lease relationship identifier {0}/{1} in subject pending list on remote lease agent {2}/{3}",b,c,d,e)
 #define EventWriteInvalidIOCTL(a,b)  \
-LeaseTrace::WriteInfo("InvalidIOCTL", "Invalid IOCTL code {0}",b)
+LeaseTrace::TraceInfo("InvalidIOCT", "Invalid IOCTL code {0}",b)
 #define EventWriteTerminateAllLeaseRelation(a,b,c,d)  \
-LeaseTrace::WriteInfo("TerminateAllLeaseRelation", "Terminating all lease relationships for leasing application {0} registered with lease agent {1}/{2}",b,c,d)
+LeaseTrace::TraceInfo("TerminateAllLeaseRelation", "Terminating all lease relationships for leasing application {0} registered with lease agent {1}/{2}",b,c,d)
 #define EventWriteTerminateLeaseRelationSkipped(a,b,c,d)  \
-LeaseTrace::WriteInfo("TerminateLeaseRelationSkipped", "Terminate lease relationship on remote lease agent {0}/{1} in state {2} was skipped",b,c,d)
+LeaseTrace::TraceInfo("TerminateLeaseRelationSkipped", "Terminate lease relationship on remote lease agent {0}/{1} in state {2} was skipped",b,c,d)
 #define EventWriteLeaseAppUnregister(a,b,c,d)  \
-LeaseTrace::WriteInfo("LeaseAppUnregister", "Leasing application {0} unregistered from lease agent {1}/{2}",b,c,d)
+LeaseTrace::TraceInfo("LeaseAppUnregister", "Leasing application {0} unregistered from lease agent {1}/{2}",b,c,d)
 #define EventWriteLeaseAppUnregisterFailed(a,b,c,d)  \
-LeaseTrace::WriteInfo("LeaseAppUnregisterFailed", "Could not unregister leasing application {0} from lease agent {1}/{2}",b,c,d)
+LeaseTrace::TraceInfo("LeaseAppUnregisterFailed", "Could not unregister leasing application {0} from lease agent {1}/{2}",b,c,d)
 #define EventWriteLeaseRelationRegisteredRemoteLA(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("LeaseRelationRegisteredRemoteLA", "Lease relationship identifier {0}/{1} registered in on remote lease agent {2}/{3}",b,c,d,e)
+LeaseTrace::TraceInfo("LeaseRelationRegisteredRemoteLA", "Lease relationship identifier {0}/{1} registered in on remote lease agent {2}/{3}",b,c,d,e)
 #define EventWriteEstSubLeaseRelationOnRemote(a,b,c,d,e,f,g)  \
-LeaseTrace::WriteInfo("EstSubLeaseRelationOnRemote", "Establishing subject lease relationship {0}/{1} with TTL = {2} on remote lease agent {3}/{4}, lease agent remote instance {5}",b,c,d,e,f,g)
+LeaseTrace::TraceInfo("EstSubLeaseRelationOnRemote", "Establishing subject lease relationship {0}/{1} with TTL = {2} on remote lease agent {3}/{4}, lease agent remote instance {5}",b,c,d,e,f,g)
 #define EventWriteEstReverseLeaseRelationOnRemote(a,b,c,d,e,f,g)  \
-LeaseTrace::WriteInfo("EstReverseLeaseRelationOnRemote", "Establishing reverse side subject lease relationship {0}/{1} with TTL = {2} on remote lease agent {3}/{4}, lease agent remote instance {5}",b,c,d,e,f,g)
+LeaseTrace::TraceInfo("EstReverseLeaseRelationOnRemote", "Establishing reverse side subject lease relationship {0}/{1} with TTL = {2} on remote lease agent {3}/{4}, lease agent remote instance {5}",b,c,d,e,f,g)
 #define EventWriteTermReverseLease(a,b,c)  \
-LeaseTrace::WriteInfo("TermReverseLease", "Terminating reverse side lease relationship on remote lease agent {0}/{1}",b,c)
+LeaseTrace::TraceInfo("TermReverseLease", "Terminating reverse side lease relationship on remote lease agent {0}/{1}",b,c)
 #define EventWriteSubLeaseEstablishingOnRemote(a,b,c,d,e,f)  \
-LeaseTrace::WriteInfo("SubLeaseEstablishingOnRemote", "Subject lease relationship {0}/{1} is already establishing on remote lease agent {2}{3}, lease agent remote instance {4}",b,c,d,e,f)
+LeaseTrace::TraceInfo("SubLeaseEstablishingOnRemote", "Subject lease relationship {0}/{1} is already establishing on remote lease agent {2}{3}, lease agent remote instance {4}",b,c,d,e,f)
 #define EventWriteSubLeaseEstablishedOnRemote(a,b,c,d,e,f)  \
-LeaseTrace::WriteInfo("SubLeaseEstablishedOnRemote", "Subject lease relationship {0}/{1} is already established on remote lease agent {2}{3}, lease agent remote instance {4}",b,c,d,e,f)
+LeaseTrace::TraceInfo("SubLeaseEstablishedOnRemote", "Subject lease relationship {0}/{1} is already established on remote lease agent {2}{3}, lease agent remote instance {4}",b,c,d,e,f)
 #define EventWriteLeasingAppNotRegisteredInReverseLease(a,b,c,d)  \
-LeaseTrace::WriteInfo("LeasingAppNotRegisteredInReverseLease", "Establish reverse lease: Leasing application {0} has not yet registered on lease agent {1}/{2}",b,c,d)
+LeaseTrace::TraceInfo("LeasingAppNotRegisteredInReverseLease", "Establish reverse lease: Leasing application {0} has not yet registered on lease agent {1}/{2}",b,c,d)
 #define EventWriteRaisingQueuingEventLeaseApp1(a,b,c,d)  \
-LeaseTrace::WriteInfo("RaisingQueuingEventLeaseApp1", "Raising event {0} for leasing application {1}",b,c,d)
+LeaseTrace::TraceInfo("RaisingQueuingEventLeaseApp1", "Raising event {0} for leasing application {1}",b,c,d)
 #define EventWriteRaisingQueuingEventLeaseApp2(a,b,c,d)  \
-LeaseTrace::WriteInfo("RaisingQueuingEventLeaseApp2", "Queuing event {0} for leasing application {1}",b,c,d)
+LeaseTrace::TraceInfo("RaisingQueuingEventLeaseApp2", "Queuing event {0} for leasing application {1}",b,c,d)
 #define EventWriteRaisingQueuingEventLeaseAppFailed(a,b,c)  \
-LeaseTrace::WriteInfo("RaisingQueuingEventLeaseAppFailed", "Queuing event {0} for leasing application {1} failed, the event will be lost",b,c)
+LeaseTrace::TraceInfo("RaisingQueuingEventLeaseAppFailed", "Queuing event {0} for leasing application {1} failed, the event will be lost",b,c)
 #define EventWriteRaisingQueuingEventLeaseAppRemote1(a,b,c,d)  \
-LeaseTrace::WriteInfo("RaisingQueuingEventLeaseAppRemote1", "Raising event {0} for leasing application {1} about remote leasing application {2}",b,c,d)
+LeaseTrace::TraceInfo("RaisingQueuingEventLeaseAppRemote1", "Raising event {0} for leasing application {1} about remote leasing application {2}",b,c,d)
 #define EventWriteRaisingQueuingEventLeaseAppRemote2(a,b,c,d)  \
-LeaseTrace::WriteInfo("RaisingQueuingEventLeaseAppRemote2", "Queuing event {0} for leasing application {1} about remote leasing application {2}",b,c,d)
+LeaseTrace::TraceInfo("RaisingQueuingEventLeaseAppRemote2", "Queuing event {0} for leasing application {1} about remote leasing application {2}",b,c,d)
 #define EventWriteRaisingQueuingEventLeaseAppRemote3(a,b,c,d)  \
-LeaseTrace::WriteInfo("RaisingQueuingEventLeaseAppRemote3", "Raising queued event {0} for leasing application {1} about remote leasing application {2}",b,c,d)
+LeaseTrace::TraceInfo("RaisingQueuingEventLeaseAppRemote3", "Raising queued event {0} for leasing application {1} about remote leasing application {2}",b,c,d)
 #define EventWriteTransportListenStatus(a,b,c,d)  \
-LeaseTrace::WriteInfo("TransportListenStatus", "Transport listen status {0} on {1}/{2}",b,c,d)
+LeaseTrace::TraceInfo("TransportListenStatus", "Transport listen status {0} on {1}/{2}",b,c,d)
 #define EventWriteTransportCreateFailed(a,b)  \
-LeaseTrace::WriteInfo("TransportCreateFailed", "Transport create failed with {0}",b)
+LeaseTrace::TraceInfo("TransportCreateFailed", "Transport create failed with {0}",b)
 #define EventWriteInvalidMessage(a,b)  \
-LeaseTrace::WriteInfo("InvalidMessage", "Invalid message, portion {0}",b)
+LeaseTrace::TraceInfo("InvalidMessage", "Invalid message, portion {0}",b)
 #define EventWriteInvalidMessageHeader(a,b)  \
-LeaseTrace::WriteInfo("InvalidMessageHeader", "Invalid message header with wrong {0} ",b)
+LeaseTrace::TraceInfo("InvalidMessageHeader", "Invalid message header with wrong {0} ",b)
 #define EventWriteDeserializationError(a,b,c)  \
-LeaseTrace::WriteInfo("DeserializationError", "Error deserializing message {0} id {1}",b,c)
+LeaseTrace::TraceInfo("DeserializationError", "Error deserializing message {0} id {1}",b,c)
 #define EventWriteSetSubjectExpiration(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("SetSubjectExpiration", "Subject {0} in state {1} advancing expiration by {2}ms to {3}",b,c,d,e)
+LeaseTrace::TraceInfo("SetSubjectExpiration", "Subject {0} in state {1} advancing expiration by {2}ms to {3}",b,c,d,e)
 #define EventWriteClearSubjectExpiration(a,b,c)  \
-LeaseTrace::WriteInfo("ClearSubjectExpiration", "Subject {0} in state {1} clearing expiration",b,c)
+LeaseTrace::TraceInfo("ClearSubjectExpiration", "Subject {0} in state {1} clearing expiration",b,c)
 #define EventWriteSubjectExpired(a,b,c,d,e,f,g,h,i)  \
-LeaseTrace::WriteInfo("SubjectExpired", "Subject Expired: {0}/{1} subject = {2}, monitor = {3} in state ({4}-{5}) Current time = {6} Expiration = {7}",b,c,d,e,f,g,h,i)
+LeaseTrace::TraceInfo("SubjectExpired", "Subject Expired: {0}/{1} subject = {2}, monitor = {3} in state ({4}-{5}) Current time = {6} Expiration = {7}",b,c,d,e,f,g,h,i)
 #define EventWriteMonitorExpired(a,b,c,d,e,f,g,h,i)  \
-LeaseTrace::WriteInfo("MonitorExpired", "Monitor Expired: {0}/{1} subject = {2}, monitor = {3} in state ({4}-{5}) Current time = {6} Expiration = {7}",b,c,d,e,f,g,h,i)
+LeaseTrace::TraceInfo("MonitorExpired", "Monitor Expired: {0}/{1} subject = {2}, monitor = {3} in state ({4}-{5}) Current time = {6} Expiration = {7}",b,c,d,e,f,g,h,i)
 #define EventWriteLeaseAgentBlocked(a,b,c)  \
-LeaseTrace::WriteInfo("LeaseAgentBlocked", "Lease agent blocked {0}/{1}",b,c)
+LeaseTrace::TraceInfo("LeaseAgentBlocked", "Lease agent blocked {0}/{1}",b,c)
 #define EventWritePerformMaintenance(a)  \
-LeaseTrace::WriteInfo("PerformMaintenance", "Worker thread is performing maintenance")
+LeaseTrace::TraceInfo("PerformMaintenance", "Worker thread is performing maintenance")
 #define EventWriteLeaseAgentCleanup(a,b,c)  \
-LeaseTrace::WriteInfo("LeaseAgentCleanup", "Cleaning up lease agent {0}/{1}",b,c)
+LeaseTrace::TraceInfo("LeaseAgentCleanup", "Cleaning up lease agent {0}/{1}",b,c)
 #define EventWriteCleanupApplication(a,b,c,d)  \
-LeaseTrace::WriteInfo("CleanupApplication", "Cleanup application for process PID={0} LeaseAgent={1} LeasingApplication={2}",b,c,d)
+LeaseTrace::TraceInfo("CleanupApplication", "Cleanup application for process PID={0} LeaseAgent={1} LeasingApplication={2}",b,c,d)
 #define EventWriteProcessCleanup(a,b)  \
-LeaseTrace::WriteInfo("ProcessCleanup", "Cleaning up process PID={0}",b)
+LeaseTrace::TraceInfo("ProcessCleanup", "Cleaning up process PID={0}",b)
 #define EventWriteUnregisterTimerEnqueue(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("UnregisterTimerEnqueue", "Enqueue unregister timer for leasing application {0} with TTL milli seconds {1}, timer already in queue ? &lt;{2}&gt;,  TTL ticks {3}",b,c,d,e)
+LeaseTrace::TraceInfo("UnregisterTimerEnqueue", "Enqueue unregister timer for leasing application {0} with TTL milli seconds {1}, timer already in queue ? &lt;{2}&gt;,  TTL ticks {3}",b,c,d,e)
 #define EventWriteCancelUnregisterTimer(a,b)  \
-LeaseTrace::WriteInfo("CancelUnregisterTimer", "Unregister timer is cancelled for leasing application {0} .",b)
+LeaseTrace::TraceInfo("CancelUnregisterTimer", "Unregister timer is cancelled for leasing application {0} .",b)
 #define EventWriteUnregisterTimerDPC(a,b,c)  \
-LeaseTrace::WriteInfo("UnregisterTimerDPC", "Unregister timer is fired to clean leasing application {0}, status {1} .",b,c)
+LeaseTrace::TraceInfo("UnregisterTimerDPC", "Unregister timer is fired to clean leasing application {0}, status {1} .",b,c)
 #define EventWriteInsertUnregisterListFail(a,b,c)  \
-LeaseTrace::WriteInfo("InsertUnregisterListFail", "Fail to insert leasing application {0} to the unregister list",b,c)
+LeaseTrace::TraceInfo("InsertUnregisterListFail", "Fail to insert leasing application {0} to the unregister list",b,c)
 #define EventWriteLeasingAppIsBeingUnregistered(a,b,c)  \
-LeaseTrace::WriteInfo("LeasingAppIsBeingUnregistered", "Leasing application {0} is being unregistered, timer won&apos;t be reset",b,c)
+LeaseTrace::TraceInfo("LeasingAppIsBeingUnregistered", "Leasing application {0} is being unregistered, timer won&apos;t be reset",b,c)
 #define EventWriteGetLeasingAPPTTL(a,b,c,d,e,f)  \
-LeaseTrace::WriteInfo("GetLeasingAPPTTL", "Get Expiration Timer for leasing application {0} with TTL {1} milliseconds, Kernel current time {3}, Request TTL {4}",b,c,d,e,f)
+LeaseTrace::TraceInfo("GetLeasingAPPTT", "Get Expiration Timer for leasing application {0} with TTL {1} milliseconds, Kernel current time {3}, Request TTL {4}",b,c,d,e,f)
 #define EventWriteCanNotDelLALeasingAppIsBeingUnregistered(a,b,c)  \
-LeaseTrace::WriteInfo("CanNotDelLALeasingAppIsBeingUnregistered", "Cannot delete lease agent because Leasing application {0} is being unregistered",b,c)
+LeaseTrace::TraceInfo("CanNotDelLALeasingAppIsBeingUnregistered", "Cannot delete lease agent because Leasing application {0} is being unregistered",b,c)
 #define EventWriteDriverUnloading(a,b)  \
-LeaseTrace::WriteInfo("DriverUnloading", "Driver unloading, driver context = {0}",b)
+LeaseTrace::TraceInfo("DriverUnloading", "Driver unloading, driver context = {0}",b)
 #define EventWriteMaintenanceThreadStopped(a)  \
-LeaseTrace::WriteInfo("MaintenanceThreadStopped", "Maintenance thread stopped")
+LeaseTrace::TraceInfo("MaintenanceThreadStopped", "Maintenance thread stopped")
 #define EventWriteDeallocateLeaseAgents(a)  \
-LeaseTrace::WriteInfo("DeallocateLeaseAgents", "Deallocate lease agents")
+LeaseTrace::TraceInfo("DeallocateLeaseAgents", "Deallocate lease agents")
 #define EventWriteUnloadComplete(a)  \
-LeaseTrace::WriteInfo("UnloadComplete", "Driver unload complete")
+LeaseTrace::TraceInfo("UnloadComplete", "Driver unload complete")
 #define EventWriteRemoteLeaseAgentInstanceNewer(a,b,c,d,e,f,g)  \
-LeaseTrace::WriteInfo("RemoteLeaseAgentInstanceNewer", "Remote lease agent {0}/{1}, remote instance={2} is newer than {3}/{4}, remote instance={5}",b,c,d,e,f,g)
+LeaseTrace::TraceInfo("RemoteLeaseAgentInstanceNewer", "Remote lease agent {0}/{1}, remote instance={2} is newer than {3}/{4}, remote instance={5}",b,c,d,e,f,g)
 #define EventWriteProcessStaleRequest(a,b,c,d,e,f,g,h,i,j)  \
-LeaseTrace::WriteInfo("ProcessStaleRequest", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) received stale request with message ID {6} and lease instance {7}, monitor ID is {8}",b,c,d,e,f,g,h,i,j)
+LeaseTrace::TraceInfo("ProcessStaleRequest", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) received stale request with message ID {6} and lease instance {7}, monitor ID is {8}",b,c,d,e,f,g,h,i,j)
 #define EventWriteProcessStaleResponse(a,b,c,d,e,f,g,h,i,j)  \
-LeaseTrace::WriteInfo("ProcessStaleResponse", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) received stale response with message ID {6} and lease instance {7}, subject ID is {8}",b,c,d,e,f,g,h,i,j)
+LeaseTrace::TraceInfo("ProcessStaleResponse", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) received stale response with message ID {6} and lease instance {7}, subject ID is {8}",b,c,d,e,f,g,h,i,j)
 #define EventWriteDisconnectFailedRemoteLA(a,b,c,d,e,f,g,h)  \
-LeaseTrace::WriteInfo("DisconnectFailedRemoteLA", "Failed remote lease agent ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) is disconnected, lease agent remote instance {6}",b,c,d,e,f,g,h)
+LeaseTrace::TraceInfo("DisconnectFailedRemoteLA", "Failed remote lease agent ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) is disconnected, lease agent remote instance {6}",b,c,d,e,f,g,h)
 #define EventWriteFindActiveRLAInTable(a,b,c,d,e,f,g,h,i)  \
-LeaseTrace::WriteInfo("FindActiveRLAInTable", "Active RLA:({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) is found in the table, lease agent remote instance {6}, in state {7}",b,c,d,e,f,g,h,i)
+LeaseTrace::TraceInfo("FindActiveRLAInTable", "Active RLA:({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) is found in the table, lease agent remote instance {6}, in state {7}",b,c,d,e,f,g,h,i)
 #define EventWriteInitiateTwoWayTermination(a,b,c)  \
-LeaseTrace::WriteInfo("InitiateTwoWayTermination", "Remote lease agent {0}/{1} initiate two way lease termination; reason: there is no subject/monitor lease relationship left",b,c)
+LeaseTrace::TraceInfo("InitiateTwoWayTermination", "Remote lease agent {0}/{1} initiate two way lease termination; reason: there is no subject/monitor lease relationship left",b,c)
 #define EventWriteReceivedTwoWayTermination(a,b,c)  \
-LeaseTrace::WriteInfo("ReceivedTwoWayTermination", "Remote lease agent {0}/{1} received two way lease termination;",b,c)
+LeaseTrace::TraceInfo("ReceivedTwoWayTermination", "Remote lease agent {0}/{1} received two way lease termination;",b,c)
 #define EventWriteKernelUserVersionMismatch(a,b,c)  \
-LeaseTrace::WriteInfo("KernelUserVersionMismatch", "User mode (V: {0}) and Kernel model (V: {1}) version number do not match.",b,c)
+LeaseTrace::TraceInfo("KernelUserVersionMismatch", "User mode (V: {0}) and Kernel model (V: {1}) version number do not match.",b,c)
 #define EventWriteRLAIgnoreRenewRequestInTwoWayTermination(a,b,c,d)  \
-LeaseTrace::WriteInfo("RLAIgnoreRenewRequestInTwoWayTermination", "Remote lease agent {0}/{1} ignore renew request {2} because it is in two way termination",b,c,d)
+LeaseTrace::TraceInfo("RLAIgnoreRenewRequestInTwoWayTermination", "Remote lease agent {0}/{1} ignore renew request {2} because it is in two way termination",b,c,d)
 #define EventWriteLeaseRelationshipCreateTrace(a,b,c,d)  \
-LeaseTrace::WriteInfo("LeaseRelationshipCreateTrace", "Lease relationship {0}/{1} is created with address {2}",b,c,d)
+LeaseTrace::TraceInfo("LeaseRelationshipCreateTrace", "Lease relationship {0}/{1} is created with address {2}",b,c,d)
 #define EventWriteSubExpiredTimerInWrongState(a,b,c,d,e,f,g)  \
-LeaseTrace::WriteInfo("SubExpiredTimerInWrongState", "Subject Expired Timer: Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}), subject should be in Active due to reverse lease establish.",b,c,d,e,f,g)
+LeaseTrace::TraceInfo("SubExpiredTimerInWrongState", "Subject Expired Timer: Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}), subject should be in Active due to reverse lease establish.",b,c,d,e,f,g)
 #define EventWriteSendingTerminationSkippedInPing(a,b,c,d,e,f,g)  \
-LeaseTrace::WriteInfo("SendingTerminationSkippedInPing", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) skip sending termination message since still in ping process",b,c,d,e,f,g)
+LeaseTrace::TraceInfo("SendingTerminationSkippedInPing", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) skip sending termination message since still in ping process",b,c,d,e,f,g)
 #define EventWriteRemainingLeaseTimeoutLessThanConfigExpiryTimeout(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("RemainingLeaseTimeoutLessThanConfigExpiryTimeout", "Leasing application {0} return remaining lease TTL {1} since it is less than the config expiry {2}; Request TTL is {3}",b,c,d,e)
+LeaseTrace::TraceInfo("RemainingLeaseTimeoutLessThanConfigExpiryTimeout", "Leasing application {0} return remaining lease TTL {1} since it is less than the config expiry {2}; Request TTL is {3}",b,c,d,e)
 #define EventWritePingProcessAlreadyStarted(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("PingProcessAlreadyStarted", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) already started the ping process",b,c,d,e)
+LeaseTrace::TraceInfo("PingProcessAlreadyStarted", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) already started the ping process",b,c,d,e)
 #define EventWriteSendingTerminationSkippedSubjectInactive(a,b,c,d,e,f,g,h)  \
-LeaseTrace::WriteInfo("SendingTerminationSkippedSubjectInactive", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) skip sending termination message since the subject is Inactive; is in ping? &lt;{6}&gt;",b,c,d,e,f,g,h)
+LeaseTrace::TraceInfo("SendingTerminationSkippedSubjectInactive", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) skip sending termination message since the subject is Inactive; is in ping? &lt;{6}&gt;",b,c,d,e,f,g,h)
 #define EventWriteProcessStalePingResponse(a,b,c,d,e,f,g,h)  \
-LeaseTrace::WriteInfo("ProcessStalePingResponse", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) received stale ping response with message ID {6}",b,c,d,e,f,g,h)
+LeaseTrace::TraceInfo("ProcessStalePingResponse", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) received stale ping response with message ID {6}",b,c,d,e,f,g,h)
 #define EventWriteUpdateSecuritySettingsFailed(a,b,c,d)  \
-LeaseTrace::WriteInfo("UpdateSecuritySettingsFailed", "Failed to update security settings for leasing application {0} registered with lease agent {1}/{2}",b,c,d)
+LeaseTrace::TraceInfo("UpdateSecuritySettingsFailed", "Failed to update security settings for leasing application {0} registered with lease agent {1}/{2}",b,c,d)
 #define EventWriteTransportSetCredentialsFailed(a,b,c,d)  \
-LeaseTrace::WriteInfo("TransportSetCredentialsFailed", "Failed to set the credentials for leasing application {0} registered with lease agent {1}/{2}",b,c,d)
+LeaseTrace::TraceInfo("TransportSetCredentialsFailed", "Failed to set the credentials for leasing application {0} registered with lease agent {1}/{2}",b,c,d)
 #define EventWriteTransportSetCredentialsSucceeded(a,b,c,d)  \
-LeaseTrace::WriteInfo("TransportSetCredentialsSucceeded", "Succeeded to set the credentials for leasing application {0} registered with lease agent {1}/{2}",b,c,d)
+LeaseTrace::TraceInfo("TransportSetCredentialsSucceeded", "Succeeded to set the credentials for leasing application {0} registered with lease agent {1}/{2}",b,c,d)
 #define EventWriteLeaseSecuritySettingMatch(a,b,c,d)  \
-LeaseTrace::WriteInfo("LeaseSecuritySettingMatch", "Same security is found when update certificte for leasing application {0} registered with lease agent {1}/{2}",b,c,d)
+LeaseTrace::TraceInfo("LeaseSecuritySettingMatch", "Same security is found when update certificte for leasing application {0} registered with lease agent {1}/{2}",b,c,d)
 #define EventWriteRemoteCertVerifyReq(a,b,c,d)  \
-LeaseTrace::WriteInfo("RemoteCertVerifyReq", "Create the remote cert verify request for leasing app {0}, cbCert {1}, operation handle {2}",b,c,d)
+LeaseTrace::TraceInfo("RemoteCertVerifyReq", "Create the remote cert verify request for leasing app {0}, cbCert {1}, operation handle {2}",b,c,d)
 #define EventWriteRemoteCertVerifyReqFailNoLeasingApp(a,b,c,d)  \
-LeaseTrace::WriteInfo("RemoteCertVerifyReqFailNoLeasingApp", "Fail to create the remote cert verify request for Lease agent {0}/{1}, no leasing app left, cbCert {2}.",b,c,d)
+LeaseTrace::TraceInfo("RemoteCertVerifyReqFailNoLeasingApp", "Fail to create the remote cert verify request for Lease agent {0}/{1}, no leasing app left, cbCert {2}.",b,c,d)
 #define EventWriteFailedRemoteCertVerifyResult(a,b,c,d)  \
-LeaseTrace::WriteInfo("FailedRemoteCertVerifyResult", "Process remote cert verify result from user mode failed with error {0} -- operation handle {1}, verify result {2}.",b,c,d)
+LeaseTrace::TraceInfo("FailedRemoteCertVerifyResult", "Process remote cert verify result from user mode failed with error {0} -- operation handle {1}, verify result {2}.",b,c,d)
 #define EventWriteFailedVerifyOperationTableLookup(a,b,c)  \
-LeaseTrace::WriteInfo("FailedVerifyOperationTableLookup", "Could not find cert verify operation handle {0} in the table, verify result {1}.",b,c)
+LeaseTrace::TraceInfo("FailedVerifyOperationTableLookup", "Could not find cert verify operation handle {0} in the table, verify result {1}.",b,c)
 #define EventWriteAllocateFailLeaseRemoteCert(a)  \
-LeaseTrace::WriteInfo("AllocateFailLeaseRemoteCert", "Could not allocate lease remote certificate")
+LeaseTrace::TraceInfo("AllocateFailLeaseRemoteCert", "Could not allocate lease remote certificate")
 #define EventWriteFailedTrustedCertListInsertion(a,b,c)  \
-LeaseTrace::WriteInfo("FailedTrustedCertListInsertion", "Could not insert certificate to the trusted list: operation handle {0}, verify result {1}.",b,c)
+LeaseTrace::TraceInfo("FailedTrustedCertListInsertion", "Could not insert certificate to the trusted list: operation handle {0}, verify result {1}.",b,c)
 #define EventWriteCertExistInTrustedList(a,b,c)  \
-LeaseTrace::WriteInfo("CertExistInTrustedList", "Certificate is already in the trusted list: operation handle {0}, verify result {1}.",b,c)
+LeaseTrace::TraceInfo("CertExistInTrustedList", "Certificate is already in the trusted list: operation handle {0}, verify result {1}.",b,c)
 #define EventWriteInsertCertInTrustedList(a,b,c)  \
-LeaseTrace::WriteInfo("InsertCertInTrustedList", "Successfully insert Certificate in the trusted list: operation handle {0}, verify result {1}.",b,c)
+LeaseTrace::TraceInfo("InsertCertInTrustedList", "Successfully insert Certificate in the trusted list: operation handle {0}, verify result {1}.",b,c)
 #define EventWriteFoundCertInTrustedList(a,b,c)  \
-LeaseTrace::WriteInfo("FoundCertInTrustedList", "Found Certificate in the trusted list: operation handle {0}, verify result {1}.",b,c)
+LeaseTrace::TraceInfo("FoundCertInTrustedList", "Found Certificate in the trusted list: operation handle {0}, verify result {1}.",b,c)
 #define EventWriteInsertCertInPendingList(a,b,c)  \
-LeaseTrace::WriteInfo("InsertCertInPendingList", "Successfully insert Certificate in the pending list: leasing app {0}, operation handle {1}",b,c)
+LeaseTrace::TraceInfo("InsertCertInPendingList", "Successfully insert Certificate in the pending list: leasing app {0}, operation handle {1}",b,c)
 #define EventWriteInsertCertInPendingListAlreadyExistent(a,b,c)  \
-LeaseTrace::WriteInfo("InsertCertInPendingListAlreadyExistent", "certificate operation already exists when insert Certificate in the pending list: leasing app {0}, operation handle {1}",b,c)
+LeaseTrace::TraceInfo("InsertCertInPendingListAlreadyExistent", "certificate operation already exists when insert Certificate in the pending list: leasing app {0}, operation handle {1}",b,c)
 #define EventWriteLeaseSecuritySettingMismatch(a,b,c,d,e,f,g)  \
-LeaseTrace::WriteInfo("LeaseSecuritySettingMismatch", "Security setting mismatch when try to reuse the kernel lease agent; Existing Lease Agent {0}/{1} security type {2}; Newly created Lease Agent {3}/{4} security type {5};",b,c,d,e,f,g)
+LeaseTrace::TraceInfo("LeaseSecuritySettingMismatch", "Security setting mismatch when try to reuse the kernel lease agent; Existing Lease Agent {0}/{1} security type {2}; Newly created Lease Agent {3}/{4} security type {5};",b,c,d,e,f,g)
 #define EventWriteLeaseDriverTextTraceInfo(a,b)  \
-LeaseTrace::WriteInfo("LeaseDriverTextTraceInfo", "{0}",b)
+LeaseTrace::TraceInfo("LeaseDriverTextTraceInfo", "{0}",b)
 #define EventWriteLeaseDriverTextTraceError(a,b,c)  \
-LeaseTrace::WriteInfo("LeaseDriverTextTraceError", "{0} due to {1}",b,c)
+LeaseTrace::TraceInfo("LeaseDriverTextTraceError", "{0} due to {1}",b,c)
 #define EventWriteLeaseRenewRetry(a,b,c,d,e,f,g,h,i,j)  \
-LeaseTrace::WriteInfo("LeaseRenewRetry", "Lease renew is being retried: lease agent {0}/{1}; Remote LA: {2}/{3} subject = {4}, monitor = {5} in state ({6}-{7}); Is termination? &lt;{8}&gt;",b,c,d,e,f,g,h,i,j)
+LeaseTrace::TraceInfo("LeaseRenewRetry", "Lease renew is being retried: lease agent {0}/{1}; Remote LA: {2}/{3} subject = {4}, monitor = {5} in state ({6}-{7}); Is termination? &lt;{8}&gt;",b,c,d,e,f,g,h,i,j)
 #define EventWriteBlockingConnection(a,b,c,d,e,f,g,h,i,j)  \
-LeaseTrace::WriteInfo("BlockingConnection", "Block lease connection for KLA {0}/{1} to RLA: {2}/{3}; Lease status: S = {4}, M = {5} in state ({6}-{7}); is blocking? &lt;{8}&gt;",b,c,d,e,f,g,h,i,j)
+LeaseTrace::TraceInfo("BlockingConnection", "Block lease connection for KLA {0}/{1} to RLA: {2}/{3}; Lease status: S = {4}, M = {5} in state ({6}-{7}); is blocking? &lt;{8}&gt;",b,c,d,e,f,g,h,i,j)
 #define EventWriteSendForwardMsgForSameRLASkipped(a,b,c,d)  \
-LeaseTrace::WriteInfo("SendForwardMsgForSameRLASkipped", "Send forward request skipped: RLA {0}/{1} in state {2}",b,c,d)
+LeaseTrace::TraceInfo("SendForwardMsgForSameRLASkipped", "Send forward request skipped: RLA {0}/{1} in state {2}",b,c,d)
 #define EventWriteFindRLARelayForwardMsg(a,b,c,d)  \
-LeaseTrace::WriteInfo("FindRLARelayForwardMsg", "GetCurrentActiveRLA found RLA {0}/{1} in state {2} to relay the forward message",b,c,d)
+LeaseTrace::TraceInfo("FindRLARelayForwardMsg", "GetCurrentActiveRLA found RLA {0}/{1} in state {2} to relay the forward message",b,c,d)
 #define EventWriteSerializeAndSendRelayMsg(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("SerializeAndSendRelayMsg", "RLA {0}/{1} process {2} message with ID {3}",b,c,d,e)
+LeaseTrace::TraceInfo("SerializeAndSendRelayMsg", "RLA {0}/{1} process {2} message with ID {3}",b,c,d,e)
 #define EventWriteProcessForwardMsgNoExistingRLA(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("ProcessForwardMsgNoExistingRLA", "Lease agent {0}/{1} do not find existing RLA to relay when process {2} message with ID {3}",b,c,d,e)
+LeaseTrace::TraceInfo("ProcessForwardMsgNoExistingRLA", "Lease agent {0}/{1} do not find existing RLA to relay when process {2} message with ID {3}",b,c,d,e)
 #define EventWriteDeserializeForwardMessageError(a,b,c)  \
-LeaseTrace::WriteInfo("DeserializeForwardMessageError", "DeserializeForwardMessage {0} address failed because of {1}",b,c)
+LeaseTrace::TraceInfo("DeserializeForwardMessageError", "DeserializeForwardMessage {0} address failed because of {1}",b,c)
 #define EventWriteCheckLeaseDurationList(a,b,c)  \
-LeaseTrace::WriteInfo("CheckLeaseDurationList", "Lease duration {0} : {1}",b,c)
+LeaseTrace::TraceInfo("CheckLeaseDurationList", "Lease duration {0} : {1}",b,c)
 #define EventWriteMonitorGrantGreaterLeaseDuration(a,b,c,d,e,f,g)  \
-LeaseTrace::WriteInfo("MonitorGrantGreaterLeaseDuration", "Grant greater local config durations: {0}/{1}, incoming lease duration: {2}; local config: {3}; local config establish index: {4}; incoming expiration: {5}",b,c,d,e,f,g)
+LeaseTrace::TraceInfo("MonitorGrantGreaterLeaseDuration", "Grant greater local config durations: {0}/{1}, incoming lease duration: {2}; local config: {3}; local config establish index: {4}; incoming expiration: {5}",b,c,d,e,f,g)
 #define EventWriteUpdateLeaseAgentDuration(a,b,c,d)  \
-LeaseTrace::WriteInfo("UpdateLeaseAgentDuration", "Updating LeaseAgentContext {0} duration. Current duration: {1}; Updated duration: {2}",b,c,d)
+LeaseTrace::TraceInfo("UpdateLeaseAgentDuration", "Updating LeaseAgentContext {0} duration. Current duration: {1}; Updated duration: {2}",b,c,d)
 #define EventWriteUpdateRemoteLeaseAgentDurationFlag(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("UpdateRemoteLeaseAgentDurationFlag", "Updating RemoteLeaseAgentContext IsUpdate flag. {0}/{1} current lease duration type {2}; current lease relationship duration in use: {3}",b,c,d,e)
+LeaseTrace::TraceInfo("UpdateRemoteLeaseAgentDurationFlag", "Updating RemoteLeaseAgentContext IsUpdate flag. {0}/{1} current lease duration type {2}; current lease relationship duration in use: {3}",b,c,d,e)
 #define EventWriteUpdateRemoteLeaseDuration(a,b,c,d,e,f,g)  \
-LeaseTrace::WriteInfo("UpdateRemoteLeaseDuration", "Incoming requested durations are different from lease relationship records: {0}/{1}, Incoming: ({2}); Records: ({3}); Local config: ({4}); Lease relation duration: {5}",b,c,d,e,f,g)
+LeaseTrace::TraceInfo("UpdateRemoteLeaseDuration", "Incoming requested durations are different from lease relationship records: {0}/{1}, Incoming: ({2}); Records: ({3}); Local config: ({4}); Lease relation duration: {5}",b,c,d,e,f,g)
 #define EventWriteSubjectRequestedLeaseDuration(a,b,c,d,e,f,g,h)  \
-LeaseTrace::WriteInfo("SubjectRequestedLeaseDuration", "Get requested duration is different from exising lease relationship: {0}/{1}. Duration would be returned: {2}; Local config: {3} Remote duration: {4}; Existing lease relationship: {5}; Update existing lease? &lt;{6}&gt;",b,c,d,e,f,g,h)
+LeaseTrace::TraceInfo("SubjectRequestedLeaseDuration", "Get requested duration is different from exising lease relationship: {0}/{1}. Duration would be returned: {2}; Local config: {3} Remote duration: {4}; Existing lease relationship: {5}; Update existing lease? &lt;{6}&gt;",b,c,d,e,f,g,h)
 #define EventWriteSubjectRequestedLeaseExpiration(a,b,c,d,e,f,g,h)  \
-LeaseTrace::WriteInfo("SubjectRequestedLeaseExpiration", "Get requested expiration is less than subject expire time: {0}/{1}. Requested duration: {2}; Now: {3}; Subject expire time: {4}; New expiration: {5}; Duration update flag? &lt;{6}&gt;",b,c,d,e,f,g,h)
+LeaseTrace::TraceInfo("SubjectRequestedLeaseExpiration", "Get requested expiration is less than subject expire time: {0}/{1}. Requested duration: {2}; Now: {3}; Subject expire time: {4}; New expiration: {5}; Duration update flag? &lt;{6}&gt;",b,c,d,e,f,g,h)
 #define EventWriteReceivedStaleMessage(a,b,c,d,e)  \
-LeaseTrace::WriteInfo("ReceivedStaleMessage", "Lease agent {0}/{1} received stale message {2}; Message lease agent instance {3}",b,c,d,e)
+LeaseTrace::TraceInfo("ReceivedStaleMessage", "Lease agent {0}/{1} received stale message {2}; Message lease agent instance {3}",b,c,d,e)
 #define EventWriteGetExpireTimeWithRequestTTL(a,b,c,d)  \
-LeaseTrace::WriteInfo("GetExpireTimeWithRequestTTL", "Leasing application {0} has actual TTL {1}, while request TTL is {2}",b,c,d)
+LeaseTrace::TraceInfo("GetExpireTimeWithRequestTT", "Leasing application {0} has actual TTL {1}, while request TTL is {2}",b,c,d)
 #define EventWriteGetExpireTimeForFailureReport(a,b,c,d)  \
-LeaseTrace::WriteInfo("GetExpireTimeForFailureReport", "Leasing application {0} has actual TTL {1} calculated from last grant time; request TTL is {2}",b,c,d)
+LeaseTrace::TraceInfo("GetExpireTimeForFailureReport", "Leasing application {0} has actual TTL {1} calculated from last grant time; request TTL is {2}",b,c,d)
 #define EventWriteAssertCrashLeasingApplication(a)  \
-LeaseTrace::WriteInfo("AssertCrashLeasingApplication", "Crashing leasing application due to application assert.")
+LeaseTrace::TraceInfo("AssertCrashLeasingApplication", "Crashing leasing application due to application assert.")
 #define EventWriteProcessExit(a)  \
-LeaseTrace::WriteInfo("ProcessExit", "Process exited normally or abnormally.")
+LeaseTrace::TraceInfo("ProcessExit", "Process exited normally or abnormally.")
 #define EventWriteUnresponsiveDurationCheck(a,b,c,d,e,f)  \
-LeaseTrace::WriteInfo("UnresponsiveDurationCheck", "Active Remote Lease agent {0}/{1} check for last ioctl update. Time passed since last update: {2}, last update ioctl code: {3}; Unresponsive duration: {4}",b,c,d,e,f)
+LeaseTrace::TraceInfo("UnresponsiveDurationCheck", "Active Remote Lease agent {0}/{1} check for last ioctl update. Time passed since last update: {2}, last update ioctl code: {3}; Unresponsive duration: {4}",b,c,d,e,f)
 #define EventWriteHeartbeatTooLong(a,b)  \
-LeaseTrace::WriteInfo("HeartbeatTooLong", "Heartbeat takes too long. {0} milliseconds passed since last update.",b)
+LeaseTrace::TraceInfo("HeartbeatTooLong", "Heartbeat takes too long. {0} milliseconds passed since last update.",b)
 #define EventWriteHeartbeatFailed(a,b)  \
-LeaseTrace::WriteInfo("HeartbeatFailed", "Heartbeat failed, error code: {0}",b)
+LeaseTrace::TraceInfo("HeartbeatFailed", "Heartbeat failed, error code: {0}",b)
 #define EventWriteHeartbeatSucceeded(a)  \
-LeaseTrace::WriteInfo("HeartbeatSucceeded", "Heartbeat succeeded.")
+LeaseTrace::TraceInfo("HeartbeatSucceeded", "Heartbeat succeeded.")
 #define EventWriteDelayTimerEnqueue(a,b,c,d,e,f)  \
-LeaseTrace::WriteInfo("DelayTimerEnqueue", "Enqueue delay timer for lease agent {0}/{1} with TTL milli seconds {2}, timer already in queue ? &lt;{3}&gt;, TTL ticks {4}",b,c,d,e,f)
+LeaseTrace::TraceInfo("DelayTimerEnqueue", "Enqueue delay timer for lease agent {0}/{1} with TTL milli seconds {2}, timer already in queue ? &lt;{3}&gt;, TTL ticks {4}",b,c,d,e,f)
 #define EventWriteDelayTimer(a,b,c,d)  \
-LeaseTrace::WriteInfo("DelayTimer", "Delay timer is {0} for lease agent {1}/{2} .",b,c,d)
+LeaseTrace::TraceInfo("DelayTimer", "Delay timer is {0} for lease agent {1}/{2} .",b,c,d)
 #define EventWriteRemoteLeaseAgentVersion(a,b,c,d,e,f,g)  \
-LeaseTrace::WriteInfo("RemoteLeaseAgentVersion", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}), local lease agent version {4}, remote lease agent version {5}.",b,c,d,e,f,g)
+LeaseTrace::TraceInfo("RemoteLeaseAgentVersion", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}), local lease agent version {4}, remote lease agent version {5}.",b,c,d,e,f,g)
 #define EventWriteAddLeaseBehavior(a,b,c,d,e,f,g,h,i)  \
-LeaseTrace::WriteInfo("AddLeaseBehavior", "Add lease behavior (fromAny {0}) {1}:{2} -> (toAny {3}) {4}:{5} type {6} alias {7}.",b,c,d,e,f,g,h,i)
+LeaseTrace::TraceInfo("AddLeaseBehavior", "Add lease behavior (fromAny {0}) {1}:{2} -> (toAny {3}) {4}:{5} type {6} alias {7}.",b,c,d,e,f,g,h,i)
 #define EventWriteRemoveLeaseBehavior(a,b)  \
-LeaseTrace::WriteInfo("RemoveLeaseBehavior", "Remove lease behavior alias {0}.",b)
+LeaseTrace::TraceInfo("RemoveLeaseBehavior", "Remove lease behavior alias {0}.",b)
 #define EventWriteTransportMessageBlocked(a,b,c,d,e,f)  \
-LeaseTrace::WriteInfo("TransportMessageBlocked", "Transport message blocked {0}:{1} -> {2}:{3} type {4}.",b,c,d,e,f)
+LeaseTrace::TraceInfo("TransportMessageBlocked", "Transport message blocked {0}:{1} -> {2}:{3} type {4}.",b,c,d,e,f)
 // TODO hit max parameters, workaround by combine the strings
 #define EventWriteRemoteLeaseExpirationTime(a,b,c,d,e,f,g,h,i)  \
-LeaseTrace::WriteInfo("RemoteLeaseExpirationTime", "Get remote lease expiration time, remote lease agent ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}), remote leasing application id {5}, subject ttl: {6}, monitor ttl: {7}.",b,c,d,e,f,g,h,i)
+LeaseTrace::TraceInfo("RemoteLeaseExpirationTime", "Get remote lease expiration time, remote lease agent ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}), remote leasing application id {5}, subject ttl: {6}, monitor ttl: {7}.",b,c,d,e,f,g,h,i)
 #define EventWriteRemoteLeaseExpirationTimeNotFound(a,b,c,d)  \
-LeaseTrace::WriteInfo("RemoteLeaseExpirationTimeNotFound", "Get remote lease expiration time not found, remote leasing application id {0}, subject ttl: {1}, monitor ttl {2}.",b,c,d)
+LeaseTrace::TraceInfo("RemoteLeaseExpirationTimeNotFound", "Get remote lease expiration time not found, remote leasing application id {0}, subject ttl: {1}, monitor ttl {2}.",b,c,d)
 #define EventWriteArbitrationResultTimeout(a,b,c,d,e,f,g)  \
-LeaseTrace::WriteInfo("ArbitrationResultTimeout", "Arbitration result timeout, failing lease, remote lease agent {0}/{1}, subject = {2}, monitor = {3} in state ({4}-{5})",b,c,d,e,f,g)
+LeaseTrace::TraceInfo("ArbitrationResultTimeout", "Arbitration result timeout, failing lease, remote lease agent {0}/{1}, subject = {2}, monitor = {3} in state ({4}-{5})",b,c,d,e,f,g)
 #define EventWriteLeaseAgentRemoteInstanceGreater(a,b,c,d,e,f,g,h,i)  \
-LeaseTrace::WriteInfo("LeaseAgentRemoteInstanceGreater", "Remote lease agent instance is greater, remote lease agent {0}/{1}, subject = {2}, monitor = {3} in state ({4}-{5}), lease agent remote instance {6} -> {7}",b,c,d,e,f,g,h,i)
+LeaseTrace::TraceInfo("LeaseAgentRemoteInstanceGreater", "Remote lease agent instance is greater, remote lease agent {0}/{1}, subject = {2}, monitor = {3} in state ({4}-{5}), lease agent remote instance {6} -> {7}",b,c,d,e,f,g,h,i)
 #define EventWriteRemoteLeaseAgentSuspendedDropMessage(a,b,c,d,e,f,g,h)  \
-LeaseTrace::WriteInfo("RemoteLeaseAgentSuspendedDropMessage", "Remote lease agent suspended drop message, remote lease agent {0}/{1}, subject = {2}, monitor = {3} in state ({4}-{5}), drop message {6}",b,c,d,e,f,g,h)
+LeaseTrace::TraceInfo("RemoteLeaseAgentSuspendedDropMessage", "Remote lease agent suspended drop message, remote lease agent {0}/{1}, subject = {2}, monitor = {3} in state ({4}-{5}), drop message {6}",b,c,d,e,f,g,h)
 #define EventWriteApiStart(a,b)  \
-LeaseTrace::WriteInfo("ApiStart", "Lease api start {0}",b)
+LeaseTrace::TraceInfo("ApiStart", "Lease api start {0}",b)
 #define EventWriteApiEnd(a,b)  \
-LeaseTrace::WriteInfo("ApiEnd", "Lease api end {0}",b)
+LeaseTrace::TraceInfo("ApiEnd", "Lease api end {0}",b)
 #define EventWriteRemoteLeaseExpirationTimeFound(a,b,c,d,e,f,g,h,i,j,k,l)  \
-LeaseTrace::WriteInfo("RemoteLeaseExpirationTimeFound", "Get remote lease expiration time, lease agent {0}/{1}, lease relationship ({2}/{3}, subject = {4}, monitor = {5}) in state ({6}-{7}), remote leasing application id {8}, subject ttl: {9}, monitor ttl {10}, found.",b,c,d,e,f,g,h,i,j,k,l)
+LeaseTrace::TraceInfo("RemoteLeaseExpirationTimeFound", "Get remote lease expiration time, lease agent {0}/{1}, lease relationship ({2}/{3}, subject = {4}, monitor = {5}) in state ({6}-{7}), remote leasing application id {8}, subject ttl: {9}, monitor ttl {10}, found.",b,c,d,e,f,g,h,i,j,k,l)
 #define EventWriteRemoteLeaseExpirationTimeNotFound(a,b,c,d,e,f,g,h,i,j,k,l)  \
-LeaseTrace::WriteInfo("RemoteLeaseExpirationTimeNotFound", "Get remote lease expiration time, lease agent {0}/{1}, lease relationship ({2}/{3}, subject = {4}, monitor = {5}) in state ({6}-{7}), remote leasing application id {8}, subject ttl: {9}, monitor ttl {10}, not found.",b,c,d,e,f,g,h,i,j,k,l)
+LeaseTrace::TraceInfo("RemoteLeaseExpirationTimeNotFound", "Get remote lease expiration time, lease agent {0}/{1}, lease relationship ({2}/{3}, subject = {4}, monitor = {5}) in state ({6}-{7}), remote leasing application id {8}, subject ttl: {9}, monitor ttl {10}, not found.",b,c,d,e,f,g,h,i,j,k,l)
 #define EventWriteRemoteLeaseExpirationTimeFinal(a,b,c,d,e,f,g,h,i,j,k,l)  \
-LeaseTrace::WriteInfo("RemoteLeaseExpirationTimeFinal", "Get remote lease expiration time, lease agent {0}/{1}, lease relationship ({2}/{3}, subject = {4}, monitor = {5}) in state ({6}-{7}), remote leasing application id {8}, subject ttl: {9}, monitor ttl {10}, final.",b,c,d,e,f,g,h,i,j,k,l)
+LeaseTrace::TraceInfo("RemoteLeaseExpirationTimeFinal", "Get remote lease expiration time, lease agent {0}/{1}, lease relationship ({2}/{3}, subject = {4}, monitor = {5}) in state ({6}-{7}), remote leasing application id {8}, subject ttl: {9}, monitor ttl {10}, final.",b,c,d,e,f,g,h,i,j,k,l)
 #define EventWriteRemoteLeaseAgentSetNotDestruct(a,b,c,d,e,f,g,h,i,j,k)  \
-LeaseTrace::WriteInfo("RemoteLeaseAgentSetNotDestruct", "Remote lease agent ({0}/{1}, subject = {2}, monitor = {3}), state = {4} ({5}-{6}), IsActive = {7}, TimeToBeFailed = {8}, IsInArbitrationNeutral = {9}, set not destructing.",b,c,d,e,f,g,h,i,j,k)
+LeaseTrace::TraceInfo("RemoteLeaseAgentSetNotDestruct", Common::StringLiteral("Remote lease agent ({0}/{1}, subject = {2}, monitor = {3}), state = {4} ({5}-{6}), IsActive = {7}, TimeToBeFailed = {8}, IsInArbitrationNeutral = {9}, set not destructing."),b,c,d,e,f,g,h,i,j,k)
 #define EventWriteRemoteLeaseAgentSetDestructSearch(a,b,c,d,e,f,g,h,i,j,k)  \
-LeaseTrace::WriteInfo("RemoteLeaseAgentSetDestructSearch", "Remote lease agent ({0}/{1}, subject = {2}, monitor = {3}), state = {4} ({5}-{6}), IsActive = {7}, TimeToBeFailed = {8}, IsInArbitrationNeutral = {9}, set destructing search.",b,c,d,e,f,g,h,i,j,k)
+LeaseTrace::TraceInfo("RemoteLeaseAgentSetDestructSearch", "Remote lease agent ({0}/{1}, subject = {2}, monitor = {3}), state = {4} ({5}-{6}), IsActive = {7}, TimeToBeFailed = {8}, IsInArbitrationNeutral = {9}, set destructing search.",b,c,d,e,f,g,h,i,j,k)
 #define EventWriteRemoteLeaseAgentSetDestructFound(a,b,c,d,e,f,g,h,i,j,k)  \
-LeaseTrace::WriteInfo("RemoteLeaseAgentSetDestructFound", "Remote lease agent ({0}/{1}, subject = {2}, monitor = {3}), state = {4} ({5}-{6}), IsActive = {7}, TimeToBeFailed = {8}, IsInArbitrationNeutral = {9}, set destructing found.",b,c,d,e,f,g,h,i,j,k)
+LeaseTrace::TraceInfo("RemoteLeaseAgentSetDestructFound", "Remote lease agent ({0}/{1}, subject = {2}, monitor = {3}), state = {4} ({5}-{6}), IsActive = {7}, TimeToBeFailed = {8}, IsInArbitrationNeutral = {9}, set destructing found.",b,c,d,e,f,g,h,i,j,k)
 #define EventWriteRemoteLeaseAgentSetDestructNotFound(a,b,c,d,e,f,g,h,i,j,k)  \
-LeaseTrace::WriteInfo("RemoteLeaseAgentSetDestructNotFound", "Remote lease agent ({0}/{1}, subject = {2}, monitor = {3}), state = {4} ({5}-{6}), IsActive = {7}, TimeToBeFailed = {8}, IsInArbitrationNeutral = {9}, set destructing not found.",b,c,d,e,f,g,h,i,j,k)
+LeaseTrace::TraceInfo("RemoteLeaseAgentSetDestructNotFound", "Remote lease agent ({0}/{1}, subject = {2}, monitor = {3}), state = {4} ({5}-{6}), IsActive = {7}, TimeToBeFailed = {8}, IsInArbitrationNeutral = {9}, set destructing not found.",b,c,d,e,f,g,h,i,j,k)
 #define EventWriteCreateRemoteLeaseAgentArbitration(a,b,c,d,e,f,g,h,i,j,k,l)  \
-LeaseTrace::WriteInfo("CreateRemoteLeaseAgentArbitration", "Create remote lease agent arbitration, lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}), renewed before = {6}, now = {7}, subject expire time = {8}, ping send time = {9}, arbitration duration upper bound = {10}.",b,c,d,e,f,g,h,i,j,k,l)
+LeaseTrace::TraceInfo("CreateRemoteLeaseAgentArbitration", "Create remote lease agent arbitration, lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}), renewed before = {6}, now = {7}, subject expire time = {8}, ping send time = {9}, arbitration duration upper bound = {10}.",b,c,d,e,f,g,h,i,j,k,l)
 #define EventWriteFirePreArbitration(a,b,c,d,e,f,g)  \
-LeaseTrace::WriteInfo("FirePreArbitration", "Fire pre arbitration, lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}).",b,c,d,e,f,g)
+LeaseTrace::TraceInfo("FirePreArbitration", "Fire pre arbitration, lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}).",b,c,d,e,f,g)
 #define EventWriteLeaseDurationConfigs(a,b,c)  \
-LeaseTrace::WriteInfo("LeaseDurationConfigs", "{0} : {1}",b,c)
+LeaseTrace::TraceInfo("LeaseDurationConfigs", "{0} : {1}",b,c)
 #define EventWriteIndirectLeaseReachLimit(a,b,c,d,e,f,g)  \
-LeaseTrace::WriteInfo("IndirectLeaseReachLimit", "Remote Lease agent {0}/{1} has been renewed indirectly {2} in a row, the limit is {3}; Configed ConsecutiveIndirectLeaseTimeout is {4} and lease duration is {5}.",b,c,d,e,f,g)
+LeaseTrace::TraceInfo("IndirectLeaseReachLimit", "Remote Lease agent {0}/{1} has been renewed indirectly {2} in a row, the limit is {3}; Configed ConsecutiveIndirectLeaseTimeout is {4} and lease duration is {5}.",b,c,d,e,f,g)
 #define EventWriteRemoteLeaseAgentOrphan(a,b,c,d,e,f,g,h,i,j,k,l,m)  \
-LeaseTrace::WriteInfo("RemoteLeaseAgentOrphan", "Remote Lease agent orphan ({0}/{1}, subject = {2}, monitor = {3}), state = {4} ({5}-{6}), IsActive = {7}, InPing = {8}, TimeToBeFailed = {9}, Now = {10}, Result = {11}.",b,c,d,e,f,g,h,i,j,k,l,m)
+LeaseTrace::TraceInfo("RemoteLeaseAgentOrphan", "Remote Lease agent orphan ({0}/{1}, subject = {2}, monitor = {3}), state = {4} ({5}-{6}), IsActive = {7}, InPing = {8}, TimeToBeFailed = {9}, Now = {10}, Result = {11}.",b,c,d,e,f,g,h,i,j,k,l,m)
 #define EventWriteDisconnectOrphanedRemoteLA(a,b,c,d,e,f,g,h)  \
-LeaseTrace::WriteInfo("DisconnectOrphanedRemoteLA", "Orphaned remote lease agent ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) is disconnected, lease agent remote instance {6}",b,c,d,e,f,g,h)
+LeaseTrace::TraceInfo("DisconnectOrphanedRemoteLA", "Orphaned remote lease agent ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) is disconnected, lease agent remote instance {6}",b,c,d,e,f,g,h)
 #define EventWriteGetLeasingApplicationTTLMax(a,b,c,d)  \
-LeaseTrace::WriteInfo("GetLeasingApplicationTTLMax", "Get Expiration Timer for leasing application {0} with TTL Max milliseconds, time = {1}, Request TTL {2}",b,c,d)
+LeaseTrace::TraceInfo("GetLeasingApplicationTTLMax", "Get Expiration Timer for leasing application {0} with TTL Max milliseconds, time = {1}, Request TTL {2}",b,c,d)
 #define EventWriteGetLeasingApplicationTTLZero(a,b,c,d)  \
-LeaseTrace::WriteInfo("GetLeasingApplicationTTLZero", "Get Expiration Timer for leasing application {0} with TTL Zero milliseconds, time = {1}, Request TTL {2}",b,c,d)
+LeaseTrace::TraceInfo("GetLeasingApplicationTTLZero", "Get Expiration Timer for leasing application {0} with TTL Zero milliseconds, time = {1}, Request TTL {2}",b,c,d)
 #define EventWriteSubjectExpiredOneway(a,b,c,d,e,f,g,h,i)  \
-LeaseTrace::WriteInfo("SubjectExpiredOneway", "Subject Expired: {0}/{1} subject = {2}, monitor = {3} in state ({4}-{5}) Current time = {6} Expiration = {7}",b,c,d,e,f,g,h,i)
+LeaseTrace::TraceInfo("SubjectExpiredOneway", "Subject Expired: {0}/{1} subject = {2}, monitor = {3} in state ({4}-{5}) Current time = {6} Expiration = {7}",b,c,d,e,f,g,h,i)
 #define EventWriteArbitrationResultReceiveTimeout(a,b,c,d,e,f,g)  \
-LeaseTrace::WriteInfo("ArbitrationResultReceiveTimeout", "Arbitration result receive timeout, failing lease, remote lease agent {0}/{1}, subject = {2}, monitor = {3} in state ({4}-{5})",b,c,d,e,f,g)
+LeaseTrace::TraceInfo("ArbitrationResultReceiveTimeout", "Arbitration result receive timeout, failing lease, remote lease agent {0}/{1}, subject = {2}, monitor = {3} in state ({4}-{5})",b,c,d,e,f,g)
 #define EventWriteArbitrationSendTimeout(a,b,c,d,e,f,g)  \
-LeaseTrace::WriteInfo("ArbitrationSendTimeout", "Arbitration send timeout, failing lease, remote lease agent {0}/{1}, subject = {2}, monitor = {3} in state ({4}-{5})",b,c,d,e,f,g)
+LeaseTrace::TraceInfo("ArbitrationSendTimeout", "Arbitration send timeout, failing lease, remote lease agent {0}/{1}, subject = {2}, monitor = {3} in state ({4}-{5})",b,c,d,e,f,g)
 #define EventWriteTerminateLeaseRemoteLeaseAgentNotFound(a,b,c,d)  \
-LeaseTrace::WriteInfo("TerminateLeaseRemoteLeaseAgentNotFound", "Terminate lease, remote lease agent not found, leasing application handle = {0}, lease handle = {1}, remote leasing application identifier = {2}",b,c,d)
+LeaseTrace::TraceInfo("TerminateLeaseRemoteLeaseAgentNotFound", "Terminate lease, remote lease agent not found, leasing application handle = {0}, lease handle = {1}, remote leasing application identifier = {2}",b,c,d)
 #define EventWriteLeaseRelationshipIdentifierDelete(a,b,c,d)  \
-LeaseTrace::WriteInfo("LeaseRelationshipIdentifierDelete", "Lease relationship identifier {0}/{1} is deleted with address {2}",b,c,d)
+LeaseTrace::TraceInfo("LeaseRelationshipIdentifierDelete", "Lease relationship identifier {0}/{1} is deleted with address {2}",b,c,d)
 #define EventWriteProcessStalePing(a,b,c,d,e,f,g,h,i,j)  \
-LeaseTrace::WriteInfo("ProcessStalePing", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) received stale ping with message type {6}, message ID {7} and lease instance {8}",b,c,d,e,f,g,h,i,j)
+LeaseTrace::TraceInfo("ProcessStalePing", "Lease relationship ({0}/{1}, subject = {2}, monitor = {3}) in state ({4}-{5}) received stale ping with message type {6}, message ID {7} and lease instance {8}",b,c,d,e,f,g,h,i,j)
 
 
 //rtl 
@@ -739,9 +739,7 @@ LeaseTrace::WriteInfo("ProcessStalePing", "Lease relationship ({0}/{1}, subject 
 //#define RtlDeleteElementGenericTable(a,b) TRUE
 //#define RtlInsertElementGenericTable(a,b,c,d) NULL
 #define RtlULongSub(a,b,c) 0,*c=a-b
-#define RtlStringCbCopyW(a,b,c) 0,strncpy(a,c,b);
 
-#define RtlStringCchLengthW(a,b,c)0,*c=strlen(a);
 typedef UCHAR KIRQL;
 
 typedef KIRQL *PKIRQL;
@@ -758,22 +756,22 @@ typedef void * PDEVICE_OBJECT;
 #define TransportSetCredentials(a,b,c,d)
 
 #define EventWriteRemoteLeaseAgentDelete(a,b,c)  \
-LeaseTrace::WriteInfo("RemoteLeaseAgentDelete",  "{0}, {1}", b,c)
+LeaseTrace::TraceInfo("RemoteLeaseAgentDelete",  "{0}, {1}", b,c)
 
 #define EventWriteWaitingOnRemoteLeaseAgent(a,b,c,d,e) \
-LeaseTrace::WriteInfo("WaitingOnRemoteLeaseAgent", "{0}, {1}, {2}, {3}", b,c,d,e)
+LeaseTrace::TraceInfo("WaitingOnRemoteLeaseAgent", "{0}, {1}, {2}, {3}", b,c,d,e)
 
 #define EventWriteRemoteLeaseAgentDeallocReady(a,b,c) \
-LeaseTrace::WriteInfo("RemoteLeaseAgentDeallocReady", "{0}, {1}", b,c)
+LeaseTrace::TraceInfo("RemoteLeaseAgentDeallocReady", "{0}, {1}", b,c)
 
 #define EventWriteRemoteLeaseAgentDeallocNotReady(a,b,c,d) \
-LeaseTrace::WriteInfo("RemoteLeaseAgentDeallocNotReady", "{0}, {1}, {2}", b,c,d)
+LeaseTrace::TraceInfo("RemoteLeaseAgentDeallocNotReady", "{0}, {1}, {2}", b,c,d)
 
 #define EventWriteTerminateMonitorLeaseSubFailed(a,b,c,d,e) \
-LeaseTrace::WriteInfo("TerminateMonitorLeaseSubFailed", "{0}, {1}, {2}, {3}", b,c,d,e)
+LeaseTrace::TraceInfo("TerminateMonitorLeaseSubFailed", "{0}, {1}, {2}, {3}", b,c,d,e)
 
 #define EventWriteTerminateMonitorLeaseSubTerminated(a,b,c,d,e) \
-LeaseTrace::WriteInfo("TerminateMonitorLeaseSubTerminated", "{0}, {1}, {2}, {3}", b,c,d,e)
+LeaseTrace::TraceInfo("TerminateMonitorLeaseSubTerminated", "{0}, {1}, {2}, {3}", b,c,d,e)
 
 
 //status

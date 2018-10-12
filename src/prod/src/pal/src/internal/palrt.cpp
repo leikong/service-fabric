@@ -28,7 +28,7 @@ STDAPI_(BOOL) PathAppendW(LPSTR pszPath, LPCSTR pszMore)
         pszPath[lenPath] = '/';
         pszPath[lenPath + 1] = 0;
     }
-    wcsncat(pszPath, pszMore, lenMore);
+    strncat(pszPath, pszMore, lenMore);
     return TRUE;
 }
 

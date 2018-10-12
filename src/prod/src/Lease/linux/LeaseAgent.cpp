@@ -3733,20 +3733,20 @@ Return Value:
 
             if (NULL != RemoteLeaseAgentContextIter)
             {
-if (RemoteLeaseAgentContextIter->IsActive == TRUE)
-{
-LeaseTrace::WriteInfo(
-"RemoteLeaseAgentDeactivate", "{0}, instance={1}, subject={2}, monitor={3}",
-RemoteLeaseAgentContextIter->RemoteLeaseAgentIdentifier,
-RemoteLeaseAgentContextIter->Instance.QuadPart,
-RemoteLeaseAgentContextIter->LeaseRelationshipContext->SubjectIdentifier.QuadPart,
-RemoteLeaseAgentContextIter->LeaseRelationshipContext->MonitorIdentifier.QuadPart);
+                if (RemoteLeaseAgentContextIter->IsActive == TRUE)
+                {
+                    LeaseTrace::TraceInfo(
+                            "RemoteLeaseAgentDeactivate", "{0}, instance={1}, subject={2}, monitor={3}",
+                            RemoteLeaseAgentContextIter->RemoteLeaseAgentIdentifier,
+                            RemoteLeaseAgentContextIter->Instance.QuadPart,
+                            RemoteLeaseAgentContextIter->LeaseRelationshipContext->SubjectIdentifier.QuadPart,
+                            RemoteLeaseAgentContextIter->LeaseRelationshipContext->MonitorIdentifier.QuadPart);
 
-RemoteLeaseAgentContextIter->
-IsActive = FALSE;
-}
+                    RemoteLeaseAgentContextIter->
+                        IsActive = FALSE;
+                }
 
-SetRemoteLeaseAgentFailed(RemoteLeaseAgentContextIter);
+                SetRemoteLeaseAgentFailed(RemoteLeaseAgentContextIter);
             }
 
             //

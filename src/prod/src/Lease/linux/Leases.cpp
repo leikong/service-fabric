@@ -2206,7 +2206,7 @@ Return Value:
     //
     // Populate remote leasing application identifier.
     //
-    Status = RtlStringCchLengthW(
+    Status = StringCchLength(
         RemoteLeasingApplicationIdentifier,
         MAX_PATH + 1,
         &WcharLength
@@ -6741,7 +6741,7 @@ GetListenEndPointSize(
     // Get the end point address length
     //
 
-    Status = RtlStringCchLengthW(
+    Status = StringCchLength(
         ListenEndPoint->Address,
         ENDPOINT_ADDR_CCH_MAX,
         (size_t *)ListenEndpointAddressSize

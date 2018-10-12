@@ -4095,7 +4095,7 @@ SetThreadIdealProcessorEx(
 #define swscanf       PAL_swscanf
 #define wcspbrk       PAL_wcspbrk
 #define strcmp        PAL_strcmp
-#define wcsncat       PAL_wcsncat
+#define strncat       PAL_strncat
 #define strncpy       PAL_strncpy
 #define wcstok        PAL_wcstok
 #define wcscspn       PAL_wcscspn
@@ -4301,7 +4301,7 @@ PALIMPORT size_t __cdecl PAL_strlen(const CHAR *);
 PALIMPORT int __cdecl PAL_strcmp(const CHAR*, const CHAR*);
 PALIMPORT int __cdecl PAL_strncmp(const CHAR *, const CHAR *, size_t);
 PALIMPORT CHAR * __cdecl PAL_wcscat(CHAR *, const CHAR *);
-PALIMPORT CHAR * __cdecl PAL_wcsncat(CHAR *, const CHAR *, size_t);
+PALIMPORT CHAR * __cdecl PAL_strncat(CHAR *, const CHAR *, size_t);
 PALIMPORT CHAR * __cdecl PAL_wcscpy(CHAR *, const CHAR *);
 PALIMPORT CHAR * __cdecl PAL_strncpy(CHAR *, const CHAR *, size_t);
 PALIMPORT const CHAR * __cdecl PAL_wcschr(const CHAR *, CHAR);

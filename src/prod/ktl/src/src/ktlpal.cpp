@@ -185,6 +185,10 @@ ULONG EVNTAPI EventRegister(
     return 0;
 }
 
+/*
+/media/alexwun/Data_Ext4/Horizon/service-fabric/src/prod/ktl/src/src/ktlpal.cpp:222: multiple definition of `EventUnregister'
+lib/libPal.a(evntprov.cpp.o):evntprov.cpp:(.text+0x20): first defined here
+
 ULONG
 EventUnregister(
         _In_ REGHANDLE RegHandle
@@ -192,6 +196,7 @@ EventUnregister(
 {
     return 0;
 }
+*/
 
 VOID EventDataDescCreate(
         PEVENT_DATA_DESCRIPTOR EventDataDescriptor,
@@ -235,6 +240,14 @@ typedef enum _TimeConversionConstants
     tccMicroSecondsTo100NanoSeconds = 10            // 10^1
 } TimeConversionConstants;
 
+/*
+ktl/src/lib/libktlfull.a(ktlpal.cpp.o): In function `GetTickCount':
+/media/alexwun/Data_Ext4/Horizon/service-fabric/src/prod/ktl/src/src/ktlpal.cpp:284: multiple definition of `GetTickCount'
+lib/libPal.a(pal.cpp.o):pal.cpp:(.text+0x50b0): first defined here
+ktl/src/lib/libktlfull.a(ktlpal.cpp.o): In function `GetTickCount64':
+/media/alexwun/Data_Ext4/Horizon/service-fabric/src/prod/ktl/src/src/ktlpal.cpp:269: multiple definition of `GetTickCount64'
+
+lib/libPal.a(pal.cpp.o):pal.cpp:(.text+0x50c0): first defined here
 ULONGLONG GetTickCount64()
 {
     ULONGLONG retval = 0;
@@ -254,6 +267,7 @@ DWORD GetTickCount()
 {
     return (DWORD)GetTickCount64();
 }
+*/
 
 NTSTATUS
 NTAPI
@@ -477,12 +491,17 @@ GetCurrentThreadId(
     return (DWORD)tid;
 }
 
+/*
+/media/alexwun/Data_Ext4/Horizon/service-fabric/src/prod/ktl/src/src/ktlpal.cpp:513: multiple definition of `ExitProcess'
+lib/libPal.a(pal.cpp.o):pal.cpp:(.text+0x3f00): first defined here
+
 VOID WINAPI ExitProcess(
   _In_ UINT uExitCode
 )
 {
     exit(uExitCode);
 }
+*/
 
 WINBASEAPI
 HANDLE
@@ -553,6 +572,10 @@ HeapFree(
 
 // -----------------------------------------------------------------------------
 
+/*
+ktl/src/lib/libktlfull.a(ktlpal.cpp.o): In function `Sleep':
+/media/alexwun/Data_Ext4/Horizon/service-fabric/src/prod/ktl/src/src/ktlpal.cpp:591: multiple definition of `Sleep'
+
 PALIMPORT
 VOID
 PALAPI
@@ -577,6 +600,7 @@ Sleep(
     }
     return;
 }
+*/
 
 EXTERN_GUID(IID_IUnknown, 0x00000000, 0x0000, 0x0000, 0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x46);
 
@@ -1884,6 +1908,10 @@ BOOL WINAPI SymGetLineFromAddr64(
     return TRUE;
 }
 
+/*
+ktl/src/lib/libktlfull.a(ktlpal.cpp.o):/media/alexwun/Data_Ext4/Horizon/service-fabric/src/prod/ktl/src/src/ktlpal.cpp:2081: first defined here
+lib/libPal.a(winnt.cpp.o): In function `__movsb':
+
 VOID __movsb (
         PUCHAR Destination,
         PCUCHAR Source,
@@ -1898,12 +1926,17 @@ VOID __movsb (
 
     return;
 }
-
+*/
 
 ULONG RtlNtStatusToDosError( __in  NTSTATUS Status )
 {
     return (ULONG) Status;
 }
+
+
+/*
+winnt.cpp:(.text+0x30): multiple definition of `InterlockedCompareExchange16'
+ktl/src/lib/libktlfull.a(ktlpal.cpp.o):/media/alexwun/Data_Ext4/Horizon/service-fabric/src/prod/ktl/src/src/ktlpal.cpp:2085: first defined here
 
 SHORT
 InterlockedCompareExchange16 (
@@ -1915,6 +1948,9 @@ InterlockedCompareExchange16 (
     return __sync_val_compare_and_swap(Destination, Comperand, ExChange);
 }
 
+ktl/src/lib/libktlfull.a(ktlpal.cpp.o):/media/alexwun/Data_Ext4/Horizon/service-fabric/src/prod/ktl/src/src/ktlpal.cpp:2090: first defined here
+lib/libPal.a(winnt.cpp.o): In function `InterlockedCompareExchange16':
+
 LONGLONG
 InterlockedAdd64 (
     LONGLONG volatile *lpAddend,
@@ -1923,13 +1959,16 @@ InterlockedAdd64 (
 {
    return __sync_add_and_fetch(lpAddend, (LONGLONG)addent);
 }
-
+*/
 
 CHAR InterlockedExchange8(CHAR volatile *Target, CHAR Value)
 {
     return __sync_swap(Target, Value);
 }
 
+/*
+ktl/src/lib/libktlfull.a(ktlpal.cpp.o):/media/alexwun/Data_Ext4/Horizon/service-fabric/src/prod/ktl/src/src/ktlpal.cpp:2054: first defined here
+lib/libPal.a(winnt.cpp.o): In function `__stosq':
 
 VOID
 __stosq (
@@ -1940,7 +1979,7 @@ __stosq (
 {
     __asm__("rep stosq" : : "D"(Destination), "a"(Value), "c"(Count));
 }
-
+*/
 
 //
 // Run functions

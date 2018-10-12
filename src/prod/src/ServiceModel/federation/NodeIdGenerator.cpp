@@ -100,7 +100,7 @@ ErrorCode NodeIdGenerator::GenerateFromString(string const & input, NodeId & nod
 
         // Generating the 8 bit mask based on the index.
         string instance = input.substr(index + 1);
-        unsigned char mask8Bit = static_cast<unsigned char>(_wtoi(instance.c_str()));
+        unsigned char mask8Bit = static_cast<unsigned char>(atoi(instance.c_str()));
 
         // Avoid bit-reversal for V3
         if (!StringUtility::AreEqualCaseInsensitive(nodeIdGeneratorVersion, "V3"))

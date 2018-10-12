@@ -48,8 +48,8 @@ namespace Common
         }
     }
 
-// TODO: This conversion code has been found duplicated in at least three places:
-//       ktlpal.cpp, pal_string_util.cpp, and here
+// TODO: This conversion code has been found duplicated in at least two places:
+//       ktlpal.cpp and here
 //
 using lchar_t = wchar_t;
 

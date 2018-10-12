@@ -4,11 +4,9 @@
 // ------------------------------------------------------------
 
 #include "stringapiset.h"
-#include "util/pal_string_util.h"
 #include <string>
 
 using namespace std;
-using namespace Pal;
 
 WINBASEAPI
 _Success_(return != 0)
@@ -32,7 +30,7 @@ MultiByteToWideChar(
     }
     int append_null = (cbMultiByte < 0);
     string in = (!append_null ? string(lpMultiByteStr, cbMultiByte) : lpMultiByteStr);
-    string result = utf8to16(in.c_str());
+    string result(in.c_str());
     int len = result.length();
     if (cchWideChar >= len + append_null)
     {
@@ -67,7 +65,7 @@ WideCharToMultiByte(
     }
     int append_null = (cchWideChar < 0);
     string in = (!append_null ? string(lpWideCharStr, cchWideChar) : lpWideCharStr);
-    string result = utf16to8(in.c_str());
+    string result(in.c_str());
     int len = result.length();
     if (cbMultiByte >= len + append_null)
     {

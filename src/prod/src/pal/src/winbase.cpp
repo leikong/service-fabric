@@ -5,7 +5,6 @@
 
 #include "winbase.h"
 #include "util/pal_hosting_util.h"
-#include "util/pal_string_util.h"
 #include "util/pal_time_util.h"
 #include "winnt.h"
 #include <execinfo.h>
@@ -89,7 +88,7 @@ GetUserNameW (
     string unameA, udirA;
     if (GetPwUid(uid, unameA, udirA) == 0)
     {
-        string unameW = utf8to16(unameA.c_str());
+        string unameW(unameA.c_str());
         if (*pcbBuffer > unameW.length() && lpBuffer != NULL)
         {
             memcpy_s(lpBuffer, sizeof(char) * (*pcbBuffer), unameW.c_str(), sizeof(char)* (unameW.length() + 1));
@@ -280,7 +279,7 @@ ExpandEnvironmentStringsW(
             {
                 for (int i = si + 1; i < endtoken; i++)
                     token.push_back(lpSrc[i]);
-                if (GetEnvironmentVariable(token, tokenvalue))
+                if (GetEnvironmentVariableW(token, tokenvalue))
                     dest += tokenvalue;
                 si = endtoken + 1;
             }
@@ -423,8 +422,8 @@ CreateSymbolicLinkW (
     )
 {
     UNREFERENCED_PARAMETER(dwFlags);
-    string symNameA = utf16to8(lpSymlinkFileName);
-    string tgtNameA = utf16to8(lpTargetFileName);
+    string symNameA(lpSymlinkFileName);
+    string tgtNameA(lpTargetFileName);
 
     ReplaceAll(symNameA, "\\", "/");
     ReplaceAll(tgtNameA, "\\", "/");
