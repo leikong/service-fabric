@@ -44,11 +44,12 @@ int main(int argc, char* argv[])
             {
                 hostname = argv[++ix];
             }
-            else if (strncmp(argv[ix], "-?", MaxArgLen) == 0)
-            {
-                PrintHelp(argv[0]);
-                exit(1);
-            }
+        }
+
+        if (strncmp(argv[ix], "-?", MaxArgLen) == 0)
+        {
+            PrintHelp(argv[0]);
+            exit(1);
         }
     }
 

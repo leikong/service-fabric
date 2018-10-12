@@ -74,8 +74,6 @@ private:
 
         auto selfRoot = CreateComponentRoot();
 
-        Trace.WriteInfo(TraceComponent, "created component root");
-
         fs_->RegisterRoutingTokenChangedEvent([this, selfRoot](EventArgs const &) 
             { 
                 OnRoutingTokenChanged(); 

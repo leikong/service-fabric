@@ -28,12 +28,17 @@ wstring const PyCallback_OnNodeIdAcquired = L"OnNodeIdAcquired";
 wstring const PyCallback_OnNodeIdReleased = L"OnNodeIdReleased";
 wstring const PyCallback_OnBroadcast = L"OnBroadcast";
 
+wstring const PyQuery_SeedNodes = L"seednodes";
+
 //
 // Impl
 //
 
 class Host::Impl
 {
+private:
+    struct ModuleEntry;
+
 public:
     Impl() 
         : pyInterpreter_()
@@ -54,23 +59,27 @@ public:
     {
         fs_ = fs;
 
-        auto moduleName = PyHostConfig::GetConfig().ModuleName;
+        auto moduleNames = PyHostConfig::GetConfig().ModuleNames;
 
-        if (moduleName.empty())
+        if (moduleNames.empty())
         {
-            Trace.WriteInfo(TraceComponent, "No Python module to initialize");
+            Trace.WriteInfo(TraceComponent, "No Python modules to initialize");
             return ErrorCodeValue::Success;
         }
         else
         {
-            Trace.WriteInfo(TraceComponent, "Initializing Python module '{0}' on node {1} ...", moduleName, fs->Id);
+            vector<wstring> tokens;
+            StringUtility::Split<wstring>(moduleNames, tokens, L",");
 
-            vector<wstring> args;
-            args.push_back(fs->IdString);
-            auto error = pyInterpreter_.Execute(moduleName, PyCallback_OnInitialize, args);
-
-            if (error.IsSuccess())
+            for (auto const & moduleName : tokens)
             {
+                Trace.WriteInfo(TraceComponent, "Initializing Python module '{0}' on node {1} ...", moduleName, fs->Id);
+
+                vector<wstring> args;
+                args.push_back(fs->IdString);
+                auto error = pyInterpreter_.Execute(moduleName, PyCallback_OnInitialize, args);
+                if (!error.IsSuccess()) { return error; } 
+                
                 AcquireWriteLock lock(lock_);
 
                 auto findIter = modules_.find(moduleName);
@@ -81,8 +90,6 @@ public:
                     modules_.insert(make_pair(moduleName, nullptr));
                 }
             }
-
-            return error;
         }
     }
 
@@ -104,7 +111,7 @@ public:
 
             if (entry->IsOwned && !IsNodeIdOwned(entry->Id))
             {
-                auto error = NotifyNodeIdReleased(moduleName, entry->Id);
+                auto error = NotifyNodeIdReleased(moduleName, entry);
                 if (error.IsSuccess())
                 {
                     Trace.WriteInfo(TraceComponent, "NotifyNodeIdReleased({0}, {1}) succeeded", moduleName, entry->Id);
@@ -118,7 +125,7 @@ public:
             }
             else if (!entry->IsOwned && IsNodeIdOwned(entry->Id))
             {
-                auto error = NotifyNodeIdAcquired(moduleName, entry->Id);
+                auto error = NotifyNodeIdAcquired(moduleName, entry);
                 if (error.IsSuccess())
                 {
                     Trace.WriteInfo(TraceComponent, "NotifyNodeIdAcquired({0}, {1}) succeeded", moduleName, entry->Id);
@@ -170,6 +177,11 @@ private:
         {
             return Broadcast(contents);
         });
+
+        pyInterpreter_.Register_Query([this](wstring const & query, wstring & result)
+        {
+            return Query(query, result);
+        });
     }
 
 private:
@@ -182,33 +194,54 @@ private:
     {
         AcquireWriteLock lock(lock_);
 
-        NodeId nodeId;
-        if (!NodeId::TryParse(nodeIdString, nodeId))
+        NodeId newNodeId;
+        if (!NodeId::TryParse(nodeIdString, newNodeId))
         {
             auto msg = wformatString("Failed to parse '{0}' as NodeId", nodeIdString);
             Trace.WriteWarning(TraceComponent, "{0}", msg);
             return ErrorCode(ErrorCodeValue::InvalidArgument, move(msg));
         }
 
+        bool newEntry = false;
         shared_ptr<ModuleEntry> entry;
+
         auto findIter = modules_.find(moduleName);
         if (findIter == modules_.end())
         {
-            entry = make_shared<ModuleEntry>(nodeId, false);
+            newEntry = true;
+            entry = make_shared<ModuleEntry>(newNodeId, false);
             modules_.insert(make_pair(moduleName, entry));
         }
         else
         {
             entry = findIter->second;
         }
-
-        if (entry->IsOwned && !IsNodeIdOwned(nodeId))
+        
+        if (entry->IsOwned && !IsNodeIdOwned(entry->Id))
         {
-            return NotifyNodeIdReleased(moduleName, nodeId);
+            auto error = NotifyNodeIdReleased(moduleName, entry);
+            if (!error.IsSuccess()) 
+            { 
+                // Trace error if release notification fails, but
+                // continue to process acquire notification (if any).
+                // i.e. Do not return error here.
+                //
+                Trace.WriteWarning(
+                    TraceComponent, 
+                    "failed to notify release of previous NodeId '{0}': {1}", 
+                    entry->Id, 
+                    error);
+            }
         }
-        else if (!entry->IsOwned && IsNodeIdOwned(nodeId))
+
+        if (!newEntry)
         {
-            return NotifyNodeIdAcquired(moduleName, nodeId);
+            entry->Id = newNodeId;
+        }
+
+        if (!entry->IsOwned && IsNodeIdOwned(entry->Id))
+        {
+            return NotifyNodeIdAcquired(moduleName, entry);
         }
         else
         {
@@ -220,47 +253,88 @@ private:
     {
         auto msg = BroadcastMessageBody::CreateMessage(contents);
 
-        auto fs = fs_.lock();
-
-        if (fs.get() == nullptr)
-        {
-            Trace.WriteInfo(TraceComponent, "Broadcast: federation is closed");
-
-            return ErrorCodeValue::ObjectClosed;
-        }
+        auto fs = LockFederationSubsystem();
+        if (fs.get() == nullptr) { return ErrorCodeValue::ObjectClosed; }
 
         fs->Broadcast(move(msg));
 
         return ErrorCodeValue::Success;
     }
 
+    ErrorCode Query(wstring const & query, wstring & result)
+    {
+        if (query == PyQuery_SeedNodes)
+        {
+            auto fs = LockFederationSubsystem();
+            if (fs.get() == nullptr) { return ErrorCodeValue::ObjectClosed; }
+
+            vector<NodeId> seedNodes;
+            fs->GetSeedNodes(seedNodes);
+
+            // Manually build JSON for now
+            result = L"{\"seednodes\":[";
+            for (auto const & nodeId : seedNodes)
+            {
+                if (result.back() != '[')
+                {
+                    result.append(L",");
+                }
+                result.append(L"\"");
+                result.append(nodeId.ToString());
+                result.append(L"\"");
+            }
+            result.append(L"]}");
+
+            return ErrorCodeValue::Success;
+        }
+        else
+        {
+            auto msg = wformatString("Invalid query '{0}'. Valid queries: ", query);
+            msg.append(wformatString("'{0}'", PyQuery_SeedNodes));
+
+            Trace.WriteWarning(TraceComponent, "{0}", msg);
+
+            return ErrorCode(ErrorCodeValue::InvalidArgument, move(msg));
+        }
+    }
+
 private:
 
     bool IsNodeIdOwned(NodeId const & nodeId)
     {
-        auto fs = fs_.lock();
-        if (fs.get() == nullptr)
-        {
-            Trace.WriteInfo(TraceComponent, "IsNodeIdOwned: federation is closed"); 
-
-            return false;
-        }
+        auto fs = LockFederationSubsystem();
+        if (fs.get() == nullptr) { return false; }
 
         return fs->Token.getRange().Contains(nodeId);
     }
 
-    ErrorCode NotifyNodeIdAcquired(wstring const & moduleName, NodeId const & nodeId)
+    ErrorCode NotifyNodeIdAcquired(wstring const & moduleName, shared_ptr<ModuleEntry> const & entry)
     {
+        entry->IsOwned = true;
+
         vector<wstring> args;
-        args.push_back(nodeId.ToString());
+        args.push_back(entry->Id.ToString());
         return pyInterpreter_.Execute(moduleName, PyCallback_OnNodeIdAcquired, args);
     }
 
-    ErrorCode NotifyNodeIdReleased(wstring const & moduleName, NodeId const & nodeId)
+    ErrorCode NotifyNodeIdReleased(wstring const & moduleName, shared_ptr<ModuleEntry> const & entry)
     {
+        entry->IsOwned = false;
+
         vector<wstring> args;
-        args.push_back(nodeId.ToString());
+        args.push_back(entry->Id.ToString());
         return pyInterpreter_.Execute(moduleName, PyCallback_OnNodeIdReleased, args);
+    }
+
+    shared_ptr<FederationSubsystem> LockFederationSubsystem()
+    {
+        auto fs = fs_.lock();
+        if (fs.get() == nullptr)
+        {
+            Trace.WriteInfo(TraceComponent, "federation is closed");
+        }
+
+        return fs;
     }
 
 private:

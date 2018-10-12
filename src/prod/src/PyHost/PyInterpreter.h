@@ -35,5 +35,6 @@ namespace PyHost
 
         DECLARE_PY_CALLBACK( SetNodeIdOwnership, std::wstring const &, std::wstring const & )
         DECLARE_PY_CALLBACK( Broadcast, std::wstring const & )
+        DECLARE_PY_CALLBACK( Query, std::wstring const &, std::wstring & )
     };
 }

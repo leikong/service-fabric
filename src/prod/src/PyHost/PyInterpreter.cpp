@@ -277,6 +277,33 @@ public:
         }
     }
 
+    DEFINE_PY_CALLBACK_IMPL( Query )
+    //{
+        wchar_t * query;
+        if (!PyArg_ParseTuple(args, "u", &query))
+        {
+            return NULL;
+        }
+
+        TRY_PARSE_PY_STRING( query )
+
+        Trace.WriteInfo(TraceComponent, "Query({0})", parsed_query);
+
+        wstring result;
+        auto error = QueryCallback_(parsed_query, result);
+
+        if (error.IsSuccess())
+        {
+            return PyUnicode_FromWideChar(result.c_str(), result.size());
+        }
+        else
+        {
+            auto msg = wformatString("{0}: {1}", error.ReadValue(), error.Message);
+            PyErr_SetString(PyExc_RuntimeError, StringUtility::Utf16ToUtf8(msg).c_str());
+            return NULL;
+        }
+    }
+
 private:
 
     PyThreadState * mainThreadState_;
@@ -322,11 +349,13 @@ private:
 
 DEFINE_PY_CALLBACK( SetNodeIdOwnership )
 DEFINE_PY_CALLBACK( Broadcast )
+DEFINE_PY_CALLBACK( Query )
 
 PyMethodDef GlobalMethods[] =
 {
-    DEFINE_PY_METHOD_ENTRY( SetNodeIdOwnership, "Set the node ID ownership for this module." )
+    DEFINE_PY_METHOD_ENTRY( SetNodeIdOwnership, "Set the desired node ID ownership for this module." )
     DEFINE_PY_METHOD_ENTRY( Broadcast, "Broadcast a message to all modules." )
+    DEFINE_PY_METHOD_ENTRY( Query, "Submit a read-only query." )
     { NULL, NULL, 0, NULL }
 };
 
