@@ -172,7 +172,7 @@ __emit(
 
 #define NT_ASSERTMSG(_msg, _exp) \
     ((!(_exp)) ? \
-        (__annotation("Debug", "AssertFail", L##_msg), \
+        (__annotation("Debug", "AssertFail", _msg), \
          DbgRaiseAssertionFailure(), FALSE) : \
         TRUE)
 

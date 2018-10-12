@@ -25,7 +25,7 @@
 #ifndef KDualStringDefine
 #define KDualStringDefine(str, value) \
     CHAR const * const str##A = value; \
-    CHAR const * const str = L##value;
+    CHAR const * const str = value;
 #endif
 
 //

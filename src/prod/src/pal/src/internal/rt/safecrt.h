@@ -185,7 +185,7 @@ typedef int errno_t; /* standard */
 
 #if !defined(_SAFECRT_IMPL)
 
-#define _SAFECRT__STR2WSTR(str)     L##str
+#define _SAFECRT__STR2WSTR(str)     str
 
 #define _SAFECRT__STR2WSTR2(str)    _SAFECRT__STR2WSTR(str)
 

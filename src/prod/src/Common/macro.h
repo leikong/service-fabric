@@ -26,9 +26,9 @@
 #define COMMON_STRINGIFY_I( text ) #text
 
 #define COMMON_WSTRINGIFY( text ) COMMON_WSTRINGIFY_I( text )
-#define COMMON_WSTRINGIFY_I( text ) L ## #text
+#define COMMON_WSTRINGIFY_I( text ) #text
 
-#define TO_WSTRING_I( x ) L##x
+#define TO_WSTRING_I( x ) x
 #define TO_WSTRING( x ) TO_WSTRING_I( x )
 
 #define CPPBOOL(b) ( (b) ? true : false)

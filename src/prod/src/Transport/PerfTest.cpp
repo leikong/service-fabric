@@ -115,7 +115,7 @@ ProtectionLevel::Enum protectionLevel = ProtectionLevel::EncryptAndSign;
 #ifdef PLATFORM_UNIX
 int main(int argc, char* argva[])
 #else
-void wmain(int argc, char* argv[])
+void main(int argc, char* argv[])
 #endif
 {
     Config config; // Trigger config loading
