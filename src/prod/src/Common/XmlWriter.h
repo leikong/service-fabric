@@ -61,7 +61,7 @@ namespace Common
 		ErrorCode WriteNumericAttribute(std::string const & attrName, Type & value,
 			std::string const & prefix = "", std::string const & nameSpace = "")
 		{
-			wostringstream stream;
+			ostringstream stream;
 			stream << value;
 			string attrValue = stream.str();
 			return  liteWriter_->WriteAttribute(attrName, attrValue, prefix, nameSpace);

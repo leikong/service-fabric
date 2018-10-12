@@ -499,7 +499,7 @@ _Use_decl_annotations_
 bool TcpTransportUtility::TryParsePortString(std::string const & portString, USHORT & port)
 {
     int portLong = 0;
-    if (!(wistringstream(portString) >> portLong))
+    if (!(istringstream(portString) >> portLong))
     {
         return false;
     }

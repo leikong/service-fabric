@@ -353,7 +353,7 @@ void UnreliableTransportConfig::ClearNodeIdSpecifications(string const & nodeId)
     {
         // first we need to get only the nodeId from specification (everything before first _ character)
         string specNodeId;
-        wistringstream specName(spec->GetName());
+        istringstream specName(spec->GetName());
         getline(specName, specNodeId, '_');
 
         return specNodeId == nodeId;

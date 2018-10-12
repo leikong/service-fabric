@@ -80,7 +80,7 @@ void WINAPI OnArbitration(
 
     if (context != NULL)
     {
-        wostringstream remoteAddress;
+        ostringstream remoteAddress;
         remoteAddress << remoteSocketAddress->Address << ':' << remoteSocketAddress->Port;
         string remoteLeaseAddress = remoteAddress.str();
 

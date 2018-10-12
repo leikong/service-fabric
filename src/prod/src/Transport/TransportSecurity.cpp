@@ -764,7 +764,7 @@ ErrorCode TransportSecurity::InitializeLocalWindowsIdentityIfNeeded()
         return error;
     }
 
-    std::wostringstream stringStream;
+    std::ostringstream stringStream;
     stringStream << static_cast<char const *>(&domain.front()) << "\\" << static_cast<char const *>(&name.front());
     localWindowsIdentity_ = stringStream.str();
     WriteInfo(TraceType, "local Windows identity is {0}", localWindowsIdentity_);
