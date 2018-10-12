@@ -35,7 +35,7 @@ def collect():
             elif key == 'eventNameField':
                 subtask = event[key]
             elif key == 'dataField':
-                text = ''.join([chr(c) for c in event[key]])
+                text = event[key]
 
         print("[{}:{}] {}.{}: {}".format(level, timestamp, task, subtask, text))
 

@@ -227,7 +227,7 @@ public:
     //{
         char * moduleName;
         char * nodeId;
-        if (!PyArg_ParseTuple(args, "uu", &moduleName, &nodeId))
+        if (!PyArg_ParseTuple(args, "ss", &moduleName, &nodeId))
         {
             return NULL;
         }
@@ -254,7 +254,7 @@ public:
     DEFINE_PY_CALLBACK_IMPL( Broadcast )
     //{
         char * message;
-        if (!PyArg_ParseTuple(args, "u", &message))
+        if (!PyArg_ParseTuple(args, "s", &message))
         {
             return NULL;
         }
@@ -280,7 +280,7 @@ public:
     DEFINE_PY_CALLBACK_IMPL( Query )
     //{
         char * query;
-        if (!PyArg_ParseTuple(args, "u", &query))
+        if (!PyArg_ParseTuple(args, "s", &query))
         {
             return NULL;
         }
