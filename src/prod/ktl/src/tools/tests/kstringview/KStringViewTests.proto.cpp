@@ -50,7 +50,7 @@ Abstract:
 #define K$STRLEN strlen
 #define K$LPCSTR LPCSTR
 #define K$PCHAR PCHAR
-#define K$STRING(s) L##s
+#define K$STRING(s) s
 #define K$TestFunction(n) n
 #endif
 

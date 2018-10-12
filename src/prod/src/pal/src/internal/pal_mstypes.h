@@ -120,7 +120,7 @@ extern "C" {
 #define FAR
 
 #ifdef UNICODE
-#define __TEXT(x) L##x
+#define __TEXT(x) x
 #else
 #define __TEXT(x) x
 #endif

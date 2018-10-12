@@ -40,7 +40,7 @@
 #define K$KBufferString KBufferString
 #define K$KSharedBufferString KSharedBufferString
 #define K$CHAR char
-#define K$CHARSIZE 2
+#define K$CHARSIZE 1
 #define K$LPCSTR LPCSTR
 #define K$PCHAR PCHAR
 #define K$STRING(s) s
@@ -1524,7 +1524,7 @@ KString::Create(
 
     String = nullptr;
 
-    ULONG BufferLengthInChars = ToCopy.Length / 2;
+    ULONG BufferLengthInChars = ToCopy.Length;
     if (IncludeNullTerminator)
     {
         HRESULT hr;
@@ -1540,7 +1540,7 @@ KString::Create(
 
     if (BufferLengthInChars > 0)
     {
-        KStringView toCopy(static_cast<PCHAR>(ToCopy.Buffer), ToCopy.Length / 2, ToCopy.Length / 2);
+        KStringView toCopy(static_cast<PCHAR>(ToCopy.Buffer), ToCopy.Length, ToCopy.Length);
         if (! Tmp->CopyFrom(toCopy, IncludeNullTerminator))
         {
             return STATUS_UNSUCCESSFUL;

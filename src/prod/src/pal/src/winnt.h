@@ -59,7 +59,7 @@ typedef void *PVOID64;
 #endif
 #endif
 
-#define __TEXT(quote) L##quote      // r_winnt
+#define __TEXT(quote) quote      // r_winnt
 #define TEXT(quote) __TEXT(quote)   // r_winnt
 
 // 486

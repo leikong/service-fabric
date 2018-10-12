@@ -28,7 +28,7 @@ namespace Common
     { \
         PVOID lpContext = NULL; \
         BOOL result = ::InitOnceExecuteOnce(&InitOnce, TComponent::InitSingleton, NULL, &lpContext); \
-        ASSERT_IF(!result, "Failed to initialize {0} singleton", L ## #TComponent); \
+        ASSERT_IF(!result, "Failed to initialize {0} singleton", #TComponent); \
         return *(Singleton); \
     } \
     BOOL CALLBACK TComponent::InitSingleton(PINIT_ONCE, PVOID, PVOID *) \
