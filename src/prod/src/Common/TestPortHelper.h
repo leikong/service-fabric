@@ -15,16 +15,15 @@ namespace Common
         static void GetPorts(USHORT numberOfPorts, USHORT & startPort);
         static USHORT GetNextLeasePort();
         static PortMap GetPortsInUse();
-        static ErrorCode GetTcpPortOwnerInfo(USHORT port, _Out_ std::wstring & ownerInfo);
-        static ErrorCode GetTcp6PortOwnerInfo(USHORT port, _Out_ std::wstring & ownerInfo);
         static ErrorCode GetTcpPortOwnerInfo(USHORT port, _Out_ std::string & ownerInfo);
+        static ErrorCode GetTcp6PortOwnerInfo(USHORT port, _Out_ std::string & ownerInfo);
         static std::string GetTcpPortOwnerInfo(USHORT port);
         static std::string GetNetStatTcp();
 
     private:
         TestPortHelper();
 
-        static Common::GlobalWString EnvVarName_WinFabTestPorts;
+        static Common::GlobalString EnvVarName_WinFabTestPorts;
 
         static const USHORT DefaultStartPort;
         static const USHORT DefaultEndPort;

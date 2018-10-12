@@ -104,9 +104,9 @@ namespace Common
         w.Write("{0}:{1}", guid_, index_);
     }
 
-    wstring ActivityId::ToString() const
+    string ActivityId::ToString() const
     {
-        return wformatString("{0}:{1}", guid_, index_);
+        return formatString.L("{0}:{1}", guid_, index_);
     }
 
     string ActivityId::AddField(TraceEvent & traceEvent, std::string const & name)

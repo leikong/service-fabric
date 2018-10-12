@@ -14,7 +14,7 @@ namespace Transport
         SecurityContextWin(
             IConnectionSPtr const & connection,
             TransportSecuritySPtr const & transportSecurity,
-            std::wstring const & targetName,
+            std::string const & targetName,
             ListenInstance localListenInstance);
 
         ~SecurityContextWin();
@@ -34,7 +34,7 @@ namespace Transport
 
         SECURITY_STATUS AuthorizeRemoteEnd() override;
 
-        void CompleteClaimsRetrieval(Common::ErrorCode const &, std::wstring const &) override { };
+        void CompleteClaimsRetrieval(Common::ErrorCode const &, std::string const &) override { };
         void CompleteClientAuth(Common::ErrorCode const &, SecuritySettings::RoleClaims const & clientClaims, Common::TimeSpan expiration) override;
 
         virtual bool AccessCheck(AccessControl::FabricAcl const & acl, DWORD desiredAccess) const override;

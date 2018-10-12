@@ -19,7 +19,7 @@ namespace Common
         CryptoBitBlob(CryptoBitBlob const &) = default;
         CryptoBitBlob(CryptoBitBlob &&) = default;
 
-        ErrorCode Initialize(std::wstring const & hexString);
+        ErrorCode Initialize(std::string const & hexString);
         ErrorCode InitializeAsSignatureHash(PCCertContext certContext);
 
         auto & Data() { return data_; }

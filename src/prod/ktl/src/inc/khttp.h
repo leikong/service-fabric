@@ -353,8 +353,8 @@ namespace KHttpUtils
     //
     namespace HttpSchemes
     {
-        WCHAR const * const Insecure  =  L"http";
-        WCHAR const * const Secure    =  L"https";
+        CHAR const * const Insecure  =  "http";
+        CHAR const * const Secure    =  "https";
     };
 
     // OpToString
@@ -959,7 +959,7 @@ public:
         //
         NTSTATUS
         GetHeader(
-            __in  LPCWSTR  HeaderName,
+            __in  LPCSTR  HeaderName,
             __out KString::SPtr& Value
             );
 
@@ -3205,7 +3205,7 @@ public:
     //
     NTSTATUS
     GetHttpResponseHeader(
-        __in  LPCWSTR  HeaderName,
+        __in  LPCSTR  HeaderName,
         __out KString::SPtr& Value
     );
 

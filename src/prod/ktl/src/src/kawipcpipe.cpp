@@ -138,7 +138,7 @@ NTSTATUS KAWIpcPipe::GetSocketName(
 )
 {
     NTSTATUS status = STATUS_SUCCESS;
-    KStringView prefix(L"\\\\.\\pipe\\_KtlLogger_Microsoft_");
+    KStringView prefix("\\\\.\\pipe\\_KtlLogger_Microsoft_");
     BOOLEAN b;
 
     b = Name.Concat(prefix);

@@ -29,7 +29,7 @@ NodeId FederationSubsystem::get_NodeId() const
     return siteNode_->Instance.Id;
 }
 
-wstring const & FederationSubsystem::getIdString() const
+string const & FederationSubsystem::getIdString() const
 { 
     return siteNode_->IdString; 
 }
@@ -74,7 +74,7 @@ LeaseWrapper::LeaseAgent const & FederationSubsystem::get_LeaseAgent() const
     return siteNode_->GetLeaseAgent();
 }
 
-wstring const & FederationSubsystem::getRingName() const 
+string const & FederationSubsystem::getRingName() const 
 { 
     return siteNode_->RingName; 
 }
@@ -131,7 +131,7 @@ AsyncOperationSPtr FederationSubsystem::OnBeginRoute(
     Transport::MessageUPtr && message,
     NodeId nodeId,
     uint64 instance,
-    wstring const & toRing,
+    string const & toRing,
     bool useExactRouting,
     TimeSpan retryTimeout,
     TimeSpan timeout,
@@ -159,7 +159,7 @@ AsyncOperationSPtr FederationSubsystem::OnBeginRouteRequest(
     Transport::MessageUPtr && request,
     NodeId nodeId,
     uint64 instance,
-    wstring const & toRing,
+    string const & toRing,
     bool useExactRouting,
     TimeSpan retryTimeout,
     TimeSpan timeout,
@@ -262,7 +262,7 @@ RoutingToken FederationSubsystem::GetRoutingTokenAndShutdownNodes(std::vector<No
     return siteNode_->GetRoutingTokenAndShutdownNodes(shutdownNodes);
 }
 
-void FederationSubsystem::SetShutdown(NodeInstance const & nodeInstance, wstring const & ringName)
+void FederationSubsystem::SetShutdown(NodeInstance const & nodeInstance, string const & ringName)
 {
     siteNode_->Table.SetShutdown(nodeInstance, ringName);
 }

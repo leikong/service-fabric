@@ -10,18 +10,18 @@ using namespace std;
 
 #define TraceType "ConfigStore"
 
-wstring ConfigStoreType::ToString(Enum const & val)
+string ConfigStoreType::ToString(Enum const & val)
 {
     switch(val)
     {
     case ConfigStoreType::Cfg:
-        return L"Cfg";
+        return "Cfg";
     case ConfigStoreType::Package:
-        return L"Package";
+        return "Package";
     case ConfigStoreType::SettingsFile:
-        return L"SettingsFile";
+        return "SettingsFile";
     case ConfigStoreType::None:
-        return L"None";
+        return "None";
     default:
         Assert::CodingError("Unknown ConfigStoreType value {0}", (int)val);
     }
@@ -64,7 +64,7 @@ void ConfigStore::SetIgnoreUpdateFailures(bool value)
     this->ignoreUpdateFailures_ = value;
 }
 
-void ConfigStore::RegisterForUpdate(wstring const & section, IConfigUpdateSink* sink)
+void ConfigStore::RegisterForUpdate(string const & section, IConfigUpdateSink* sink)
 {
     {
         AcquireWriteLock lock(lock_);
@@ -76,7 +76,7 @@ void ConfigStore::RegisterForUpdate(wstring const & section, IConfigUpdateSink* 
 
 void ConfigStore::UnregisterForUpdate(IConfigUpdateSink const * sink)
 {
-    vector<wstring> sections;
+    vector<string> sections;
     {
         AcquireWriteLock lock(lock_);
         sections = updateSubscriberMap_.UnRegister(sink);
@@ -88,7 +88,7 @@ void ConfigStore::UnregisterForUpdate(IConfigUpdateSink const * sink)
     }
 }
 
-bool ConfigStore::OnUpdate(std::wstring const & section, std::wstring const & key)
+bool ConfigStore::OnUpdate(std::string const & section, std::string const & key)
 {
     auto result = InvokeOnSubscribers(
         section,
@@ -117,7 +117,7 @@ bool ConfigStore::OnUpdate(std::wstring const & section, std::wstring const & ke
     return result;
 }
 
-bool ConfigStore::CheckUpdate(std::wstring const & section, std::wstring const & key, std::wstring const & value, bool isEncrypted)
+bool ConfigStore::CheckUpdate(std::string const & section, std::string const & key, std::string const & value, bool isEncrypted)
 {    
     auto result = InvokeOnSubscribers(
         section,
@@ -129,7 +129,7 @@ bool ConfigStore::CheckUpdate(std::wstring const & section, std::wstring const &
 }
 
 bool ConfigStore::InvokeOnSubscribers(
-    std::wstring const & section,
+    std::string const & section,
     std::function<bool(IConfigUpdateSink *)> const & func) const
 {
     bool updateFailureEncountered = false;
@@ -160,7 +160,7 @@ bool ConfigStore::InvokeOnSubscribers(
     return !updateFailureEncountered;
 }
 
-void ConfigStore::UpdateSubscriberMap::Register(std::wstring const & section, IConfigUpdateSink * sink)
+void ConfigStore::UpdateSubscriberMap::Register(std::string const & section, IConfigUpdateSink * sink)
 {
     auto iter = map_.find(section);
     while ((iter != map_.end()) && (iter->first == section))
@@ -172,9 +172,9 @@ void ConfigStore::UpdateSubscriberMap::Register(std::wstring const & section, IC
     map_.insert(iter, make_pair(section, make_shared<ConfigUpdateSinkRegistration>(sink)));
 }
 
-vector<wstring> ConfigStore::UpdateSubscriberMap::UnRegister(IConfigUpdateSink const* sink)
+vector<string> ConfigStore::UpdateSubscriberMap::UnRegister(IConfigUpdateSink const* sink)
 {
-    vector<wstring> rv;
+    vector<string> rv;
 
     auto iter = map_.begin();
     while (iter != map_.end())
@@ -193,7 +193,7 @@ vector<wstring> ConfigStore::UpdateSubscriberMap::UnRegister(IConfigUpdateSink c
     return rv;
 }
 
-IConfigUpdateSinkList ConfigStore::UpdateSubscriberMap::Get(std::wstring const & section) const
+IConfigUpdateSinkList ConfigStore::UpdateSubscriberMap::Get(std::string const & section) const
 {
     IConfigUpdateSinkList rv;
 

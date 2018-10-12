@@ -33,7 +33,7 @@ X509Identity::Type Thumbprint::IdType() const
 }
 
 _Use_decl_annotations_
-ErrorCode Thumbprint::Create(std::wstring const & str, SPtr & result)
+ErrorCode Thumbprint::Create(std::string const & str, SPtr & result)
 {
     result = make_shared<Thumbprint>();
     auto error = result->Initialize(str);
@@ -194,34 +194,34 @@ bool Thumbprint::CertChainShouldBeVerified() const
     return certChainShouldBeVerified_;
 }
 
-ErrorCode Thumbprint::Initialize(wstring const & inputHashString)
+ErrorCode Thumbprint::Initialize(string const & inputHashString)
 {
-    vector<wstring> strings;
-    StringUtility::Split<wstring>(inputHashString, strings, L"?", true);
+    vector<string> strings;
+    StringUtility::Split<string>(inputHashString, strings, "?", true);
     if (strings.empty()) return ErrorCodeValue::InvalidX509Thumbprint;
 
     if (strings.size() > 1)
     {
         StringUtility::TrimWhitespaces(strings[1]);
-        certChainShouldBeVerified_ = StringUtility::AreEqualCaseInsensitive(strings[1], L"true");
+        certChainShouldBeVerified_ = StringUtility::AreEqualCaseInsensitive(strings[1], "true");
     }
 
     // Parse from input string, examples:
     // "2855e9bbedc65d3dc82c7335d1ec074586b09006" or "28 55 e9 bb ed c6 5d 3d c8 2c 73 35 d1 ec 07 45 86 b0 90 06"
-    wstring & normalizedHashString = strings.front();
+    string & normalizedHashString = strings.front();
     StringUtility::TrimWhitespaces(normalizedHashString);
 
     // Add " " for number parsing if needed
-    if (normalizedHashString.find(L" ") == wstring::npos)
+    if (normalizedHashString.find(" ") == string::npos)
     {
         for (int i = (int)normalizedHashString.size()-2; i >0; )
         {
-            normalizedHashString.insert(i, L" ");
+            normalizedHashString.insert(i, " ");
             i -= 2;
         }
     }
 
-    std::wstringstream stringStream(normalizedHashString);
+    std::stringstream stringStream(normalizedHashString);
     while(!stringStream.eof())
     {
         unsigned int hashByte;

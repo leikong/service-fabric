@@ -36,8 +36,8 @@ namespace Common
             return a;
         }
 
-        LPCWSTR AddString(std::wstring const & s);
-        LPCWSTR AddString(std::wstring const & s, bool nullIfEmpty);
+        LPCSTR AddString(std::string const & s);
+        LPCSTR AddString(std::string const & s, bool nullIfEmpty);
 
         LPVOID Allocate(size_t size);
 

@@ -14,7 +14,7 @@ namespace Common
         ErrorCode(ErrorCode const&);
         ErrorCode(ErrorCode &&);
         ErrorCode(ErrorCodeValue::Enum);
-        ErrorCode(ErrorCodeValue::Enum, std::wstring && msg);
+        ErrorCode(ErrorCodeValue::Enum, std::string && msg);
         ~ErrorCode();
 
         ErrorCode & operator=(ErrorCode const&);
@@ -25,9 +25,9 @@ namespace Common
 
         ErrorCodeValue::Enum ReadValue() const;
 
-        __declspec(property(get=get_Message)) std::wstring const & Message;
-        inline std::wstring const& get_Message() const { return message_; }
-        std::wstring TakeMessage() { return move(message_); }
+        __declspec(property(get=get_Message)) std::string const & Message;
+        inline std::string const& get_Message() const { return message_; }
+        std::string TakeMessage() { return move(message_); }
 
         static inline ErrorCode Success() { return ErrorCodeValue::Success; }
 
@@ -44,12 +44,12 @@ namespace Common
 
         void WriteTo(Common::TextWriter & w, Common::FormatOptions const &) const;
         void WriteToEtw(uint16 contextSequenceId) const;
-        std::wstring ErrorCodeValueToString() const;
+        std::string ErrorCodeValueToString() const;
 
         HRESULT ToHResult() const;
         NTSTATUS ToNTStatus() const;
         static ErrorCode FromHResult(HRESULT);
-        static ErrorCode FromHResult(HRESULT, std::wstring && message);
+        static ErrorCode FromHResult(HRESULT, std::string && message);
         static ErrorCode FromHResult(HRESULT hr, bool captureThreadErrorMessage);
         static ErrorCode FromWin32Error();
         static ErrorCode FromWin32Error(DWORD win32Error);
@@ -61,7 +61,7 @@ namespace Common
             ErrorCode const error, 
             TraceTaskCodes::Enum const & taskCode, 
             StringLiteral const & traceType,
-            std::wstring const & traceId,
+            std::string const & traceId,
             StringLiteral const & operation);
         static ErrorCode TraceReturn(
             ErrorCode const error, 
@@ -78,13 +78,13 @@ namespace Common
         FABRIC_PRIMITIVE_FIELDS_01(value_);
 
     private:
-        static std::wstring GetThreadErrorMessage(bool clear);
+        static std::string GetThreadErrorMessage(bool clear);
         bool TryAssignFrom(ErrorCode const&, bool allowOverwrite);
         void ClearThreadErrorMessage() const;
 
         ErrorCodeValue::Enum value_;
 
-        std::wstring message_;
+        std::string message_;
         mutable DWORD messageTid_;
         mutable bool read_;
 

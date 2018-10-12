@@ -29,7 +29,7 @@ CertDirMonitor & CertDirMonitor::GetSingleton()
     return *singleton_;
 }
 
-const wchar_t  *CertDirMonitor::CertFileExtsW[] = { L"pem", L"PEM", L"crt", L"prv", L"pfx" };
+const char  *CertDirMonitor::CertFileExtsW[] = { "pem", "PEM", "crt", "prv", "pfx" };
 const char     *CertDirMonitor::CertFileExtsA[] = {  "pem",  "PEM",  "crt",  "prv", "pfx" };
 
 const int CertDirMonitor::NrCertFileExts = (sizeof(CertDirMonitor::CertFileExtsW) / sizeof((CertDirMonitor::CertFileExtsW)[0]));
@@ -127,8 +127,8 @@ ErrorCode CertDirMonitor::StartWatch(const string &srcPath, const string &destPa
 {
     ErrorCode error;
 
-    srcPath_ = StringUtility::Utf8ToUtf16(srcPath);
-    destPath_ = StringUtility::Utf8ToUtf16(destPath);
+    srcPath_ = Utf8ToUtf16NotNeeded(srcPath);
+    destPath_ = Utf8ToUtf16NotNeeded(destPath);
 
     if (!Directory::Exists(srcPath))
     {
@@ -142,14 +142,14 @@ ErrorCode CertDirMonitor::StartWatch(const string &srcPath, const string &destPa
 
     for (int i = 0; i < CertDirMonitor::NrCertFileExts; i++)
     {
-        auto search = File::Search(srcPath_ + L"/*." + CertFileExtsW[i]);
+        auto search = File::Search(srcPath_ + "/*." + CertFileExtsW[i]);
         while ((search->MoveNext()).IsSuccess())
         {
-            wstring filename((wchar_t *)(search->GetCurrent().cFileName));
+            string filename((char *)(search->GetCurrent().cFileName));
 
             //skip copying when dest file exists with same content
-            string srcFilePath = StringUtility::Utf16ToUtf8(Path::Combine(srcPath_, filename));
-            string destFilePath = StringUtility::Utf16ToUtf8(Path::Combine(destPath_, filename));
+            string srcFilePath = Utf16ToUtf8NotNeeded(Path::Combine(srcPath_, filename));
+            string destFilePath = Utf16ToUtf8NotNeeded(Path::Combine(destPath_, filename));
             if (CompareFileContent(srcFilePath, destFilePath)) continue;
 
             error = File::Copy(Path::Combine(srcPath_, filename), Path::Combine(destPath_, filename), true);
@@ -160,7 +160,7 @@ ErrorCode CertDirMonitor::StartWatch(const string &srcPath, const string &destPa
             }
             else
             {
-                string destPathA = StringUtility::Utf16ToUtf8(Path::Combine(destPath_, filename));
+                string destPathA = Utf16ToUtf8NotNeeded(Path::Combine(destPath_, filename));
                 SetDefaultMode(destPathA.c_str());
             }
         }
@@ -241,9 +241,9 @@ void CertDirMonitor::ProcessNotifications()
         {
             if (event->mask & (IN_CLOSE_WRITE | IN_MOVED_TO))
             {
-                wstring srcFilePathW = Path::Combine(srcPath_, StringUtility::Utf8ToUtf16(event->name));
-                wstring dstFilePathW = Path::Combine(destPath_, StringUtility::Utf8ToUtf16(event->name));
-                if (CompareFileContent(StringUtility::Utf16ToUtf8(srcFilePathW), StringUtility::Utf16ToUtf8(dstFilePathW)))
+                string srcFilePathW = Path::Combine(srcPath_, Utf8ToUtf16NotNeeded(event->name));
+                string dstFilePathW = Path::Combine(destPath_, Utf8ToUtf16NotNeeded(event->name));
+                if (CompareFileContent(Utf16ToUtf8NotNeeded(srcFilePathW), Utf16ToUtf8NotNeeded(dstFilePathW)))
                 {
                     WriteInfo(CertDirMonitorTrace, "ProcessNotifications: Skip copying {0} to {1} since content is same.",
 			      srcFilePathW, dstFilePathW);
@@ -255,12 +255,12 @@ void CertDirMonitor::ProcessNotifications()
                     WriteWarning(CertDirMonitorTrace, "ProcessNotifications: failed to copy {0} to {1}",
                                  srcFilePathW, dstFilePathW);
                 }
-                string destPathA = StringUtility::Utf16ToUtf8(dstFilePathW);
+                string destPathA = Utf16ToUtf8NotNeeded(dstFilePathW);
                 SetDefaultMode(destPathA.c_str());
             }
             else if (event->mask & (IN_DELETE|IN_MOVED_FROM))
             {
-                wstring dstFilePathW = Path::Combine(destPath_, StringUtility::Utf8ToUtf16(event->name));
+                string dstFilePathW = Path::Combine(destPath_, Utf8ToUtf16NotNeeded(event->name));
                 File::Delete(dstFilePathW, false);
             }
         }

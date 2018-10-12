@@ -13,19 +13,19 @@ namespace Transport
     
     public:
         ActionHeader();
-        ActionHeader(std::wstring const & action);
-        ActionHeader(std::wstring && action);
+        ActionHeader(std::string const & action);
+        ActionHeader(std::string && action);
         ActionHeader(ActionHeader const & rhs);
         ActionHeader(ActionHeader && rhs);
 
-        __declspec(property(get=get_Action)) std::wstring const & Action;
-        std::wstring const & get_Action() const;
+        __declspec(property(get=get_Action)) std::string const & Action;
+        std::string const & get_Action() const;
 
         void WriteTo(Common::TextWriter & w, Common::FormatOptions const &) const;
 
         FABRIC_FIELDS_01(action_);
 
     private:
-        std::wstring action_;
+        std::string action_;
     };
 }

@@ -13,7 +13,7 @@ namespace Transport
         TcpFrameHeader();
         TcpFrameHeader(MessageUPtr const & message, byte securityProviderMask);
 
-        bool Validate(bool firstFrame, byte expectedSecurityProviderMask, std::wstring const & traceId) const;
+        bool Validate(bool firstFrame, byte expectedSecurityProviderMask, std::string const & traceId) const;
 
         uint32 FrameLength() const;
         uint16 HeaderLength() const;

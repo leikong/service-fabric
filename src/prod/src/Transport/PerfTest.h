@@ -6,7 +6,7 @@
 #pragma once
 
 #define TraceType "TransportPerfTest"
-#define TransportPerfTestConsoleTraceFilter L"General.TransportPerfTest:4"
+#define TransportPerfTestConsoleTraceFilter "General.TransportPerfTest:4"
 
 namespace Transport
 {

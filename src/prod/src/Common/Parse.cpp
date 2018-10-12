@@ -141,11 +141,6 @@ namespace
 
 namespace Common
 {
-    bool TraceParseReturn(bool retval, StringLiteral traceType, wstring const & input, const char* targetType, uint base)
-    {
-        return TraceParseReturnT(retval, traceType, input, targetType, base);
-    }
-
     bool TraceParseReturn(bool retval, StringLiteral traceType, string const & input, const char* targetType, uint base)
     {
         return TraceParseReturnT(retval, traceType, input, targetType, base);
@@ -230,29 +225,14 @@ namespace Common
         return TryParseInt64(str.c_str(), str.c_str() + str.size(), value, base);
     }
 
-    bool TryParseUInt64(std::wstring const & str, __out uint64 & value, uint base) 
-    {
-        return TryParseUInt64<std::wstring>(str, value, base);
-    }
-
     bool TryParseUInt64(std::string const & str, __out uint64 & value, uint base) 
     {
         return TryParseUInt64<std::string>(str, value, base);
     }
 
-    bool TryParseInt64(std::wstring const & str, __out int64 & value, uint base) 
-    {
-        return TryParseInt64<std::wstring>(str, value, base);
-    }
-
     bool TryParseInt64(std::string const & str, __out int64 & value, uint base) 
     {
         return TryParseInt64<std::string>(str, value, base);
-    }
-
-    bool TryParseDouble(std::wstring const & str, double& value)
-    {
-        return TryParseDouble(string(str.cbegin(), str.cend()), value);
     }
 
     bool TryParseDouble(std::string const & str, double& value)
@@ -370,18 +350,6 @@ namespace Common
         return true;
     }
 
-    double Double_Parse(std::wstring const & str)
-    {
-        double result = 0;
-        TraceParseReturn(
-            TryParseDouble(str, result),
-            __FUNCTION__,
-            str,
-            "double");
-
-        return result;
-    }
-
     double Double_Parse(std::string const & str)
     {
         double result = 0;
@@ -389,7 +357,7 @@ namespace Common
             TryParseDouble(str, result),
             __FUNCTION__,
             str,
-            "double"); 
+            "double");
 
         return result;
     }

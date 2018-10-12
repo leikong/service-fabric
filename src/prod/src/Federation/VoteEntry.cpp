@@ -14,7 +14,7 @@ using namespace Federation;
 
 StringLiteral const TraceGap("Gap");
 
-VoteEntry::VoteEntry(wstring const & type, wstring const & connectionString, VoteProxySPtr && proxy, SiteNode & siteNode)
+VoteEntry::VoteEntry(string const & type, string const & connectionString, VoteProxySPtr && proxy, SiteNode & siteNode)
     :   type_(type),
         connectionString_(connectionString),
         proxy_(move(proxy)),
@@ -87,7 +87,7 @@ void VoteEntry::WriteToEtw(uint16 contextSequenceId) const
         VoteId,
         siteNode_.Id,
         IsAcquired,
-        wformatString(GlobalTicket),
+        formatString(GlobalTicket),
         GlobalTicket.Ticks);
 }
 

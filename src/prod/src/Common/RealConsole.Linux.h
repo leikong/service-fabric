@@ -55,9 +55,9 @@ namespace Common
         }
 
         int Read() const;
-        bool ReadLine( std::wstring& buffer ) const;
+        bool ReadLine( std::string& buffer ) const;
         void WriteAsciiBuffer(__in_ecount(ccLen) char const * buf, size_t ccLen);
-        void WriteUnicodeBuffer(__in_ecount(ccLen) wchar_t const * buf, size_t ccLen);
+        void WriteUnicodeBuffer(__in_ecount(ccLen) char const * buf, size_t ccLen);
 
         void Flush()
         {

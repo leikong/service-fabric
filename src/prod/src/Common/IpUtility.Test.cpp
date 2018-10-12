@@ -17,7 +17,7 @@ BOOST_AUTO_TEST_SUITE(IpUtilityTest)
 
 BOOST_AUTO_TEST_CASE(GetDnsServersTest)
 {
-    std::vector<std::wstring> dnsServers;
+    std::vector<std::string> dnsServers;
     ErrorCode error = IpUtility::GetDnsServers(/*out*/dnsServers);
     VERIFY_IS_TRUE(error.IsSuccess());
 
@@ -25,7 +25,7 @@ BOOST_AUTO_TEST_CASE(GetDnsServersTest)
 
     for (int i = 0; i < dnsServers.size(); i++)
     {
-        const std::wstring & address = dnsServers[i];
+        const std::string & address = dnsServers[i];
 
         Common::Endpoint ep(address);
 
@@ -37,7 +37,7 @@ BOOST_AUTO_TEST_CASE(GetDnsServersTest)
 BOOST_AUTO_TEST_CASE(GetDnsServersPerAdapterTest)
 {
 #if !defined(PLATFORM_UNIX)
-    typedef std::map<std::wstring, std::vector<std::wstring>> IpMap;
+    typedef std::map<std::string, std::vector<std::string>> IpMap;
 
     IpMap map;
     ErrorCode error = IpUtility::GetDnsServersPerAdapter(/*out*/map);
@@ -47,15 +47,15 @@ BOOST_AUTO_TEST_CASE(GetDnsServersPerAdapterTest)
 
     for (IpMap::iterator it = map.begin(); it != map.end(); ++it)
     {
-        const std::wstring & adapterName = it->first;
-        const std::vector<std::wstring> & dnsAddresses = it->second;
+        const std::string & adapterName = it->first;
+        const std::vector<std::string> & dnsAddresses = it->second;
 
         VERIFY_IS_TRUE(!adapterName.empty());
         VERIFY_IS_TRUE(!dnsAddresses.empty());
 
         for (int i = 0; i < dnsAddresses.size(); i++)
         {
-            const std::wstring & address = dnsAddresses[i];
+            const std::string & address = dnsAddresses[i];
 
             Common::Endpoint ep(address);
             // Validate this is ipv4 address
@@ -67,7 +67,7 @@ BOOST_AUTO_TEST_CASE(GetDnsServersPerAdapterTest)
 
 BOOST_AUTO_TEST_CASE(GetIpAddressesPerAdapterTest)
 {
-    typedef std::map<std::wstring, std::vector<Common::IPPrefix>> IpMap;
+    typedef std::map<std::string, std::vector<Common::IPPrefix>> IpMap;
 
     IpMap map;
     ErrorCode error = IpUtility::GetIpAddressesPerAdapter(/*out*/map);
@@ -77,7 +77,7 @@ BOOST_AUTO_TEST_CASE(GetIpAddressesPerAdapterTest)
 
     for (IpMap::iterator it = map.begin(); it != map.end(); ++it)
     {
-        const std::wstring & adapterName = it->first;
+        const std::string & adapterName = it->first;
         const std::vector<Common::IPPrefix> & ipAddresses = it->second;
 
         VERIFY_IS_TRUE(!adapterName.empty());
@@ -94,17 +94,17 @@ BOOST_AUTO_TEST_CASE(GetIpAddressesPerAdapterTest)
 
 BOOST_AUTO_TEST_CASE(GetAdapterAddressOnTheSameNetworkTest)
 {
-    typedef std::map<std::wstring, std::vector<Common::IPPrefix>> IpMap;
+    typedef std::map<std::string, std::vector<Common::IPPrefix>> IpMap;
 
     IpMap map;
     IpUtility::GetIpAddressesPerAdapter(/*out*/map);
     for (IpMap::iterator it = map.begin(); it != map.end(); ++it)
     {
-        const std::wstring & adapterName = it->first;
+        const std::string & adapterName = it->first;
         const std::vector<Common::IPPrefix> & ipAddresses = it->second;
         for (int i = 0; i < ipAddresses.size(); i++)
         {
-            std::wstring outputIp;
+            std::string outputIp;
             const Common::IPPrefix & prefix = ipAddresses[i];
             ErrorCode error = IpUtility::GetAdapterAddressOnTheSameNetwork(prefix.GetAddress().GetIpString(), /*out*/outputIp);
 

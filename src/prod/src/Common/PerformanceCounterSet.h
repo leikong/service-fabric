@@ -22,8 +22,8 @@ namespace Common
 
         void AddCounter(PerformanceCounterId counterId, PerformanceCounterType::Enum PerformanceCounterType);
 
-        PerformanceCounterSetInstanceSPtr CreateCounterSetInstance(std::wstring const & instanceName);
-        HRESULT CreateCounterSetInstance(std::wstring const & instanceName, bool allocateCounterMemory, bool avoidAssert, PerformanceCounterSetInstance* &counterSetInstance);
+        PerformanceCounterSetInstanceSPtr CreateCounterSetInstance(std::string const & instanceName);
+        HRESULT CreateCounterSetInstance(std::string const & instanceName, bool allocateCounterMemory, bool avoidAssert, PerformanceCounterSetInstance* &counterSetInstance);
 
         __declspec(property(get=get_CounterSetId)) Guid const & CounterSetId;
         inline Guid const & get_CounterSetId() const { return counterSetId_; }

@@ -16,41 +16,12 @@ namespace Common
 			std::string operator () (T const & t) const
 			{
 				std::string result;
-				StringWriterA w(result);
-				w.Write(t);
-				return result;
-			}
-
-			std::string operator () (
-				StringLiteral format,
-				VariableArgument const & arg0,
-				VariableArgument const & arg1 = VariableArgument(),
-				VariableArgument const & arg2 = VariableArgument(),
-				VariableArgument const & arg3 = VariableArgument(),
-				VariableArgument const & arg4 = VariableArgument(),
-				VariableArgument const & arg5 = VariableArgument(),
-				VariableArgument const & arg6 = VariableArgument(),
-				VariableArgument const & arg7 = VariableArgument(),
-				VariableArgument const & arg8 = VariableArgument(),
-				VariableArgument const & arg9 = VariableArgument(),
-				VariableArgument const & arg10 = VariableArgument(),
-				VariableArgument const & arg11 = VariableArgument(),
-				VariableArgument const & arg12 = VariableArgument(),
-				VariableArgument const & arg13 = VariableArgument()) const;
-		};
-
-		struct wformat_handler
-		{
-			template <typename T>
-			std::wstring operator () (T const & t) const
-			{
-				std::wstring result;
 				StringWriter w(result);
 				w.Write(t);
 				return result;
 			}
 
-			std::wstring operator () (
+			std::string L(
 				StringLiteral format,
 				VariableArgument const & arg0,
 				VariableArgument const & arg1 = VariableArgument(),
@@ -67,8 +38,8 @@ namespace Common
 				VariableArgument const & arg12 = VariableArgument(),
 				VariableArgument const & arg13 = VariableArgument()) const;
 
-			std::wstring operator () (
-				std::wstring const & wformat,
+			std::string operator () (
+				std::string const & format,
 				VariableArgument const & arg0,
 				VariableArgument const & arg1 = VariableArgument(),
 				VariableArgument const & arg2 = VariableArgument(),
@@ -85,8 +56,8 @@ namespace Common
 				VariableArgument const & arg13 = VariableArgument()) const;
 		};
 	}
+
 	extern detail::format_handler & formatString;
-	extern detail::wformat_handler & wformatString;
 
 	class TextTraceWriter
 	{
@@ -107,7 +78,7 @@ namespace Common
 			StringLiteral type,
 			StringLiteral format) const
 		{
-			operator()(type, format, std::wstring());
+			operator()(type, format, std::string());
 		}
 
 		void operator()(
@@ -121,9 +92,9 @@ namespace Common
 
 			if (useETW || useFile || useConsole)
 			{
-				std::wstring text = wformatString(format, a0);
+				std::string text = formatString.L(format, a0);
 
-				event_.WriteTextEvent(type, std::wstring(), text, useETW, useFile, useConsole);
+				event_.WriteTextEvent(type, std::string(), text, useETW, useFile, useConsole);
 			}
 		}
 
@@ -133,7 +104,7 @@ namespace Common
 			VariableArgument const & a0,
 			VariableArgument const & a1) const
 		{
-			operator()(type, std::wstring(), format, a0, a1);
+			operator()(type, std::string(), format, a0, a1);
 		}
 
 		void operator()(
@@ -143,7 +114,7 @@ namespace Common
 			VariableArgument const & a1,
 			VariableArgument const & a2) const
 		{
-			operator()(type, std::wstring(), format, a0, a1, a2);
+			operator()(type, std::string(), format, a0, a1, a2);
 		}
 
 		void operator()(
@@ -154,7 +125,7 @@ namespace Common
 			VariableArgument const & a2,
 			VariableArgument const & a3) const
 		{
-			operator()(type, std::wstring(), format, a0, a1, a2, a3);
+			operator()(type, std::string(), format, a0, a1, a2, a3);
 		}
 
 		void operator()(
@@ -166,7 +137,7 @@ namespace Common
 			VariableArgument const & a3,
 			VariableArgument const & a4) const
 		{
-			operator()(type, std::wstring(), format, a0, a1, a2, a3, a4);
+			operator()(type, std::string(), format, a0, a1, a2, a3, a4);
 		}
 
 		void operator()(
@@ -179,7 +150,7 @@ namespace Common
 			VariableArgument const & a4,
 			VariableArgument const & a5) const
 		{
-			operator()(type, std::wstring(), format, a0, a1, a2, a3, a4, a5);
+			operator()(type, std::string(), format, a0, a1, a2, a3, a4, a5);
 		}
 
 		void operator()(
@@ -193,7 +164,7 @@ namespace Common
 			VariableArgument const & a5,
 			VariableArgument const & a6) const
 		{
-			operator()(type, std::wstring(), format, a0, a1, a2, a3, a4, a5, a6);
+			operator()(type, std::string(), format, a0, a1, a2, a3, a4, a5, a6);
 		}
 
 		void operator()(
@@ -208,7 +179,7 @@ namespace Common
 			VariableArgument const & a6,
 			VariableArgument const & a7) const
 		{
-			operator()(type, std::wstring(), format, a0, a1, a2, a3, a4, a5, a6, a7);
+			operator()(type, std::string(), format, a0, a1, a2, a3, a4, a5, a6, a7);
 		}
 
 		void operator()(
@@ -224,7 +195,7 @@ namespace Common
 			VariableArgument const & a7,
 			VariableArgument const & a8) const
 		{
-			operator()(type, std::wstring(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8);
+			operator()(type, std::string(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8);
 		}
 
 		void operator()(
@@ -241,7 +212,7 @@ namespace Common
 			VariableArgument const & a8,
 			VariableArgument const & a9) const
 		{
-			operator()(type, std::wstring(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9);
+			operator()(type, std::string(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9);
 		}
 
 		void operator()(
@@ -259,7 +230,7 @@ namespace Common
 			VariableArgument const & a9,
 			VariableArgument const & a10) const
 		{
-			operator()(type, std::wstring(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
+			operator()(type, std::string(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
 		}
 
 		void operator()(
@@ -278,7 +249,7 @@ namespace Common
 			VariableArgument const & a10,
 			VariableArgument const & a11) const
 		{
-			operator()(type, std::wstring(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11);
+			operator()(type, std::string(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11);
 		}
 
 		void operator()(
@@ -298,7 +269,7 @@ namespace Common
 			VariableArgument const & a11,
 			VariableArgument const & a12) const
 		{
-			operator()(type, std::wstring(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12);
+			operator()(type, std::string(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12);
 		}
 
 		void operator()(
@@ -319,30 +290,30 @@ namespace Common
 			VariableArgument const & a12,
 			VariableArgument const & a13) const
 		{
-			operator()(type, std::wstring(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13);
+			operator()(type, std::string(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13);
 		}
 
 		void operator()(
 			StringLiteral type,
-			std::wstring const & id,
+			std::string const & id,
 			StringLiteral format) const;
 
 		void operator()(
 			StringLiteral type,
-			std::wstring const & id,
+			std::string const & id,
 			StringLiteral format,
 			VariableArgument const & a0) const;
 
 		void operator()(
 			StringLiteral type,
-			std::wstring const & id,
+			std::string const & id,
 			StringLiteral format,
 			VariableArgument const & a0,
 			VariableArgument const & a1) const;
 
 		void operator()(
 			StringLiteral type,
-			std::wstring const & id,
+			std::string const & id,
 			StringLiteral format,
 			VariableArgument const & a0,
 			VariableArgument const & a1,
@@ -350,7 +321,7 @@ namespace Common
 
 		void operator()(
 			StringLiteral type,
-			std::wstring const & id,
+			std::string const & id,
 			StringLiteral format,
 			VariableArgument const & a0,
 			VariableArgument const & a1,
@@ -359,7 +330,7 @@ namespace Common
 
 		void operator()(
 			StringLiteral type,
-			std::wstring const & id,
+			std::string const & id,
 			StringLiteral format,
 			VariableArgument const & a0,
 			VariableArgument const & a1,
@@ -369,7 +340,7 @@ namespace Common
 
 		void operator()(
 			StringLiteral type,
-			std::wstring const & id,
+			std::string const & id,
 			StringLiteral format,
 			VariableArgument const & a0,
 			VariableArgument const & a1,
@@ -380,7 +351,7 @@ namespace Common
 
 		void operator()(
 			StringLiteral type,
-			std::wstring const & id,
+			std::string const & id,
 			StringLiteral format,
 			VariableArgument const & a0,
 			VariableArgument const & a1,
@@ -392,7 +363,7 @@ namespace Common
 
 		void operator()(
 			StringLiteral type,
-			std::wstring const & id,
+			std::string const & id,
 			StringLiteral format,
 			VariableArgument const & a0,
 			VariableArgument const & a1,
@@ -405,7 +376,7 @@ namespace Common
 
 		void operator()(
 			StringLiteral type,
-			std::wstring const & id,
+			std::string const & id,
 			StringLiteral format,
 			VariableArgument const & a0,
 			VariableArgument const & a1,
@@ -419,7 +390,7 @@ namespace Common
 
 		void operator()(
 			StringLiteral type,
-			std::wstring const & id,
+			std::string const & id,
 			StringLiteral format,
 			VariableArgument const & a0,
 			VariableArgument const & a1,
@@ -434,7 +405,7 @@ namespace Common
 
 		void operator()(
 			StringLiteral type,
-			std::wstring const & id,
+			std::string const & id,
 			StringLiteral format,
 			VariableArgument const & a0,
 			VariableArgument const & a1,
@@ -450,7 +421,7 @@ namespace Common
 
 		void operator()(
 			StringLiteral type,
-			std::wstring const & id,
+			std::string const & id,
 			StringLiteral format,
 			VariableArgument const & a0,
 			VariableArgument const & a1,
@@ -467,7 +438,7 @@ namespace Common
 
 		void operator()(
 			StringLiteral type,
-			std::wstring const & id,
+			std::string const & id,
 			StringLiteral format,
 			VariableArgument const & a0,
 			VariableArgument const & a1,
@@ -485,7 +456,7 @@ namespace Common
 
 		void operator()(
 			StringLiteral type,
-			std::wstring const & id,
+			std::string const & id,
 			StringLiteral format,
 			VariableArgument const & a0,
 			VariableArgument const & a1,
@@ -535,17 +506,17 @@ namespace Common
 		{
 			switch (level)
 			{
-			case LogLevel::Error: errorEvent_(type, std::wstring(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8); break;
-			case LogLevel::Warning: warningEvent_(type, std::wstring(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8); break;
-			case LogLevel::Info: infoEvent_(type, std::wstring(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8); break;
-			case LogLevel::Noise: noiseEvent_(type, std::wstring(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8); break;
+			case LogLevel::Error: errorEvent_(type, std::string(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8); break;
+			case LogLevel::Warning: warningEvent_(type, std::string(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8); break;
+			case LogLevel::Info: infoEvent_(type, std::string(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8); break;
+			case LogLevel::Noise: noiseEvent_(type, std::string(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8); break;
 			}
 		}
 
 		void operator()(
 			LogLevel::Enum level,
 			StringLiteral type,
-			std::wstring const & id,
+			std::string const & id,
 			StringLiteral format,
 			VariableArgument const & a0 = VariableArgument(),
 			VariableArgument const & a1 = VariableArgument(),
@@ -612,7 +583,7 @@ namespace Common
 	void TraceError(
 		TraceTaskCodes::Enum taskId,
 		StringLiteral type,
-		std::wstring const & id,
+		std::string const & id,
 		StringLiteral format,
 		VariableArgument const & a0 = VariableArgument(),
 		VariableArgument const & a1 = VariableArgument(),
@@ -643,7 +614,7 @@ namespace Common
 	void TraceWarning(
 		TraceTaskCodes::Enum taskId,
 		StringLiteral type,
-		std::wstring const & id,
+		std::string const & id,
 		StringLiteral format,
 		VariableArgument const & a0 = VariableArgument(),
 		VariableArgument const & a1 = VariableArgument(),
@@ -674,7 +645,7 @@ namespace Common
 	void TraceInfo(
 		TraceTaskCodes::Enum taskId,
 		StringLiteral type,
-		std::wstring const & id,
+		std::string const & id,
 		StringLiteral format,
 		VariableArgument const & a0 = VariableArgument(),
 		VariableArgument const & a1 = VariableArgument(),
@@ -705,7 +676,7 @@ namespace Common
 	void TraceNoise(
 		TraceTaskCodes::Enum taskId,
 		StringLiteral type,
-		std::wstring const & id,
+		std::string const & id,
 		StringLiteral format,
 		VariableArgument const & a0 = VariableArgument(),
 		VariableArgument const & a1 = VariableArgument(),
@@ -719,7 +690,7 @@ namespace Common
 #pragma endregion
 
 	VOID ServiceFabricKtlTraceCallback(
-		__in LPCWSTR typeText,
+		__in LPCSTR typeText,
 		__in USHORT level,
 		__in LPCSTR textA);
 

@@ -30,7 +30,7 @@ namespace Common
 
     std::string TraceManifestGenerator::StringResource(std::string const & original)
     {
-        std::wstring originalWide(original.begin(), original.end());
+        std::string originalWide(original.begin(), original.end());
         size_t hashValue = StringUtility::GetHash(originalWide);
         size_t differentiator;
         auto it = stringTable_.find(hashValue);
@@ -56,7 +56,7 @@ namespace Common
             stringTable_[hashValue] = sameHashStrings;
         }
 
-        return formatString("$(string.ns{0}.{1})", hashValue, differentiator);
+        return formatString.L("$(string.ns{0}.{1})", hashValue, differentiator);
     }
 
     void TraceManifestGenerator::Write(FileWriter & writer,

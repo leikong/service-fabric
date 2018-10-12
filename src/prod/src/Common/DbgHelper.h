@@ -64,9 +64,9 @@ namespace Common
         std::function<void(void)> const & call,
         Common::TimeSpan threshold,
         StringLiteral traceType,
-        std::wstring const & traceId,
-        wchar_t const* api,
-        std::function<void(wchar_t const* api, TimeSpan duration, TimeSpan threshold)> const & onSlowCall = nullptr)
+        std::string const & traceId,
+        char const* api,
+        std::function<void(char const* api, TimeSpan duration, TimeSpan threshold)> const & onSlowCall = nullptr)
     {
         auto beforeCall = Stopwatch::Now();
         call();

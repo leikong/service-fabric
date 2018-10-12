@@ -14,11 +14,11 @@ namespace Transport
         static Common::StringLiteral const MemoryTrace;
         static Common::StringLiteral const DemuxerTrace;
         static Common::StringLiteral const ConfigTrace;
-        static Common::Global<std::wstring> const ClaimsTokenError;
-        static Common::Global<std::wstring> const ConnectionAuth;
+        static Common::Global<std::string> const ClaimsTokenError;
+        static Common::Global<std::string> const ConnectionAuth;
         static Common::StringLiteral const PartitionIdString;
-        static Common::Global<std::wstring> const PartitionIdWString;
-        static Common::Global<std::wstring> const ClaimsMessageAction;
-        static Common::Global<std::wstring> const ReconnectAction;
+        static Common::Global<std::string> const PartitionIdWString;
+        static Common::Global<std::string> const ClaimsMessageAction;
+        static Common::Global<std::string> const ReconnectAction;
     };
 }

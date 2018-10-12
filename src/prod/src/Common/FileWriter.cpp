@@ -13,13 +13,13 @@ void FileWriter::WriteAsciiBuffer(__in_ecount(ccLen) char const * buf, size_t cc
     file_.Write(buf, (int)ccLen);
 }
 
-void FileWriter::WriteUnicodeBuffer(__in_ecount(ccLen) wchar_t const * buf, size_t ccLen)  
+void FileWriter::WriteUnicodeBuffer(__in_ecount(ccLen) char const * buf, size_t ccLen)  
 { 
     file_.Write(buf, (int)ccLen<<1);
 }
 
 Common::ErrorCode FileWriter::TryOpen(
-    std::wstring const& fileName,
+    std::string const& fileName,
     FileShare::Enum share,
     FileAttributes::Enum attributes)
 {
@@ -39,10 +39,4 @@ void FileWriter::Close()
 bool FileWriter::IsValid()
 {
     return file_.IsValid();
-}
-
-void FileWriter::WriteUnicodeBOM()
-{
-    byte unicodeBOM[3] = { 0xEF, 0xBB, 0xBF }; 
-    file_.Write((const void*)&unicodeBOM, sizeof(unicodeBOM)); 
 }

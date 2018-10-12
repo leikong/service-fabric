@@ -11,7 +11,7 @@ namespace Common
     typedef std::shared_ptr<CachedFile> CachedFileSPtr;
     typedef std::weak_ptr<CachedFile> CachedFileWPtr;
 
-    typedef ErrorCode (*CachedFileReadCallback)(__in std::wstring const & filePath, __out std::wstring & content);
+    typedef ErrorCode (*CachedFileReadCallback)(__in std::string const & filePath, __out std::string & content);
 
     class CachedFile: 
         protected TextTraceComponent<TraceTaskCodes::Common>,
@@ -21,14 +21,14 @@ namespace Common
         DENY_COPY(CachedFile)
 
     public:
-        static Common::ErrorCode Create(__in std::wstring const & filePath, __in CachedFileReadCallback const & readCallback, __out CachedFileSPtr & cachedFileSPtr);
+        static Common::ErrorCode Create(__in std::string const & filePath, __in CachedFileReadCallback const & readCallback, __out CachedFileSPtr & cachedFileSPtr);
 
-        Common::ErrorCode ReadFileContent(__out std::wstring & content);
+        Common::ErrorCode ReadFileContent(__out std::string & content);
 
         virtual ~CachedFile(void);
 
     private:
-        CachedFile(std::wstring const & filePath, CachedFileReadCallback const & readCallback);
+        CachedFile(std::string const & filePath, CachedFileReadCallback const & readCallback);
 
         Common::ErrorCode EnableChangeMonitoring();
 
@@ -43,8 +43,8 @@ namespace Common
         class ChangeMonitor;
         friend class ChangeMonitor;
         CachedFileReadCallback readCallback_;
-        std::wstring filePath_;
-        std::wstring content_;
+        std::string filePath_;
+        std::string content_;
         std::shared_ptr<ChangeMonitor> changeMonitor_;
         bool isContentValid_; 
         RwLock lock_; 

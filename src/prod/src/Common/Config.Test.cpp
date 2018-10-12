@@ -20,20 +20,20 @@ using namespace Common;
 
 namespace
 {
-    const wstring TransportSection = L"Transport";
-    const wstring MaxHopKey = L"MaxHop";
-    const wstring MessageTimeoutKey = L"MessageTimeout";
-    const wstring TcpTransportDefaultHostKey = L"TcpTransportDefaultHost";
+    const string TransportSection = "Transport";
+    const string MaxHopKey = "MaxHop";
+    const string MessageTimeoutKey = "MessageTimeout";
+    const string TcpTransportDefaultHostKey = "TcpTransportDefaultHost";
 }
 
 class ConfigForUpdateTest : ComponentConfig
 {
     DECLARE_COMPONENT_CONFIG(ConfigForUpdateTest, "ConfigForUpdateTest")
 
-    TEST_CONFIG_ENTRY(wstring, L"section1", key11, L"", Common::ConfigEntryUpgradePolicy::Dynamic);
-    TEST_CONFIG_ENTRY(wstring, L"section1", key12, L"", Common::ConfigEntryUpgradePolicy::Static);
-    TEST_CONFIG_ENTRY(wstring, L"section2", key21, L"", Common::ConfigEntryUpgradePolicy::Dynamic);
-    TEST_CONFIG_ENTRY(wstring, L"section2", key22, L"", Common::ConfigEntryUpgradePolicy::Dynamic);
+    TEST_CONFIG_ENTRY(string, "section1", key11, "", Common::ConfigEntryUpgradePolicy::Dynamic);
+    TEST_CONFIG_ENTRY(string, "section1", key12, "", Common::ConfigEntryUpgradePolicy::Static);
+    TEST_CONFIG_ENTRY(string, "section2", key21, "", Common::ConfigEntryUpgradePolicy::Dynamic);
+    TEST_CONFIG_ENTRY(string, "section2", key22, "", Common::ConfigEntryUpgradePolicy::Dynamic);
 };
 
 class ReplaceConfigStoreInThisScope
@@ -62,28 +62,28 @@ BOOST_AUTO_TEST_CASE(UpdateTestWithSectionAddingAndRemoving)
     ConfigSettings configSettings;
     {
         ConfigParameter parameter11;
-        parameter11.Name = L"key11";
-        parameter11.Value = L"value11";
+        parameter11.Name = "key11";
+        parameter11.Value = "value11";
 
         ConfigParameter parameter12;
-        parameter12.Name = L"key12";
-        parameter12.Value = L"value12";
+        parameter12.Name = "key12";
+        parameter12.Value = "value12";
 
         ConfigSection section1;
-        section1.Name = L"section1";
+        section1.Name = "section1";
         section1.Parameters[parameter11.Name] = parameter11;
         section1.Parameters[parameter12.Name] = parameter12;
 
         ConfigParameter parameter21;
-        parameter21.Name = L"key21";
-        parameter21.Value = L"value21";
+        parameter21.Name = "key21";
+        parameter21.Value = "value21";
 
         ConfigParameter parameter22;
-        parameter22.Name = L"key22";
-        parameter22.Value = L"value22";
+        parameter22.Name = "key22";
+        parameter22.Value = "value22";
 
         ConfigSection section2;
-        section2.Name = L"section2";
+        section2.Name = "section2";
         section2.Parameters[parameter21.Name] = parameter21;
         section2.Parameters[parameter22.Name] = parameter22;
 
@@ -112,33 +112,33 @@ BOOST_AUTO_TEST_CASE(UpdateTestWithSectionAddingAndRemoving)
     ConfigSettings newConfigSettings;
     {
         ConfigParameter parameter11;
-        parameter11.Name = L"key11";
-        parameter11.Value = L"value11new";
+        parameter11.Name = "key11";
+        parameter11.Value = "value11new";
 
         ConfigParameter parameter13;
-        parameter13.Name = L"key13";
-        parameter13.Value = L"value13";
+        parameter13.Name = "key13";
+        parameter13.Value = "value13";
 
         ConfigParameter parameter14;
-        parameter14.Name = L"key14";
-        parameter14.Value = L"value14";
+        parameter14.Name = "key14";
+        parameter14.Value = "value14";
 
         ConfigSection section1;
-        section1.Name = L"section1";
+        section1.Name = "section1";
         section1.Parameters[parameter11.Name] = parameter11;
         section1.Parameters[parameter13.Name] = parameter13;
         section1.Parameters[parameter14.Name] = parameter14;
 
         ConfigParameter parameter31;
-        parameter31.Name = L"key31";
-        parameter31.Value = L"value31";
+        parameter31.Name = "key31";
+        parameter31.Value = "value31";
 
         ConfigParameter parameter32;
-        parameter32.Name = L"key32";
-        parameter32.Value = L"value32";
+        parameter32.Name = "key32";
+        parameter32.Value = "value32";
 
         ConfigSection section3;
-        section3.Name = L"section3";
+        section3.Name = "section3";
         section3.Parameters[parameter31.Name] = parameter31;
         section3.Parameters[parameter32.Name] = parameter32;
 
@@ -154,7 +154,7 @@ BOOST_AUTO_TEST_CASE(UpdateTestWithSectionAddingAndRemoving)
     testConfig.key11Entry.AddHandler(
         [&testConfig, &key11Updated] (EventArgs const &)
         {
-            BOOST_REQUIRE(testConfig.key11 == L"value11new");
+            BOOST_REQUIRE(testConfig.key11 == "value11new");
             key11Updated.Set();
         });
 
@@ -169,7 +169,7 @@ BOOST_AUTO_TEST_CASE(UpdateTestWithSectionAddingAndRemoving)
     testConfig.key21Entry.AddHandler(
         [&testConfig, &key21Updated] (EventArgs const &)
         {
-            BOOST_REQUIRE(testConfig.key21 == L"");
+            BOOST_REQUIRE(testConfig.key21 == "");
             key21Updated.Set();
         });
 
@@ -177,7 +177,7 @@ BOOST_AUTO_TEST_CASE(UpdateTestWithSectionAddingAndRemoving)
     testConfig.key22Entry.AddHandler(
         [&testConfig, &key22Updated] (EventArgs const &)
         {
-            BOOST_REQUIRE(testConfig.key22 == L"");
+            BOOST_REQUIRE(testConfig.key22 == "");
             key22Updated.Set();
         });
 
@@ -195,7 +195,7 @@ BOOST_AUTO_TEST_CASE(UpdateTestWithSectionAddingAndRemoving)
 
     BOOST_REQUIRE(!updateSuccess);
     BOOST_REQUIRE(!key12Updated);
-    BOOST_REQUIRE(testConfig.key12 == L"");
+    BOOST_REQUIRE(testConfig.key12 == "");
 
     LEAVE;
 }
@@ -207,28 +207,28 @@ BOOST_AUTO_TEST_CASE(BasicUpdatetest)
     ConfigSettings configSettings;
     {
         ConfigParameter parameter11;
-        parameter11.Name = L"key11";
-        parameter11.Value = L"value11";
+        parameter11.Name = "key11";
+        parameter11.Value = "value11";
 
         ConfigParameter parameter12;
-        parameter12.Name = L"key12";
-        parameter12.Value = L"value12";
+        parameter12.Name = "key12";
+        parameter12.Value = "value12";
 
         ConfigSection section1;
-        section1.Name = L"section1";
+        section1.Name = "section1";
         section1.Parameters[parameter11.Name] = parameter11;
         section1.Parameters[parameter12.Name] = parameter12;
 
         ConfigParameter parameter21;
-        parameter21.Name = L"key21";
-        parameter21.Value = L"value21";
+        parameter21.Name = "key21";
+        parameter21.Value = "value21";
 
         ConfigParameter parameter22;
-        parameter22.Name = L"key22";
-        parameter22.Value = L"value22";
+        parameter22.Name = "key22";
+        parameter22.Value = "value22";
 
         ConfigSection section2;
-        section2.Name = L"section2";
+        section2.Name = "section2";
         section2.Parameters[parameter21.Name] = parameter21;
         section2.Parameters[parameter22.Name] = parameter22;
 
@@ -258,28 +258,28 @@ BOOST_AUTO_TEST_CASE(BasicUpdatetest)
     ConfigSettings newConfigSettings;
     {
         ConfigParameter parameter11;
-        parameter11.Name = L"key11";
-        parameter11.Value = L"value11new";
+        parameter11.Name = "key11";
+        parameter11.Value = "value11new";
 
         ConfigParameter parameter12;
-        parameter12.Name = L"key12";
-        parameter12.Value = L"value12new";
+        parameter12.Name = "key12";
+        parameter12.Value = "value12new";
 
         ConfigSection section1;
-        section1.Name = L"section1";
+        section1.Name = "section1";
         section1.Parameters[parameter11.Name] = parameter11;
         section1.Parameters[parameter12.Name] = parameter12;
 
         ConfigParameter parameter21;
-        parameter21.Name = L"key21";
-        parameter21.Value = L"value21";
+        parameter21.Name = "key21";
+        parameter21.Value = "value21";
 
         ConfigParameter parameter22;
-        parameter22.Name = L"key22";
-        parameter22.Value = L"value22new";
+        parameter22.Name = "key22";
+        parameter22.Value = "value22new";
 
         ConfigSection section2;
-        section2.Name = L"section2";
+        section2.Name = "section2";
         section2.Parameters[parameter21.Name] = parameter21;
         section2.Parameters[parameter22.Name] = parameter22;
 
@@ -295,7 +295,7 @@ BOOST_AUTO_TEST_CASE(BasicUpdatetest)
     testConfig.key11Entry.AddHandler(
         [&testConfig, &key11Updated] (EventArgs const &)
         {
-            BOOST_REQUIRE(testConfig.key11 == L"value11new");
+            BOOST_REQUIRE(testConfig.key11 == "value11new");
             key11Updated.Set();
         });
 
@@ -317,7 +317,7 @@ BOOST_AUTO_TEST_CASE(BasicUpdatetest)
     testConfig.key22Entry.AddHandler(
         [&testConfig, &key22Updated] (EventArgs const &)
         {
-            BOOST_REQUIRE(testConfig.key22 == L"value22new");
+            BOOST_REQUIRE(testConfig.key22 == "value22new");
             key22Updated.Set();
         });
 
@@ -334,10 +334,10 @@ BOOST_AUTO_TEST_CASE(BasicUpdatetest)
 
     BOOST_REQUIRE(!updateSuccess);
     BOOST_REQUIRE(!key12Updated);
-    BOOST_REQUIRE(testConfig.key12 == L"value12new");
+    BOOST_REQUIRE(testConfig.key12 == "value12new");
 
     BOOST_REQUIRE(!key21Updated);
-    BOOST_REQUIRE(testConfig.key21 == L"value21");
+    BOOST_REQUIRE(testConfig.key21 == "value21");
 
     LEAVE;
 }
@@ -355,7 +355,7 @@ BOOST_AUTO_TEST_CASE(SmokeConfig)
     BOOST_REQUIRE(7 == sections.size());
 
     sections.clear();
-    config.GetSections(sections, L"Trace");
+    config.GetSections(sections, "Trace");
     BOOST_REQUIRE(3 == sections.size());
 
     StringCollection keys;
@@ -375,7 +375,7 @@ BOOST_AUTO_TEST_CASE(CheckConfig)
 
     Config config;
     int level = 0;
-    config.ReadUnencryptedConfig<int>(L"SomeSection/SomeItem", L"SomeProperty", level, 0);
+    config.ReadUnencryptedConfig<int>("SomeSection/SomeItem", "SomeProperty", level, 0);
     BOOST_REQUIRE(level == 42);
 
     LEAVE;
@@ -388,15 +388,15 @@ BOOST_AUTO_TEST_CASE(SmokeConfigRead)
     // The test expects the file Common.Test.exe.config to exist
     Config config;
     TimeSpan messageTimeout;
-    wstring tcpDefaultHost;
+    string tcpDefaultHost;
     int maxHop;
 
     config.ReadUnencryptedConfig<int>(TransportSection, MaxHopKey, maxHop, 3);
     config.ReadUnencryptedConfig<TimeSpan>(TransportSection, MessageTimeoutKey, messageTimeout, Common::TimeSpan::FromSeconds(22));
-    config.ReadUnencryptedConfig<wstring>(TransportSection, TcpTransportDefaultHostKey, tcpDefaultHost, Common::Environment::GetMachineName());
+    config.ReadUnencryptedConfig<string>(TransportSection, TcpTransportDefaultHostKey, tcpDefaultHost, Common::Environment::GetMachineName());
 
     BOOST_REQUIRE(3 == maxHop);
-    BOOST_REQUIRE(L"MySpecialHost" == tcpDefaultHost);
+    BOOST_REQUIRE("MySpecialHost" == tcpDefaultHost);
     BOOST_REQUIRE(TimeSpan::FromSeconds(15.3) == messageTimeout);
 
     LEAVE;

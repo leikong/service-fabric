@@ -14,7 +14,7 @@ namespace Federation
 
         virtual void Execute(SiteNode & siteNode) = 0;
 
-        virtual std::wstring ToString() = 0;
+        virtual std::string ToString() = 0;
     };
 
     typedef std::unique_ptr<StateMachineAction> StateMachineActionUPtr;

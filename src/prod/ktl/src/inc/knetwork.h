@@ -1483,37 +1483,37 @@ public:
 private:
 
     BOOLEAN
-    IsHexDigit(WCHAR c);
+    IsHexDigit(CHAR c);
 
     BOOLEAN
-    IsDigit(WCHAR c);
+    IsDigit(CHAR c);
 
     BOOLEAN
-    IsWhitespace(WCHAR c);
+    IsWhitespace(CHAR c);
 
     NTSTATUS
     StripComment(
-        _Outref_result_buffer_(Count) WCHAR*& Current,
+        _Outref_result_buffer_(Count) CHAR*& Current,
         _Inout_ ULONG& Count
         );
 
     NTSTATUS
     TryGuid(
-        _Outref_result_buffer_(Count) WCHAR*& Current,
+        _Outref_result_buffer_(Count) CHAR*& Current,
         _Inout_ ULONG& Count,
         __out   KGuid& Guid
         );
 
     NTSTATUS
     TryPort(
-        _Outref_result_buffer_(Count) WCHAR*& Current,
+        _Outref_result_buffer_(Count) CHAR*& Current,
         _Inout_ ULONG& Count,
         __out   USHORT& Port
         );
 
     NTSTATUS
     TryUri(
-        _Outref_result_buffer_(Count) WCHAR*& Current,
+        _Outref_result_buffer_(Count) CHAR*& Current,
         _Inout_ ULONG& Count,
         __in    USHORT DefaultPort,
         __out   KWString& FullUri,

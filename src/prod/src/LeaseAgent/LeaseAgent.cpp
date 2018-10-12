@@ -19,7 +19,7 @@ StringLiteral const TraceSecSettings("SecuritySettings");
 StringLiteral const TraceHeartbeat("Heartbeat");
 
 #pragma region Callbacks
-void WINAPI OnLeaseEstablished( __in HANDLE leaseHandle, __in LPCWSTR remoteLeasingApplicationId, __in PVOID context )
+void WINAPI OnLeaseEstablished( __in HANDLE leaseHandle, __in LPCSTR remoteLeasingApplicationId, __in PVOID context )
 {
     if (context != NULL)
     {
@@ -37,7 +37,7 @@ void WINAPI OnLeaseFailed( __in PVOID context )
     }
 }
 
-void WINAPI OnRemoteLeasingApplicationFailed( __in LPCWSTR remoteLeasingApplicationId, __in PVOID context)
+void WINAPI OnRemoteLeasingApplicationFailed( __in LPCSTR remoteLeasingApplicationId, __in PVOID context)
 {
     if (context != NULL)
     {
@@ -50,7 +50,7 @@ void WINAPI Dummy_OnArbitration(
     __in HANDLE localApplicationHandle,
     __in LONGLONG localInstance,
     __in LONG localTTL,
-    __in LPCWSTR remoteSocketAddress,
+    __in LPCSTR remoteSocketAddress,
     __in LONGLONG remoteInstance,
     __in LONG remoteTTL,
     __in PVOID context)
@@ -73,16 +73,16 @@ void WINAPI OnArbitration(
     __in LONGLONG monitorLeaseInstance,
     __in LONGLONG subjectLeaseInstance,
     __in LONG remoteArbitrationDurationUpperBound,
-    __in LPCWSTR RemoteLeasingApplicationIdentifier,
+    __in LPCSTR RemoteLeasingApplicationIdentifier,
     __in PVOID context)
 {
     RemoteLeasingApplicationIdentifier; //TODO value is unused
 
     if (context != NULL)
     {
-        wostringstream remoteAddress;
-        remoteAddress << remoteSocketAddress->Address << L':' << remoteSocketAddress->Port;
-        wstring remoteLeaseAddress = remoteAddress.str();
+        ostringstream remoteAddress;
+        remoteAddress << remoteSocketAddress->Address << ':' << remoteSocketAddress->Port;
+        string remoteLeaseAddress = remoteAddress.str();
 
         LeaseAgent *la = (LeaseAgent *) context;
         la->Arbitrate(localApplicationHandle, localInstance, localTTL, remoteLeaseAddress, remoteInstance, remoteTTL, remoteVersion, monitorLeaseInstance, subjectLeaseInstance, remoteArbitrationDurationUpperBound);
@@ -109,8 +109,8 @@ void WINAPI OnRemoteCertificateVerify(
 #if !defined(PLATFORM_UNIX)
 void WINAPI OnHealthReport(
     int reportCode,
-    LPCWSTR dynamicProperty,
-    LPCWSTR extraDescription,
+    LPCSTR dynamicProperty,
+    LPCSTR extraDescription,
     PVOID context)
 {
     UNREFERENCED_PARAMETER(context);
@@ -124,8 +124,8 @@ void WINAPI OnHealthReport(
 
 
 LeaseAgentConfiguration::LeaseAgentConfiguration(
-    std::wstring const & leasingApplicationId,
-    std::wstring const & localLeaseAddress, 
+    std::string const & leasingApplicationId,
+    std::string const & localLeaseAddress, 
     bool enableArbitrate)
     :
     leasingApplicationId_(leasingApplicationId),
@@ -156,7 +156,7 @@ LeaseAgentConfiguration::LeaseAgentConfiguration(LeaseAgentConfiguration const &
 {
 }
 
-std::function<void(int, wstring const &, wstring const &)> LeaseAgent::healthReportCallback_;
+std::function<void(int, string const &, string const &)> LeaseAgent::healthReportCallback_;
 Common::Global<Common::RwLock> LeaseAgent::healthReportGlobalLock_ = Common::make_global<Common::RwLock>();
 
 TimeSpan LeaseAgent::LeaseDuration() const
@@ -244,7 +244,7 @@ HANDLE LeaseAgent::RegisterLeasingApplication(SecuritySettings const & securityS
 #endif
 }
 
-void LeaseAgent::UnregisterLeasingApplication(HANDLE handle, wstring const & leasingApplicationId, BOOL isDelayed)
+void LeaseAgent::UnregisterLeasingApplication(HANDLE handle, string const & leasingApplicationId, BOOL isDelayed)
 {
     if ( !dummyLeaseDriverEnabled_ )
     {
@@ -328,7 +328,7 @@ BOOL LeaseAgent::SetGlobalLeaseExpirationTime(LONGLONG expireTime)
     }
 }
 
-BOOL LeaseAgent::GetRemoteLeaseExpirationTime(wstring const & remoteLeasingApplicationId, StopwatchTime & monitorExpireTime, StopwatchTime & subjectExpireTime)
+BOOL LeaseAgent::GetRemoteLeaseExpirationTime(string const & remoteLeasingApplicationId, StopwatchTime & monitorExpireTime, StopwatchTime & subjectExpireTime)
 {
     BOOL result;
     LONG monitorTTL = 0;
@@ -361,7 +361,7 @@ BOOL LeaseAgent::GetRemoteLeaseExpirationTime(wstring const & remoteLeasingAppli
 BOOL LeaseAgent::CompleteArbitrationSuccessProcessing(
     HANDLE appHandle,
     LONGLONG localInstance,
-    __in LPCWSTR remoteLeaseAddress,
+    __in LPCSTR remoteLeaseAddress,
     LONGLONG remoteInstance,
     LONG localTTL,
     LONG remoteTTL,
@@ -479,7 +479,7 @@ LeaseAgent::LeaseAgent(
     else
     {
         memset(certHash_.ShaHash, 0, SHA1_LENGTH);
-        certHash_.pwszStoreName[0] = L'\0';
+        certHash_.pwszStoreName[0] = '\0';
     }
 #endif
 }
@@ -506,7 +506,7 @@ bool LeaseAgent::InitializeCertHashStore(SecuritySettings const & securitySettin
             error);
 
         memset(certHash_.ShaHash, 0, SHA1_LENGTH);
-        certHash_.pwszStoreName[0] = L'\0';
+        certHash_.pwszStoreName[0] = '\0';
 
         return false;
     }
@@ -518,13 +518,13 @@ bool LeaseAgent::InitializeCertHashStore(SecuritySettings const & securitySettin
     {
         WriteError(TraceSecSettings, "Memory Copy Failed: {0}", err);
         memset(certHash_.ShaHash, 0, SHA1_LENGTH);
-        certHash_.pwszStoreName[0] = L'\0';
+        certHash_.pwszStoreName[0] = '\0';
         return false;
     }
 
-    if (wcsncpy_s(certHash_.pwszStoreName, ARRAYSIZE(certHash_.pwszStoreName), securitySettings.X509StoreName().c_str(), _TRUNCATE) == STRUNCATE)
+    if (strncpy_s(certHash_.pwszStoreName, ARRAYSIZE(certHash_.pwszStoreName), securitySettings.X509StoreName().c_str(), _TRUNCATE) == STRUNCATE)
     {
-        WriteError(TraceSecSettings, "wcsncpy_s(certHash_.pwszStoreName, securitySettings.X509StoreName().c_str()) failed");
+        WriteError(TraceSecSettings, "strncpy_s(certHash_.pwszStoreName, securitySettings.X509StoreName().c_str()) failed");
         return false;
     }
 
@@ -559,7 +559,7 @@ BOOL LeaseAgent::SetSecurityDescriptor()
 
 _Use_decl_annotations_
 bool LeaseAgent::InitializeListenEndpoint(
-    wstring const & leaseAgentAddress,
+    string const & leaseAgentAddress,
     TRANSPORT_LISTEN_ENDPOINT & listenEndPoint)
 {
     return InitializeListenEndpoint(this, leaseAgentAddress, listenEndPoint);
@@ -568,7 +568,7 @@ bool LeaseAgent::InitializeListenEndpoint(
 _Use_decl_annotations_
 bool LeaseAgent::InitializeListenEndpoint(
     LeaseAgent* leaseAgent,
-    wstring const & LeaseAgentAddress,
+    string const & LeaseAgentAddress,
     TRANSPORT_LISTEN_ENDPOINT & listenEndPoint)
 {
     WriteInfo(TraceState, "Resolve ListenEndPoint for lease agent: {0}", LeaseAgentAddress);
@@ -601,7 +601,7 @@ bool LeaseAgent::InitializeListenEndpoint(
     else if (error.ToHResult() == HRESULT_FROM_WIN32(WSAEINVAL))
     {
         // LeaseAgentAddress has hostname
-        wstring hostname;
+        string hostname;
         USHORT port;
         if (!TcpTransportUtility::TryParseHostNameAddress(
                 LeaseAgentAddress,
@@ -619,7 +619,7 @@ bool LeaseAgent::InitializeListenEndpoint(
 
         listenEndPoint.Port = static_cast<unsigned short>(port);
 
-        if (wcsncpy_s(listenEndPoint.Address, ARRAYSIZE(listenEndPoint.Address), hostname.c_str(), _TRUNCATE) == STRUNCATE)
+        if (strncpy_s(listenEndPoint.Address, ARRAYSIZE(listenEndPoint.Address), hostname.c_str(), _TRUNCATE) == STRUNCATE)
         {
             WriteError(
                 TraceState,
@@ -640,7 +640,7 @@ bool LeaseAgent::InitializeListenEndpoint(
         AcquireReadLock lockInScope(leaseAgent->leaseSecurityLock_);
         if (SecurityProvider::IsWindowsProvider(leaseAgent->leaseSecurity_->SecurityProvider))
         {
-            if (wcsncpy_s(
+            if (strncpy_s(
                 listenEndPoint.SspiTarget,
                 ARRAYSIZE(listenEndPoint.SspiTarget),
                 SecurityConfig::GetConfig().ClusterSpn.c_str(),
@@ -668,10 +668,10 @@ void LeaseAgent::InitializeLeaseConfigDurations(LEASE_CONFIG_DURATIONS & duratio
 
 }
 
-ErrorCode LeaseAgent::Restart(std::wstring const & newLeasingApplicationId)
+ErrorCode LeaseAgent::Restart(std::string const & newLeasingApplicationId)
 {
     HANDLE oldHandle;
-    wstring oldId;
+    string oldId;
     {
         AcquireExclusiveLock lock(leaseAgentLock_);
         oldId = leaseAgentConfig_.leasingApplicationId_;
@@ -818,7 +818,7 @@ void LeaseAgent::OnAbort()
 void LeaseAgent::Cleanup(bool isDelayed)
 {
     HANDLE oldHandle = INVALID_HANDLE_VALUE;
-    wstring id;
+    string id;
     {
         AcquireExclusiveLock lock(leaseAgentLock_);
         id = leaseAgentConfig_.leasingApplicationId_;
@@ -902,7 +902,7 @@ HANDLE LeaseAgent::InternalClose()
     return oldHandle;
 }
 
-LeasePartner* LeaseAgent::GetLeasePartnerByAddress(wstring const & remoteLeaseAddress)
+LeasePartner* LeaseAgent::GetLeasePartnerByAddress(string const & remoteLeaseAddress)
 {
     for (auto it = leases_.begin(); it != leases_.end(); ++it)
     {
@@ -916,9 +916,9 @@ LeasePartner* LeaseAgent::GetLeasePartnerByAddress(wstring const & remoteLeaseAd
 }
 
 void LeaseAgent::Establish(
-    wstring const & remoteLeasingApplicationId,
-    wstring const & remoteFaultDomain,
-    wstring const & remoteLeaseAddress,
+    string const & remoteLeasingApplicationId,
+    string const & remoteFaultDomain,
+    string const & remoteLeaseAddress,
     int64 remoteLeaseAgentInstanceId,
     LEASE_DURATION_TYPE leaseTimeoutType)
 {
@@ -939,9 +939,9 @@ void LeaseAgent::Establish(
 }
 
 AsyncOperationSPtr LeaseAgent::BeginEstablish(
-    wstring const & remoteLeasingApplicationId,
-    wstring const & remoteFaultDomain,
-    wstring const &remoteLeaseAgentAddress,
+    string const & remoteLeasingApplicationId,
+    string const & remoteFaultDomain,
+    string const &remoteLeaseAgentAddress,
     int64 remoteLeaseAgentInstanceId,
     LEASE_DURATION_TYPE leaseTimeoutType,
     TimeSpan timeout,
@@ -986,7 +986,7 @@ void LeaseAgent::RetryEstablish( LeasePartnerSPtr const & leaseParnter, LEASE_DU
     }
 }
 
-void LeaseAgent::Terminate( wstring const & remoteLeasingApplicationId )
+void LeaseAgent::Terminate( string const & remoteLeasingApplicationId )
 {
     AcquireExclusiveLock lock(leaseAgentLock_);
     if (!appHandle_)
@@ -1075,7 +1075,7 @@ void LeaseAgent::OnLeaseFailed()
         [this, root] () mutable { this->leasingApp_.OnLeaseFailed(); });
 }
 
-void LeaseAgent::OnRemoteLeasingApplicationFailed( wstring const & remoteLeasingApplicationId )
+void LeaseAgent::OnRemoteLeasingApplicationFailed( string const & remoteLeasingApplicationId )
 {
     {
         // Find and Erase Lease Partner
@@ -1099,7 +1099,7 @@ void LeaseAgent::OnRemoteLeasingApplicationFailed( wstring const & remoteLeasing
         [this, root, remoteLeasingApplicationId] { leasingApp_.OnRemoteLeasingApplicationFailed(remoteLeasingApplicationId); });
 }
 
-void LeaseAgent::OnLeaseEstablished( std::wstring remoteLeasingApplicationId, HANDLE leaseHandle )
+void LeaseAgent::OnLeaseEstablished( std::string remoteLeasingApplicationId, HANDLE leaseHandle )
 {
     AcquireExclusiveLock lock(leaseAgentLock_);
     auto iter = leases_.find( remoteLeasingApplicationId );
@@ -1113,7 +1113,7 @@ void LeaseAgent::Arbitrate(
     HANDLE appHandle,
     int64 localInstance,
     long localTTL,
-    wstring const & remoteLeaseAddress,
+    string const & remoteLeaseAddress,
     int64 remoteInstance,
     long remoteTTL,
     USHORT remoteVersion,
@@ -1161,7 +1161,7 @@ long ConvertTimeSpanToMilliseconds(TimeSpan ttl)
     return (ttl == TimeSpan::MaxValue ? MAXLONG : static_cast<long>(ttl.TotalMilliseconds()));
 }
 
-void LeaseAgent::CompleteArbitrationSuccessProcessing(LONGLONG localInstance, __in LPCWSTR remoteLeaseAddress, LONGLONG remoteInstance, TimeSpan localTTL, TimeSpan remoteTTL, BOOL isDelayed)
+void LeaseAgent::CompleteArbitrationSuccessProcessing(LONGLONG localInstance, __in LPCSTR remoteLeaseAddress, LONGLONG remoteInstance, TimeSpan localTTL, TimeSpan remoteTTL, BOOL isDelayed)
 {
     AcquireExclusiveLock lock(leaseAgentLock_);
     if (!appHandle_)
@@ -1448,10 +1448,10 @@ void LeaseAgent::TryStartHeartbeat()
      
     if (Federation::FederationConfig::GetConfig().HeartbeatInterval != TimeSpan::Zero &&!heartbeatTimer_)
     {
-        wstring fabricDataRoot;
+        string fabricDataRoot;
         ErrorCode errorCode = FabricEnvironment::GetFabricDataRoot(fabricDataRoot);
-        wstring filename;
-        wstring reopenFilename;
+        string filename;
+        string reopenFilename;
         if (errorCode.IsSuccess())
         {
             filename = Path::Combine(fabricDataRoot, DISK_PROBE_FILE_NAME);
@@ -1621,14 +1621,14 @@ void LeaseAgent::TryStartHeartbeat()
     #endif
 }
 
-void LeaseAgent::SetHealthReportCallback(std::function<void(int, wstring const &, wstring const &)> & callback)
+void LeaseAgent::SetHealthReportCallback(std::function<void(int, string const &, string const &)> & callback)
 {
     AcquireExclusiveLock lock(*healthReportGlobalLock_);
     healthReportCallback_ = callback;
 }
 
 #if !defined(PLATFORM_UNIX)
-void LeaseAgent::InvokeHealthReportCallback(int reportCode, LPCWSTR dynamicProperty, LPCWSTR extraDescription)
+void LeaseAgent::InvokeHealthReportCallback(int reportCode, LPCSTR dynamicProperty, LPCSTR extraDescription)
 {
     AcquireReadLock lock(*healthReportGlobalLock_);
     if (healthReportCallback_)

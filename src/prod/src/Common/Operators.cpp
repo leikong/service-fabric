@@ -8,9 +8,9 @@
 using namespace std;
 using namespace Common;
 
-bool Operator::Match(std::wstring const& expression, size_t & start)
+bool Operator::Match(std::string const& expression, size_t & start)
 {
-    if (Op.compare(L"Dummy") == 0)
+    if (Op.compare("Dummy") == 0)
     {
         return false;
     }
@@ -32,12 +32,12 @@ bool Operator::Match(std::wstring const& expression, size_t & start)
     return true;
 }
 
-OperationResult LiteralOperator::Evaluate(map<wstring, wstring> & /*params*/, ExpressionSPtr /*arg1*/, ExpressionSPtr /*arg2*/, bool /*arg3*/)
+OperationResult LiteralOperator::Evaluate(map<string, string> & /*params*/, ExpressionSPtr /*arg1*/, ExpressionSPtr /*arg2*/, bool /*arg3*/)
 {
     return OperationResult(value_,false);
 }
 
-OperationResult ComparisonOperator::Evaluate(map<wstring, wstring> & params, ExpressionSPtr arg1, ExpressionSPtr arg2, bool forPrimary)
+OperationResult ComparisonOperator::Evaluate(map<string, string> & params, ExpressionSPtr arg1, ExpressionSPtr arg2, bool forPrimary)
 {
     OperationResult result1 = arg1->Evaluate(params, forPrimary);
     OperationResult result2 = arg2->Evaluate(params, forPrimary);
@@ -54,7 +54,7 @@ OperationResult ComparisonOperator::Evaluate(map<wstring, wstring> & params, Exp
 
     if (result1.IsNonLiteral() || result2.IsNonLiteral())
     {
-        return OperationResult(L"Comparison Operator is receiving a non literal", true);
+        return OperationResult("Comparison Operator is receiving a non literal", true);
     }
 
     if (forPrimary != this->ForPrimary)
@@ -63,14 +63,14 @@ OperationResult ComparisonOperator::Evaluate(map<wstring, wstring> & params, Exp
         return true;
     }
 
-    else if (Op.compare(L"~") == 0)
+    else if (Op.compare("~") == 0)
     {
         // Don't evaluate for FDPolicy
         return true;
     }
 
-    wstring prop = result1.Literal;
-    wstring value = result2.Literal;
+    string prop = result1.Literal;
+    string value = result2.Literal;
 
     auto iter = params.find(prop);
     if (iter != params.end())
@@ -80,13 +80,13 @@ OperationResult ComparisonOperator::Evaluate(map<wstring, wstring> & params, Exp
     }
     else
     {
-        return OperationResult(wformatString("Property {0} is not defined", prop), true);
+        return OperationResult(formatString.L("Property {0} is not defined", prop), true);
     }
 
-    wchar_t *end;
-    double val1 = wcstod(prop.c_str(), &end);
+    char *end;
+    double val1 = strtod(prop.c_str(), &end);
     bool isNumeric = *end == 0;
-    double val2 = wcstod(value.c_str(), &end);
+    double val2 = strtod(value.c_str(), &end);
     isNumeric = isNumeric && (*end == 0);
 
     // Check if the input is Uri
@@ -103,13 +103,13 @@ OperationResult ComparisonOperator::Evaluate(map<wstring, wstring> & params, Exp
         }
     }
 
-    wstring tempOp = Op;
+    string tempOp = Op;
     if (this->ForPrimary)
     {
         tempOp.pop_back();
     }
 
-    if (tempOp.compare(L"==") == 0)
+    if (tempOp.compare("==") == 0)
     {
         if (isNumeric)
         {
@@ -124,7 +124,7 @@ OperationResult ComparisonOperator::Evaluate(map<wstring, wstring> & params, Exp
             return prop.compare(value) == 0;
         }
     }
-    else if (tempOp.compare(L"!=") == 0)
+    else if (tempOp.compare("!=") == 0)
     {
         if (isNumeric)
         {
@@ -139,11 +139,11 @@ OperationResult ComparisonOperator::Evaluate(map<wstring, wstring> & params, Exp
             return prop.compare(value) != 0;
         }
     }
-    else if (tempOp.compare(L"^") == 0)
+    else if (tempOp.compare("^") == 0)
     {
         if (isNumeric)
         {
-            return OperationResult(L"Numeric parameter with ^ comparison operator", true);
+            return OperationResult("Numeric parameter with ^ comparison operator", true);
         }
         else if (isUri)
         {
@@ -151,14 +151,14 @@ OperationResult ComparisonOperator::Evaluate(map<wstring, wstring> & params, Exp
         }
         else
         {
-            return prop.size() >= value.size() && StringUtility::StartsWith<std::wstring>(prop, value);
+            return prop.size() >= value.size() && StringUtility::StartsWith<std::string>(prop, value);
         }
     }
-    else if (tempOp.compare(L"!^") == 0)
+    else if (tempOp.compare("!^") == 0)
     {
         if (isNumeric)
         {
-            return OperationResult(L"Numeric parameter with !^ comparison operator", true);
+            return OperationResult("Numeric parameter with !^ comparison operator", true);
         }
         else if (isUri)
         {
@@ -166,38 +166,38 @@ OperationResult ComparisonOperator::Evaluate(map<wstring, wstring> & params, Exp
         }
         else
         {
-            return prop.size() < value.size() || !StringUtility::StartsWith<std::wstring>(prop, value);
+            return prop.size() < value.size() || !StringUtility::StartsWith<std::string>(prop, value);
         }
     }
     else if (!isNumeric)
     {
-        return OperationResult(L"Non numeric parameter with non == comparison operator", true);
+        return OperationResult("Non numeric parameter with non == comparison operator", true);
     }
-    else if (tempOp.compare(L">=") == 0)
+    else if (tempOp.compare(">=") == 0)
     {
         return val1 >= val2;
     }
-    else if (tempOp.compare(L"<=") == 0)
+    else if (tempOp.compare("<=") == 0)
     {
         return val1 <= val2;
     }
-    else if (tempOp.compare(L"<") == 0)
+    else if (tempOp.compare("<") == 0)
     {
         return val1 < val2;
     }
-    else if (tempOp.compare(L">") == 0)
+    else if (tempOp.compare(">") == 0)
     {
         return val1 > val2;
     }
     else
     {
-        return OperationResult(L"Unkown operator", true);
+        return OperationResult("Unkown operator", true);
     }
 }
 
-OperationResult BooleanOperator::Evaluate(map<wstring, wstring> & params, ExpressionSPtr arg1, ExpressionSPtr arg2, bool forPrimary)
+OperationResult BooleanOperator::Evaluate(map<string, string> & params, ExpressionSPtr arg1, ExpressionSPtr arg2, bool forPrimary)
 {
-    if (Op.compare(L"!") != 0)
+    if (Op.compare("!") != 0)
     {
         OperationResult result1 = arg1->Evaluate(params, forPrimary);
         OperationResult result2 = arg2->Evaluate(params, forPrimary);
@@ -214,20 +214,20 @@ OperationResult BooleanOperator::Evaluate(map<wstring, wstring> & params, Expres
 
         if (!result1.IsNonLiteral() || !result2.IsNonLiteral())
         {
-            return OperationResult(L"Boolean operator is receiving a non literal", true);
+            return OperationResult("Boolean operator is receiving a non literal", true);
         }
 
-        if (Op.compare(L"&&") == 0)
+        if (Op.compare("&&") == 0)
         {
             return result1.NonLiteral && result2.NonLiteral;
         }
-        else if (Op.compare(L"||") == 0)
+        else if (Op.compare("||") == 0)
         {
             return result1.NonLiteral || result2.NonLiteral;
         }
         else
         {
-            return OperationResult(L"Unkown operator" + Op, true);
+            return OperationResult("Unkown operator" + Op, true);
         }
     }
     else 

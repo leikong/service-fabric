@@ -16,7 +16,7 @@ namespace Common
     class PerformanceCounterSetDefinition
     {
     public:
-        PerformanceCounterSetDefinition(Guid const & identifier, std::wstring const & name, std::wstring const & description, PerformanceCounterSetInstanceType::Enum instanceType);
+        PerformanceCounterSetDefinition(Guid const & identifier, std::string const & name, std::string const & description, PerformanceCounterSetInstanceType::Enum instanceType);
         PerformanceCounterSetDefinition(PerformanceCounterSetDefinition const & other);
         PerformanceCounterSetDefinition(PerformanceCounterSetDefinition && other);
         ~PerformanceCounterSetDefinition(void);
@@ -33,11 +33,11 @@ namespace Common
         __declspec(property(get=get_Identifier)) Guid const & Identifier;
         inline Guid const & get_Identifier() const { return identifier_; }
 
-        __declspec(property(get=get_Name)) std::wstring const & Name;
-        inline std::wstring const & get_Name() const { return name_; }
+        __declspec(property(get=get_Name)) std::string const & Name;
+        inline std::string const & get_Name() const { return name_; }
 
-        __declspec(property(get=get_Description)) std::wstring const & Description;
-        inline std::wstring const & get_Description() const { return description_; }
+        __declspec(property(get=get_Description)) std::string const & Description;
+        inline std::string const & get_Description() const { return description_; }
 
         __declspec(property(get=get_InstanceType)) PerformanceCounterSetInstanceType::Enum InstanceType;
         inline PerformanceCounterSetInstanceType::Enum get_InstanceType() const { return counterSetInstanceType_; }
@@ -47,8 +47,8 @@ namespace Common
         Guid identifier_;
         PerformanceCounterSetInstanceType::Enum counterSetInstanceType_;
 
-        std::wstring name_;
-        std::wstring description_;
+        std::string name_;
+        std::string description_;
 
         PerformanceCounterDefinitionMap counterDefinitions_;
     };

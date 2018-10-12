@@ -11,11 +11,11 @@ using namespace Common;
 StringLiteral const TraceSecurityPrincipalHelper("SecurityPrincipalHelper");
 
 #if !defined(PLATFORM_UNIX)
-ErrorCode SecurityPrincipalHelper::AddMemberToLocalGroup(wstring const & parentGroup, wstring const & memberToAdd)
+ErrorCode SecurityPrincipalHelper::AddMemberToLocalGroup(string const & parentGroup, string const & memberToAdd)
 {
     LOCALGROUP_MEMBERS_INFO_3 groupMembership;
     ::ZeroMemory(&groupMembership, sizeof(groupMembership));
-    groupMembership.lgrmi3_domainandname = const_cast<LPWSTR>(memberToAdd.c_str());
+    groupMembership.lgrmi3_domainandname = const_cast<LPSTR>(memberToAdd.c_str());
 
     NET_API_STATUS nStatus = ::NetLocalGroupAddMembers(
         NULL, 
@@ -53,11 +53,11 @@ ErrorCode SecurityPrincipalHelper::AddMemberToLocalGroup(wstring const & parentG
     return ErrorCode(ErrorCodeValue::Success);
 }
 
-ErrorCode SecurityPrincipalHelper::RemoveMemberFromLocalGroup(std::wstring const & parentGroupAccountName, std::wstring const & memberToRemoveAccountName)
+ErrorCode SecurityPrincipalHelper::RemoveMemberFromLocalGroup(std::string const & parentGroupAccountName, std::string const & memberToRemoveAccountName)
 {
     LOCALGROUP_MEMBERS_INFO_3 groupMembership;
     ::ZeroMemory(&groupMembership, sizeof(groupMembership));
-    groupMembership.lgrmi3_domainandname = const_cast<LPWSTR>(memberToRemoveAccountName.c_str());
+    groupMembership.lgrmi3_domainandname = const_cast<LPSTR>(memberToRemoveAccountName.c_str());
 
     NET_API_STATUS nStatus = ::NetLocalGroupDelMembers(
         NULL, 
@@ -92,7 +92,7 @@ ErrorCode SecurityPrincipalHelper::RemoveMemberFromLocalGroup(std::wstring const
 }
 #endif
 
-ErrorCode SecurityPrincipalHelper::SetLocalGroupMembers(wstring const & groupName, vector<PSID> const & membersToSet)
+ErrorCode SecurityPrincipalHelper::SetLocalGroupMembers(string const & groupName, vector<PSID> const & membersToSet)
 {
     vector<LOCALGROUP_MEMBERS_INFO_0> members;
     DWORD totalEntries = 0;
@@ -121,13 +121,13 @@ ErrorCode SecurityPrincipalHelper::SetLocalGroupMembers(wstring const & groupNam
 }
 
 #if !defined(PLATFORM_UNIX)
-ErrorCode SecurityPrincipalHelper::CreateUserAccount(wstring const & accountName, wstring const & password, wstring const & comment)
+ErrorCode SecurityPrincipalHelper::CreateUserAccount(string const & accountName, string const & password, string const & comment)
 {
     USER_INFO_4 userInfo;
     ::ZeroMemory(&userInfo, sizeof(userInfo));
-    userInfo.usri4_name = const_cast<LPWSTR>(accountName.c_str());
-    userInfo.usri4_password = const_cast<LPWSTR>(password.c_str());
-    userInfo.usri4_comment = const_cast<LPWSTR>(comment.c_str());
+    userInfo.usri4_name = const_cast<LPSTR>(accountName.c_str());
+    userInfo.usri4_password = const_cast<LPSTR>(password.c_str());
+    userInfo.usri4_comment = const_cast<LPSTR>(comment.c_str());
     userInfo.usri4_flags = 
         UF_SCRIPT | UF_PASSWD_CANT_CHANGE | UF_DONT_EXPIRE_PASSWD | UF_NOT_DELEGATED | UF_NORMAL_ACCOUNT;
     userInfo.usri4_acct_expires = TIMEQ_FOREVER;
@@ -157,9 +157,9 @@ ErrorCode SecurityPrincipalHelper::CreateUserAccount(wstring const & accountName
     return ErrorCode(ErrorCodeValue::Success);
 }
 
-ErrorCode SecurityPrincipalHelper::DeleteUserProfile(wstring const & accountName, SidSPtr const& sid)
+ErrorCode SecurityPrincipalHelper::DeleteUserProfile(string const & accountName, SidSPtr const& sid)
 {
-    wstring sidString;
+    string sidString;
     ErrorCode error;
     if(!sid)
     {
@@ -225,9 +225,9 @@ ErrorCode SecurityPrincipalHelper::DeleteUserProfile(wstring const & accountName
     return error;
 }
 
-ErrorCode SecurityPrincipalHelper::DeleteUserAccount(wstring const & accountName)
+ErrorCode SecurityPrincipalHelper::DeleteUserAccount(string const & accountName)
 {
-    NET_API_STATUS nStatus = ::NetUserDel(L".", accountName.c_str());
+    NET_API_STATUS nStatus = ::NetUserDel(".", accountName.c_str());
     if (nStatus != NERR_Success)
     {
         if(nStatus == NERR_UserNotFound)
@@ -254,12 +254,12 @@ ErrorCode SecurityPrincipalHelper::DeleteUserAccount(wstring const & accountName
     return ErrorCode(ErrorCodeValue::Success);
 }
 
-ErrorCode SecurityPrincipalHelper::DeleteUserAccountIgnoreDeleteProfileError(wstring const & accountName, Common::SidSPtr const& sid)
+ErrorCode SecurityPrincipalHelper::DeleteUserAccountIgnoreDeleteProfileError(string const & accountName, Common::SidSPtr const& sid)
 {
     ErrorCode error = DeleteUserProfile(accountName, sid);
     error.ReadValue();// Ignore delete profile error.
 
-    NET_API_STATUS nStatus = ::NetUserDel(L".", accountName.c_str());
+    NET_API_STATUS nStatus = ::NetUserDel(".", accountName.c_str());
     if (nStatus != NERR_Success)
     {
         if(nStatus == NERR_UserNotFound)
@@ -286,11 +286,11 @@ ErrorCode SecurityPrincipalHelper::DeleteUserAccountIgnoreDeleteProfileError(wst
     return ErrorCode(ErrorCodeValue::Success);
 }
 
-ErrorCode SecurityPrincipalHelper::CreateGroupAccount(wstring const & groupName, wstring const & comment)
+ErrorCode SecurityPrincipalHelper::CreateGroupAccount(string const & groupName, string const & comment)
 {
     LOCALGROUP_INFO_1 groupInfo;
-    groupInfo.lgrpi1_name = const_cast<LPWSTR>(groupName.c_str());
-    groupInfo.lgrpi1_comment = const_cast<LPWSTR>(comment.c_str());
+    groupInfo.lgrpi1_name = const_cast<LPSTR>(groupName.c_str());
+    groupInfo.lgrpi1_comment = const_cast<LPSTR>(comment.c_str());
 
     NET_API_STATUS nStatus = ::NetLocalGroupAdd(
         NULL,
@@ -318,7 +318,7 @@ ErrorCode SecurityPrincipalHelper::CreateGroupAccount(wstring const & groupName,
     return ErrorCode(ErrorCodeValue::Success);
 }
 
-ErrorCode SecurityPrincipalHelper::GetMembers(wstring const & accountName, __out vector<wstring> & members)
+ErrorCode SecurityPrincipalHelper::GetMembers(string const & accountName, __out vector<string> & members)
 {
     PLOCALGROUP_MEMBERS_INFO_1 localGroupMembersInfo = NULL;
     DWORD entryReadCount = 0;
@@ -356,7 +356,7 @@ ErrorCode SecurityPrincipalHelper::GetMembers(wstring const & accountName, __out
         for (DWORD i = 0; i < entryReadCount; ++i)
         {
             ASSERT_IF(currentMembersInfo == NULL, "Buffer shouldn't be null");
-            members.push_back(wstring(currentMembersInfo->lgrmi1_name));
+            members.push_back(string(currentMembersInfo->lgrmi1_name));
             ++currentMembersInfo;
         }
 
@@ -367,7 +367,7 @@ ErrorCode SecurityPrincipalHelper::GetMembers(wstring const & accountName, __out
 }
 
 
-ErrorCode SecurityPrincipalHelper::GetMembership(wstring const & accountName, __out vector<wstring> & memberOf)
+ErrorCode SecurityPrincipalHelper::GetMembership(string const & accountName, __out vector<string> & memberOf)
 {
     LPLOCALGROUP_USERS_INFO_0 localGroupInfo = NULL;
     DWORD entryReadCount = 0;
@@ -400,7 +400,7 @@ ErrorCode SecurityPrincipalHelper::GetMembership(wstring const & accountName, __
         for (DWORD i = 0; i < entryReadCount; ++i)
         {
             ASSERT_IF(currentGroupInfo == NULL, "Buffer shouldn't be null");
-            memberOf.push_back(wstring(currentGroupInfo->lgrui0_name));
+            memberOf.push_back(string(currentGroupInfo->lgrui0_name));
             ++currentGroupInfo;
         }
 
@@ -410,9 +410,9 @@ ErrorCode SecurityPrincipalHelper::GetMembership(wstring const & accountName, __
     return ErrorCode(ErrorCodeValue::Success);
 }
 
-ErrorCode SecurityPrincipalHelper::DeleteGroupAccount(wstring const & groupName)
+ErrorCode SecurityPrincipalHelper::DeleteGroupAccount(string const & groupName)
 {
-    NET_API_STATUS nStatus = ::NetLocalGroupDel(L".", groupName.c_str());
+    NET_API_STATUS nStatus = ::NetLocalGroupDel(".", groupName.c_str());
     if (nStatus != NERR_Success)
     {
         if(nStatus == NERR_GroupNotFound)
@@ -439,7 +439,7 @@ ErrorCode SecurityPrincipalHelper::DeleteGroupAccount(wstring const & groupName)
     return ErrorCode(ErrorCodeValue::Success);
 }
 
-ErrorCode SecurityPrincipalHelper::GetGroupComment(std::wstring const & accountName, __out wstring & comment)
+ErrorCode SecurityPrincipalHelper::GetGroupComment(std::string const & accountName, __out string & comment)
 {
     // Get group info
     PLOCALGROUP_INFO_1 groupInfo = NULL;
@@ -468,7 +468,7 @@ ErrorCode SecurityPrincipalHelper::GetGroupComment(std::wstring const & accountN
     }
 
     ASSERT_IF(groupInfo == NULL, "groupInfo should not be null");
-    comment = wstring(groupInfo->lgrpi1_comment);
+    comment = string(groupInfo->lgrpi1_comment);
     WriteNoise(
         TraceSecurityPrincipalHelper,
         "Group {0}: retrieved comment \"{1}\"",
@@ -479,7 +479,7 @@ ErrorCode SecurityPrincipalHelper::GetGroupComment(std::wstring const & accountN
     return ErrorCode(ErrorCodeValue::Success);
 }
 
-ErrorCode SecurityPrincipalHelper::GetUserComment(std::wstring const & accountName, __out wstring & comment)
+ErrorCode SecurityPrincipalHelper::GetUserComment(std::string const & accountName, __out string & comment)
 {
     // Get group info
     LPUSER_INFO_1 userInfo = NULL;
@@ -508,7 +508,7 @@ ErrorCode SecurityPrincipalHelper::GetUserComment(std::wstring const & accountNa
     }
 
     ASSERT_IF(userInfo == NULL, "user info should not be null");
-    comment = wstring(userInfo->usri1_comment);
+    comment = string(userInfo->usri1_comment);
     WriteNoise(
         TraceSecurityPrincipalHelper,
         "User {0}: retrieved comment \"{1}\"",
@@ -519,12 +519,12 @@ ErrorCode SecurityPrincipalHelper::GetUserComment(std::wstring const & accountNa
     return ErrorCode(ErrorCodeValue::Success);
 }
 
-ErrorCode SecurityPrincipalHelper::UpdateUserComment(wstring const & accountName, wstring const & comment)
+ErrorCode SecurityPrincipalHelper::UpdateUserComment(string const & accountName, string const & comment)
 {
     DWORD errorIndex;
     USER_INFO_1007  commentUserInfo;
     ::ZeroMemory(&commentUserInfo, sizeof(commentUserInfo));
-    commentUserInfo.usri1007_comment = const_cast<LPWSTR>(comment.c_str());
+    commentUserInfo.usri1007_comment = const_cast<LPSTR>(comment.c_str());
     NET_API_STATUS nStatus = NetUserSetInfo(
         NULL /*serverName*/,
         accountName.c_str(),
@@ -552,12 +552,12 @@ ErrorCode SecurityPrincipalHelper::UpdateUserComment(wstring const & accountName
     return ErrorCode(ErrorCodeValue::Success);
 }
 
-ErrorCode SecurityPrincipalHelper::UpdateGroupComment(wstring const & accountName, wstring const & comment)
+ErrorCode SecurityPrincipalHelper::UpdateGroupComment(string const & accountName, string const & comment)
 {
     DWORD errorIndex;
     LOCALGROUP_INFO_1002 commentGroupInfo;
     ::ZeroMemory(&commentGroupInfo, sizeof(commentGroupInfo));
-    commentGroupInfo.lgrpi1002_comment = const_cast<LPWSTR>(comment.c_str());
+    commentGroupInfo.lgrpi1002_comment = const_cast<LPSTR>(comment.c_str());
     NET_API_STATUS nStatus = NetLocalGroupSetInfo(
         NULL /*serverName*/,
         accountName.c_str(),
@@ -585,7 +585,7 @@ ErrorCode SecurityPrincipalHelper::UpdateGroupComment(wstring const & accountNam
     return ErrorCode(ErrorCodeValue::Success);
 }
 
-ErrorCode SecurityPrincipalHelper::AcquireMutex(wstring const& mutexName, __out MutexHandleUPtr & mutex)
+ErrorCode SecurityPrincipalHelper::AcquireMutex(string const& mutexName, __out MutexHandleUPtr & mutex)
 {
     mutex = MutexHandle::CreateUPtr(mutexName);
     WriteNoise(TraceSecurityPrincipalHelper, "{0}: Wait for mutex", mutexName);
@@ -603,9 +603,9 @@ ErrorCode SecurityPrincipalHelper::AcquireMutex(wstring const& mutexName, __out 
     return error;
 }
 
-wstring SecurityPrincipalHelper::GetMembershipString(vector<wstring> const& membership)
+string SecurityPrincipalHelper::GetMembershipString(vector<string> const& membership)
 {
-    wstring membershipString(L"Membership = ");
+    string membershipString("Membership = ");
     StringWriter writer(membershipString);
     for (auto it = membership.begin(); it != membership.end(); ++it)
     {
@@ -622,7 +622,7 @@ wstring SecurityPrincipalHelper::GetMembershipString(vector<wstring> const& memb
     return membershipString;
 }
 
-ErrorCode SecurityPrincipalHelper::DeleteUsersWithCommentPrefix(wstring const & prefix)
+ErrorCode SecurityPrincipalHelper::DeleteUsersWithCommentPrefix(string const & prefix)
 {
     ErrorCode lastError(ErrorCodeValue::Success);
     LPUSER_INFO_1 pBuff = NULL;
@@ -648,11 +648,11 @@ ErrorCode SecurityPrincipalHelper::DeleteUsersWithCommentPrefix(wstring const & 
         {
             for (DWORD i = 0; i < entriesRead; i++)
             {
-                wstring comment(p->usri1_comment);
-                wstring name(p->usri1_name);
+                string comment(p->usri1_comment);
+                string name(p->usri1_name);
                 if (comment.substr(0, prefix.size()).compare(prefix) == 0)
                 {
-                    NET_API_STATUS err = ::NetUserDel(L".", name.c_str());
+                    NET_API_STATUS err = ::NetUserDel(".", name.c_str());
                     if (err != NERR_Success)
                     {
                         lastError = ErrorCode::FromWin32Error(err);
@@ -675,7 +675,7 @@ ErrorCode SecurityPrincipalHelper::DeleteUsersWithCommentPrefix(wstring const & 
     return lastError;
 }
 
-ErrorCode SecurityPrincipalHelper::DeleteGroupWithCommentPrefix(wstring const & prefix)
+ErrorCode SecurityPrincipalHelper::DeleteGroupWithCommentPrefix(string const & prefix)
 {
     ErrorCode lastError(ErrorCodeValue::Success);
     LPLOCALGROUP_INFO_1 pBuff = NULL;
@@ -700,11 +700,11 @@ ErrorCode SecurityPrincipalHelper::DeleteGroupWithCommentPrefix(wstring const & 
         {
             for (DWORD i = 0; i < entriesRead; i++)
             {
-                wstring comment(p->lgrpi1_comment);
-                wstring name(p->lgrpi1_name);
+                string comment(p->lgrpi1_comment);
+                string name(p->lgrpi1_name);
                 if (comment.substr(0, prefix.size()).compare(prefix) == 0)
                 {
-                    NET_API_STATUS err = ::NetLocalGroupDel(L".", name.c_str());
+                    NET_API_STATUS err = ::NetLocalGroupDel(".", name.c_str());
                     if (err != NERR_Success)
                     {
                         lastError = ErrorCode::FromWin32Error(err);

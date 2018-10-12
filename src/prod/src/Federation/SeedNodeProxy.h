@@ -20,7 +20,7 @@ namespace Federation
     protected:
         SeedNodeProxy(NodeConfig const & seedConfig, NodeId proxyId, bool shouldZeroTicketOnAbsentFile);
 
-        virtual std::wstring const& GetRingName() const { return seedConfig_.RingName; }
+        virtual std::string const& GetRingName() const { return seedConfig_.RingName; }
 
         Common::ErrorCode OnOpen();
         Common::ErrorCode OnClose();

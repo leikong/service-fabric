@@ -41,18 +41,18 @@ private:
 
 
     void
-    Append(WCHAR* Format, ...)
+    Append(CHAR* Format, ...)
     {
 
         va_list         args;
         va_start(args, Format);
 
         static const ULONG  maxXmlLineSize = 1024;
-        static WCHAR        dest[maxXmlLineSize];
+        static CHAR        dest[maxXmlLineSize];
         NTSTATUS            status;
 
         #if KTL_USER_MODE
-        status = StringCchVPrintfW(STRSAFE_LPWSTR(dest), maxXmlLineSize, Format, args);
+        status = StringCchVPrintfW(STRSAFE_LPSTR(dest), maxXmlLineSize, Format, args);
         #else
         status = RtlStringCchVPrintfW(dest, maxXmlLineSize, Format, args);
         #endif
@@ -62,15 +62,15 @@ private:
         size_t      cb;
 
         #if KTL_USER_MODE
-        status = StringCbLengthW(STRSAFE_LPWSTR(dest), maxXmlLineSize, &cb);
+        status = StringCbLengthW(STRSAFE_LPSTR(dest), maxXmlLineSize, &cb);
         #else
         status = RtlStringCchLengthW(dest, maxXmlLineSize, &cb);
-        cb *= sizeof(WCHAR);
+        cb *= sizeof(CHAR);
         #endif
 
         KFatal(NT_SUCCESS(status));
 
-        if ((_NextOffset + cb + sizeof(WCHAR)) > _Buffer->QuerySize())
+        if ((_NextOffset + cb + sizeof(CHAR)) > _Buffer->QuerySize())
         {
             status = _Buffer->SetSize(_Buffer->QuerySize() * 2, TRUE);
             KFatal(NT_SUCCESS(status));
@@ -79,7 +79,7 @@ private:
         KMemCpySafe(
             (UCHAR*)(_Buffer->GetBuffer()) + _NextOffset, 
             _Buffer->QuerySize() - _NextOffset, 
-            &dest[0], cb + sizeof(WCHAR));
+            &dest[0], cb + sizeof(CHAR));
 
         _NextOffset += cb;
     }
@@ -88,8 +88,8 @@ public:
     OutputStream()
     {
         KFatal(NT_SUCCESS(KBuffer::Create(1024, _Buffer, KtlSystem::GlobalNonPagedAllocator())));
-        *((WCHAR*)(_Buffer->GetBuffer())) = KTextFile::UnicodeBom;
-        _NextOffset = sizeof(WCHAR);
+        *((CHAR*)(_Buffer->GetBuffer())) = KTextFile::UnicodeBom;
+        _NextOffset = sizeof(CHAR);
     }
 
     KBuffer::SPtr&
@@ -98,64 +98,64 @@ public:
         return _Buffer;
     }
 
-    NTSTATUS Put(__in WCHAR Value) override
+    NTSTATUS Put(__in CHAR Value) override
     {
-        Append(L"%c", Value);
+        Append("%c", Value);
         KTestPrintf("%C", Value);
         return STATUS_SUCCESS;
     }
 
     NTSTATUS Put(__in LONG Value)  override
     {
-        Append(L"%i", Value);
+        Append("%i", Value);
         KTestPrintf("%i", Value);
         return STATUS_SUCCESS;
     }
 
     NTSTATUS Put(__in ULONG Value) override
     {
-        Append(L"%u", Value);
+        Append("%u", Value);
         KTestPrintf("%u", Value);
         return STATUS_SUCCESS;
     }
 
     NTSTATUS Put(__in LONGLONG Value) override
     {
-        Append(L"%I64i", Value);
+        Append("%I64i", Value);
         KTestPrintf("%I64i", Value);
         return STATUS_SUCCESS;
     }
 
     NTSTATUS Put(__in ULONGLONG Value) override
     {
-        Append(L"%I64u", Value);
+        Append("%I64u", Value);
         KTestPrintf("%I64u", Value);
         return STATUS_SUCCESS;
     }
 
     NTSTATUS Put(__in GUID& Value) override
     {
-        WCHAR       guidStr[39];
+        CHAR       guidStr[39];
         GuidToUChars(Value, &guidStr[0]);
 #if !defined(PLATFORM_UNIX)
-        Append(L"%s", &guidStr[0]);
+        Append("%s", &guidStr[0]);
         KTestPrintf("%S", &guidStr[0]);
 #else
-        Append(L"%s", Utf16To8(&guidStr[0]).c_str());
+        Append("%s", Utf16To8(&guidStr[0]).c_str());
         KTestPrintf("%s", Utf16To8(&guidStr[0]).c_str());
 #endif
         return STATUS_SUCCESS;
     }
 
 
-    NTSTATUS Put(__in_z const WCHAR* Value) override
+    NTSTATUS Put(__in_z const CHAR* Value) override
     {
 #if !defined(PLATFORM_UNIX)
-        Append(L"%s", Value);
+        Append("%s", Value);
         KTestPrintf("%S", Value);
 #else
         std::string ValueA = Utf16To8(Value);
-        Append(L"%s", ValueA.c_str());
+        Append("%s", ValueA.c_str());
         KTestPrintf("%s", ValueA.c_str());
 #endif
         return STATUS_SUCCESS;
@@ -166,9 +166,9 @@ public:
     NTSTATUS Put(__in KUri::SPtr Value) override
     {
 #if !defined(PLATFORM_UNIX)
-        KTestPrintf("%S", LPWSTR(*Value));
+        KTestPrintf("%S", LPSTR(*Value));
 #else
-        KTestPrintf("%s", Utf16To8(LPWSTR(*Value)).c_str());
+        KTestPrintf("%s", Utf16To8(LPSTR(*Value)).c_str());
 #endif
         KStringView Tmp = *Value;
         if (!Tmp.IsNullTerminated())
@@ -177,9 +177,9 @@ public:
         }
 
 #if !defined(PLATFORM_UNIX)
-        Append(L"%s", LPWSTR(Tmp));
+        Append("%s", LPSTR(Tmp));
 #else
-        Append(L"%s", Utf16To8(LPWSTR(Tmp)).c_str());
+        Append("%s", Utf16To8(LPSTR(Tmp)).c_str());
 #endif
         return STATUS_SUCCESS;
     }
@@ -192,11 +192,11 @@ public:
         }
 
 #if !defined(PLATFORM_UNIX)
-        KTestPrintf("%S", LPWSTR(*Value));
-        Append(L"%s", LPCWSTR(*Value));
+        KTestPrintf("%S", LPSTR(*Value));
+        Append("%s", LPCSTR(*Value));
 #else
-        KTestPrintf("%s", Utf16To8(LPWSTR(*Value)).c_str());
-        Append(L"%s", Utf16To8(LPCWSTR(*Value)).c_str());
+        KTestPrintf("%s", Utf16To8(LPSTR(*Value)).c_str());
+        Append("%s", Utf16To8(LPCSTR(*Value)).c_str());
 #endif
 
         return STATUS_SUCCESS;
@@ -207,11 +207,11 @@ public:
         KString::SPtr Tmp;
         Value.ToString(KtlSystem::GlobalNonPagedAllocator(), Tmp);
 #if !defined(PLATFORM_UNIX)
-        KTestPrintf("%S", LPWSTR(*Tmp));
-        Append(L"%s", LPWSTR(*Tmp));
+        KTestPrintf("%S", LPSTR(*Tmp));
+        Append("%s", LPSTR(*Tmp));
 #else
-        KTestPrintf("%s", Utf16To8(LPWSTR(*Tmp)).c_str());
-        Append(L"%s", Utf16To8(LPWSTR(*Tmp)).c_str());
+        KTestPrintf("%s", Utf16To8(LPSTR(*Tmp)).c_str());
+        Append("%s", Utf16To8(LPSTR(*Tmp)).c_str());
 #endif
 
         return STATUS_SUCCESS;
@@ -222,11 +222,11 @@ public:
         KString::SPtr Tmp;
         Value.ToString(KtlSystem::GlobalNonPagedAllocator(), Tmp);
 #if !defined(PLATFORM_UNIX)
-        Append(L"%s", LPWSTR(*Tmp));
-        KTestPrintf("%S", LPWSTR(*Tmp));
+        Append("%s", LPSTR(*Tmp));
+        KTestPrintf("%S", LPSTR(*Tmp));
 #else
-        Append(L"%s", Utf16To8(LPWSTR(*Tmp)).c_str());
-        KTestPrintf("%s", Utf16To8(LPWSTR(*Tmp)).c_str());
+        Append("%s", Utf16To8(LPSTR(*Tmp)).c_str());
+        KTestPrintf("%s", Utf16To8(LPSTR(*Tmp)).c_str());
 #endif
         return STATUS_SUCCESS;
     }
@@ -235,12 +235,12 @@ public:
     {
         if (Value == TRUE)
         {
-            Append(L"TRUE");
+            Append("TRUE");
             KTestPrintf("TRUE");
         }
         else
         {
-            Append(L"FALSE");
+            Append("FALSE");
             KTestPrintf("FALSE");
         }
         return STATUS_SUCCESS;
@@ -249,14 +249,14 @@ public:
 
 private:
     void
-    GuidToUChars(GUID& Guid, WCHAR* Result)
+    GuidToUChars(GUID& Guid, CHAR* Result)
     {
         struct HexPair
         {
             static VOID
-            ToAscii(UCHAR Value, WCHAR* OutputPtr)
+            ToAscii(UCHAR Value, CHAR* OutputPtr)
             {
-                static WCHAR        printableChars[] = L"0123456789ABCDEF";
+                static CHAR        printableChars[] = "0123456789ABCDEF";
 
                 OutputPtr[0] = printableChars[((Value & 0xF0) >> 4)];
                 OutputPtr[1] = printableChars[(Value & 0x0F)];
@@ -303,7 +303,7 @@ IsEqual(const KIDomNode::QName& Name0, const KIDomNode::QName& Name1)
         return TRUE;
     }
 
-    return ((wcscmp(Name0.Namespace, Name1.Namespace) == 0) && (wcscmp(Name0.Name, Name1.Name) == 0));
+    return ((strcmp(Name0.Namespace, Name1.Namespace) == 0) && (strcmp(Name0.Name, Name1.Name) == 0));
 }
 
 BOOLEAN
@@ -378,7 +378,7 @@ ValidateDomNode(KIDomNode::SPtr& Node, const KIDomNode::QName& Name, T ValidValu
 }
 
 NTSTATUS
-ValidateDomNode(KIDomNode::SPtr& Node, const KIDomNode::QName& Name, WCHAR* ValidValue)
+ValidateDomNode(KIDomNode::SPtr& Node, const KIDomNode::QName& Name, CHAR* ValidValue)
 {
     KVariant            value;
     NTSTATUS            status = CommonValidateDomNode(Node, Name, value);
@@ -387,7 +387,7 @@ ValidateDomNode(KIDomNode::SPtr& Node, const KIDomNode::QName& Name, WCHAR* Vali
         return status;
     }
 
-    return (wcscmp(ValidValue, (WCHAR*)value) == 0) ? STATUS_SUCCESS : STATUS_UNSUCCESSFUL;
+    return (strcmp(ValidValue, (CHAR*)value) == 0) ? STATUS_SUCCESS : STATUS_UNSUCCESSFUL;
 }
 
 NTSTATUS
@@ -487,7 +487,7 @@ DefaultedTypesTest()
     NTSTATUS                    status;
     KIMutableDomNode::SPtr      domRoot;
 
-    KStringView Src(L"<Root  cc=\"xxx\"><aaa>100</aaa><bbb>200</bbb><ddd/><eee type=\"ktl:STRING\"/><fff type=\"ktl:STRING\"></fff></Root>");
+    KStringView Src("<Root  cc=\"xxx\"><aaa>100</aaa><bbb>200</bbb><ddd/><eee type=\"ktl:STRING\"/><fff type=\"ktl:STRING\"></fff></Root>");
 
     KIMutableDomNode::SPtr Test;
     status = KDom::FromString(Src, allocator, Test);
@@ -498,28 +498,28 @@ DefaultedTypesTest()
     }
 
     KVariant aVal;
-    status = Test->GetChildValue(KIDomNode::QName(L"aaa"), aVal);
+    status = Test->GetChildValue(KIDomNode::QName("aaa"), aVal);
     if (!NT_SUCCESS(status))
     {
         KTestPrintf("DefaultedTypesTest failure on line %u\n", __LINE__);
         return status;
     }
 
-    if (((KStringView&)aVal).Compare(KStringView(L"100")) != 0)
+    if (((KStringView&)aVal).Compare(KStringView("100")) != 0)
     {
         KTestPrintf("DefaultedTypesTest failure on line %u\n", __LINE__);
         return status;
     }
 
     KVariant bVal;
-    status = Test->GetChildValue(KIDomNode::QName(L"bbb"), bVal);
+    status = Test->GetChildValue(KIDomNode::QName("bbb"), bVal);
     if (!NT_SUCCESS(status))
     {
         KTestPrintf("DefaultedTypesTest failure on line %u\n", __LINE__);
         return status;
     }
 
-    if (((KStringView&)bVal).Compare(KStringView(L"200")) != 0)
+    if (((KStringView&)bVal).Compare(KStringView("200")) != 0)
     {
         KTestPrintf("DefaultedTypesTest failure on line %u\n", __LINE__);
         return status;
@@ -527,21 +527,21 @@ DefaultedTypesTest()
 
 
     KVariant cVal;
-    status = Test->GetAttribute(KIDomNode::QName(L"cc"), cVal);
+    status = Test->GetAttribute(KIDomNode::QName("cc"), cVal);
     if (!NT_SUCCESS(status))
     {
         KTestPrintf("DefaultedTypesTest failure on line %u\n", __LINE__);
         return status;
     }
 
-    if (((KStringView&)cVal).Compare(KStringView(L"xxx")) != 0)
+    if (((KStringView&)cVal).Compare(KStringView("xxx")) != 0)
     {
         KTestPrintf("DefaultedTypesTest failure on line %u\n", __LINE__);
         return status;
     }
 
     KVariant dVal;
-    status = Test->GetChildValue(KIDomNode::QName(L"ddd"), dVal);
+    status = Test->GetChildValue(KIDomNode::QName("ddd"), dVal);
     if (!NT_SUCCESS(status))
     {
         KTestPrintf("DefaultedTypesTest failure on line %u\n", __LINE__);
@@ -561,7 +561,7 @@ DefaultedTypesTest()
     }
 
     KVariant eVal;
-    status = Test->GetChildValue(KIDomNode::QName(L"eee"), eVal);
+    status = Test->GetChildValue(KIDomNode::QName("eee"), eVal);
     if (!NT_SUCCESS(status))
     {
         KTestPrintf("DefaultedTypesTest failure on line %u\n", __LINE__);
@@ -581,7 +581,7 @@ DefaultedTypesTest()
     }
 
     KVariant fVal;
-    status = Test->GetChildValue(KIDomNode::QName(L"fff"), fVal);
+    status = Test->GetChildValue(KIDomNode::QName("fff"), fVal);
     if (!NT_SUCCESS(status))
     {
         KTestPrintf("DefaultedTypesTest failure on line %u\n", __LINE__);
@@ -611,7 +611,7 @@ DomPathTests()
     NTSTATUS                    status;
     KIMutableDomNode::SPtr      domRoot;
 
-    KStringView Src(L"<Root TestAttr=\"xxx\"><ns2:aaa ns:foo=\"jjj\">100</ns2:aaa><bbb>200</bbb><bbb>201</bbb><bbb>202</bbb><bbb><xxx>1000</xxx><xxx>2000</xxx><xxx>3000</xxx></bbb><ccc/><ddd><eee>abc</eee><fff z=\"123\">afaaf</fff></ddd><bbb>final</bbb></Root>");
+    KStringView Src("<Root TestAttr=\"xxx\"><ns2:aaa ns:foo=\"jjj\">100</ns2:aaa><bbb>200</bbb><bbb>201</bbb><bbb>202</bbb><bbb><xxx>1000</xxx><xxx>2000</xxx><xxx>3000</xxx></bbb><ccc/><ddd><eee>abc</eee><fff z=\"123\">afaaf</fff></ddd><bbb>final</bbb></Root>");
 
     KIMutableDomNode::SPtr Test;
     status = KDom::FromString(Src, allocator, Test);
@@ -623,7 +623,7 @@ DomPathTests()
 
 
     KVariant v;
-    status = Test->GetValue(KDomPath(L"Root/ddd/eee"), v);
+    status = Test->GetValue(KDomPath("Root/ddd/eee"), v);
     if (!NT_SUCCESS(status))
     {
         return status;
@@ -632,12 +632,12 @@ DomPathTests()
     {
         return STATUS_UNSUCCESSFUL;
     }
-    if (((KStringView&)v).Compare(KStringView(L"abc")) != 0)
+    if (((KStringView&)v).Compare(KStringView("abc")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
 
-    status = Test->GetValue(KDomPath(L"Root/@TestAttr"), v);
+    status = Test->GetValue(KDomPath("Root/@TestAttr"), v);
     if (!NT_SUCCESS(status))
     {
         return status;
@@ -646,12 +646,12 @@ DomPathTests()
     {
         return STATUS_UNSUCCESSFUL;
     }
-    if (((KStringView&)v).Compare(KStringView(L"xxx")) != 0)
+    if (((KStringView&)v).Compare(KStringView("xxx")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
 
-    status = Test->GetValue(KDomPath(L"Root/ns2:aaa/@ns:foo"), v);
+    status = Test->GetValue(KDomPath("Root/ns2:aaa/@ns:foo"), v);
     if (!NT_SUCCESS(status))
     {
         return status;
@@ -660,13 +660,13 @@ DomPathTests()
     {
         return STATUS_UNSUCCESSFUL;
     }
-    if (((KStringView&)v).Compare(KStringView(L"jjj")) != 0)
+    if (((KStringView&)v).Compare(KStringView("jjj")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
 
 
-    status = Test->GetValue(KDomPath(L"Root/ddd/fff/@z"), v);
+    status = Test->GetValue(KDomPath("Root/ddd/fff/@z"), v);
     if (!NT_SUCCESS(status))
     {
         return status;
@@ -675,14 +675,14 @@ DomPathTests()
     {
         return STATUS_UNSUCCESSFUL;
     }
-    if (((KStringView&)v).Compare(KStringView(L"123")) != 0)
+    if (((KStringView&)v).Compare(KStringView("123")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
 
     // Check the symbolic array access
     //
-    status = Test->GetValue(KDomPath(L"Root/bbb[]", 1), v);
+    status = Test->GetValue(KDomPath("Root/bbb[]", 1), v);
     if (!NT_SUCCESS(status))
     {
         return status;
@@ -691,12 +691,12 @@ DomPathTests()
     {
         return STATUS_UNSUCCESSFUL;
     }
-    if (static_cast<KStringView&>(v).Compare(KStringView(L"201")) != 0)
+    if (static_cast<KStringView&>(v).Compare(KStringView("201")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
 
-    status = Test->GetValue(KDomPath(L"Root/bbb[]", 2), v);
+    status = Test->GetValue(KDomPath("Root/bbb[]", 2), v);
     if (!NT_SUCCESS(status))
     {
         return status;
@@ -705,41 +705,41 @@ DomPathTests()
     {
         return STATUS_UNSUCCESSFUL;
     }
-    if (((KStringView&)v).Compare(KStringView(L"202")) != 0)
+    if (((KStringView&)v).Compare(KStringView("202")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
 
     // Check symbolic array access in two dimensions
     //
-    status = Test->GetValue(KDomPath(L"Root/bbb[]/xxx[]", 3, 1), v);
+    status = Test->GetValue(KDomPath("Root/bbb[]/xxx[]", 3, 1), v);
     if (!NT_SUCCESS(status))
     {
         return STATUS_INTERNAL_ERROR;
     }
-    if (((KStringView&)v).Compare(KStringView(L"2000")) != 0)
+    if (((KStringView&)v).Compare(KStringView("2000")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
 
     // Check for literal array access
     //
-    status = Test->GetValue(KDomPath(L"Root/bbb[]/xxx[0]", 3), v);
+    status = Test->GetValue(KDomPath("Root/bbb[]/xxx[0]", 3), v);
     if (!NT_SUCCESS(status))
     {
         return STATUS_INTERNAL_ERROR;
     }
-    if (((KStringView&)v).Compare(KStringView(L"1000")) != 0)
+    if (((KStringView&)v).Compare(KStringView("1000")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
 
-    status = Test->GetValue(KDomPath(L"Root/bbb[3]/xxx[1]"), v);
+    status = Test->GetValue(KDomPath("Root/bbb[3]/xxx[1]"), v);
     if (!NT_SUCCESS(status))
     {
         return STATUS_INTERNAL_ERROR;
     }
-    if (((KStringView&)v).Compare(KStringView(L"2000")) != 0)
+    if (((KStringView&)v).Compare(KStringView("2000")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
@@ -747,7 +747,7 @@ DomPathTests()
 
     // Check for out of bounds array access
     //
-    status = Test->GetValue(KDomPath(L"Root/bbb[]", 5), v);
+    status = Test->GetValue(KDomPath("Root/bbb[]", 5), v);
     if (NT_SUCCESS(status))
     {
         return STATUS_INTERNAL_ERROR;
@@ -755,7 +755,7 @@ DomPathTests()
 
     // Test the counts
     ULONG Count = 0;
-    status = Test->GetCount(KDomPath(L"Root/bbb[3]/xxx"), Count);
+    status = Test->GetCount(KDomPath("Root/bbb[3]/xxx"), Count);
     if (!NT_SUCCESS(status))
     {
         return STATUS_INTERNAL_ERROR;
@@ -766,7 +766,7 @@ DomPathTests()
     }
 
     Count = 0;
-    status = Test->GetCount(KDomPath(L"Root/bbb"), Count);
+    status = Test->GetCount(KDomPath("Root/bbb"), Count);
     if (!NT_SUCCESS(status))
     {
         return STATUS_INTERNAL_ERROR;
@@ -777,7 +777,7 @@ DomPathTests()
     }
 
     Count = 0;
-    status = Test->GetCount(KDomPath(L"Root/bbb[3]/xxx[100]"), Count);
+    status = Test->GetCount(KDomPath("Root/bbb[3]/xxx[100]"), Count);
     if (NT_SUCCESS(status))
     {
         return STATUS_INTERNAL_ERROR;
@@ -788,7 +788,7 @@ DomPathTests()
     }
 
     Count = 0;
-    status = Test->GetCount(KDomPath(L"Root/bbb[3]/xxx[0]"), Count);
+    status = Test->GetCount(KDomPath("Root/bbb[3]/xxx[0]"), Count);
     if (!NT_SUCCESS(status))
     {
         return STATUS_INTERNAL_ERROR;
@@ -800,7 +800,7 @@ DomPathTests()
 
 
     Count = 0;
-    status = Test->GetCount(KDomPath(L"Root/@TestAttr"), Count);
+    status = Test->GetCount(KDomPath("Root/@TestAttr"), Count);
     if (!NT_SUCCESS(status))
     {
         return STATUS_INTERNAL_ERROR;
@@ -813,35 +813,35 @@ DomPathTests()
     // Now get a subnode and test subaccess to it.
 
     KIDomNode::SPtr BNode;
-    status = Test->GetNode(KDomPath(L"Root/bbb[3]"), BNode);
+    status = Test->GetNode(KDomPath("Root/bbb[3]"), BNode);
     if (!NT_SUCCESS(status))
     {
         return STATUS_INTERNAL_ERROR;
     }
 
-    status = BNode->GetValue(KDomPath(L"bbb/xxx[1]"), v);
+    status = BNode->GetValue(KDomPath("bbb/xxx[1]"), v);
     if (!NT_SUCCESS(status))
     {
         return STATUS_INTERNAL_ERROR;
     }
-    if (((KStringView&)v).Compare(KStringView(L"2000")) != 0)
+    if (((KStringView&)v).Compare(KStringView("2000")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
 
     KIDomNode::SPtr XNode;
-    status = Test->GetNode(KDomPath(L"Root/bbb[3]/xxx[1]"), XNode);
+    status = Test->GetNode(KDomPath("Root/bbb[3]/xxx[1]"), XNode);
     if (!NT_SUCCESS(status))
     {
         return STATUS_INTERNAL_ERROR;
     }
 
-    status = XNode->GetValue(KDomPath(L"xxx"), v);
+    status = XNode->GetValue(KDomPath("xxx"), v);
     if (!NT_SUCCESS(status))
     {
         return STATUS_INTERNAL_ERROR;
     }
-    if (((KStringView&)v).Compare(KStringView(L"2000")) != 0)
+    if (((KStringView&)v).Compare(KStringView("2000")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
@@ -849,7 +849,7 @@ DomPathTests()
     // Get multiple nodes
 
     KArray<KIDomNode::SPtr> ResultSet(allocator);
-    Test->GetNodes(KDomPath(L"Root/bbb[3]/xxx"), ResultSet);
+    Test->GetNodes(KDomPath("Root/bbb[3]/xxx"), ResultSet);
     if (!NT_SUCCESS(status))
     {
         return STATUS_INTERNAL_ERROR;
@@ -859,32 +859,32 @@ DomPathTests()
         return STATUS_INTERNAL_ERROR;
     }
 
-    status = ResultSet[0]->GetValue(KDomPath(L"xxx"), v);
+    status = ResultSet[0]->GetValue(KDomPath("xxx"), v);
     if (!NT_SUCCESS(status))
     {
         return STATUS_INTERNAL_ERROR;
     }
-    if (((KStringView&)v).Compare(KStringView(L"1000")) != 0)
+    if (((KStringView&)v).Compare(KStringView("1000")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
 
-    status = ResultSet[1]->GetValue(KDomPath(L"xxx"), v);
+    status = ResultSet[1]->GetValue(KDomPath("xxx"), v);
     if (!NT_SUCCESS(status))
     {
         return STATUS_INTERNAL_ERROR;
     }
-    if (((KStringView&)v).Compare(KStringView(L"2000")) != 0)
+    if (((KStringView&)v).Compare(KStringView("2000")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
 
-    status = ResultSet[2]->GetValue(KDomPath(L"xxx"), v);
+    status = ResultSet[2]->GetValue(KDomPath("xxx"), v);
     if (!NT_SUCCESS(status))
     {
         return STATUS_INTERNAL_ERROR;
     }
-    if (((KStringView&)v).Compare(KStringView(L"3000")) != 0)
+    if (((KStringView&)v).Compare(KStringView("3000")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
@@ -897,7 +897,7 @@ DomPathTests()
         return STATUS_UNSUCCESSFUL;
     }
 
-    if (Str->Compare(KStringView(L"Root/bbb[3]/xxx[2]")) != 0)
+    if (Str->Compare(KStringView("Root/bbb[3]/xxx[2]")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
@@ -926,7 +926,7 @@ ExtendedTypesTest()
         return status;
     }
 
-    status = domRoot->SetName(KIMutableDomNode::QName(L"RootElement"));
+    status = domRoot->SetName(KIMutableDomNode::QName("RootElement"));
     if (!NT_SUCCESS(status))
     {
         KTestPrintf("ExtendedTypesTest: SetName failed @%u with 0x%08X\n", __LINE__, status);
@@ -936,7 +936,7 @@ ExtendedTypesTest()
     /// Set up a simple ULONG
 
     KIMutableDomNode::SPtr  UlongChild;
-    status = domRoot->AddChild(KIDomNode::QName(L"UlongVal"), UlongChild);
+    status = domRoot->AddChild(KIDomNode::QName("UlongVal"), UlongChild);
     if (!NT_SUCCESS(status))
     {
         KTestPrintf("ExtendedTypesTest: AddChild failed @%u with 0x%08X\n", __LINE__, status);
@@ -953,7 +953,7 @@ ExtendedTypesTest()
     // Set up an "empty" element which should come back as a string of zero length.
     //
     KIMutableDomNode::SPtr EmptyChild;
-    status = domRoot->AddChild(KIDomNode::QName(L"EmptyVal"), EmptyChild);
+    status = domRoot->AddChild(KIDomNode::QName("EmptyVal"), EmptyChild);
     if (!NT_SUCCESS(status))
     {
         KTestPrintf("ExtendedTypesTest: AddChild failed @%u with 0x%08X\n", __LINE__, status);
@@ -971,7 +971,7 @@ ExtendedTypesTest()
     // BOOLEAN
 
     KIMutableDomNode::SPtr  boolChild;
-    status = domRoot->AddChild(KIDomNode::QName(L"BoolVal"), boolChild);
+    status = domRoot->AddChild(KIDomNode::QName("BoolVal"), boolChild);
     if (!NT_SUCCESS(status))
     {
         KTestPrintf("ExtendedTypesTest: AddChild failed @%u with 0x%08X\n", __LINE__, status);
@@ -988,7 +988,7 @@ ExtendedTypesTest()
 
     // Type EMPTY
     KIMutableDomNode::SPtr nullChild;
-    status = domRoot->AddChild(KIDomNode::QName(L"nullVal"), nullChild);
+    status = domRoot->AddChild(KIDomNode::QName("nullVal"), nullChild);
     if (!NT_SUCCESS(status))
     {
         KTestPrintf("ExtendedTypesTest: AddChild failed @%u with 0x%08X\n", __LINE__, status);
@@ -1018,14 +1018,14 @@ ExtendedTypesTest()
     // KString
 
     KIMutableDomNode::SPtr  strChild;
-    status = domRoot->AddChild(KIDomNode::QName(L"StringVal"), strChild);
+    status = domRoot->AddChild(KIDomNode::QName("StringVal"), strChild);
     if (!NT_SUCCESS(status))
     {
         KTestPrintf("ExtendedTypesTest: AddChild failed @%u with 0x%08X\n", __LINE__, status);
         return status;
     }
 
-    KString::SPtr Tmp = KString::Create(L"MYSTRING", allocator);
+    KString::SPtr Tmp = KString::Create("MYSTRING", allocator);
     if (!Tmp)
     {
         return STATUS_INSUFFICIENT_RESOURCES;
@@ -1041,7 +1041,7 @@ ExtendedTypesTest()
     /// Duration
 
     KIMutableDomNode::SPtr  durationChild;
-    status = domRoot->AddChild(KIDomNode::QName(L"DurationVal"), durationChild);
+    status = domRoot->AddChild(KIDomNode::QName("DurationVal"), durationChild);
     if (!NT_SUCCESS(status))
     {
         KTestPrintf("ExtendedTypesTest: AddChild failed @%u with 0x%08X\n", __LINE__, status);
@@ -1061,7 +1061,7 @@ ExtendedTypesTest()
     // Uri
 
     KIMutableDomNode::SPtr  UriChild;
-    status = domRoot->AddChild(KIDomNode::QName(L"UriVal"), UriChild);
+    status = domRoot->AddChild(KIDomNode::QName("UriVal"), UriChild);
     if (!NT_SUCCESS(status))
     {
         KTestPrintf("ExtendedTypesTest: AddChild failed @%u with 0x%08X\n", __LINE__, status);
@@ -1069,7 +1069,7 @@ ExtendedTypesTest()
     }
 
     KUri::SPtr Uri;
-    status = KUri::Create(KStringView(L"http://www.google.com"), allocator, Uri);
+    status = KUri::Create(KStringView("http://www.google.com"), allocator, Uri);
     if (!NT_SUCCESS(status))
     {
         KTestPrintf("ExtendedTypesTest: Uri Create failed @%u with 0x%08X\n", __LINE__, status);
@@ -1103,7 +1103,7 @@ ExtendedTypesTest()
         return status;
     }
 
-     LPWSTR Str1 = (*Text);
+     LPSTR Str1 = (*Text);
 #if !defined(PLATFORM_UNIX)
      KTestPrintf("First XML is\n%S\n", Str1);
 #else
@@ -1134,7 +1134,7 @@ ExtendedTypesTest()
         return status;
     }
 
-    // LPWSTR Str2 = (*Text2);
+    // LPSTR Str2 = (*Text2);
     // KTestPrintf("Second XML is\n%S\n", Str2);
 
 
@@ -1142,7 +1142,7 @@ ExtendedTypesTest()
     // All we have left is the clone.  Make sure the values are legit.
 
     KVariant BoolRetrieved;
-    status = Phoenix->GetChildValue(KIDomNode::QName(L"BoolVal"), BoolRetrieved);
+    status = Phoenix->GetChildValue(KIDomNode::QName("BoolVal"), BoolRetrieved);
     if (!NT_SUCCESS(status) || BOOLEAN(BoolRetrieved) != TRUE)
     {
         KTestPrintf("ExtendedTypesTest: GetChildValue failed @%u with 0x%08X\n", __LINE__, status);
@@ -1150,7 +1150,7 @@ ExtendedTypesTest()
     }
 
     KVariant DurRetrieved;
-    status = Phoenix->GetChildValue(KIDomNode::QName(L"DurationVal"), DurRetrieved);
+    status = Phoenix->GetChildValue(KIDomNode::QName("DurationVal"), DurRetrieved);
     if (!NT_SUCCESS(status) || KDuration(DurRetrieved) != KDuration(Dur))
     {
         KTestPrintf("ExtendedTypesTest: GetChildValue failed @%u with 0x%08X\n", __LINE__, status);
@@ -1159,14 +1159,14 @@ ExtendedTypesTest()
 
     // Retrieve the URI
     KVariant UriRetrieved;
-    status = Phoenix->GetChildValue(KIDomNode::QName(L"UriVal"), UriRetrieved);
+    status = Phoenix->GetChildValue(KIDomNode::QName("UriVal"), UriRetrieved);
     if (!NT_SUCCESS(status))
     {
         KTestPrintf("ExtendedTypesTest: GetChildValue failed @%u with 0x%08X\n", __LINE__, status);
         return status;
     }
 
-    if (((KStringView&)UriRetrieved).Compare(KStringView(L"http://www.google.com")) != 0)
+    if (((KStringView&)UriRetrieved).Compare(KStringView("http://www.google.com")) != 0)
     {
         KTestPrintf("ExtendedTypesTest: URI was not correctly retrieved @%u\n", __LINE__);
         return STATUS_UNSUCCESSFUL;
@@ -1179,7 +1179,7 @@ ExtendedTypesTest()
     }
 
     KVariant StrRetrieved;
-    status = Phoenix->GetChildValue(KIDomNode::QName(L"StringVal"), StrRetrieved);
+    status = Phoenix->GetChildValue(KIDomNode::QName("StringVal"), StrRetrieved);
     if (!NT_SUCCESS(status))
     {
         KTestPrintf("ExtendedTypesTest: GetChildValue failed @%u with 0x%08X\n", __LINE__, status);
@@ -1187,7 +1187,7 @@ ExtendedTypesTest()
     }
 
     KString::SPtr StrV = (KString::SPtr) StrRetrieved;
-    if (StrV->Compare(KStringView(L"MYSTRING")) != 0)
+    if (StrV->Compare(KStringView("MYSTRING")) != 0)
     {
         KTestPrintf("ExtendedTypesTest: GetChildValue failed @%u; string was changed\n", __LINE__);
         return status;
@@ -1202,7 +1202,7 @@ ExtendedTypesTest()
     // Get the "Empty" value
 
     KVariant EmptyValue;
-    status = Phoenix->GetChildValue(KIDomNode::QName(L"EmptyVal"), EmptyValue);
+    status = Phoenix->GetChildValue(KIDomNode::QName("EmptyVal"), EmptyValue);
     if (!NT_SUCCESS(status))
     {
         KTestPrintf("ExtendedTypesTest: Empty value was not correctly retrieved @%u\n", __LINE__);
@@ -1218,7 +1218,7 @@ ExtendedTypesTest()
     // Verify nullChild came back as string
     KVariant nullRetrieval;
 
-    status = Phoenix->GetChildValue(KIDomNode::QName(L"nullVal"), nullRetrieval);
+    status = Phoenix->GetChildValue(KIDomNode::QName("nullVal"), nullRetrieval);
     if (!NT_SUCCESS(status))
     {
         KTestPrintf("ExtendedTypesTest: Empty value was not correctly retrieved @%u\n", __LINE__);
@@ -1266,7 +1266,7 @@ CreateEmptyDomTest()
         }
 
         //* Prove setting the name on the root fails
-        status = domRoot->SetName(KIMutableDomNode::QName(L"RootElement"));
+        status = domRoot->SetName(KIMutableDomNode::QName("RootElement"));
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: SetName failed @%u with 0x%08X\n", __LINE__, status);
@@ -1274,14 +1274,14 @@ CreateEmptyDomTest()
         }
 
         //* Prove attrs can be added
-        status = domRoot->SetAttribute(KIMutableDomNode::QName(L"version"), KVariant::Create(L"1.0", allocator));
+        status = domRoot->SetAttribute(KIMutableDomNode::QName("version"), KVariant::Create("1.0", allocator));
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: SetAttribute failed @%u with 0x%08X\n", __LINE__, status);
             return status;
         }
 
-        status = domRoot->SetAttribute(KIMutableDomNode::QName(L"encoding"), KVariant::Create(L"UTF-8", allocator));
+        status = domRoot->SetAttribute(KIMutableDomNode::QName("encoding"), KVariant::Create("UTF-8", allocator));
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: SetAttribute failed @%u with 0x%08X\n", __LINE__, status);
@@ -1308,14 +1308,14 @@ CreateEmptyDomTest()
 
         for (ULONG ix = 0; ix < attrs.Count(); ix++)
         {
-            if (wcscmp(attrs[ix].Namespace, L"") != 0)
+            if (strcmp(attrs[ix].Namespace, "") != 0)
             {
                 KTestPrintf("CreateEmptyDomTest: invalid namespace value @%u\n", __LINE__);
                 return STATUS_UNSUCCESSFUL;
             }
 
-            sawEncoding = sawEncoding || (wcscmp(attrs[ix].Name, L"encoding") == 0);
-            sawVersion = sawVersion || (wcscmp(attrs[ix].Name, L"version") == 0);
+            sawEncoding = sawEncoding || (strcmp(attrs[ix].Name, "encoding") == 0);
+            sawVersion = sawVersion || (strcmp(attrs[ix].Name, "version") == 0);
         }
 
         if (!sawVersion || !sawEncoding)
@@ -1326,27 +1326,27 @@ CreateEmptyDomTest()
 
         //* Prove attr values can be queried and are correct
         KVariant        value;
-        status = domRoot->GetAttribute(KIDomNode::QName(L"version"), value);
+        status = domRoot->GetAttribute(KIDomNode::QName("version"), value);
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: GetAttribute failed @%u with 0x%08X\n", __LINE__, status);
             return status;
         }
 
-        if (wcscmp((WCHAR*)value, L"1.0") != 0)
+        if (strcmp((CHAR*)value, "1.0") != 0)
         {
             KTestPrintf("CreateEmptyDomTest: invalid attr value @%u\n", __LINE__);
             return STATUS_UNSUCCESSFUL;
         }
 
-        status = domRoot->GetAttribute(KIDomNode::QName(L"encoding"), value);
+        status = domRoot->GetAttribute(KIDomNode::QName("encoding"), value);
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: GetAttribute failed @%u with 0x%08X\n", __LINE__, status);
             return status;
         }
 
-        if (wcscmp((WCHAR*)value, L"UTF-8") != 0)
+        if (strcmp((CHAR*)value, "UTF-8") != 0)
         {
             KTestPrintf("CreateEmptyDomTest: invalid attr value @%u\n", __LINE__);
             return STATUS_UNSUCCESSFUL;
@@ -1354,7 +1354,7 @@ CreateEmptyDomTest()
 
         //** Prove various children nodes can be added with various value types
         KIMutableDomNode::SPtr      child;
-        status = domRoot->AddChild(KIDomNode::QName(L"child001"), child);
+        status = domRoot->AddChild(KIDomNode::QName("child001"), child);
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: AddChild failed @%u with 0x%08X\n", __LINE__, status);
@@ -1362,7 +1362,7 @@ CreateEmptyDomTest()
         }
 
         //** Prove attr and value can be added
-        status = child->SetAttribute(KIDomNode::QName(L"testns", L"TestAttr"), KVariant::Create(L"Test Attr Value", allocator));
+        status = child->SetAttribute(KIDomNode::QName("testns", "TestAttr"), KVariant::Create("Test Attr Value", allocator));
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: SetAttribute failed @%u with 0x%08X\n", __LINE__, status);
@@ -1376,7 +1376,7 @@ CreateEmptyDomTest()
             return status;
         }
 
-        status = domRoot->AddChild(KIDomNode::QName(L"child002"), child);
+        status = domRoot->AddChild(KIDomNode::QName("child002"), child);
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: AddChild failed @%u with 0x%08X\n", __LINE__, status);
@@ -1393,14 +1393,14 @@ CreateEmptyDomTest()
 
         //** Prove a null string value can be added
         KIMutableDomNode::SPtr      nullChild;
-        status = domRoot->AddChild(KIDomNode::QName(L"nullChild"), nullChild);
+        status = domRoot->AddChild(KIDomNode::QName("nullChild"), nullChild);
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: AddChild failed @%u with 0x%08X\n", __LINE__, status);
             return status;
         }
 
-        status = nullChild->SetValue(KVariant::Create(L"", allocator));
+        status = nullChild->SetValue(KVariant::Create("", allocator));
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: SetValue failed @%u with 0x%08X\n", __LINE__, status);
@@ -1408,7 +1408,7 @@ CreateEmptyDomTest()
         }
 
         KIDomNode::SPtr      nullChild1;
-        status = domRoot->GetChild(KIDomNode::QName(L"nullChild"), nullChild1);
+        status = domRoot->GetChild(KIDomNode::QName("nullChild"), nullChild1);
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: GetChild failed @%u with 0x%08X\n", __LINE__, status);
@@ -1454,7 +1454,7 @@ CreateEmptyDomTest()
             return status;
         }
 
-        KVariant firstDupValue = KVariant::Create(L"Value text for first child-02 element", allocator);
+        KVariant firstDupValue = KVariant::Create("Value text for first child-02 element", allocator);
         status = domRoot->SetChildValue(child->GetName(), firstDupValue, 0);
         if (!NT_SUCCESS(status))
         {
@@ -1475,7 +1475,7 @@ CreateEmptyDomTest()
             return STATUS_UNSUCCESSFUL;
         }
 
-        if (wcscmp((WCHAR*)firstDupValue, (WCHAR*)(tChild->GetValue())) != 0)
+        if (strcmp((CHAR*)firstDupValue, (CHAR*)(tChild->GetValue())) != 0)
         {
             KTestPrintf("CreateEmptyDomTest: value compare failed@%u\n", __LINE__);
             return STATUS_UNSUCCESSFUL;
@@ -1489,7 +1489,7 @@ CreateEmptyDomTest()
             return status;
         }
 
-        KVariant thirdDupValue = KVariant::Create(L"Value text for 3rd child-02 element", allocator);
+        KVariant thirdDupValue = KVariant::Create("Value text for 3rd child-02 element", allocator);
         status = domRoot->SetChildValue(child->GetName(), thirdDupValue, 2);
         if (!NT_SUCCESS(status))
         {
@@ -1523,7 +1523,7 @@ CreateEmptyDomTest()
             return status;
         }
 
-        if (wcscmp((WCHAR*)thirdDupValue, (WCHAR*)(tChild->GetValue())) != 0)
+        if (strcmp((CHAR*)thirdDupValue, (CHAR*)(tChild->GetValue())) != 0)
         {
             KTestPrintf("CreateEmptyDomTest: value compare failed@%u\n", __LINE__);
             return STATUS_UNSUCCESSFUL;
@@ -1536,7 +1536,7 @@ CreateEmptyDomTest()
             return status;
         }
 
-        KVariant lastDupValue = KVariant::Create(L"Value text for last child-02 element", allocator);
+        KVariant lastDupValue = KVariant::Create("Value text for last child-02 element", allocator);
         status = domRoot->SetChildValue(child->GetName(), lastDupValue, 3);
         if (!NT_SUCCESS(status))
         {
@@ -1557,7 +1557,7 @@ CreateEmptyDomTest()
             return STATUS_UNSUCCESSFUL;
         }
 
-        if (wcscmp((WCHAR*)lastDupValue, (WCHAR*)(tChild->GetValue())) != 0)
+        if (strcmp((CHAR*)lastDupValue, (CHAR*)(tChild->GetValue())) != 0)
         {
             KTestPrintf("CreateEmptyDomTest: value compare failed@%u\n", __LINE__);
             return STATUS_UNSUCCESSFUL;
@@ -1579,14 +1579,14 @@ CreateEmptyDomTest()
 
 		//* Prove indexed last form works
 		KIDomNode::SPtr      lastChild;
-        status = domRoot->GetChild(KIDomNode::QName(L"child002"), lastChild, -1);
+        status = domRoot->GetChild(KIDomNode::QName("child002"), lastChild, -1);
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: GetChild failed @%u with 0x%08X\n", __LINE__, status);
             return status;
         }
 
-        status = ValidateDomNode(lastChild, KIDomNode::QName(L"child002"), (WCHAR*)lastDupValue);
+        status = ValidateDomNode(lastChild, KIDomNode::QName("child002"), (CHAR*)lastDupValue);
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: ValidateDomNode failed @%u with 0x%08X\n", __LINE__, status);
@@ -1594,14 +1594,14 @@ CreateEmptyDomTest()
         }
 
 		KVariant lastValue;
-		status = domRoot->GetChildValue(KIDomNode::QName(L"child002"), lastValue, -1);
+		status = domRoot->GetChildValue(KIDomNode::QName("child002"), lastValue, -1);
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: GetChildValue failed @%u with 0x%08X\n", __LINE__, status);
             return status;
         }
 
-		if (wcscmp((WCHAR*)lastDupValue, (WCHAR*)lastValue) != 0)
+		if (strcmp((CHAR*)lastDupValue, (CHAR*)lastValue) != 0)
 		{
             KTestPrintf("CreateEmptyDomTest: invalid value @%u\n", __LINE__);
             return STATUS_UNSUCCESSFUL;
@@ -1616,7 +1616,7 @@ CreateEmptyDomTest()
         }
 
 		//* Prove set of child value using last index form
-        KVariant newLastDupValue = KVariant::Create(L"Updated: Value text for last child-02 element", allocator);
+        KVariant newLastDupValue = KVariant::Create("Updated: Value text for last child-02 element", allocator);
         status = domRoot->SetChildValue(child->GetName(), newLastDupValue, -1);
         if (!NT_SUCCESS(status))
         {
@@ -1624,14 +1624,14 @@ CreateEmptyDomTest()
             return status;
         }
 
-		status = domRoot->GetChildValue(KIDomNode::QName(L"child002"), lastValue, -1);
+		status = domRoot->GetChildValue(KIDomNode::QName("child002"), lastValue, -1);
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: GetChildValue failed @%u with 0x%08X\n", __LINE__, status);
             return status;
         }
 
-		if (wcscmp((WCHAR*)newLastDupValue, (WCHAR*)lastValue) != 0)
+		if (strcmp((CHAR*)newLastDupValue, (CHAR*)lastValue) != 0)
 		{
             KTestPrintf("CreateEmptyDomTest: invalid value @%u\n", __LINE__);
             return STATUS_UNSUCCESSFUL;
@@ -1639,28 +1639,28 @@ CreateEmptyDomTest()
 
 		//* General validate
         KIDomNode::SPtr      child1;
-        status = domRoot->GetChild(KIDomNode::QName(L"child001"), child1);
+        status = domRoot->GetChild(KIDomNode::QName("child001"), child1);
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: GetChild failed @%u with 0x%08X\n", __LINE__, status);
             return status;
         }
 
-        status = ValidateDomNode(child1, KIDomNode::QName(L"child001"), (LONG)-15);
+        status = ValidateDomNode(child1, KIDomNode::QName("child001"), (LONG)-15);
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: ValidateDomNode failed @%u with 0x%08X\n", __LINE__, status);
             return status;
         }
 
-        status = domRoot->GetChild(KIDomNode::QName(L"child002"), child1, 1);
+        status = domRoot->GetChild(KIDomNode::QName("child002"), child1, 1);
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: GetChild failed @%u with 0x%08X\n", __LINE__, status);
             return status;
         }
 
-        status = ValidateDomNode(child1, KIDomNode::QName(L"child002"), (ULONGLONG)1500000);
+        status = ValidateDomNode(child1, KIDomNode::QName("child002"), (ULONGLONG)1500000);
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: ValidateDomNode failed @%u with 0x%08X\n", __LINE__, status);
@@ -1668,13 +1668,13 @@ CreateEmptyDomTest()
         }
 
         //** Prove a textual stream can be generated from the constructed DOM (with nested children)
-        status = domRoot->AddChild(KIDomNode::QName(L"child003"), child);      // Make container element
+        status = domRoot->AddChild(KIDomNode::QName("child003"), child);      // Make container element
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: AddChild failed @%u with 0x%08X\n", __LINE__, status);
             return status;
         }
-        status = child->SetAttribute(KIDomNode::QName(L"testns", L"TestAttr"), KVariant::Create(L"Attr on parent element", allocator));
+        status = child->SetAttribute(KIDomNode::QName("testns", "TestAttr"), KVariant::Create("Attr on parent element", allocator));
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: SetAttribute failed @%u with 0x%08X\n", __LINE__, status);
@@ -1682,14 +1682,14 @@ CreateEmptyDomTest()
         }
 
         KIMutableDomNode::SPtr    child2;
-        status = child->AddChild(KIDomNode::QName(L"child003-A"), child2);
+        status = child->AddChild(KIDomNode::QName("child003-A"), child2);
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: AddChild failed @%u with 0x%08X\n", __LINE__, status);
             return status;
         }
 
-        status = child2->SetAttribute(KIDomNode::QName(L"testns", L"TestAttr"), KVariant::Create(L"Next Test Attr Value", allocator));
+        status = child2->SetAttribute(KIDomNode::QName("testns", "TestAttr"), KVariant::Create("Next Test Attr Value", allocator));
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: SetAttribute failed @%u with 0x%08X\n", __LINE__, status);
@@ -1707,7 +1707,7 @@ CreateEmptyDomTest()
         }
 
         KIMutableDomNode::SPtr    child3;
-        status = child->AddChild(KIDomNode::QName(L"child003-B"), child3);
+        status = child->AddChild(KIDomNode::QName("child003-B"), child3);
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: AddChild failed @%u with 0x%08X\n", __LINE__, status);
@@ -1715,7 +1715,7 @@ CreateEmptyDomTest()
         }
 
         KIMutableDomNode::SPtr    child3BA;
-        status = child3->AddChild(KIDomNode::QName(L"child003-BA"), child3BA);
+        status = child3->AddChild(KIDomNode::QName("child003-BA"), child3BA);
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: AddChild failed @%u with 0x%08X\n", __LINE__, status);
@@ -1723,14 +1723,14 @@ CreateEmptyDomTest()
         }
 
         KIMutableDomNode::SPtr    child3BAA;
-        status = child3BA->AddChild(KIDomNode::QName(L"child003-BAA"), child3BAA);
+        status = child3BA->AddChild(KIDomNode::QName("child003-BAA"), child3BAA);
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: AddChild failed @%u with 0x%08X\n", __LINE__, status);
             return status;
         }
 
-        status = child3BAA->SetValue(KVariant::Create(L"Test Text Value String for 3BAA", allocator));
+        status = child3BAA->SetValue(KVariant::Create("Test Text Value String for 3BAA", allocator));
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: SetValue failed @%u with 0x%08X\n", __LINE__, status);
@@ -1765,8 +1765,8 @@ CreateEmptyDomTest()
     status = KDom::ToString(loadedDom, allocator, Text2);
 
     // Uncomment for a visual check on the two DOMs
-    // printf("DOM1=\n%S\n\n", LPWSTR(*Text1));
-    // printf("DOM2=\n%S\n\n", LPWSTR(*Text2));
+    // printf("DOM1=\n%S\n\n", LPSTR(*Text1));
+    // printf("DOM2=\n%S\n\n", LPSTR(*Text2));
 
 
         status = Compare(loadedDom.RawPtr(), domRoot.RawPtr());
@@ -1892,7 +1892,7 @@ CreateEmptyDomTest()
         }
 
         // Prove cloned DOM is mutable
-        status = clonedDom->AddChild(KIDomNode::QName(L"child004"), child);
+        status = clonedDom->AddChild(KIDomNode::QName("child004"), child);
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: AddChild failed @%u with 0x%08X\n", __LINE__, status);
@@ -1937,7 +1937,7 @@ CreateEmptyDomTest()
 
         // Prove cloning a sub-tree
         KIDomNode::SPtr     child4;
-        status = clonedDom1->GetChild(KIDomNode::QName(L"child003"), child4);
+        status = clonedDom1->GetChild(KIDomNode::QName("child003"), child4);
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: GetChild failed @%u with 0x%08X\n", __LINE__, status);
@@ -1988,21 +1988,21 @@ CreateEmptyDomTest()
         }
 
 		//* Prove last form of delete array works
-		status = savedRootDom->DeleteChild(KIDomNode::QName(L"child002"), -1);
+		status = savedRootDom->DeleteChild(KIDomNode::QName("child002"), -1);
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: DeleteChild failed @%u with 0x%08X\n", __LINE__, status);
             return status;
         }
 
-		status = savedRootDom->GetChildValue(KIDomNode::QName(L"child002"), lastValue, -1);
+		status = savedRootDom->GetChildValue(KIDomNode::QName("child002"), lastValue, -1);
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: GetChildValue failed @%u with 0x%08X\n", __LINE__, status);
             return status;
         }
 
-		if (wcscmp((WCHAR*)thirdDupValue, (WCHAR*)lastValue) != 0)
+		if (strcmp((CHAR*)thirdDupValue, (CHAR*)lastValue) != 0)
 		{
             KTestPrintf("CreateEmptyDomTest: invalid value @%u\n", __LINE__);
             return STATUS_UNSUCCESSFUL;
@@ -2017,7 +2017,7 @@ CreateEmptyDomTest()
         }
 
         ULONG                   childrenBeforeDelete = children.Count();
-        KIDomNode::QName        delName(L"child002");
+        KIDomNode::QName        delName("child002");
 
         status = domRoot->DeleteChild(delName);
         if (!NT_SUCCESS(status))
@@ -2206,21 +2206,21 @@ CreateEmptyDomTest()
         KNt::Sleep(500);        // Allow asyncs to finish completion
 
         //** Prove attributes can be deleted
-        status = domRoot->DeleteAttribute(KIDomNode::QName(L"encoding"));
+        status = domRoot->DeleteAttribute(KIDomNode::QName("encoding"));
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: DeleteAttribute failed @%u with 0x%08X\n", __LINE__, status);
             return status;
         }
 
-        status = domRoot->DeleteAttribute(KIDomNode::QName(L"version"));
+        status = domRoot->DeleteAttribute(KIDomNode::QName("version"));
         if (!NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: DeleteAttribute failed @%u with 0x%08X\n", __LINE__, status);
             return status;
         }
 
-        status = domRoot->DeleteAttribute(KIDomNode::QName(L"version"));
+        status = domRoot->DeleteAttribute(KIDomNode::QName("version"));
         if (NT_SUCCESS(status))
         {
             KTestPrintf("CreateEmptyDomTest: DeleteAttribute succeeded @%u\n", __LINE__);
@@ -2241,26 +2241,26 @@ CreateEmptyDomTest()
         }
 
         {
-            WCHAR               xml1[] = L" <MyDisks xmlns=\"http://schemas.microsoft.com/2012/03/MySchema\"\n"
-                                         L"xmlns:ktl=\"http://schemas.microsoft.com/2012/03/ktl\"\n"
-                                         L"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                                         L"xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"\n"
-                                         L">\n"
-                                         L" <Disk>"
-                                         L"   <DiskSize xsi:type=\"ktl:ULONGLONG\">123000000</DiskSize>\n"
-                                         L"   <FreeSpace xsi:type=\"ktl:ULONGLONG\">87000000</FreeSpace>\n"
-                                         L"   <DriveName xsi:type=\"ktl:STRING\">C:</DriveName>\n"
-                                         L"   <VolumeLabel xsi:type=\"xs:string\">DRIVEC</VolumeLabel>\n"
-                                         L"   <InventoryTimeStamp>2012-03-21T13:37:02Z</InventoryTimeStamp>\n"
-                                         L" </Disk>\n"
-                                         L" <Disk>\n"
-                                         L"   <DiskSize xsi:type=\"ktl:ULONGLONG\">123000000</DiskSize>\n"
-                                         L"   <FreeSpace xsi:type=\"ktl:ULONGLONG\">87000000</FreeSpace>\n"
-                                         L"   <DriveName xsi:type=\"ktl:STRING\">D:</DriveName>\n"
-                                         L"   <VolumeLabel xsi:type=\"xs:string\">DRIVED   </VolumeLabel>\n"
-                                         L"   <InventoryTimeStamp>2012-03-21T13:37:02Z</InventoryTimeStamp>\n"
-                                         L" </Disk>\n"
-                                         L"</MyDisks>\n";
+            CHAR               xml1[] = " <MyDisks xmlns=\"http://schemas.microsoft.com/2012/03/MySchema\"\n"
+                                         "xmlns:ktl=\"http://schemas.microsoft.com/2012/03/ktl\"\n"
+                                         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+                                         "xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"\n"
+                                         ">\n"
+                                         " <Disk>"
+                                         "   <DiskSize xsi:type=\"ktl:ULONGLONG\">123000000</DiskSize>\n"
+                                         "   <FreeSpace xsi:type=\"ktl:ULONGLONG\">87000000</FreeSpace>\n"
+                                         "   <DriveName xsi:type=\"ktl:STRING\">C:</DriveName>\n"
+                                         "   <VolumeLabel xsi:type=\"xs:string\">DRIVEC</VolumeLabel>\n"
+                                         "   <InventoryTimeStamp>2012-03-21T13:37:02Z</InventoryTimeStamp>\n"
+                                         " </Disk>\n"
+                                         " <Disk>\n"
+                                         "   <DiskSize xsi:type=\"ktl:ULONGLONG\">123000000</DiskSize>\n"
+                                         "   <FreeSpace xsi:type=\"ktl:ULONGLONG\">87000000</FreeSpace>\n"
+                                         "   <DriveName xsi:type=\"ktl:STRING\">D:</DriveName>\n"
+                                         "   <VolumeLabel xsi:type=\"xs:string\">DRIVED   </VolumeLabel>\n"
+                                         "   <InventoryTimeStamp>2012-03-21T13:37:02Z</InventoryTimeStamp>\n"
+                                         " </Disk>\n"
+                                         "</MyDisks>\n";
 
             xml1[0] = KTextFile::UnicodeBom;
             KBuffer::SPtr       buffer;
@@ -2314,7 +2314,7 @@ CreateEmptyDomTest()
                 return status;
             }
 
-            status = subDom->SetAttribute(KIDomNode::QName(L"Dup"), KVariant::Create(L"0", allocator));
+            status = subDom->SetAttribute(KIDomNode::QName("Dup"), KVariant::Create("0", allocator));
             if (!NT_SUCCESS(status))
             {
                 KTestPrintf("CreateEmptyDomTest: SetAttribute failed @%u with 0x%08X\n", __LINE__, status);
@@ -2342,7 +2342,7 @@ CreateEmptyDomTest()
                 return status;
             }
 
-            status = subDom->SetAttribute(KIDomNode::QName(L"Dup"), KVariant::Create(L"1", allocator));
+            status = subDom->SetAttribute(KIDomNode::QName("Dup"), KVariant::Create("1", allocator));
             if (!NT_SUCCESS(status))
             {
                 KTestPrintf("CreateEmptyDomTest: SetAttribute failed @%u with 0x%08X\n", __LINE__, status);
@@ -2365,14 +2365,14 @@ CreateEmptyDomTest()
             }
 
             KVariant attValue;
-            status = subDomRO->GetAttribute(KIDomNode::QName(L"Dup"), attValue);
+            status = subDomRO->GetAttribute(KIDomNode::QName("Dup"), attValue);
             if (!NT_SUCCESS(status))
             {
                 KTestPrintf("CreateEmptyDomTest: GetAttribute failed @%u with 0x%08X\n", __LINE__, status);
                 return status;
             }
 
-            if (*((WCHAR*)attValue) != L'1')
+            if (*((CHAR*)attValue) != '1')
             {
                 KTestPrintf("CreateEmptyDomTest: invalid attr value @%u\n", __LINE__);
                 return STATUS_UNSUCCESSFUL;
@@ -2385,14 +2385,14 @@ CreateEmptyDomTest()
                 return status;
             }
 
-            status = subDomRO->GetAttribute(KIDomNode::QName(L"Dup"), attValue);
+            status = subDomRO->GetAttribute(KIDomNode::QName("Dup"), attValue);
             if (!NT_SUCCESS(status))
             {
                 KTestPrintf("CreateEmptyDomTest: GetAttribute failed @%u with 0x%08X\n", __LINE__, status);
                 return status;
             }
 
-            if (*((WCHAR*)attValue) != L'0')
+            if (*((CHAR*)attValue) != '0')
             {
                 KTestPrintf("CreateEmptyDomTest: invalid attr value @%u\n", __LINE__);
                 return STATUS_UNSUCCESSFUL;
@@ -2444,7 +2444,7 @@ RunTests()
 }
 
 NTSTATUS
-DomBasicTest(int Argc, WCHAR* Args[])
+DomBasicTest(int Argc, CHAR* Args[])
 {
     UNREFERENCED_PARAMETER(Argc);
     UNREFERENCED_PARAMETER(Args);

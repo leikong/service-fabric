@@ -422,7 +422,7 @@ bool BroadcastManager::BroadcastWithAck(
 
     vector<PartnerNodeSPtr> targets;
     vector<NodeIdRange> subRanges;
-    vector<wstring> externalRings;
+    vector<string> externalRings;
 
     NodeIdRange localRange = this->siteNode_.Table.PartitionRanges(range, targets, subRanges, false);
     if (toAllRings)
@@ -496,14 +496,14 @@ bool BroadcastManager::BroadcastWithAck(
             {
                 MessageUPtr reply;
                 ErrorCode error = this->siteNode_.EndRouteRequest(operation, reply);
-                this->ProcessBroadcastAck(broadcastId, L"", subRange, error);
+                this->ProcessBroadcastAck(broadcastId, "", subRange, error);
             },
             AsyncOperationSPtr());
     }
     
     for (size_t i = 0; i < externalRings.size(); i++)
     {
-        wstring ringName = externalRings[i];
+        string ringName = externalRings[i];
         MessageUPtr forwardMessage = message->Clone();
         forwardMessage->Headers.Add(BroadcastRangeHeader(NodeIdRange::Full));
 
@@ -683,7 +683,7 @@ void BroadcastManager::RouteBroadcastMessageToHole(MessageUPtr && message, Messa
         AsyncOperationSPtr());
 }
 
-void BroadcastManager::ProcessBroadcastAck(MessageId const & broadcastId, wstring const & ringName, NodeIdRange range, ErrorCode error)
+void BroadcastManager::ProcessBroadcastAck(MessageId const & broadcastId, string const & ringName, NodeIdRange range, ErrorCode error)
 {
     AcquireWriteLock grab(lock_);
     auto it = reliableBroadcastContexts_.find(broadcastId);

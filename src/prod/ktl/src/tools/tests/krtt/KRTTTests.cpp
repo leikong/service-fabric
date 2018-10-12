@@ -208,7 +208,7 @@ TestSequence()
 
 NTSTATUS
 KRTTTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     UNREFERENCED_PARAMETER(argc);
@@ -263,18 +263,18 @@ KRTTTest(
 #if CONSOLE_TEST
 int
 #if !defined(PLATFORM_UNIX)
-wmain(int argc, WCHAR* args[])
+wmain(int argc, CHAR* args[])
 {
 #else
 main(int argc, char* cargs[])
 {
-    std::vector<WCHAR*> args_vec(argc);
-    WCHAR** args = (WCHAR**)args_vec.data();
-    std::vector<std::wstring> wargs(argc);
+    std::vector<CHAR*> args_vec(argc);
+    CHAR** args = (CHAR**)args_vec.data();
+    std::vector<std::string> wargs(argc);
     for (int iter = 0; iter < argc; iter++)
     {
         wargs[iter] = Utf8To16(cargs[iter]);
-        args[iter] = (WCHAR*)(wargs[iter].data());
+        args[iter] = (CHAR*)(wargs[iter].data());
     }
 #endif
     if (argc > 0)

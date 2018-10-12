@@ -446,18 +446,18 @@ NTSTATUS DeleteRvdlogFile(
     KSynchronizer sync;
 
 #if !defined(PLATFORM_UNIX)
-    KWString rootPath(*g_Allocator, L"\\Global??\\Volume");
+    KWString rootPath(*g_Allocator, "\\Global??\\Volume");
     rootPath += diskId;
-    rootPath += L"\\RvdLog\\";
+    rootPath += "\\RvdLog\\";
     VERIFY_IS_TRUE(NT_SUCCESS(rootPath.Status()));
 #else
-    KWString rootPath(*g_Allocator, L"/RvdLog/");
+    KWString rootPath(*g_Allocator, "/RvdLog/");
 #endif
     
     KWString filePath(rootPath);
-    filePath += L"Log";
+    filePath += "Log";
     filePath += guid;
-    filePath += L".log";
+    filePath += ".log";
     VERIFY_IS_TRUE(NT_SUCCESS(filePath.Status()));
 
     for (ULONG i = 0; i < 5; i++)
@@ -4665,7 +4665,7 @@ VOID RecoveryPartlyCreatedStreamTestWorker(
     SharedLCMBInfoAccess::DispositionFlags dispositionFlags
     )
 {
-    const LPCWSTR StreamAliasText = L"StreamAliasText";
+    const LPCSTR StreamAliasText = "StreamAliasText";
     NTSTATUS status;
     KGuid logStreamGuid;
     KGuid logContainerGuid;
@@ -12293,7 +12293,7 @@ VOID VerifyCopyFromSharedToBackupTest(
     
 
     BOOLEAN b;
-    KStringView tempString(L".Backup");
+    KStringView tempString(".Backup");
     b = containerFullPathNameBackup->Concat(tempString);
     VERIFY_IS_TRUE(b ? TRUE : FALSE);
     

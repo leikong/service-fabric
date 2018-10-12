@@ -14,27 +14,27 @@
 #if !defined(PLATFORM_UNIX)
 
 #define PATH_SEPARATOR_CHAR  '\\'
-#define PATH_SEPARATOR_WSTR  L"\\"
+#define PATH_SEPARATOR_WSTR  "\\"
 
 
-#define PATH_GLOBAL_NAMESPACE_WSTR L"\\??\\"
+#define PATH_GLOBAL_NAMESPACE_WSTR "\\??\\"
 
 #else
 
 #define PATH_SEPARATOR_CHAR  '/'
-#define PATH_SEPARATOR_WSTR  L"/"
+#define PATH_SEPARATOR_WSTR  "/"
 
 #define PATH_SEPARATOR_WINCHAR  '\\'
-#define PATH_SEPARATOR_WINWSTR  L"\\"
+#define PATH_SEPARATOR_WINWSTR  "\\"
 
-#define PATH_GLOBAL_NAMESPACE_WSTR L""
+#define PATH_GLOBAL_NAMESPACE_WSTR ""
 
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <dirent.h>
 
-DWORD GetTempPathW(DWORD nBufferLength, LPWSTR lpBuffer)
+DWORD GetTempPathW(DWORD nBufferLength, LPSTR lpBuffer)
 {
     if (!lpBuffer)
     {
@@ -47,10 +47,10 @@ DWORD GetTempPathW(DWORD nBufferLength, LPWSTR lpBuffer)
     {
         tmpdir = "/tmp/";
     }
-    wstring tmpdirW = Common::StringUtility::Utf8ToUtf16(tmpdir);
-    if (tmpdirW.back() != L'/')
+    string tmpdirW(tmpdir);
+    if (tmpdirW.back() != '/')
     {
-        tmpdirW.push_back(L'/');
+        tmpdirW.push_back('/');
     }
     if (tmpdirW.length() >= nBufferLength)
     {
@@ -59,7 +59,7 @@ DWORD GetTempPathW(DWORD nBufferLength, LPWSTR lpBuffer)
     }
     else
     {
-        memcpy(lpBuffer, tmpdirW.c_str(), (tmpdirW.length() + 1) * sizeof(wchar_t));
+        memcpy(lpBuffer, tmpdirW.c_str(), (tmpdirW.length() + 1) * sizeof(char));
         return tmpdirW.length();
     }
 }
@@ -74,12 +74,6 @@ namespace
     {
         size_t index = path.find_first_of("\"<>|");
         ASSERT_IF(index != std::string::npos, "Path contains invalid characters");
-    }
-
-    void CheckInvalidPathChars(std::wstring const & path)
-    {
-        size_t index = path.find_first_of(L"\"<>|");
-        ASSERT_IF(index != std::wstring::npos, "Path contains invalid characters");
     }
 
     template <typename StringType>
@@ -258,17 +252,17 @@ namespace
 
 namespace Common
 {
-    Common::GlobalWString const Path::SfpkgExtension = make_global<std::wstring>(L".sfpkg");
+    Common::GlobalString const Path::SfpkgExtension = make_global<std::string>(".sfpkg");
 
-    bool IsValidDriveChar(const WCHAR value)
+    bool IsValidDriveChar(const char value)
     {
-        return ((value >= L'A' && value <= L'Z') || (value >= L'a' && value <= L'z'));
+        return ((value >= 'A' && value <= 'Z') || (value >= 'a' && value <= 'z'));
     }
 
-    int PathStartSkip(std::wstring const & path)
+    int PathStartSkip(std::string const & path)
     {
         int startIndex = 0;
-        while (startIndex < path.length() && path[startIndex] == L' ')
+        while (startIndex < path.length() && path[startIndex] == ' ')
         {
             startIndex++;
         }
@@ -283,14 +277,14 @@ namespace Common
         return 0;
     }
 
-    std::wstring NormalizeDirectorySeparators(std::wstring const & path)
+    std::string NormalizeDirectorySeparators(std::string const & path)
     {
         if (path.empty())
         {
             return path;
         }
 
-        WCHAR current;
+        char current;
         int startIndex = PathStartSkip(path);
 
         if (startIndex == 0)
@@ -317,7 +311,7 @@ namespace Common
             }
         }
 
-        std::wstringstream builder;
+        std::stringstream builder;
         if (path[startIndex] == PATH_SEPARATOR_CHAR)
         {
             startIndex++;
@@ -355,27 +349,17 @@ namespace Common
         PathT<string>::ChangeExtension(path, extension);
     }
 
-    void Path::ChangeExtension(std::wstring & path, std::wstring const & extension)
-    {
-        PathT<wstring>::ChangeExtension(path, extension);
-    }
-
     std::string Path::GetDirectoryName(std::string const & path)
     {
         return PathT<string>::GetDirectoryName(path);
     }
 
-    std::wstring Path::GetDirectoryName(std::wstring const & path)
-    {
-        return PathT<wstring>::GetDirectoryName(path);
-    }
-
     // Returns the parent directory path n levels deep, based on "level". 
     // Wraps GetDirectoryName.
 
-    std::wstring Path::GetParentDirectory(std::wstring const & directory, int level)
+    std::string Path::GetParentDirectory(std::string const & directory, int level)
     {
-        wstring parentDirectory = directory;
+        string parentDirectory = directory;
         for (int i = 0; i < level; ++i)
         {
             parentDirectory = Path::GetDirectoryName(parentDirectory);
@@ -386,13 +370,13 @@ namespace Common
 
     // Returns the extension of the given path. The returned value includes the
     // period (".") character of the extension 
-    std::wstring Path::GetExtension(std::wstring const & path)
+    std::string Path::GetExtension(std::string const & path)
     {
         CheckInvalidPathChars(path);
 
         size_t index = path.rfind('.');
-        if (index == std::wstring::npos)
-            return L"";
+        if (index == std::string::npos)
+            return "";
 
         return path.substr(index);
     }
@@ -409,19 +393,9 @@ namespace Common
     // contains no backslash after removing trailing slashes, slash, or colon characters. The resulting 
     // string is null if path is null.
 
-    std::wstring Path::GetFileName(std::wstring const & path)
-    {
-       return PathT<wstring>::GetFileName(path);
-    }
-
     std::string Path::GetFileName(std::string const & path)
     {
-        return PathT<string>::GetFileName(path);
-    }
-
-    std::wstring Path::GetFileNameWithoutExtension(std::wstring const & path)
-    {
-        return PathT<wstring>::GetFileNameWithoutExtension(path);
+       return PathT<string>::GetFileName(path);
     }
 
     std::string Path::GetFileNameWithoutExtension(std::string const & path)
@@ -429,13 +403,13 @@ namespace Common
         return PathT<string>::GetFileNameWithoutExtension(path);
     }
 
-    bool Path::IsSfpkg(std::wstring const & path)
+    bool Path::IsSfpkg(std::string const & path)
     {
-        wstring extension = Path::GetExtension(path);
+        string extension = Path::GetExtension(path);
         return StringUtility::AreEqualCaseInsensitive(extension, *SfpkgExtension);
     }
 
-    void Path::AddSfpkgExtension(__inout std::wstring & path)
+    void Path::AddSfpkgExtension(__inout std::string & path)
     {
         Path::ChangeExtension(path, *SfpkgExtension);
     }
@@ -448,18 +422,18 @@ namespace Common
     // where X is the drive letter), "X:\" (an absolute path on a given drive),
     // and "\\server\share" (a UNC path for a given server and share name).
     // The resulting string is null if path is null.
-    std::wstring Path::GetPathRoot(std::wstring const & path)
+    std::string Path::GetPathRoot(std::string const & path)
     {
         CheckInvalidPathChars(path);
 
-        std::wstring normalizedPath = NormalizeDirectorySeparators(path);
+        std::string normalizedPath = NormalizeDirectorySeparators(path);
 
-        size_t pathRoot = PathT<wstring>::GetRootLength(normalizedPath);
+        size_t pathRoot = PathT<string>::GetRootLength(normalizedPath);
 
-        return pathRoot == 0 ? L"" : normalizedPath.substr(0, pathRoot);
+        return pathRoot == 0 ? "" : normalizedPath.substr(0, pathRoot);
     }
 
-    std::wstring Path::NormalizePathSeparators(std::wstring const & path)
+    std::string Path::NormalizePathSeparators(std::string const & path)
     {
         return NormalizeDirectorySeparators(path);
     }
@@ -469,7 +443,7 @@ namespace Common
      For Linux, there is no drive letter. Linux have root defined by /.
      for ex: /home/foo/test. Absoulte paths for linux start with root.
     */
-    std::wstring Path::GetFullPath(std::wstring const & path)
+    std::string Path::GetFullPath(std::string const & path)
     {
         auto normalizedPath = NormalizeDirectorySeparators(path);
 
@@ -487,24 +461,24 @@ namespace Common
             normalizedPath = Path::Combine(root, normalizedPath.substr(1, normalizedPath.size() - 1));
         }
 
-        if (!StringUtility::Contains<wstring>(normalizedPath, L"."))
+        if (!StringUtility::Contains<string>(normalizedPath, "."))
         {
             return normalizedPath;
         }
 
         auto pathWithoutRoot = normalizedPath.substr(root.size(), normalizedPath.size() - root.size());
 
-        vector<wstring> segments;
-        StringUtility::Split<wstring>(pathWithoutRoot, segments, PATH_SEPARATOR_WSTR);
+        vector<string> segments;
+        StringUtility::Split<string>(pathWithoutRoot, segments, PATH_SEPARATOR_WSTR);
 
-        vector<wstring> resultSegments;
+        vector<string> resultSegments;
         for (auto const & segment : segments)
         {
-            if (segment == L".")
+            if (segment == ".")
             {
                 continue;
             }
-            else if (segment == L".." && !resultSegments.empty())
+            else if (segment == ".." && !resultSegments.empty())
             {
                 resultSegments.pop_back();
             }
@@ -531,13 +505,13 @@ namespace Common
         return result;
     }
 
-    //std::wstring Path::GetTempFileName();
-    //bool Path::HasExtension(std::wstring const & path);
+    //std::string Path::GetTempFileName();
+    //bool Path::HasExtension(std::string const & path);
 
-    ErrorCode Path::GetTempPath(std::wstring & tempPath)
+    ErrorCode Path::GetTempPath(std::string & tempPath)
     {
         DWORD maxSize = MAX_PATH + 1;
-        std::vector<wchar_t> tempPathBuffer(maxSize);
+        std::vector<char> tempPathBuffer(maxSize);
         DWORD size = ::GetTempPathW(maxSize, tempPathBuffer.data());
 
         if(size == 0 || size > maxSize)
@@ -547,7 +521,7 @@ namespace Common
             return error;
         }
 
-        tempPath = std::wstring(tempPathBuffer.data());
+        tempPath = std::string(tempPathBuffer.data());
 
         return ErrorCodeValue::Success;
     }
@@ -557,55 +531,45 @@ namespace Common
         PathT<string>::CombineInPlace(path1, path2, escapePath);
     }
 
-    void Path::CombineInPlace(std::wstring& path1, std::wstring const & path2, bool escapePath)
-    {
-        PathT<wstring>::CombineInPlace(path1, path2, escapePath);
-    }
-
     std::string Path::Combine(std::string const & path1, std::string const & path2, bool escapePath)
     {
         return PathT<string>::Combine(path1, path2, escapePath);
     }
 
-    std::wstring Path::Combine(std::wstring const & path1, std::wstring const & path2, bool escapePath)
+    bool Path::IsPathRooted(std::string const & path)
     {
-        return PathT<wstring>::Combine(path1, path2, escapePath);
+        return PathT<string>::GetRootLength(path) > 0;
     }
 
-    bool Path::IsPathRooted(std::wstring const & path)
+    std::string Path::ConvertToNtPath(std::string const & filePath)
     {
-        return PathT<wstring>::GetRootLength(path) > 0;
-    }
-
-    std::wstring Path::ConvertToNtPath(std::wstring const & filePath)
-    {
-        std::wstring ntFilePath(filePath);
+        std::string ntFilePath(filePath);
 
         // UNC is Windows unique - Do passthru for Linux. 
 #if !defined(PLATFORM_UNIX)
-        size_t rootLength = PathT<wstring>::GetRootLength(filePath);
+        size_t rootLength = PathT<string>::GetRootLength(filePath);
         // Prepend '\\?\' to the path if the path
         // 1) starts with "<Drive>:" or "\\"
         // 2) does not contain \..\ for parent directory
         // 3) is not already a UNC path
         // Safe for Linux since rootLength will be always <= 1
         if (rootLength >= 2 
-            && std::wstring::npos == ntFilePath.find( L"\\..\\")
-            && std::wstring::npos == ntFilePath.find( L"\\\\?\\" )) 
+            && std::string::npos == ntFilePath.find( "\\..\\")
+            && std::string::npos == ntFilePath.find( "\\\\?\\" )) 
         {
             if(Path::IsRemotePath(ntFilePath))
             {
-                ntFilePath.insert( 0, L"\\\\?\\UNC" );
+                ntFilePath.insert( 0, "\\\\?\\UNC" );
             }
             else
             {
-                ntFilePath.insert( 0, L"\\\\?\\" );
+                ntFilePath.insert( 0, "\\\\?\\" );
             }
 
             // Convert '\\' and '/' to '\' if the path is a UNC path since File IO APIs do not modify UNC paths (
             // http://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx#maxpath
-            StringUtility::Replace<std::wstring>(ntFilePath, L"/", L"\\");
-            StringUtility::Replace<std::wstring>(ntFilePath, L"\\\\", L"\\", 2);
+            StringUtility::Replace<std::string>(ntFilePath, "/", "\\");
+            StringUtility::Replace<std::string>(ntFilePath, "\\\\", "\\", 2);
         }
 #else
         std::replace(ntFilePath.begin(), ntFilePath.end(), '\\', '/');
@@ -613,9 +577,9 @@ namespace Common
         return ntFilePath;
     }
 
-    std::wstring Path::GetModuleLocation(HMODULE hModule)
+    std::string Path::GetModuleLocation(HMODULE hModule)
     {
-        std::wstring buffer;
+        std::string buffer;
         size_t length = MAX_PATH;
 
         for(; ;)
@@ -644,18 +608,18 @@ namespace Common
         return buffer;
     }
 
-    std::wstring Path::GetFilePathInModuleLocation(HMODULE hModule, std::wstring const& filename)
+    std::string Path::GetFilePathInModuleLocation(HMODULE hModule, std::string const& filename)
     {
-        std::wstring moduleFilePath = Path::GetModuleLocation(hModule);
-        std::wstring containingFolderPath = Path::GetDirectoryName(moduleFilePath);
+        std::string moduleFilePath = Path::GetModuleLocation(hModule);
+        std::string containingFolderPath = Path::GetDirectoryName(moduleFilePath);
         return Path::Combine(containingFolderPath, filename);
     }
 
-    void Path::MakeAbsolute(std::wstring & file)
+    void Path::MakeAbsolute(std::string & file)
     {
         if (Path::IsPathRooted(file)) { return; }
 
-        std::wstring path(Directory::GetCurrentDirectory());
+        std::string path(Directory::GetCurrentDirectory());
         CombineInPlace(path, file);
         if (File::Exists(path))
         {
@@ -675,13 +639,6 @@ namespace Common
 
 #ifdef PLATFORM_UNIX
 
-    bool Path::IsRegularFile(wstring const & pathw)
-    {
-        string path;
-        StringUtility::Utf16ToUtf8(pathw, path);
-        return IsRegularFile(path);
-    }
-
     bool Path::IsRegularFile(string const & path)
     {
         struct stat buf = {};
@@ -698,9 +655,9 @@ namespace Common
 
 #else
 
-    ErrorCode Path::QualifyPath(std::wstring const & path, std::wstring & qualifiedPath)
+    ErrorCode Path::QualifyPath(std::string const & path, std::string & qualifiedPath)
     {
-        std::vector<WCHAR> qualifiedPathVector;
+        std::vector<char> qualifiedPathVector;
         qualifiedPathVector.resize(MAX_PATH + 1);
 
         if(!PathSearchAndQualify(path.c_str(), qualifiedPathVector.data(), MAX_PATH + 1))
@@ -708,14 +665,14 @@ namespace Common
             return ErrorCode::FromWin32Error();
         }
 
-        qualifiedPath = std::wstring(qualifiedPathVector.data());
+        qualifiedPath = std::string(qualifiedPathVector.data());
 
         return ErrorCodeValue::Success;
     }
 
 #endif
 
-    bool Path::IsRemotePath(std::wstring const & path)
+    bool Path::IsRemotePath(std::string const & path)
     {
         if(path.empty() || path.size() < 2)
         {
@@ -730,23 +687,23 @@ namespace Common
         return PATH_SEPARATOR_CHAR;
     }
 
-    std::wstring Path::GetPathSeparatorWstr()
+    std::string Path::GetPathSeparatorWstr()
     {
         return PATH_SEPARATOR_WSTR;
     }
 
-    std::wstring Path::GetPathGlobalNamespaceWstr()
+    std::string Path::GetPathGlobalNamespaceWstr()
     {
         return PATH_GLOBAL_NAMESPACE_WSTR;
     }
 
 #if !defined(PLATFORM_UNIX) 
-    const WCHAR Path::GetDriveLetter(std::wstring const & path)
+    const char Path::GetDriveLetter(std::string const & path)
     {
-        wstring root = GetPathRoot(path);
+        string root = GetPathRoot(path);
         if (root.length() == 0)
         {
-            return (WCHAR)0;
+            return (char)0;
         }
 
         // Search from rear for valid drive char
@@ -758,7 +715,7 @@ namespace Common
             }
         }
 
-        return (WCHAR)0;
+        return (char)0;
     }
 #endif
 

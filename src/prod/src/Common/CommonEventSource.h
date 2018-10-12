@@ -29,7 +29,7 @@ namespace Common
 
         DECLARE_COMMON_STRUCTURED_TRACE(TraceDynamicWString,
             uint16,
-            std::wstring
+            std::string
             );
         
         DECLARE_COMMON_STRUCTURED_TRACE(TraceDynamicString,
@@ -39,63 +39,63 @@ namespace Common
 
         DECLARE_COMMON_STRUCTURED_TRACE(ErrorCode,
             uint16,
-            std::wstring
+            std::string
             );
          DECLARE_COMMON_STRUCTURED_TRACE(UriTrace,
             uint16,
-            std::wstring, //scheme
-            std::wstring, //path
-            std::wstring, //querySeparator
-            std::wstring, //query
-            std::wstring, //fragmentSeparator
-            std::wstring  //fragment
+            std::string, //scheme
+            std::string, //path
+            std::string, //querySeparator
+            std::string, //query
+            std::string, //fragmentSeparator
+            std::string  //fragment
             );
         DECLARE_COMMON_STRUCTURED_TRACE(UriAuthorityTrace,
             uint16,
-            std::wstring, //scheme
-            std::wstring, //authority
-            std::wstring, //path
-            std::wstring, //querySeparator
-            std::wstring, //query
-            std::wstring, //fragmentSeparator
-            std::wstring  //fragment
+            std::string, //scheme
+            std::string, //authority
+            std::string, //path
+            std::string, //querySeparator
+            std::string, //query
+            std::string, //fragmentSeparator
+            std::string  //fragment
             );
         DECLARE_COMMON_STRUCTURED_TRACE(UnrecognizedUriTrace,
             uint16,
             int, //type
-            std::wstring, //scheme
-            std::wstring, //path
-            std::wstring, //querySeparator
-            std::wstring, //query
-            std::wstring, //fragmentSeparator
-            std::wstring  //fragment
+            std::string, //scheme
+            std::string, //path
+            std::string, //querySeparator
+            std::string, //query
+            std::string, //fragmentSeparator
+            std::string  //fragment
             );
         DECLARE_COMMON_STRUCTURED_TRACE(TraceLruCacheEviction,
-            std::wstring,
-            std::wstring,
+            std::string,
+            std::string,
             size_t,
             size_t,
             size_t
             );
         DECLARE_COMMON_STRUCTURED_TRACE(JobQueueCtor,
-            std::wstring,
+            std::string,
             int,
             int,
             int
             );
         DECLARE_COMMON_STRUCTURED_TRACE(JobQueueEnterProcess,
-            std::wstring,
+            std::string,
             int
             );
         DECLARE_COMMON_STRUCTURED_TRACE(JobQueueLeaveProcess,
-            std::wstring,
+            std::string,
             int
             );
         DECLARE_COMMON_STRUCTURED_TRACE(JobQueueScheduleThread,
-            std::wstring
+            std::string
             );
         DECLARE_COMMON_STRUCTURED_TRACE(JobQueueEnqueueFailed,
-            std::wstring,
+            std::string,
             uint64,
             Common::ErrorCode,
             int,

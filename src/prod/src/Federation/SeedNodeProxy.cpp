@@ -46,7 +46,7 @@ ErrorCode SeedNodeProxy::OnAcquire(__inout NodeConfig & ownerConfig,
         return ErrorCodeValue::OwnerExists;
     }
 
-    wstring filePath = Path::Combine(ownerConfig.WorkingDir, VoteId.ToString() + L".tkt");
+    string filePath = Path::Combine(ownerConfig.WorkingDir, VoteId.ToString() + ".tkt");
 
     auto error = store_.TryOpen(filePath, FileMode::OpenOrCreate, FileAccess::ReadWrite);
 

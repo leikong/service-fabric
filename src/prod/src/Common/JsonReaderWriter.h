@@ -48,41 +48,41 @@ namespace Common
 #define WRITE_PROPERTY_VALUE(ValueType, Data)           \
     return m_pWriter->ValueType(Data)                   \
 
-        HRESULT Visit(LPCWSTR pszName, bool bValue, bool condition = true)
+        HRESULT Visit(LPCSTR pszName, bool bValue, bool condition = true)
         {
             EVALUATE_CONDITION()
             WRITE_PROPERTY_NAME()
             WRITE_PROPERTY_VALUE(BoolValue, bValue);
         }
 
-        HRESULT Visit(LPCWSTR pszName, __int64 nValue, bool condition = true)
+        HRESULT Visit(LPCSTR pszName, __int64 nValue, bool condition = true)
         {
             EVALUATE_CONDITION()
             WRITE_PROPERTY_NAME()
 
-            std::wstring strValue = StringUtility::ToWString<__int64>(nValue);
+            std::string strValue = StringUtility::ToWString<__int64>(nValue);
 
             WRITE_PROPERTY_VALUE(StringValue, strValue.data());
         }
 
-        HRESULT Visit(LPCWSTR pszName, unsigned __int64 nValue, bool condition = true)
+        HRESULT Visit(LPCSTR pszName, unsigned __int64 nValue, bool condition = true)
         {
             EVALUATE_CONDITION()
             WRITE_PROPERTY_NAME()
 
-            std::wstring strValue = StringUtility::ToWString<unsigned __int64>(nValue);
+            std::string strValue = StringUtility::ToWString<unsigned __int64>(nValue);
 
             WRITE_PROPERTY_VALUE(StringValue, strValue.data());
         }
 
-        HRESULT Visit_Int64AsNum(LPCWSTR pszName, unsigned __int64 nValue, bool condition = true)
+        HRESULT Visit_Int64AsNum(LPCSTR pszName, unsigned __int64 nValue, bool condition = true)
         {
             EVALUATE_CONDITION()
             WRITE_PROPERTY_NAME()
             WRITE_PROPERTY_VALUE(UIntValue, nValue);
         }
 
-        HRESULT Visit_Int64AsNum(LPCWSTR pszName, __int64 nValue, bool condition = true)
+        HRESULT Visit_Int64AsNum(LPCSTR pszName, __int64 nValue, bool condition = true)
         {
             EVALUATE_CONDITION()
             WRITE_PROPERTY_NAME()
@@ -90,14 +90,14 @@ namespace Common
         }
 
 #if !defined(PLATFORM_UNIX)
-        HRESULT Visit(LPCWSTR pszName, ULONG nValue, bool condition = true)
+        HRESULT Visit(LPCSTR pszName, ULONG nValue, bool condition = true)
         {
             EVALUATE_CONDITION()
             WRITE_PROPERTY_NAME()
             WRITE_PROPERTY_VALUE(IntValue, nValue);
         }
 
-        HRESULT Visit(LPCWSTR pszName, LONG nValue, bool condition = true)
+        HRESULT Visit(LPCSTR pszName, LONG nValue, bool condition = true)
         {
             EVALUATE_CONDITION()
             WRITE_PROPERTY_NAME()
@@ -105,82 +105,82 @@ namespace Common
         }
 #endif
 
-        HRESULT Visit(LPCWSTR pszName, unsigned int nValue, bool condition = true)
+        HRESULT Visit(LPCSTR pszName, unsigned int nValue, bool condition = true)
         {
             EVALUATE_CONDITION()
             WRITE_PROPERTY_NAME()
             WRITE_PROPERTY_VALUE(IntValue, nValue);
         }
 
-        HRESULT Visit(LPCWSTR pszName, int nValue, bool condition = true)
+        HRESULT Visit(LPCSTR pszName, int nValue, bool condition = true)
         {
             EVALUATE_CONDITION()
             WRITE_PROPERTY_NAME()
             WRITE_PROPERTY_VALUE(IntValue, nValue);
         }
 
-        HRESULT Visit(LPCWSTR pszName, byte value, bool condition = true)
+        HRESULT Visit(LPCSTR pszName, byte value, bool condition = true)
         {
             EVALUATE_CONDITION()
             WRITE_PROPERTY_NAME()
             WRITE_PROPERTY_VALUE(IntValue, value);
         }
                 
-        HRESULT Visit(LPCWSTR pszName, double value, bool condition = true)
+        HRESULT Visit(LPCSTR pszName, double value, bool condition = true)
         {
             EVALUATE_CONDITION()
             WRITE_PROPERTY_NAME()
             WRITE_PROPERTY_VALUE(NumberValue, value);
         }
 
-        HRESULT Visit(LPCWSTR pszName, LPCWSTR& strValue, bool condition = true)
+        HRESULT Visit(LPCSTR pszName, LPCSTR& strValue, bool condition = true)
         {
             EVALUATE_CONDITION()
             WRITE_PROPERTY_NAME()
             WRITE_PROPERTY_VALUE(StringValue, strValue);
         }
 
-        HRESULT Visit(LPCWSTR pszName, std::wstring& strValue, bool condition = true)
+        HRESULT Visit(LPCSTR pszName, std::string& strValue, bool condition = true)
         {
             EVALUATE_CONDITION()
             WRITE_PROPERTY_NAME()
             WRITE_PROPERTY_VALUE(StringValue, strValue.data());
         }
 
-        HRESULT Visit(LPCWSTR pszName, LPCWSTR strValue, bool condition = true)
+        HRESULT Visit(LPCSTR pszName, LPCSTR strValue, bool condition = true)
         {
             EVALUATE_CONDITION()
             WRITE_PROPERTY_NAME()
             WRITE_PROPERTY_VALUE(StringValue, strValue);
         }
 
-        HRESULT Visit(LPCWSTR pszName, Uri& uriValue, bool condition = true)
+        HRESULT Visit(LPCSTR pszName, Uri& uriValue, bool condition = true)
         {
             EVALUATE_CONDITION()
             WRITE_PROPERTY_NAME()
             WRITE_PROPERTY_VALUE(StringValue, uriValue.ToString().data());
         }
 
-        HRESULT Visit(LPCWSTR pszName, LargeInteger& value, bool condition = true)
+        HRESULT Visit(LPCSTR pszName, LargeInteger& value, bool condition = true)
         {
             EVALUATE_CONDITION()
             WRITE_PROPERTY_NAME()
             WRITE_PROPERTY_VALUE(StringValue, value.ToString().data());
         }
 
-        HRESULT Visit(LPCWSTR pszName, Guid& guidValue, bool condition = true)
+        HRESULT Visit(LPCSTR pszName, Guid& guidValue, bool condition = true)
         {
             EVALUATE_CONDITION()
             WRITE_PROPERTY_NAME()
             WRITE_PROPERTY_VALUE(StringValue, guidValue.ToString().data());
         }
         
-        HRESULT Visit(LPCWSTR pszName, DateTime& dateTimeValue, bool condition = true)
+        HRESULT Visit(LPCSTR pszName, DateTime& dateTimeValue, bool condition = true)
         {
             EVALUATE_CONDITION()
             WRITE_PROPERTY_NAME()
 
-            std::wstring strValue;
+            std::string strValue;
             if (m_pSerializerFlags & JsonSerializerFlags::DateTimeInIsoFormat)
             {
                 strValue = dateTimeValue.ToIsoString();
@@ -193,12 +193,12 @@ namespace Common
             WRITE_PROPERTY_VALUE(StringValue, strValue.data());
         }
 
-        HRESULT Visit(LPCWSTR pszName, TimeSpan& timeSpanValue, bool condition = true)
+        HRESULT Visit(LPCSTR pszName, TimeSpan& timeSpanValue, bool condition = true)
         {
             EVALUATE_CONDITION()
             WRITE_PROPERTY_NAME()
 
-            std::wstring strValue;
+            std::string strValue;
             if (m_pSerializerFlags & JsonSerializerFlags::DateTimeInIsoFormat)
             {
                 strValue = timeSpanValue.ToIsoString();
@@ -211,29 +211,29 @@ namespace Common
             WRITE_PROPERTY_VALUE(StringValue, strValue.data());
         }
 
-        HRESULT Visit(LPCWSTR pszName, Federation::NodeId &nodeId, bool condition = true)
+        HRESULT Visit(LPCSTR pszName, Federation::NodeId &nodeId, bool condition = true)
         {           
             HRESULT hr = StartObject(pszName, condition);
             if (FAILED(hr)) return hr;
 
-            hr = Visit(L"Id", const_cast<LargeInteger&>(nodeId.IdValue), condition);
+            hr = Visit("Id", const_cast<LargeInteger&>(nodeId.IdValue), condition);
             if (FAILED(hr)) return hr;
 
             return EndObject(condition);
         }
 
-        HRESULT Visit(LPCWSTR pszName, Common::FabricConfigVersion &configVersion, bool condition = true)
+        HRESULT Visit(LPCSTR pszName, Common::FabricConfigVersion &configVersion, bool condition = true)
         {           
             EVALUATE_CONDITION()
             WRITE_PROPERTY_NAME()
 
-            std::wstring strValue = configVersion.ToString();
+            std::string strValue = configVersion.ToString();
 
             WRITE_PROPERTY_VALUE(StringValue, strValue.data());
         }
 
         template<typename T>
-        HRESULT Visit(LPCWSTR pszName, std::vector<T> &objectArray, bool condition = true)
+        HRESULT Visit(LPCSTR pszName, std::vector<T> &objectArray, bool condition = true)
         {
             EVALUATE_CONDITION()
             WRITE_PROPERTY_NAME()
@@ -259,7 +259,7 @@ namespace Common
         }
 
         template<typename TKey, typename TValue>
-        HRESULT Visit(LPCWSTR pszName, std::map<TKey, TValue> &map, bool condition = true)
+        HRESULT Visit(LPCSTR pszName, std::map<TKey, TValue> &map, bool condition = true)
         {
             EVALUATE_CONDITION()
             WRITE_PROPERTY_NAME()
@@ -273,11 +273,11 @@ namespace Common
                 if (FAILED(hr)) { return hr; }
 
                 TKey key = item->first;
-                hr = Dispatch(*this, L"Key", key, condition);
+                hr = Dispatch(*this, "Key", key, condition);
                 if (FAILED(hr)) { return hr; }
 
                 TValue value = item->second;
-                hr = Dispatch(*this, L"Value", value, condition);
+                hr = Dispatch(*this, "Value", value, condition);
                 if (FAILED(hr)) { return hr; }
 
                 hr = EndObject(condition);
@@ -289,12 +289,12 @@ namespace Common
 
         // Output SimpleMapType
         //
-        // Some older classes are already writing map<wstring, V> members as non-simple maps, so do not
-        // override Visit<wstring, TValue>. Make this opt-in via SERIALIZABLE_PROPERTY_SIMPLE_MAP for
+        // Some older classes are already writing map<string, V> members as non-simple maps, so do not
+        // override Visit<string, TValue>. Make this opt-in via SERIALIZABLE_PROPERTY_SIMPLE_MAP for
         // new objects only.
         //
         template<typename TValue>
-        HRESULT VisitSimpleMap(LPCWSTR pszName, std::map<std::wstring, TValue> &map, bool condition = true)
+        HRESULT VisitSimpleMap(LPCSTR pszName, std::map<std::string, TValue> &map, bool condition = true)
         {
             EVALUATE_CONDITION()
             WRITE_PROPERTY_NAME()
@@ -305,7 +305,7 @@ namespace Common
             for (auto & item : map)
             {
                 auto const & key = item.first;
-                hr = Dispatch(*this, WStringLiteral(key.c_str(), key.c_str()+key.size()), item.second, condition);
+                hr = Dispatch(*this, StringLiteral(key.c_str(), key.c_str()+key.size()), item.second, condition);
                 if (FAILED(hr)) { return hr; }
             }
 
@@ -315,7 +315,7 @@ namespace Common
         //
         // Byte array is serialized as array of Json numbers.
         //
-        HRESULT Visit(LPCWSTR pszName, std::vector<BYTE> &byteArray, bool condition = true)
+        HRESULT Visit(LPCSTR pszName, std::vector<BYTE> &byteArray, bool condition = true)
         {
             EVALUATE_CONDITION()
             WRITE_PROPERTY_NAME()
@@ -334,7 +334,7 @@ namespace Common
         }
 
         template<typename T>
-        HRESULT Visit(LPCWSTR pszName, std::shared_ptr<T> &objectSPtr, bool condition = true)
+        HRESULT Visit(LPCSTR pszName, std::shared_ptr<T> &objectSPtr, bool condition = true)
         {
             EVALUATE_CONDITION()
 
@@ -345,11 +345,10 @@ namespace Common
                     size_t length = 0;
                     if (pszName != nullptr)
                     {
-                        HRESULT hr = StringCchLength(pszName, ParameterValidator::MaxStringSize, &length);
-                        if (FAILED(hr)) { return hr; }
+                        length = strnlen(pszName, ParameterValidator::MaxStringSize);
                     }
 
-                    return Dispatch(*this, WStringLiteral(pszName, pszName+length), *objectSPtr); 
+                    return Dispatch(*this, StringLiteral(pszName, pszName+length), *objectSPtr); 
                 }
                 __if_not_exists(IMPLEMENTS(T, IsSerializable))
                 {
@@ -363,7 +362,7 @@ namespace Common
 #if defined(PLATFORM_UNIX)
 #define EXPLICIT_INTRINSIC_VISIT(T) \
         template<>\
-        HRESULT Visit<T>(LPCWSTR pszName, std::shared_ptr<T> &objectSPtr, bool condition)\
+        HRESULT Visit<T>(LPCSTR pszName, std::shared_ptr<T> &objectSPtr, bool condition)\
         {\
             EVALUATE_CONDITION()\
             if (objectSPtr)\
@@ -379,7 +378,7 @@ namespace Common
 #endif
 
         template<typename T>
-        HRESULT Visit(LPCWSTR pszName, std::unique_ptr<T> &objectSPtr, bool condition = true)
+        HRESULT Visit(LPCSTR pszName, std::unique_ptr<T> &objectSPtr, bool condition = true)
         {
             EVALUATE_CONDITION()
 
@@ -390,11 +389,10 @@ namespace Common
                     size_t length = 0;
                     if (pszName != nullptr)
                     {
-                        HRESULT hr = StringCchLength(pszName, ParameterValidator::MaxStringSize, &length);
-                        if (FAILED(hr)) { return hr; }
+                        length = strnlen(pszName, ParameterValidator::MaxStringSize);
                     }
 
-                    return Dispatch(*this, WStringLiteral(pszName, pszName + length), *objectSPtr);
+                    return Dispatch(*this, StringLiteral(pszName, pszName + length), *objectSPtr);
                 }
                 __if_not_exists(IMPLEMENTS(T, IsSerializable))
                 {
@@ -408,7 +406,7 @@ namespace Common
 #if defined(PLATFORM_UNIX)
 #define EXPLICIT_INTRINSIC_VISIT(T) \
     template<>\
-    HRESULT Visit<T>(LPCWSTR pszName, std::unique_ptr<T> &objectSPtr, bool condition)\
+    HRESULT Visit<T>(LPCSTR pszName, std::unique_ptr<T> &objectSPtr, bool condition)\
         {\
         EVALUATE_CONDITION()\
         if (objectSPtr)\
@@ -423,7 +421,7 @@ namespace Common
 #undef EXPLICIT_INTRINSIC_VISIT
 #endif
 
-        HRESULT StartObject(LPCWSTR pszName, bool condition = true)
+        HRESULT StartObject(LPCSTR pszName, bool condition = true)
         {
             EVALUATE_CONDITION()
             WRITE_PROPERTY_NAME();
@@ -439,7 +437,7 @@ namespace Common
         }
 
         template<typename T>
-        static __forceinline HRESULT Dispatch(JsonWriterVisitor& writer, Common::WStringLiteral pszName, T const &value, bool conditional = true)
+        static __forceinline HRESULT Dispatch(JsonWriterVisitor& writer, Common::StringLiteral pszName, T const &value, bool conditional = true)
         {
             __if_exists(IMPLEMENTS(T, IsSerializable))
             {
@@ -453,7 +451,7 @@ namespace Common
         }
 
         template<typename T>
-        static __forceinline HRESULT Dispatch(JsonWriterVisitor& writer, Common::WStringLiteral pszName, T &value, bool conditional = true)
+        static __forceinline HRESULT Dispatch(JsonWriterVisitor& writer, Common::StringLiteral pszName, T &value, bool conditional = true)
         {
             __if_exists(IMPLEMENTS(T, IsSerializable))
             {
@@ -467,7 +465,7 @@ namespace Common
         }
 
         template<typename T>
-        static __forceinline HRESULT Dispatch_Int64AsNum(JsonWriterVisitor& writer, Common::WStringLiteral pszName, T &value, bool conditional = true)
+        static __forceinline HRESULT Dispatch_Int64AsNum(JsonWriterVisitor& writer, Common::StringLiteral pszName, T &value, bool conditional = true)
         {
             __if_not_exists(IMPLEMENTS(T, IsSerializable))
             {
@@ -478,7 +476,7 @@ namespace Common
 #if defined(PLATFORM_UNIX)
 #define INTRINSIC_SPECIALIZATION(type) \
         template<> \
-        __forceinline HRESULT Dispatch<type>(JsonWriterVisitor& writer, Common::WStringLiteral pszName, type &value, bool conditional) \
+        __forceinline HRESULT Dispatch<type>(JsonWriterVisitor& writer, Common::StringLiteral pszName, type &value, bool conditional) \
         { \
             return writer.Visit(pszName.begin(), value, conditional); \
         }
@@ -493,7 +491,7 @@ namespace Common
 #undef INTRINSIC_SPECIALIZATION
 #endif
 
-        static inline HRESULT Dispatch(JsonWriterVisitor& writer, Common::WStringLiteral pszName, IFabricJsonSerializable &value, bool conditional)
+        static inline HRESULT Dispatch(JsonWriterVisitor& writer, Common::StringLiteral pszName, IFabricJsonSerializable &value, bool conditional)
         {
             HRESULT hr = writer.StartObject(pszName.begin(), conditional);
             if (FAILED(hr)) return hr;
@@ -565,7 +563,7 @@ namespace Common
         }
 
         template<typename T>
-        static ErrorCode Serialize(T &object, __out_opt std::wstring &jsonString, JsonSerializerFlags serializerFlags = JsonSerializerFlags::Default)
+        static ErrorCode Serialize(T &object, __out_opt std::string &jsonString, JsonSerializerFlags serializerFlags = JsonSerializerFlags::Default)
         {
             ComPointer<JsonWriter> jsonWriter = make_com<JsonWriter>();
             ByteBufferUPtr bufferUPtr = make_unique<ByteBuffer>();
@@ -603,7 +601,7 @@ namespace Common
                 MB_ERR_INVALID_CHARS,
                 (char*)(bufferUPtr->data()),
                 (int)bufferUPtr->size(),
-                const_cast<WCHAR *>(jsonString.c_str()),
+                const_cast<char *>(jsonString.c_str()),
                 ret);
 
             if (ret == 0)
@@ -634,10 +632,10 @@ namespace Common
         }
 
         //
-        // Deserialize WCHAR buffer
+        // Deserialize char buffer
         //
         template<typename T>
-        static ErrorCode Deserialize(T &object, __in std::wstring const &jsonString, JsonSerializerFlags serializerFlags = JsonSerializerFlags::Default)
+        static ErrorCode Deserialize(T &object, __in std::string const &jsonString, JsonSerializerFlags serializerFlags = JsonSerializerFlags::Default)
         {
             ByteBufferUPtr bufferUPtr = make_unique<ByteBuffer>();
 #if !defined(PLATFORM_UNIX)
@@ -726,7 +724,7 @@ namespace Common
         template<typename T>
         static ErrorCode Deserialize(
             std::vector<T> &object,
-            __in std::wstring const &jsonString,
+            __in std::string const &jsonString,
             JsonSerializerFlags serializerFlags = JsonSerializerFlags::Default)
         {
             auto bufferUPtr = make_unique<ByteBuffer>();

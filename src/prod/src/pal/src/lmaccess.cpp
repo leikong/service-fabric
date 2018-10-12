@@ -19,7 +19,7 @@ using namespace Pal;
 
 NET_API_STATUS NET_API_FUNCTION
 NetUserAdd (
-    IN  LPCWSTR    ServiceName OPTIONAL,
+    IN  LPCSTR    ServiceName OPTIONAL,
     IN  DWORD      Level,
     IN  LPBYTE     Buffer,
     OUT LPDWORD    ParmError OPTIONAL
@@ -76,8 +76,8 @@ NetUserAdd (
 
 NET_API_STATUS NET_API_FUNCTION
 NetUserGetInfo (
-    IN  LPCWSTR    ServerName OPTIONAL,
-    IN  LPCWSTR    UserName,
+    IN  LPCSTR    ServerName OPTIONAL,
+    IN  LPCSTR    UserName,
     IN  DWORD      Level,
     OUT LPBYTE     *Buffer
     )
@@ -92,17 +92,17 @@ NetUserGetInfo (
         return NERR_UserNotFound;
     }
 
-    wstring ucommentW = utf8to16(gecos.c_str());
-    uinfo->usri1_comment = (LPWSTR)(uinfo + 1);
-    memcpy(uinfo->usri1_comment, ucommentW.c_str(), (ucommentW.length() + 1) * sizeof(wchar_t));
+    string ucommentW = utf8to16(gecos.c_str());
+    uinfo->usri1_comment = (LPSTR)(uinfo + 1);
+    memcpy(uinfo->usri1_comment, ucommentW.c_str(), (ucommentW.length() + 1) * sizeof(char));
     *Buffer = (LPBYTE)uinfo;
     return NERR_Success;
 }
 
 NET_API_STATUS NET_API_FUNCTION
 NetUserSetInfo (
-    IN  LPCWSTR   ServerName OPTIONAL,
-    IN  LPCWSTR   UserName,
+    IN  LPCSTR   ServerName OPTIONAL,
+    IN  LPCSTR   UserName,
     IN  DWORD     Level,
     IN  LPBYTE    Buffer,
     OUT LPDWORD   ParmError OPTIONAL
@@ -122,8 +122,8 @@ NetUserSetInfo (
 
 NET_API_STATUS NET_API_FUNCTION
 NetUserDel (
-    IN  LPCWSTR    ServerName OPTIONAL,
-    IN  LPCWSTR    UserName
+    IN  LPCSTR    ServerName OPTIONAL,
+    IN  LPCSTR    UserName
     )
 {
     string uname = utf16to8(UserName).substr(0, ACCT_NAME_MAX);
@@ -136,8 +136,8 @@ NetUserDel (
 
 NET_API_STATUS NET_API_FUNCTION
 NetUserGetLocalGroups (
-    IN  LPCWSTR   ServerName OPTIONAL,
-    IN  LPCWSTR   UserName,
+    IN  LPCSTR   ServerName OPTIONAL,
+    IN  LPCSTR   UserName,
     IN  DWORD     Level,
     IN  DWORD     Flags,
     OUT LPBYTE    *Buffer,
@@ -158,13 +158,13 @@ NetUserGetLocalGroups (
 
     char* buf = new char[NETAPI_BUF_MAX];
     LPLOCALGROUP_USERS_INFO_0 localGroupInfo = (LPLOCALGROUP_USERS_INFO_0)buf;
-    LPWSTR strbuf = (LPWSTR)(localGroupInfo + ngroups);
+    LPSTR strbuf = (LPSTR)(localGroupInfo + ngroups);
 
     for(int i = 0; i < ngroups; i++)
     {
         struct group *gr = getgrgid(groups[i]);
-        wstring s = utf8to16(gr->gr_name);
-        int sz = sizeof(wchar_t) * (s.length() + 1);
+        string s = utf8to16(gr->gr_name);
+        int sz = sizeof(char) * (s.length() + 1);
         memcpy(strbuf, s.c_str(), sz);
         localGroupInfo[i].lgrui0_name = strbuf;
         strbuf += sz;
@@ -178,7 +178,7 @@ NetUserGetLocalGroups (
 
 NET_API_STATUS NET_API_FUNCTION
 NetLocalGroupAdd (
-    IN  LPCWSTR  ServerName OPTIONAL,
+    IN  LPCSTR  ServerName OPTIONAL,
     IN  DWORD    Level,
     IN  LPBYTE   Buffer,
     OUT LPDWORD  ParmError OPTIONAL
@@ -220,8 +220,8 @@ NetLocalGroupAdd (
 
 NET_API_STATUS NET_API_FUNCTION
 NetLocalGroupGetInfo (
-    IN  LPCWSTR  ServerName OPTIONAL,
-    IN  LPCWSTR  LocalGroupName,
+    IN  LPCSTR  ServerName OPTIONAL,
+    IN  LPCSTR  LocalGroupName,
     IN  DWORD    Level,
     OUT LPBYTE   *Buffer
     )
@@ -241,25 +241,25 @@ NetLocalGroupGetInfo (
         AccountOperationWithRetry(cmd, ACCOUNT_OP_DEL);
         return NERR_GroupNotFound;
     }
-    wstring gpassW = utf8to16(gecos.c_str());
+    string gpassW = utf8to16(gecos.c_str());
 
     char* buf = new char[NETAPI_BUF_MAX];
     PLOCALGROUP_INFO_1 ginfo = (PLOCALGROUP_INFO_1)buf;
-    LPWSTR gname = (LPWSTR)(ginfo + 1);
-    memcpy(gname, LocalGroupName, (wcslen(LocalGroupName) + 1)* sizeof(wchar_t));
-    LPWSTR gcomment = gname + wcslen(gname) + 1;
+    LPSTR gname = (LPSTR)(ginfo + 1);
+    memcpy(gname, LocalGroupName, (strlen(LocalGroupName) + 1)* sizeof(char));
+    LPSTR gcomment = gname + strlen(gname) + 1;
     ginfo->lgrpi1_name = gname;
     ginfo->lgrpi1_comment = gcomment;
 
-    memcpy(ginfo->lgrpi1_comment, gpassW.c_str(), (gpassW.length()+1)*sizeof(wchar_t));
+    memcpy(ginfo->lgrpi1_comment, gpassW.c_str(), (gpassW.length()+1)*sizeof(char));
     *Buffer = (LPBYTE)ginfo;
     return NERR_Success;
 }
 
 NET_API_STATUS NET_API_FUNCTION
 NetLocalGroupSetInfo (
-    IN  LPCWSTR  ServerName OPTIONAL,
-    IN  LPCWSTR  LocalGroupName,
+    IN  LPCSTR  ServerName OPTIONAL,
+    IN  LPCSTR  LocalGroupName,
     IN  DWORD    Level,
     IN  LPBYTE   Buffer,
     OUT LPDWORD  ParmError OPTIONAL
@@ -286,8 +286,8 @@ NetLocalGroupSetInfo (
 
 NET_API_STATUS NET_API_FUNCTION
 NetLocalGroupDel (
-    IN  LPCWSTR   ServerName OPTIONAL,
-    IN  LPCWSTR   LocalGroupName
+    IN  LPCSTR   ServerName OPTIONAL,
+    IN  LPCSTR   LocalGroupName
     )
 {
     string gname = utf16to8(LocalGroupName).substr(0, ACCT_NAME_MAX);
@@ -307,8 +307,8 @@ NetLocalGroupDel (
 
 NET_API_STATUS NET_API_FUNCTION
 NetLocalGroupSetMembers (
-    IN  LPCWSTR     servername OPTIONAL,
-    IN  LPCWSTR     groupname,
+    IN  LPCSTR     servername OPTIONAL,
+    IN  LPCSTR     groupname,
     IN  DWORD      level,
     IN  LPBYTE     buf,
     IN  DWORD      totalentries
@@ -395,8 +395,8 @@ NetLocalGroupSetMembers (
 
 NET_API_STATUS NET_API_FUNCTION
 NetLocalGroupGetMembers (
-    IN  LPCWSTR    ServerName OPTIONAL,
-    IN  LPCWSTR    LocalGroupName,
+    IN  LPCSTR    ServerName OPTIONAL,
+    IN  LPCSTR    LocalGroupName,
     IN  DWORD      Level,
     OUT LPBYTE     *Buffer,
     IN  DWORD      PrefMaxLen,
@@ -423,14 +423,14 @@ NetLocalGroupGetMembers (
     {
         char* buf = new char[NETAPI_BUF_MAX];
         PLOCALGROUP_MEMBERS_INFO_1 info = (PLOCALGROUP_MEMBERS_INFO_1)buf;
-        LPWSTR strbuf = (LPWSTR)(info + len);
+        LPSTR strbuf = (LPSTR)(info + len);
 
         int index = 0;
         char *uname = grbufp->gr_mem[index];
         while(uname)
         {
-            wstring unameW = wstring(utf8to16(uname));
-            int sz = sizeof(wchar_t) * (unameW.length() + 1);
+            string unameW = string(utf8to16(uname));
+            int sz = sizeof(char) * (unameW.length() + 1);
             memcpy(strbuf, unameW.c_str(), sz);
             info[index].lgrmi1_name = strbuf;
             uname = grbufp->gr_mem[++index];
@@ -443,8 +443,8 @@ NetLocalGroupGetMembers (
 
 NET_API_STATUS NET_API_FUNCTION
 NetLocalGroupAddMembers (
-    IN  LPCWSTR    ServerName OPTIONAL,
-    IN  LPCWSTR    LocalGroupName,
+    IN  LPCSTR    ServerName OPTIONAL,
+    IN  LPCSTR    LocalGroupName,
     IN  DWORD      Level,
     IN  LPBYTE     Buffer,
     IN  DWORD      NewMemberCount

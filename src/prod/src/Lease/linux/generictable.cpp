@@ -59,11 +59,11 @@
 //--*/
 //
 //{
-//    LPCWSTR RemStr1 = ((*(PLEASE_RELATIONSHIP_IDENTIFIER*)Obj1)->RemoteLeasingApplicationIdentifier);
-//    LPCWSTR RemStr2 = ((*(PLEASE_RELATIONSHIP_IDENTIFIER*)Obj2)->RemoteLeasingApplicationIdentifier);
-//    LPCWSTR Str1 = ((*(PLEASE_RELATIONSHIP_IDENTIFIER*)Obj1)->LeasingApplicationContext->LeasingApplicationIdentifier);
-//    LPCWSTR Str2 = ((*(PLEASE_RELATIONSHIP_IDENTIFIER*)Obj2)->LeasingApplicationContext->LeasingApplicationIdentifier);
-//    INT Result1 = wcscmp(RemStr1, RemStr2);
+//    LPCSTR RemStr1 = ((*(PLEASE_RELATIONSHIP_IDENTIFIER*)Obj1)->RemoteLeasingApplicationIdentifier);
+//    LPCSTR RemStr2 = ((*(PLEASE_RELATIONSHIP_IDENTIFIER*)Obj2)->RemoteLeasingApplicationIdentifier);
+//    LPCSTR Str1 = ((*(PLEASE_RELATIONSHIP_IDENTIFIER*)Obj1)->LeasingApplicationContext->LeasingApplicationIdentifier);
+//    LPCSTR Str2 = ((*(PLEASE_RELATIONSHIP_IDENTIFIER*)Obj2)->LeasingApplicationContext->LeasingApplicationIdentifier);
+//    INT Result1 = strcmp(RemStr1, RemStr2);
 //    INT Result2 = 0;
 //
 //    UNREFERENCED_PARAMETER(GenericTable);
@@ -78,7 +78,7 @@
 //
 //    } else if (0 == Result1) {
 //
-//        Result2 = wcscmp(Str1, Str2);
+//        Result2 = strcmp(Str1, Str2);
 //
 //        if (Result2 < 0) {
 //
@@ -225,9 +225,9 @@
 //--*/
 //
 //{
-//    LPWSTR Str1 = ((*(PLEASING_APPLICATION_CONTEXT*)Obj1)->LeasingApplicationIdentifier);
-//    LPWSTR Str2 = ((*(PLEASING_APPLICATION_CONTEXT*)Obj2)->LeasingApplicationIdentifier);
-//    INT Result = wcscmp(Str1, Str2);
+//    LPSTR Str1 = ((*(PLEASING_APPLICATION_CONTEXT*)Obj1)->LeasingApplicationIdentifier);
+//    LPSTR Str2 = ((*(PLEASING_APPLICATION_CONTEXT*)Obj2)->LeasingApplicationIdentifier);
+//    INT Result = strcmp(Str1, Str2);
 //
 //    UNREFERENCED_PARAMETER(GenericTable);
 //

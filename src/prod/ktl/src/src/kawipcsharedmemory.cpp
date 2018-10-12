@@ -40,9 +40,9 @@ Revision History:
 #endif
 
 #if !defined(PLATFORM_UNIX)
-WCHAR const * const KAWIpcSharedMemory::_SharedMemoryNamePrefix = L"_KtlLogger_Microsoft_";
+char const * const KAWIpcSharedMemory::_SharedMemoryNamePrefix = "_KtlLogger_Microsoft_";
 #else
-WCHAR const * const KAWIpcSharedMemory::_SharedMemoryNamePrefix = L"/_KtlLogger_Microsoft_";
+char const * const KAWIpcSharedMemory::_SharedMemoryNamePrefix = "/_KtlLogger_Microsoft_";
 #endif
 CHAR const * const KAWIpcSharedMemory::_SharedMemoryNamePrefixAnsi = "_KtlLogger_Microsoft_";
 
@@ -81,7 +81,7 @@ KAWIpcSharedMemory::~KAWIpcSharedMemory()
         status = CreateSectionName(_Id.Get(), name);
         if (NT_SUCCESS(status))
         {
-            shm_unlink(Utf16To8(name).c_str());
+            shm_unlink(name);
         }
     }
 #endif
@@ -121,7 +121,7 @@ KAWIpcSharedMemory::KAWIpcSharedMemory(
                                        PAGE_EXECUTE_READWRITE,
                                        0,
                                        Size,
-                                       (PWCHAR)name);
+                                       (char*)name);
     if (_SectionHandle == nullptr)
     {
         error = GetLastError();
@@ -132,7 +132,7 @@ KAWIpcSharedMemory::KAWIpcSharedMemory(
     _OwnSection = TRUE;
 #else
     int err;
-    _SectionFd = shm_open(Utf16To8(name).c_str(), O_RDWR | O_CREAT | O_EXCL | O_TRUNC, S_IRWXU);
+    _SectionFd = shm_open(PCHAR(name), O_RDWR | O_CREAT | O_EXCL | O_TRUNC, S_IRWXU);
     if (_SectionFd == -1)
     {
         status = LinuxError::LinuxErrorToNTStatus(errno);
@@ -202,7 +202,7 @@ KAWIpcSharedMemory::KAWIpcSharedMemory(
 #if !defined(PLATFORM_UNIX)
     _SectionHandle = OpenFileMapping(FILE_MAP_ALL_ACCESS,
                                      FALSE,
-                                     (PWCHAR)name);                                  
+                                     (char*)name);                                  
     if (_SectionHandle == nullptr)
     {
         DWORD error;
@@ -210,7 +210,7 @@ KAWIpcSharedMemory::KAWIpcSharedMemory(
         status = STATUS_UNSUCCESSFUL;
     }
 #else
-    _SectionFd = shm_open(Utf16To8(name).c_str(), O_RDWR, 0);
+    _SectionFd = shm_open(PCHAR(name), O_RDWR, 0);
     if (_SectionFd == -1)
     {
         status = LinuxError::LinuxErrorToNTStatus(errno);

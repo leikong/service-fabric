@@ -285,7 +285,7 @@ VOID OverlayLog::AliasOperationContext::FSMContinue(
     )
 {
     KAsyncContextBase::CompletionCallback completion(this, &OverlayLog::AliasOperationContext::OperationCompletion);
-    KStringView const emptyAlias(L"");
+    KStringView const emptyAlias("");
     KStringView const * alias = NULL;
 
     if (! NT_SUCCESS(Status))

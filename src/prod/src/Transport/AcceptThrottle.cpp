@@ -5,8 +5,8 @@
 
 #include "stdafx.h"
 
-#define PERF_COUNTER_OBJECT_PROCESS L"Process"
-#define PERF_COUNTER_THREAD_COUNT L"Thread Count"
+#define PERF_COUNTER_OBJECT_PROCESS "Process"
+#define PERF_COUNTER_THREAD_COUNT "Thread Count"
 
 using namespace Transport;
 using namespace Common;

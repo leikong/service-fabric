@@ -13,7 +13,7 @@ namespace Transport
         SecurityContextSsl(
             IConnectionSPtr const & connection,
             TransportSecuritySPtr const & transportSecurity,
-            std::wstring const & targetName,
+            std::string const & targetName,
             ListenInstance localListenInstance);
 
         static bool Supports(SecurityProvider::Enum provider);
@@ -31,18 +31,18 @@ namespace Transport
 
         bool AuthenticateRemoteByClaims() const override;
         bool ShouldPerformClaimsRetrieval() const override;
-        void CompleteClaimsRetrieval(Common::ErrorCode const &, std::wstring const & claimsToken) override;
+        void CompleteClaimsRetrieval(Common::ErrorCode const &, std::string const & claimsToken) override;
         void CompleteClientAuth(Common::ErrorCode const &, SecuritySettings::RoleClaims const & clientClaims, Common::TimeSpan expiration) override;
 
         virtual bool AccessCheck(AccessControl::FabricAcl const & acl, DWORD desiredAccess) const override;
 
         static void TraceCertificate(
-            std::wstring const & traceId,
+            std::string const & traceId,
             PCCERT_CONTEXT certContext,
             Common::Thumbprint const & issuerCertThumbprint);
 
         static SECURITY_STATUS VerifyCertificate(
-            std::wstring const & traceId,
+            std::string const & traceId,
             PCCERT_CONTEXT certContext,
             DWORD certChainFlags,
             bool shouldIgnoreCrlOffline,
@@ -50,9 +50,9 @@ namespace Transport
             Common::ThumbprintSet const & certThumbprintsToMatch,
             Common::SecurityConfig::X509NameMap const & x509NamesToMatch,
             bool traceCert,
-            _Out_opt_ std::wstring * commonNameMatched = nullptr);
+            _Out_opt_ std::string * commonNameMatched = nullptr);
 
-        static SECURITY_STATUS Test_VerifyCertificate(_In_ PCCERT_CONTEXT certContext, std::wstring const & commonNameToMatch);
+        static SECURITY_STATUS Test_VerifyCertificate(_In_ PCCERT_CONTEXT certContext, std::string const & commonNameToMatch);
 
 #ifdef PLATFORM_UNIX
         Common::ErrorCode Encrypt(void const* buffer, size_t len);
@@ -85,7 +85,7 @@ namespace Transport
             _Out_ ULONG & sslRecordSize);
 
         static SECURITY_STATUS TryMatchCertThumbprint(
-            std::wstring const & traceId,
+            std::string const & traceId,
             PCCERT_CONTEXT certContext,
             Common::Thumbprint const & incoming,
             SECURITY_STATUS certChainErrorStatus,
@@ -94,7 +94,7 @@ namespace Transport
             Common::ThumbprintSet const & thumbprintSet);
 
         static SECURITY_STATUS GetCertChainContext(
-            std::wstring const & traceId,
+            std::string const & traceId,
             _In_ PCCERT_CONTEXT certContext,
             _In_ LPSTR usage,
             DWORD certChainFlags,
@@ -103,22 +103,22 @@ namespace Transport
             _Out_opt_ Common::X509Identity::SPtr* issuerCertThumbprint);
 
         static SECURITY_STATUS VerifySslCertChain(
-            std::wstring const & traceId,
+            std::string const & traceId,
             PCCERT_CHAIN_CONTEXT certChainContext,
             DWORD authType,
             DWORD certChainFlags,
             bool shouldIgnoreCrlOffline,
             bool & onlyCrlOfflineEncountered);
 
-        static bool IsClientAuthenticationCertificate(std::wstring const & traceId, _In_ PCCERT_CONTEXT certContext);
-        static bool IsServerAuthenticationCertificate(std::wstring const & traceId, _In_ PCCERT_CONTEXT certContext);
+        static bool IsClientAuthenticationCertificate(std::string const & traceId, _In_ PCCERT_CONTEXT certContext);
+        static bool IsServerAuthenticationCertificate(std::string const & traceId, _In_ PCCERT_CONTEXT certContext);
         static bool CertCheckEnhancedKeyUsage(
-            std::wstring const & traceId,
+            std::string const & traceId,
             _In_ PCCERT_CONTEXT certContext,
             LPCSTR usageIdentifier);
 
         static SECURITY_STATUS VerifyAsServerAuthCert(
-            std::wstring const & traceId,
+            std::string const & traceId,
             PCCERT_CONTEXT certContext,
             PCCERT_CHAIN_CONTEXT certChainContext,
             Common::Thumbprint const & certThumbprint,
@@ -128,7 +128,7 @@ namespace Transport
             DWORD certChainFlags,
             bool shouldIgnoreCrlOffline,
             bool onlyCrlOfflineEncountered,
-            _Out_opt_ std::wstring * nameMatched = nullptr);
+            _Out_opt_ std::string * nameMatched = nullptr);
 
         static MessageUPtr CreateClaimsTokenErrorMessage(Common::ErrorCode const &);
 
@@ -178,7 +178,7 @@ namespace Transport
 #endif
 
         Common::CertContextUPtr remoteCertContext_;
-        std::wstring remoteCommonName_;
+        std::string remoteCommonName_;
         bool remoteAuthenticatedAsPeer_ = false;
         bool claimsMessageReceived_ = false;
         SecuritySettings::RoleClaims clientClaims_;

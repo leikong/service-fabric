@@ -23,7 +23,7 @@ namespace Common
 
     ULONGLONG TraceEvent::InitializeTestKeyword()
     {
-        std::wstring testKeyword;
+        std::string testKeyword;
         FabricEnvironment::GetFabricTracesTestKeyword(testKeyword);
         ULONGLONG testKeywordValue = TraceKeywords::ParseTestKeyword(testKeyword);
         return testKeywordValue;
@@ -97,9 +97,9 @@ namespace Common
         if (isText_)
         {
             size_t index;
-            AddEventField<std::wstring>(GetIdFieldName(), index);
+            AddEventField<std::string>(GetIdFieldName(), index);
             AddEventField<StringLiteral>(GetTypeFieldName(), index);
-            AddEventField<std::wstring>(GetTextFieldName(), index);
+            AddEventField<std::string>(GetTextFieldName(), index);
             
             ConvertEtwFormatString();
         }
@@ -143,8 +143,8 @@ namespace Common
 
         for (size_t i = 0; i < MaxFieldsPerEvent; i++)
         {
-            string arg = "{" + Common::formatString(i) + "}";
-            string hexArg = "{" + Common::formatString(i) + ":x}";
+            string arg = "{" + formatString(i) + "}";
+            string hexArg = "{" + formatString(i) + ":x}";
             if (StringUtility::Contains(format, arg) || StringUtility::Contains(format, hexArg))
             {
                 maxIndex = (i + 1);
@@ -156,12 +156,12 @@ namespace Common
 
     void TraceEvent::UpdateArgument(string & format, size_t oldIndex, size_t newIndex)
     {
-        string arg = "{" + Common::formatString(oldIndex) + "}";
-        string newArg = "{" + Common::formatString(newIndex) + "}";
+        string arg = "{" + formatString(oldIndex) + "}";
+        string newArg = "{" + formatString(newIndex) + "}";
         StringUtility::Replace(format, arg, newArg);
 
-        string hexArg = "{" + Common::formatString(oldIndex) + ":x}";
-        string newHexArg = "{" + Common::formatString(newIndex) + ":x}";
+        string hexArg = "{" + formatString(oldIndex) + ":x}";
+        string newHexArg = "{" + formatString(newIndex) + ":x}";
         StringUtility::Replace(format, hexArg, newHexArg);
     }
 
@@ -187,7 +187,7 @@ namespace Common
             UpdateArgument(newFormat, i, index + i);
         }
 
-        string currentArg = "{" + Common::formatString(index) + "}";
+        string currentArg = "{" + formatString(index) + "}";
         StringUtility::Replace(format, currentArg, newFormat);
 
         index += innerCount;
@@ -197,11 +197,11 @@ namespace Common
     {
         for (size_t i = 0; i < MaxFieldsPerEvent; i++)
         {
-            string arg = "{" + Common::formatString(i) + "}";
-            string newArg = "%" + Common::formatString(i + 1);
+            string arg = "{" + formatString(i) + "}";
+            string newArg = "%" + formatString(i + 1);
             StringUtility::Replace(etwFormat_, arg, newArg);
 
-            string hexArg = "{" + Common::formatString(i) + ":x}";
+            string hexArg = "{" + formatString(i) + ":x}";
             if (StringUtility::Contains(etwFormat_, hexArg))
             {
                 fields_[i].SetHexFormat();
@@ -253,7 +253,7 @@ namespace Common
         }
     }
 
-    void TraceEvent::WriteTextEvent(StringLiteral type, wstring const & id, wstring const & text, bool useETW, bool useFile, bool useConsole)
+    void TraceEvent::WriteTextEvent(StringLiteral type, string const & id, string const & text, bool useETW, bool useFile, bool useConsole)
     {
         if (useETW)
         {
@@ -280,7 +280,7 @@ namespace Common
                 StringWriterA w2(eventName);
                 w2.Write(type);
 
-                TraceWrapper(taskName.c_str(), eventName.c_str(), level_, (char *)id.c_str(), const_cast<wchar_t *>(text.c_str()));
+                TraceWrapper(taskName.c_str(), eventName.c_str(), level_, (char *)id.c_str(), (char *)text.c_str());
             }
 #endif
         }
@@ -331,7 +331,7 @@ namespace Common
         }
     }
 
-    void TraceEvent::WriteToTextSinkInternal(std::wstring const & id, std::wstring const & data, bool useConsole, bool useFile, bool useETW)
+    void TraceEvent::WriteToTextSinkInternal(std::string const & id, std::string const & data, bool useConsole, bool useFile, bool useETW)
     {
         if (useETW)
         {
@@ -343,7 +343,7 @@ namespace Common
             StringWriterA w2(eventName);
             w2.Write(eventName_);
 
-            TraceWrapper(taskName.c_str(), eventName.c_str(), level_, (char *)id.c_str(), const_cast<wchar_t *>(data.c_str()));
+            TraceWrapper(taskName.c_str(), eventName.c_str(), level_, (char *)id.c_str(), (char *)data.c_str());
 #endif
         }
         if (useFile)

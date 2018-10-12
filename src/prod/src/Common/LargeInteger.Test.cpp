@@ -32,20 +32,20 @@ namespace Common
         // Test for LargeInteger::MaxValue
         LargeIntegerTestConstants consts;
         LargeInteger maxFromString;
-        bool retVal = LargeInteger::TryParse(L"ffffffffffffffffffffffffffffffff", maxFromString);
+        bool retVal = LargeInteger::TryParse("ffffffffffffffffffffffffffffffff", maxFromString);
 
         VERIFY_IS_TRUE(retVal);
         VERIFY_IS_TRUE(consts.MaxMax == maxFromString);
 
         // Test for LargeInteger::Zero
         LargeInteger zeroFromString;
-        retVal = LargeInteger::TryParse(L"0", zeroFromString);
+        retVal = LargeInteger::TryParse("0", zeroFromString);
         VERIFY_IS_TRUE(retVal);
         VERIFY_IS_TRUE(consts.ZeroZero == zeroFromString);
 
         // Test for LargeInteger::One
         LargeInteger oneFromString;
-        retVal = LargeInteger::TryParse(L"1", oneFromString);
+        retVal = LargeInteger::TryParse("1", oneFromString);
         VERIFY_IS_TRUE(retVal);
         VERIFY_IS_TRUE(consts.ZeroOne == oneFromString);
     }

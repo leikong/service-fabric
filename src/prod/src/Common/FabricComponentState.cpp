@@ -170,26 +170,26 @@ void FabricComponentState::SetStateToAborted()
     state_ = FabricComponentState::Aborted;
 }
 
-std::wstring FabricComponentState::ToString(LONG state)
+std::string FabricComponentState::ToString(LONG state)
 {
     switch (static_cast<int>(state))
     {
     case Created:
-        return L"Created";
+        return "Created";
     case Opening:
-        return L"Opening";
+        return "Opening";
     case Opened:
-        return L"Opened";
+        return "Opened";
     case Closing:
-        return L"Closing";
+        return "Closing";
     case Closed:
-        return L"Closed";
+        return "Closed";
     case Failed:
-        return L"Failed";
+        return "Failed";
     case Aborted:
-        return L"Aborted";
+        return "Aborted";
     default:
-        std::wstring invalidStateString;
+        std::string invalidStateString;
         StringWriter writer(invalidStateString);
         writer.Write("Invalid state: {0}", state);
         return move(invalidStateString);

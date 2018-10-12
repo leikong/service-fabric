@@ -9,10 +9,8 @@
 
 namespace Common
 {
-    bool TryParseUInt64(std::wstring const & str, __out uint64 & value, uint base = 0 /* will figure out base */);
-    bool TryParseUInt64(std::string const & str, __out uint64 & value, uint base = 0);
+    bool TryParseUInt64(std::string const & str, __out uint64 & value, uint base = 0 /* will figure out base */);
 
-    bool TryParseInt64(std::wstring const & str, __out int64 & value, uint base = 0); 
     bool TryParseInt64(std::string const & str, __out int64 & value, uint base = 0); 
 
     template <typename StringType>
@@ -34,9 +32,9 @@ namespace Common
     }
 
     template <int N>
-    inline int64 Int64_parse(wchar_t const (&str)[N])
+    inline int64 Int64_parse(char const (&str)[N])
     {
-        return Int64_Parse(std::wstring(str, N - 1));
+        return Int64_Parse(std::string(str, N - 1));
     }
 
     template <typename StringType>
@@ -55,12 +53,6 @@ namespace Common
         return Int32_Parse(std::string(str, N - 1));
     }
 
-    template <int N>
-    inline int32 Int32_Parse(wchar_t const (&str)[N])
-    {
-        return Int32_Parse(std::wstring(str, N - 1));
-    }
-
     template <typename StringType>
     int16 Int16_Parse(StringType const & value)
     {
@@ -77,18 +69,9 @@ namespace Common
         return Int16_Parse(std::string(str, N - 1));
     }
 
-    template <int N>
-    inline int16 Int16_Parse(wchar_t const (&str)[N])
-    {
-        return Int16_Parse(std::wstring(str, N - 1));
-    }
-        
-    bool TryParseDouble(std::wstring const & str, double& value);
     bool TryParseDouble(std::string const & str, double& value);
 
-    double Double_Parse(std::wstring const & value);
     double Double_Parse(std::string const & value);
 
     bool TraceParseReturn(bool retval, StringLiteral traceType, std::string const & input, const char* targetType, uint base = 0);
-    bool TraceParseReturn(bool retval, StringLiteral traceType, std::wstring const & input, const char* targetType, uint base = 0);
 }

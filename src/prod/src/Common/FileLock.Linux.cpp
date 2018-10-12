@@ -11,8 +11,8 @@ using namespace Common;
 static StringLiteral const TraceType = "FileLock";
 
 template <bool IsReaderLock>
-FileLock<IsReaderLock>::FileLock(std::wstring const & path)
-    : id_(wformatString("{0}", TextTraceThis)), file_(-1)
+FileLock<IsReaderLock>::FileLock(std::string const & path)
+    : id_(formatString.L("{0}", TextTraceThis)), file_(-1)
 {
     WriteNoise(TraceType, id_, "input path = {0}", path);
     auto folder = Path::GetDirectoryName(path);
@@ -21,7 +21,7 @@ FileLock<IsReaderLock>::FileLock(std::wstring const & path)
         Directory::Create2(folder);
     }
 
-    StringUtility::Utf16ToUtf8(path, path_);
+    Utf16ToUtf8NotNeeded2(path, path_);
     file_ = open(
         path_.c_str(),
         O_CREAT|O_CLOEXEC | (IsReaderLock? O_RDONLY : O_WRONLY),

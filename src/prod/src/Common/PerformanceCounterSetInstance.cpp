@@ -7,7 +7,7 @@
 
 using namespace Common;
 
-PerformanceCounterSetInstance::PerformanceCounterSetInstance(PerformanceCounterSetSPtr const & PerformanceCounterSet, std::wstring const & instanceName, bool allocateMemory) :
+PerformanceCounterSetInstance::PerformanceCounterSetInstance(PerformanceCounterSetSPtr const & PerformanceCounterSet, std::string const & instanceName, bool allocateMemory) :
     counterSet_(PerformanceCounterSet),
     counterSetInstance_(nullptr),
     allocateCounterMemory_(allocateMemory)

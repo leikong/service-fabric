@@ -59,9 +59,9 @@ namespace Transport
         Transport::MessageId const & TraceId() const;
         void SetTraceId(MessageId const & value);
 
-        std::wstring const & LocalTraceContext() const;
-        void SetLocalTraceContext(std::wstring const & context);
-        void SetLocalTraceContext(std::wstring && context);
+        std::string const & LocalTraceContext() const;
+        void SetLocalTraceContext(std::string const & context);
+        void SetLocalTraceContext(std::string && context);
         void MoveLocalTraceContextFrom(Message & rhs);
 
         void SetSendStatusCallback(SendStatusCallback const & sendStatusCallback);
@@ -72,7 +72,7 @@ namespace Transport
         bool IsReply() const;
 
         __declspec(property(get=get_Headers)) MessageHeaders & Headers;
-        __declspec(property(get=get_Action)) std::wstring const & Action;
+        __declspec(property(get=get_Action)) std::string const & Action;
         __declspec(property(get=get_Actor)) Actor::Enum Actor;
         __declspec(property(get=get_MessageId)) Transport::MessageId const & MessageId;
         __declspec(property(get=get_RelatesTo)) Transport::MessageId const & RelatesTo;
@@ -84,7 +84,7 @@ namespace Transport
         __declspec(property(get=get_HasFaultBody)) bool HasFaultBody;
         __declspec(property(get=get_IsUncorrelatedReply)) bool IsUncorrelatedReply;
 
-        std::wstring const & get_Action() const;
+        std::string const & get_Action() const;
         SendStatusCallback const & get_SendStatusCallback() const;
         Actor::Enum get_Actor() const;
         Transport::MessageId const & get_MessageId() const;
@@ -171,7 +171,7 @@ namespace Transport
         bool AccessCheck(AccessControl::FabricAcl const & acl, DWORD desiredAccess) const;
 
         void WriteTo(Common::TextWriter & w, Common::FormatOptions const &) const;
-        std::wstring ToString() const;
+        std::string ToString() const;
 
     private:
 
@@ -200,7 +200,7 @@ namespace Transport
 
         SecurityContextSPtr securityContext_;
 
-        std::wstring localTraceContext_;
+        std::string localTraceContext_;
 
         SendStatusCallback sendStatusCallback_;
 

@@ -168,9 +168,9 @@ namespace Ktl
         
         HRESULT 
         ComIKPhysicalLogManager::BeginCreateLogContainer( 
-            __in LPCWSTR FullyQualifiedLogFilePath,
+            __in LPCSTR FullyQualifiedLogFilePath,
             __in KTL_LOG_ID LogId,
-            __in LPCWSTR LogType,
+            __in LPCSTR LogType,
             __in LONGLONG LogSize,
             __in ULONG MaxAllowedStreams,
             __in ULONG MaxRecordSize,
@@ -272,7 +272,7 @@ namespace Ktl
         //** OpenLogContainer
         HRESULT 
         ComIKPhysicalLogManager::BeginOpenLogContainer( 
-            __in LPCWSTR FullyQualifiedLogFilePath,
+            __in LPCSTR FullyQualifiedLogFilePath,
             __in KTL_LOG_ID LogId,
             __in IFabricAsyncOperationCallback *const Callback,
             __out IFabricAsyncOperationContext **const Context)
@@ -419,7 +419,7 @@ namespace Ktl
         //** DeleteLogContainer
         HRESULT 
         ComIKPhysicalLogManager::BeginDeleteLogContainer( 
-            __in LPCWSTR FullyQualifiedLogFilePath,
+            __in LPCSTR FullyQualifiedLogFilePath,
             __in KTL_LOG_ID LogId,
             __in IFabricAsyncOperationCallback *const Callback,
             __out IFabricAsyncOperationContext **const Context)
@@ -559,7 +559,7 @@ namespace Ktl
         
 
         HRESULT ComIKPhysicalLogManager::BeginGetVolumeIdFromPath(
-            __in LPCWSTR Path,
+            __in LPCSTR Path,
             __in IFabricAsyncOperationCallback* const Callback,     
             __out IFabricAsyncOperationContext** const Context)
         {

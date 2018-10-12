@@ -10,7 +10,7 @@ using namespace Transport;
 using namespace std;
 
 static const StringLiteral TraceType("Security");
-static const Common::Global<wstring> HostSpnPrefix = Common::make_global<wstring>(WINDOWS_FABRIC_SPN_PREFIX);
+static const Common::Global<string> HostSpnPrefix = Common::make_global<string>(WINDOWS_FABRIC_SPN_PREFIX);
 
 bool TransportSecurity::AssignAdminRoleToLocalUser = true;
 ULONG TransportSecurity::credentialRefreshCount_ = 0;
@@ -327,12 +327,12 @@ bool TransportSecurity::UsingWindowsCredential() const
     return SecurityProvider::IsWindowsProvider(this->SecurityProvider);
 }
 
-wstring TransportSecurity::GetServerIdentity(wstring const & address) const
+string TransportSecurity::GetServerIdentity(string const & address) const
 {
     if (!UsingWindowsCredential())
     {
         WriteInfo(TraceType, "server identity = '' when not using Windows security");
-        return L"";
+        return "";
     }
 
     if (!securitySettings_.RemoteSpn().empty())
@@ -341,17 +341,17 @@ wstring TransportSecurity::GetServerIdentity(wstring const & address) const
         return securitySettings_.RemoteSpn();
     }
 
-    wstring spn = AddressToSpn(address);
+    string spn = AddressToSpn(address);
     WriteInfo(TraceType, "server identity = {0}, generated from address {1}", spn, address);
     return spn;
 }
 
-wstring TransportSecurity::GetPeerIdentity(wstring const & address) const
+string TransportSecurity::GetPeerIdentity(string const & address) const
 {
     if (!UsingWindowsCredential())
     {
         WriteInfo(TraceType, "peer identity = '' when not using Windows security");
-        return L"";
+        return "";
     }
 
     if (!securitySettings_.RemoteSpn().empty())
@@ -362,7 +362,7 @@ wstring TransportSecurity::GetPeerIdentity(wstring const & address) const
 
     if (runningAsMachineAccount_)
     {
-        wstring spn = AddressToSpn(address);
+        string spn = AddressToSpn(address);
         WriteInfo(TraceType, "peer identity = {0}, generated from address {1}", spn, address);
         return spn;
     }
@@ -376,18 +376,18 @@ wstring TransportSecurity::GetPeerIdentity(wstring const & address) const
     return localWindowsIdentity_;
 }
 
-wstring TransportSecurity::AddressToSpn(std::wstring const & address)
+string TransportSecurity::AddressToSpn(std::string const & address)
 {
     if (TcpTransportUtility::IsLoopbackAddress(address))
     {
-        wstring host;
+        string host;
         auto error = TcpTransportUtility::GetLocalFqdn(host);
         ASSERT_IFNOT(error.IsSuccess(), "GetLocalFqdn failed: {0}", error);
         return *HostSpnPrefix + host;
     }
 
-    size_t hostLength = address.rfind(L":");
-    ASSERT_IF(hostLength == wstring::npos, "Invalid address: {0}", address);
+    size_t hostLength = address.rfind(":");
+    ASSERT_IF(hostLength == string::npos, "Invalid address: {0}", address);
     return *HostSpnPrefix + address.substr(0, hostLength);
 }
 
@@ -565,7 +565,7 @@ void TransportSecurity::ReportCertHealthIfNeeded_LockHeld(bool newCredentialLoad
         }
     }
 
-    auto description = wformatString(
+    auto description = formatString(
         " thumbprint = {0}, expiration = {1}, remaining lifetime is {2}, please refresh ahead of time to avoid catastrophic failure. Warning threshold Security/CertificateExpirySafetyMargin is configured at {3}, if needed, you can adjust it to fit your refresh process.",
         credentials_.front()->X509CertThumbprint().PrimaryToString(), expiration, expiration - now, safetyMargin);
 
@@ -576,8 +576,8 @@ void TransportSecurity::ReportCertHealthIfNeeded_LockHeld(bool newCredentialLoad
 
 #ifdef PLATFORM_UNIX
 
-static const Common::Global<wstring> EmptyWindowsIdentity = Common::make_global<wstring>(L"");
-wstring const & TransportSecurity::LocalWindowsIdentity()
+static const Common::Global<string> EmptyWindowsIdentity = Common::make_global<string>("");
+string const & TransportSecurity::LocalWindowsIdentity()
 {
     ASSERT_IFNOT(this->SecurityProvider == SecurityProvider::None, "Not implemented");
     return *EmptyWindowsIdentity;
@@ -589,9 +589,9 @@ bool TransportSecurity::RunningAsMachineAccount()
     return true;
 }
 
-wstring TransportSecurity::ToString() const
+string TransportSecurity::ToString() const
 {
-    wstring result;
+    string result;
     StringWriter w(result);
     w.Write(securitySettings_);
 
@@ -608,9 +608,9 @@ bool TransportSecurity::RunningAsMachineAccount()
     return runningAsMachineAccount_;
 }
 
-wstring TransportSecurity::ToString() const
+string TransportSecurity::ToString() const
 {
-    wstring result;
+    string result;
     StringWriter w(result);
     w.Write(securitySettings_);
 
@@ -648,7 +648,7 @@ ErrorCode TransportSecurity::CreateSecurityDescriptorFromAllowedList(
             if (error.IsError(ErrorCodeValue::NotFound))
             {
                 WriteWarning(TraceType, "CreateSecurityDescriptor: failed to convert {0} to SID: {1}, will retry as machine account by appending $", *iter, error);
-                wstring machineAccountName = *iter + L"$";
+                string machineAccountName = *iter + "$";
                 error = BufferedSid::CreateSPtr(machineAccountName, remoteSid);
             }
 
@@ -658,7 +658,7 @@ ErrorCode TransportSecurity::CreateSecurityDescriptorFromAllowedList(
                 return error;
             }
 
-            wstring sidString;
+            string sidString;
             error = remoteSid->ToString(sidString);
             ASSERT_IFNOT(error.IsSuccess(), "CreateSecurityDescriptor: failed to convert sid to string: {0}", error);
             WriteInfo(TraceType, "CreateSecurityDescriptor: {0} converted to sid: {1}", *iter, sidString);
@@ -728,7 +728,7 @@ ErrorCode TransportSecurity::InitializeLocalWindowsIdentityIfNeeded()
     }
 
     TOKEN_USER & tokenUser = reinterpret_cast<TOKEN_USER&>(localUserToken_.front());
-    wstring localSidString;
+    string localSidString;
     error = Sid::ToString(tokenUser.User.Sid, localSidString);
     ASSERT_IFNOT(error.IsSuccess(), "Failed to convert local sid to string: {0}", error);
     WriteInfo(TraceType, "local sid = {0}", localSidString);
@@ -754,8 +754,8 @@ ErrorCode TransportSecurity::InitializeLocalWindowsIdentityIfNeeded()
     SID_NAME_USE sidNameUse;
     LookupAccountSid(nullptr, tokenUser.User.Sid, nullptr, &nameLength, nullptr, &domainLength, &sidNameUse);
 
-    std::vector<wchar_t> name(nameLength);
-    std::vector<wchar_t> domain(domainLength);
+    std::vector<char> name(nameLength);
+    std::vector<char> domain(domainLength);
     retval = LookupAccountSid(nullptr, tokenUser.User.Sid, &name.front(), &nameLength, &domain.front(), &domainLength, &sidNameUse);
     if (retval == FALSE)
     {
@@ -764,8 +764,8 @@ ErrorCode TransportSecurity::InitializeLocalWindowsIdentityIfNeeded()
         return error;
     }
 
-    std::wostringstream stringStream;
-    stringStream << static_cast<wchar_t const *>(&domain.front()) << L"\\" << static_cast<wchar_t const *>(&name.front());
+    std::ostringstream stringStream;
+    stringStream << static_cast<char const *>(&domain.front()) << "\\" << static_cast<char const *>(&name.front());
     localWindowsIdentity_ = stringStream.str();
     WriteInfo(TraceType, "local Windows identity is {0}", localWindowsIdentity_);
     return ErrorCodeValue::Success;
@@ -781,7 +781,7 @@ void TransportSecurity::Test_SetBodyProtectionLevel(ProtectionLevel::Enum value)
     this->messageBodyProtectionLevel_ = value;
 }
 
-wstring const & TransportSecurity::LocalWindowsIdentity()
+string const & TransportSecurity::LocalWindowsIdentity()
 {
     auto error = InitializeLocalWindowsIdentityIfNeeded();
     ASSERT_IFNOT(error.IsSuccess(), "InitializeLocalWindowsIdentity failed: {0}", error);
@@ -789,7 +789,7 @@ wstring const & TransportSecurity::LocalWindowsIdentity()
 }
 
 _Use_decl_annotations_
-ErrorCode TransportSecurity::GetDomainNameDns(std::wstring & domain)
+ErrorCode TransportSecurity::GetDomainNameDns(std::string & domain)
 {
     domain.clear();
 
@@ -807,17 +807,17 @@ ErrorCode TransportSecurity::GetDomainNameDns(std::wstring & domain)
         return ErrorCodeValue::NotFound;
     }
 
-    domain = wstring(domainInfo->DomainNameDns);
+    domain = string(domainInfo->DomainNameDns);
     Invariant(!domain.empty());
     return ErrorCodeValue::Success;
 }
 
 _Use_decl_annotations_
-ErrorCode TransportSecurity::GetMachineAccount(wstring & machineAccount)
+ErrorCode TransportSecurity::GetMachineAccount(string & machineAccount)
 {
     machineAccount.clear();
 
-    wstring domain;
+    string domain;
     ErrorCode error = GetDomainNameDns(domain);
     if (!error.IsSuccess())
     {
@@ -834,7 +834,7 @@ ErrorCode TransportSecurity::GetMachineAccount(wstring & machineAccount)
         }
     }
 
-    vector<WCHAR> nameBuffer(nameLength, 0);
+    vector<CHAR> nameBuffer(nameLength, 0);
     if (!GetComputerNameEx(ComputerNameNetBIOS, nameBuffer.data(), &nameLength))
     {
         return ErrorCode::FromWin32Error();
@@ -842,16 +842,16 @@ ErrorCode TransportSecurity::GetMachineAccount(wstring & machineAccount)
 
     machineAccount.reserve(domain.length() + nameLength + 3);
     machineAccount.append(domain);
-    machineAccount.push_back(L'\\');
-    machineAccount.append((PCWCHAR)nameBuffer.data());
-    machineAccount.push_back(L'$');
+    machineAccount.push_back('\\');
+    machineAccount.append((PCCHAR)nameBuffer.data());
+    machineAccount.push_back('$');
 
     return ErrorCodeValue::Success;
 }
 
 ErrorCode TransportSecurity::UpdateWindowsFabricSpn(DS_SPN_WRITE_OP operation)
 {
-    wstring domain;
+    string domain;
     ErrorCode error = GetDomainNameDns(domain);
     if (!error.IsSuccess())
     {
@@ -874,8 +874,8 @@ ErrorCode TransportSecurity::UpdateWindowsFabricSpn(DS_SPN_WRITE_OP operation)
 
     ULONG length = 0;
     GetComputerObjectName(NameFullyQualifiedDN, nullptr, &length);
-    vector<WCHAR> machineNameBuffer(length);
-    LPWSTR machineNameDn = machineNameBuffer.data();
+    vector<CHAR> machineNameBuffer(length);
+    LPSTR machineNameDn = machineNameBuffer.data();
     retval = GetComputerObjectName(NameFullyQualifiedDN, machineNameDn, &length);
     if (retval == 0)
     {
@@ -884,15 +884,15 @@ ErrorCode TransportSecurity::UpdateWindowsFabricSpn(DS_SPN_WRITE_OP operation)
         return error;
     }
 
-    wstring localFqdn;
+    string localFqdn;
     error = TcpTransportUtility::GetLocalFqdn(localFqdn);
     if (!error.IsSuccess())
     {
         return error;
     }
 
-    wstring spnToRegister = WINDOWS_FABRIC_SPN_PREFIX + localFqdn;
-    LPCWSTR spn = spnToRegister.c_str();
+    string spnToRegister = WINDOWS_FABRIC_SPN_PREFIX + localFqdn;
+    LPCSTR spn = spnToRegister.c_str();
     retval = DsWriteAccountSpn(dsHandle, operation, machineNameDn, 1, &spn);
     if (retval != ERROR_SUCCESS)
     {

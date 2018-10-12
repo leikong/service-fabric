@@ -31,7 +31,7 @@ ConfigSettingsConfigStore::~ConfigSettingsConfigStore()
 {
 }
 
-void ConfigSettingsConfigStore::GetSections(StringCollection & sectionNames, wstring const & partialName) const
+void ConfigSettingsConfigStore::GetSections(StringCollection & sectionNames, string const & partialName) const
 {
     AcquireReadLock lock(lock_);
 
@@ -46,7 +46,7 @@ void ConfigSettingsConfigStore::GetSections(StringCollection & sectionNames, wst
     }
 }
 
-void ConfigSettingsConfigStore::GetKeys(wstring const & sectionName, StringCollection & keyNames, wstring const & partialName) const
+void ConfigSettingsConfigStore::GetKeys(string const & sectionName, StringCollection & keyNames, string const & partialName) const
 {
     AcquireReadLock lock(lock_);
     
@@ -65,7 +65,7 @@ void ConfigSettingsConfigStore::GetKeys(wstring const & sectionName, StringColle
     }
 }
 
-wstring ConfigSettingsConfigStore::ReadString(wstring const & section, wstring const & key, __out bool & isEncrypted) const
+string ConfigSettingsConfigStore::ReadString(string const & section, string const & key, __out bool & isEncrypted) const
 {
     AcquireReadLock lock(lock_);
 
@@ -82,16 +82,16 @@ wstring ConfigSettingsConfigStore::ReadString(wstring const & section, wstring c
         }
     }
 
-    return L"";
+    return "";
 }
 
-void ConfigSettingsConfigStore::Set(wstring const & sectionName, ConfigParameter && parameter)
+void ConfigSettingsConfigStore::Set(string const & sectionName, ConfigParameter && parameter)
 {
     AcquireWriteLock lock(lock_);
     settings_.Set(sectionName, move(parameter));
 }
 
-void ConfigSettingsConfigStore::Remove(wstring const & sectionName)
+void ConfigSettingsConfigStore::Remove(string const & sectionName)
 {
     AcquireWriteLock lock(lock_);
     settings_.Remove(sectionName);
@@ -99,7 +99,7 @@ void ConfigSettingsConfigStore::Remove(wstring const & sectionName)
 
 bool ConfigSettingsConfigStore::Update(ConfigSettings const & updatedSettings)
 {
-    vector<pair<wstring, wstring>> changes;
+    vector<pair<string, string>> changes;
 
     {
         AcquireWriteLock lock(lock_);
@@ -150,7 +150,7 @@ bool ConfigSettingsConfigStore::Update(ConfigSettings const & updatedSettings)
 
 void ConfigSettingsConfigStore::ProcessAddedOrRemovedSection(
     ConfigSection const & section,
-    __inout vector<pair<wstring, wstring>> & changes)
+    __inout vector<pair<string, string>> & changes)
 {
     for(auto paramIter = section.Parameters.begin(); 
         paramIter != section.Parameters.end(); 
@@ -163,7 +163,7 @@ void ConfigSettingsConfigStore::ProcessAddedOrRemovedSection(
 void ConfigSettingsConfigStore::ProcessModifiedSection(
     ConfigSection const & existingSection,
     ConfigSection const & updatedSection,
-    __inout vector<pair<wstring, wstring>> & changes)
+    __inout vector<pair<string, string>> & changes)
 {
     for(auto existingParamIter = existingSection.Parameters.begin(); 
         existingParamIter != existingSection.Parameters.end(); 

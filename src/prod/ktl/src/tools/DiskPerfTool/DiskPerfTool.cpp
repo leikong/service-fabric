@@ -52,7 +52,7 @@ class TestParameters
         TestParameters();
         ~TestParameters();
         
-        NTSTATUS Parse(int argc, WCHAR* args[]);
+        NTSTATUS Parse(int argc, CHAR* args[]);
 
         typedef enum { Read = 0, Write = 1} TestOperation;
         typedef enum { Sequential = 0, Random = 1} TestAccess;
@@ -63,12 +63,12 @@ class TestParameters
         BOOLEAN _Sparse;
         BOOLEAN _AutomatedMode;
         ULONG _TotalNumberIO;
-        PWCHAR _Filename;
+        PCHAR _Filename;
         ULONG _BlockSizeIn4K;
         ULONG _NumberBlocks;
         ULONG _ForegroundQueueDepth;
         ULONG _BackgroundQueueDepth;
-        PWCHAR _ResultsXML;
+        PCHAR _ResultsXML;
 };
 
 TestParameters::TestParameters()
@@ -79,9 +79,9 @@ TestParameters::TestParameters()
     _Sparse = FALSE;
     _TotalNumberIO = 0x10000;
 #if !defined(PLATFORM_UNIX)
-    _Filename = L"C";
+    _Filename = "C";
 #else
-    _Filename = L"/tmp";
+    _Filename = "/tmp";
 #endif
     _BlockSizeIn4K = 16;
     _NumberBlocks = 0x10000;
@@ -98,18 +98,18 @@ TestParameters::~TestParameters()
 NTSTATUS
 TestParameters::Parse(
     __in int argc,
-    __in WCHAR* args[]
+    __in CHAR* args[]
     )
 {
     for (int i = 1; i < argc; i++)
     {
-        WCHAR* arg = args[i];
+        CHAR* arg = args[i];
         int c = toupper(arg[1]);
-        WCHAR c1 = arg[2];
-        WCHAR c2 = arg[0];
+        CHAR c1 = arg[2];
+        CHAR c2 = arg[0];
         arg += 3;
 
-        if ((c1 != L':') || (c2 != L'-'))
+        if ((c1 != ':') || (c2 != '-'))
         {
             Usage();
             printf("Invalid argument %ws\n", arg);
@@ -118,18 +118,18 @@ TestParameters::Parse(
         
         switch(c)
         {
-            case L'?':
+            case '?':
             {
                 Usage();
                 return(STATUS_INVALID_PARAMETER);
             }
 
-            case L'T':              
+            case 'T':              
             {
-                if ((*arg == L'R') || (*arg == L'r'))
+                if ((*arg == 'R') || (*arg == 'r'))
                 {
                     _TestOperation = Read;
-                } else if ((*arg == L'W') || (*arg == L'w')) {
+                } else if ((*arg == 'W') || (*arg == 'w')) {
                     _TestOperation = Write;
                 } else {
                     printf("Invalid argument %ws\n", arg);
@@ -138,12 +138,12 @@ TestParameters::Parse(
                 break;
             }
 
-            case L'I':              
+            case 'I':              
             {
-                if ((*arg == L'R') || (*arg == L'r'))
+                if ((*arg == 'R') || (*arg == 'r'))
                 {
                     _TestAccess = Random;
-                } else if ((*arg == L'S') || (*arg == L's')) {
+                } else if ((*arg == 'S') || (*arg == 's')) {
                     _TestAccess = Sequential;
                 } else {
                     printf("Invalid argument %ws\n", arg);
@@ -152,12 +152,12 @@ TestParameters::Parse(
                 break;
             }
 
-            case L'Z':              
+            case 'Z':              
             {
-                if ((*arg == L'T') || (*arg == L't'))
+                if ((*arg == 'T') || (*arg == 't'))
                 {
                     _WriteThrough = TRUE;
-                } else if ((*arg == L'F') || (*arg == L'f')) {
+                } else if ((*arg == 'F') || (*arg == 'f')) {
                     _WriteThrough = FALSE;
                 } else {
                     printf("Invalid argument %ws\n", arg);
@@ -166,12 +166,12 @@ TestParameters::Parse(
                 break;
             }
 
-            case L'S':              
+            case 'S':              
             {
-                if ((*arg == L'T') || (*arg == L't'))
+                if ((*arg == 'T') || (*arg == 't'))
                 {
                     _Sparse = TRUE;
-                } else if ((*arg == L'F') || (*arg == L'f')) {
+                } else if ((*arg == 'F') || (*arg == 'f')) {
                     _Sparse = FALSE;
                 } else {
                     printf("Invalid argument %ws\n", arg);
@@ -180,20 +180,20 @@ TestParameters::Parse(
                 break;
             }
 
-            case L'F':
+            case 'F':
             {
                 _Filename = arg;
                 break;
             }
 
-            case L'A':
+            case 'A':
             {
                  _ResultsXML = arg;
                  _AutomatedMode = TRUE;
                  break;
             }
 
-            case L'L':
+            case 'L':
             {
                 KStringView s(arg);             
                 s.ToULONG(_TotalNumberIO);
@@ -205,7 +205,7 @@ TestParameters::Parse(
                 break;
             }
             
-            case L'B':              
+            case 'B':              
             {
                 KStringView s(arg);
                 s.ToULONG(_BlockSizeIn4K);
@@ -217,7 +217,7 @@ TestParameters::Parse(
                 break;
             }
             
-            case L'N':              
+            case 'N':              
             {
                 KStringView s(arg);
                 s.ToULONG(_NumberBlocks);
@@ -229,7 +229,7 @@ TestParameters::Parse(
                 break;
             }
             
-            case L'Q':              
+            case 'Q':              
             {
                 KStringView s(arg);
                 s.ToULONG(_ForegroundQueueDepth);
@@ -241,7 +241,7 @@ TestParameters::Parse(
                 break;
             }
             
-            case L'X':              
+            case 'X':              
             {
                 KStringView s(arg);
                 s.ToULONG(_BackgroundQueueDepth);
@@ -314,7 +314,7 @@ NTSTATUS GenerateFileName(
 #if !defined(PLATFORM_UNIX)
     __in KGuid DiskId
 #else
-    __in PWCHAR PathName
+    __in PCHAR PathName
 #endif
     )
 {
@@ -349,13 +349,13 @@ NTSTATUS GenerateFileName(
         return(STATUS_UNSUCCESSFUL);
     }   
 
-    FileName = L"\\GLOBAL??\\Volume";
-    FileName += static_cast<WCHAR*>(*guidString);
+    FileName = "\\GLOBAL??\\Volume";
+    FileName += static_cast<CHAR*>(*guidString);
 #else
     FileName = PathName;
 #endif
     FileName += KVolumeNamespace::PathSeparator;
-    FileName += L"Testfile.dat";
+    FileName += "Testfile.dat";
     return(FileName.Status());
 }
 
@@ -611,7 +611,7 @@ CreateRandomKIoBuffer(
 NTSTATUS
 CreateTestFile(
     __out KBlockFile::SPtr& File,
-    __in WCHAR* Filename,
+    __in CHAR* Filename,
     __in ULONG BlockSizeIn4K,
     __in ULONG NumberBlocks,
     __in BOOLEAN WriteThrough,
@@ -1658,8 +1658,8 @@ PerformTest(
 
 NTSTATUS AddStringAttribute(
     __in KIMutableDomNode::SPtr dom,
-    __in LPCWCHAR Name,
-    __in LPCWCHAR Value
+    __in LPCCHAR Name,
+    __in LPCCHAR Value
     )
 {
     NTSTATUS status;
@@ -1685,16 +1685,16 @@ NTSTATUS AddStringAttribute(
 
 NTSTATUS AddULONGAttribute(
     __in KIMutableDomNode::SPtr dom,
-    __in LPCWCHAR Name,
+    __in LPCCHAR Name,
     __in ULONG Value
     )
 {
     NTSTATUS status;
     KVariant value;
-    WCHAR str[MAX_PATH];
+    CHAR str[MAX_PATH];
     HRESULT hr;
 
-    hr = StringCchPrintf(str, MAX_PATH, L"%d", Value);
+    hr = StringCchPrintf(str, MAX_PATH, "%d", Value);
 
     value = KVariant::Create(str, KtlSystem::GlobalNonPagedAllocator());
     status = value.Status();
@@ -1716,16 +1716,16 @@ NTSTATUS AddULONGAttribute(
 
 NTSTATUS AddFloatAttribute(
     __in KIMutableDomNode::SPtr dom,
-    __in LPCWCHAR Name,
+    __in LPCCHAR Name,
     __in float Value
     )
 {
     NTSTATUS status;
     KVariant value;
-    WCHAR str[MAX_PATH];
+    CHAR str[MAX_PATH];
     HRESULT hr;
     
-    hr = StringCchPrintf(str, MAX_PATH, L"%f", Value);
+    hr = StringCchPrintf(str, MAX_PATH, "%f", Value);
 
     value = KVariant::Create(str, KtlSystem::GlobalNonPagedAllocator());
     status = value.Status();
@@ -1747,8 +1747,8 @@ NTSTATUS AddFloatAttribute(
 
 NTSTATUS
 PrintResults(
-    __in PWCHAR ResultsXml,
-    __in PWCHAR TestName,
+    __in PCHAR ResultsXml,
+    __in PCHAR TestName,
     __in ULONG ResultCount,
     __in ULONG* BlockSizes,
     __in_ecount(ResultCount) float* MBPerSecond
@@ -1767,7 +1767,7 @@ PrintResults(
         return(status);
     }
 
-    KIMutableDomNode::QName name(L"PerformanceResults");
+    KIMutableDomNode::QName name("PerformanceResults");
     status = domRoot->SetName(name);
     if (!NT_SUCCESS(status))
     {
@@ -1777,7 +1777,7 @@ PrintResults(
     for (ULONG i = 0; i < ResultCount; i++)
     {
         KIMutableDomNode::SPtr performanceResult;
-        KIDomNode::QName name1(L"PerformanceResult");
+        KIDomNode::QName name1("PerformanceResult");
         status = domRoot->AddChild(name1, performanceResult);
         if (!NT_SUCCESS(status))
         {
@@ -1785,7 +1785,7 @@ PrintResults(
         }
 
         KIMutableDomNode::SPtr context;
-        KIDomNode::QName name2(L"Context");
+        KIDomNode::QName name2("Context");
         status = performanceResult->AddChild(name2, context);
         if (!NT_SUCCESS(status))
         {
@@ -1793,21 +1793,21 @@ PrintResults(
         }
 
         KIMutableDomNode::SPtr environment;
-        KIDomNode::QName name3(L"Environment");
+        KIDomNode::QName name3("Environment");
         status = context->AddChild(name3, environment);
         if (!NT_SUCCESS(status))
         {
             return(status);
         }
 
-        status = AddStringAttribute(environment, L"Name", L"MachineName");
+        status = AddStringAttribute(environment, "Name", "MachineName");
         if (!NT_SUCCESS(status))
         {
             return(status);
         }
 
         BOOL b;
-        WCHAR computerName[MAX_PATH];
+        CHAR computerName[MAX_PATH];
         ULONG computerNameLen = MAX_PATH;
         b = GetComputerName(computerName, &computerNameLen);
         if (!b)
@@ -1816,34 +1816,34 @@ PrintResults(
             return(error);
         }
 
-        status = AddStringAttribute(environment, L"Value", computerName);
+        status = AddStringAttribute(environment, "Value", computerName);
         if (!NT_SUCCESS(status))
         {
             return(status);
         }
 
         KIMutableDomNode::SPtr parameter1;;
-        KIDomNode::QName name4(L"Parameter");
+        KIDomNode::QName name4("Parameter");
         status = context->AddChild(name4, parameter1);
         if (!NT_SUCCESS(status))
         {
             return(status);
         }
 
-        status = AddStringAttribute(parameter1, L"Name", L"BlockSizeInKB");
+        status = AddStringAttribute(parameter1, "Name", "BlockSizeInKB");
         if (!NT_SUCCESS(status))
         {
             return(status);
         }
 
-        status = AddULONGAttribute(parameter1, L"Value", BlockSizes[i] * 4);
+        status = AddULONGAttribute(parameter1, "Value", BlockSizes[i] * 4);
         if (!NT_SUCCESS(status))
         {
             return(status);
         }
 
         KIMutableDomNode::SPtr measurements;
-        KIDomNode::QName name5(L"Measurements");
+        KIDomNode::QName name5("Measurements");
         status = performanceResult->AddChild(name5, measurements);
         if (!NT_SUCCESS(status))
         {
@@ -1851,47 +1851,47 @@ PrintResults(
         }
 
         KIMutableDomNode::SPtr measurement;
-        KIDomNode::QName name6(L"Measurement");
+        KIDomNode::QName name6("Measurement");
         status = measurements->AddChild(name6, measurement);
         if (!NT_SUCCESS(status))
         {
             return(status);
         }
 
-        status = AddStringAttribute(measurement, L"Name", TestName);
+        status = AddStringAttribute(measurement, "Name", TestName);
         if (!NT_SUCCESS(status))
         {
             return(status);
         }
 
         KIMutableDomNode::SPtr value;
-        KIDomNode::QName name7(L"Value");
+        KIDomNode::QName name7("Value");
         status = measurement->AddChild(name7, value);
         if (!NT_SUCCESS(status))
         {
             return(status);
         }
 
-        status = AddStringAttribute(value, L"Metric", L"MBPerSecond");
+        status = AddStringAttribute(value, "Metric", "MBPerSecond");
         if (!NT_SUCCESS(status))
         {
             return(status);
         }
 
-        status = AddFloatAttribute(value, L"Value", MBPerSecond[i]);
+        status = AddFloatAttribute(value, "Value", MBPerSecond[i]);
         if (!NT_SUCCESS(status))
         {
             return(status);
         }
 
         SYSTEMTIME systemTime;
-        WCHAR time[MAX_PATH];
+        CHAR time[MAX_PATH];
         GetSystemTime(&systemTime);
-        hr = StringCchPrintf(time, MAX_PATH, L"%02d/%02d%/%d %02d:%02d:%02d",
+        hr = StringCchPrintf(time, MAX_PATH, "%02d/%02d%/%d %02d:%02d:%02d",
                             systemTime.wMonth, systemTime.wDay, systemTime.wYear,
                             systemTime.wHour, systemTime.wMinute, systemTime.wSecond);
 
-        status = AddStringAttribute(value, L"When", time); 
+        status = AddStringAttribute(value, "When", time); 
         if (!NT_SUCCESS(status))
         {
             return(status);
@@ -1910,10 +1910,10 @@ PrintResults(
         return(error);
     }
 
-    LPCWSTR domString = (LPCWSTR)*domKString;
+    LPCSTR domString = (LPCSTR)*domKString;
     ULONG bytesWritten;
 
-    error = WriteFile(file, domString, (ULONG)(wcslen(domString) * sizeof(WCHAR)), &bytesWritten, NULL);
+    error = WriteFile(file, domString, (ULONG)(strlen(domString) * sizeof(CHAR)), &bytesWritten, NULL);
     CloseHandle(file);
 
     if (error != ERROR_SUCCESS)
@@ -1928,7 +1928,7 @@ PrintResults(
 NTSTATUS
 KBlockFileTestX(
     __in int argc, 
-    __in WCHAR* args[]
+    __in CHAR* args[]
     )
 {
     NTSTATUS status = STATUS_SUCCESS;
@@ -1965,8 +1965,8 @@ KBlockFileTestX(
     printf("Running diskperftool with the following:\n");
     printf("    TestOperation: %d\n", testParameters._TestOperation);
     printf("    TestAccess: %d\n", testParameters._TestAccess);
-    printf("    WriteThrough: %ws\n", testParameters._WriteThrough ? L"TRUE" : L"FALSE");
-    printf("    Sparse: %ws\n", testParameters._Sparse ? L"TRUE" : L"FALSE");
+    printf("    WriteThrough: %ws\n", testParameters._WriteThrough ? "TRUE" : "FALSE");
+    printf("    Sparse: %ws\n", testParameters._Sparse ? "TRUE" : "FALSE");
     printf("    TotalNumberIO: %d\n", testParameters._TotalNumberIO);
     printf("    Filename: %ws\n", testParameters._Filename);
     if (testParameters._AutomatedMode)
@@ -2038,7 +2038,7 @@ KBlockFileTestX(
             }
         }
 #if !defined(PLATFORM_UNIX)      // TODO: Port this code
-        PrintResults(testParameters._ResultsXML, L"RawDiskPerformance", automationBlockCount, automationBlockSizes, mbPerSecond);
+        PrintResults(testParameters._ResultsXML, "RawDiskPerformance", automationBlockCount, automationBlockSizes, mbPerSecond);
 #endif
     }
     else 
@@ -2078,7 +2078,7 @@ VOID OpenCloseTest()
     KSynchronizer sync;
     KWString pathName(KtlSystem::GlobalNonPagedAllocator());
 
-    pathName = L"/tmp/foo";
+    pathName = "/tmp/foo";
     do
     {
         KNt::Sleep(250);
@@ -2111,7 +2111,7 @@ VOID OpenCloseTest()
 NTSTATUS
 KBlockFileTest(
     __in int argc, 
-    __in WCHAR* args[]
+    __in CHAR* args[]
     )
 {
     NTSTATUS status;
@@ -2135,7 +2135,7 @@ KBlockFileTest(
 
 #if !defined(PLATFORM_UNIX)
 int
-wmain(int argc, WCHAR* args[])
+wmain(int argc, CHAR* args[])
 {
     return RtlNtStatusToDosError(KBlockFileTest(argc, args));
 }

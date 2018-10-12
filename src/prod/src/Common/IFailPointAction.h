@@ -12,6 +12,6 @@ namespace Common
     public:
         virtual bool Invoke(FailPointContext context) =0;
         virtual bool CheckResult()=0;
-        virtual std::wstring ToString()=0;
+        virtual std::string ToString()=0;
     };
 }

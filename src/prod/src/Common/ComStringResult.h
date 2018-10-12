@@ -19,14 +19,14 @@ namespace Common
             IFabricStringResult)
 
     public:
-        ComStringResult(std::wstring const & value);
+        ComStringResult(std::string const & value);
         virtual ~ComStringResult();
-        LPCWSTR STDMETHODCALLTYPE get_String(void);
+        LPCSTR STDMETHODCALLTYPE get_String(void);
 
-        static HRESULT ReturnStringResult(std::wstring const & result, IFabricStringResult **value);
+        static HRESULT ReturnStringResult(std::string const & result, IFabricStringResult **value);
 
     private:
-        std::wstring value_;
+        std::string value_;
     };
 
     class ComSecureStringResult
@@ -43,7 +43,7 @@ namespace Common
     public:
         ComSecureStringResult(SecureString const & value);
         virtual ~ComSecureStringResult();
-        LPCWSTR STDMETHODCALLTYPE get_String(void);
+        LPCSTR STDMETHODCALLTYPE get_String(void);
 
         static HRESULT ReturnStringResult(SecureString const & result, IFabricStringResult **value);
 
@@ -68,13 +68,13 @@ namespace Common
 
         virtual HRESULT STDMETHODCALLTYPE GetStrings( 
             /* [out] */ ULONG *itemCount,
-            /* [retval][out] */ const LPCWSTR **bufferedItems);
+            /* [retval][out] */ const LPCSTR **bufferedItems);
 
         static HRESULT ReturnStringCollectionResult(StringCollection && result, IFabricStringListResult **value);
 
     private:
         Common::ScopedHeap heap_;
-        Common::ReferenceArray<LPCWSTR> stringCollection_;
+        Common::ReferenceArray<LPCSTR> stringCollection_;
     };
 }
 

@@ -26,8 +26,8 @@ Abstract:
 
 const KU_TEST_ENTRY gs_KuTestCases[] =
 {
-    {   L"XmlBasicTest",              XmlBasicTest,         L"BVT", L"Basic XML Parser Tests"},
-    {   L"DomBasicTest",              DomBasicTest,         L"BVT", L"Basic XML DOM Tests"}
+    {   "XmlBasicTest",              XmlBasicTest,         "BVT", "Basic XML Parser Tests"},
+    {   "DomBasicTest",              DomBasicTest,         "BVT", "Basic XML DOM Tests"}
 };
 
 const ULONG gs_KuTestCasesSize = ARRAYSIZE(gs_KuTestCases);

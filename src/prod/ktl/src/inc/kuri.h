@@ -31,10 +31,10 @@
 
 // class KUriView
 //
-// This is a non-allocating read-only view of a URI. Its primary purpose is to act as a wrapper for constant LPWSTR
+// This is a non-allocating read-only view of a URI. Its primary purpose is to act as a wrapper for constant LPSTR
 // Uri values as parameters, i.e.,
 //
-//      SomeFunctionCall(KUriView(L"foo://bar/x/y/z"));
+//      SomeFunctionCall(KUriView("foo://bar/x/y/z"));
 //
 // Initial parsing occurs during construction.  The parser is a loose superset of RFC 3986.  The superset is to allow
 // for custom macro expansion, Microsoft UNC values, and other slightly non-URI constructs.
@@ -236,7 +236,7 @@ public:
     // Takes a raw string.  Parsing occurs during construction, so verify the URI, call IsValid() afterwards.
     //
     KUriView(
-        __in LPCWSTR RawUri
+        __in LPCSTR RawUri
         )
         {
 #if defined(PLATFORM_UNIX)
@@ -319,9 +319,9 @@ public:
         return _Raw;
     }
 
-    operator LPCWSTR()
+    operator LPCSTR()
     {
-        return LPCWSTR(_Raw);
+        return LPCSTR(_Raw);
     }
 
 

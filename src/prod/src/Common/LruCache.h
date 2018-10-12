@@ -368,8 +368,8 @@ namespace Common
                 hash_.erase(removed->GetListEntry()->GetKey());
 
                 CommonEventSource::Events->TraceLruCacheEviction(
-                    wformatString(hashEntry->GetListEntry()->GetKey()),
-                    wformatString(removed->GetListEntry()->GetKey()), 
+                    formatString(hashEntry->GetListEntry()->GetKey()),
+                    formatString(removed->GetListEntry()->GetKey()), 
                     cacheLimit_,
                     hash_.size(),
                     evictionList_->GetSize());

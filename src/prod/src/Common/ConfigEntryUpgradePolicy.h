@@ -18,7 +18,7 @@ namespace Common
         };
 
         void WriteToTextWriter(TextWriter & w, Enum const & val);
-        std::wstring ToString(Enum const & val);        
-        Enum FromString(std::wstring const & val);        
+        std::string ToString(Enum const & val);        
+        Enum FromString(std::string const & val);        
     }
 }

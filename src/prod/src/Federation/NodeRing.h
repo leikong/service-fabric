@@ -381,7 +381,7 @@ namespace Federation
             neighborhoodExchangeInterval_ = interval;
         }
 
-        void SetUnknown(std::wstring const & address) const;
+        void SetUnknown(std::string const & address) const;
 
         void WriteTo(Common::TextWriter&, Common::FormatOptions const &) const;
 
@@ -431,7 +431,7 @@ namespace Federation
         // This map shadows the ring_ to be able to quickly convert a string address to collection
         // of PartnerNodes.  Since the node is alive in the vector, these can be pointer to avoid
         // interlocks but requires that the items must be removed from this map when removed from the vector.
-        std::multimap<std::wstring, PartnerNode const *> addressToNodeMap_;
+        std::multimap<std::string, PartnerNode const *> addressToNodeMap_;
 
         Common::TimeSpan neighborhoodExchangeInterval_;
 
@@ -459,7 +459,7 @@ namespace Federation
         DENY_COPY(ExternalRing);
 
     public:
-        ExternalRing(SiteNode & site, std::wstring const & ringName);
+        ExternalRing(SiteNode & site, std::string const & ringName);
         ExternalRing(ExternalRing && other);
         void LoadVotes();
         void CheckHealth(StateMachineActionCollection & actions);
@@ -468,7 +468,7 @@ namespace Federation
 
     private:
         SiteNode & site_;
-        std::wstring ringName_;
+        std::string ringName_;
         VoteConfig votes_;
         size_t nextPingIndex_;
         Common::DateTime lastCheckTime_;

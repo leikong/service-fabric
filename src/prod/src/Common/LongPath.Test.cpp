@@ -14,48 +14,48 @@ Common::StringLiteral const TraceType = "LongPathTest";
 
 #if !defined(PLATFORM_UNIX)
 #define PATH_SEPARATOR_C '\\'
-#define PATH_SEPARATOR_S L"\\"
+#define PATH_SEPARATOR_S "\\"
 #else
 #define PATH_SEPARATOR_C '/'
-#define PATH_SEPARATOR_S L"/"
+#define PATH_SEPARATOR_S "/"
 #endif
 
 namespace Common
 {
-    using std::wstring;
+    using std::string;
 
     // Tests LongPath
     class TestLongPath
     {
     protected:
-        void VerifyPath(const wstring & childPath, const wstring & root);
-        static wstring TestLongPath::BuildLongPath(wstring & basePath, wchar_t charToFill = 'x', int dirSize = 100);
-        wstring ConvertToRemotePath(const wstring & path);
-        void VerifyGetFiles(const wstring & path, bool recursive, int exepectResultSize);
-        void VerifyGetSubDirectories(const wstring & path, bool recursive, int expectResultSize);
+        void VerifyPath(const string & childPath, const string & root);
+        static string TestLongPath::BuildLongPath(string & basePath, char charToFill = 'x', int dirSize = 100);
+        string ConvertToRemotePath(const string & path);
+        void VerifyGetFiles(const string & path, bool recursive, int exepectResultSize);
+        void VerifyGetSubDirectories(const string & path, bool recursive, int expectResultSize);
     };
 
     BOOST_FIXTURE_TEST_SUITE(TestLongPathSuite, TestLongPath)
 
     BOOST_AUTO_TEST_CASE(VerifyRegularPaths)
     {
-        wstring absolutePath = Path::Combine(Directory::GetCurrentDirectoryW(), L"LongPath.test");
+        string absolutePath = Path::Combine(Directory::GetCurrentDirectoryW(), "LongPath.test");
         VerifyPath(absolutePath, absolutePath);
 
-        wstring relativePath = L"LongPath.test";
+        string relativePath = "LongPath.test";
         VerifyPath(relativePath, relativePath);
 
 #if !defined(PLATFORM_UNIX)
 // Note: Does not make much sense to verify creation of folder: /LongPath.test
-        wstring relativePathWithALeadingSlash = PATH_SEPARATOR_S L"LongPath.test";
+        string relativePathWithALeadingSlash = PATH_SEPARATOR_S "LongPath.test";
         VerifyPath(relativePathWithALeadingSlash, relativePathWithALeadingSlash);
 #endif
     }
 
     BOOST_AUTO_TEST_CASE(VerifyLocalLongPath)
     {
-        wstring basePath;
-        wstring longPath = TestLongPath::BuildLongPath(basePath);
+        string basePath;
+        string longPath = TestLongPath::BuildLongPath(basePath);
         TestLongPath::VerifyPath(longPath, basePath);
     }
 
@@ -63,8 +63,8 @@ namespace Common
     {
 #if !defined(PLATFORM_UNIX)
 // Note: Remote path is Windows only feature
-        wstring basePath;
-        wstring longPath = TestLongPath::BuildLongPath(basePath);
+        string basePath;
+        string longPath = TestLongPath::BuildLongPath(basePath);
         TestLongPath::VerifyPath(TestLongPath::ConvertToRemotePath(longPath),
             TestLongPath::ConvertToRemotePath((basePath)));
 #endif
@@ -72,11 +72,11 @@ namespace Common
 
     BOOST_AUTO_TEST_SUITE_END()
 
-    void TestLongPath::VerifyPath(const wstring & childPath, const wstring & root)
+    void TestLongPath::VerifyPath(const string & childPath, const string & root)
     {
-        wstring longFilePath = Path::Combine(childPath, L"abc.txt");
-        wstring copyFilePath = Path::Combine(childPath, L"abc_copy.txt");
-        wstring moveFilePath = Path::Combine(childPath, L"abc_moved.txt");
+        string longFilePath = Path::Combine(childPath, "abc.txt");
+        string copyFilePath = Path::Combine(childPath, "abc_copy.txt");
+        string moveFilePath = Path::Combine(childPath, "abc_moved.txt");
 
         VERIFY_IS_TRUE(Directory::Create2(childPath).IsSuccess());
         VERIFY_IS_TRUE(Directory::Exists(childPath));
@@ -130,12 +130,12 @@ namespace Common
         VerifyGetSubDirectories(root, true, 0);
     }
 
-    void TestLongPath::VerifyGetFiles(const wstring & path, bool recursive, int exepectResultSize)
+    void TestLongPath::VerifyGetFiles(const string & path, bool recursive, int exepectResultSize)
     {
-        vector<wstring> result;
+        vector<string> result;
         if (recursive)
         {
-            result = Directory::GetFiles(path, L"*", true, false);
+            result = Directory::GetFiles(path, "*", true, false);
         }
         else
         {
@@ -148,12 +148,12 @@ namespace Common
 #endif
     }
 
-    void TestLongPath::VerifyGetSubDirectories(const wstring & path, bool recursive, int exepectResultSize)
+    void TestLongPath::VerifyGetSubDirectories(const string & path, bool recursive, int exepectResultSize)
     {
-        vector<wstring> result;
+        vector<string> result;
         if (recursive)
         {
-            result = Directory::GetSubDirectories(path, L"*", true, false);
+            result = Directory::GetSubDirectories(path, "*", true, false);
         }
         else
         {
@@ -166,26 +166,26 @@ namespace Common
 #endif
     }
 
-    wstring TestLongPath::BuildLongPath(wstring & basePath, wchar_t charToFill, int dirSize)
+    string TestLongPath::BuildLongPath(string & basePath, char charToFill, int dirSize)
     {
-        wstring path(LONG_PATH_LENGTH + 1, charToFill);
+        string path(LONG_PATH_LENGTH + 1, charToFill);
         // each individual directory name is still limited to 255
         for (int i = dirSize; i < LONG_PATH_LENGTH; i = i + dirSize)
         {
             path[i] = PATH_SEPARATOR_C;
         }
-        std::wstring::size_type index = path.find_first_of(PATH_SEPARATOR_S);
+        std::string::size_type index = path.find_first_of(PATH_SEPARATOR_S);
         basePath = Path::Combine(Directory::GetCurrentDirectoryW(), path.substr(0, index));
         return Path::Combine(Directory::GetCurrentDirectoryW(), path);
     }
 
-    wstring TestLongPath::ConvertToRemotePath(const wstring & path)
+    string TestLongPath::ConvertToRemotePath(const string & path)
     {
-        wstring remotePath(path);
+        string remotePath(path);
         // Converting to a remote path i.e. if the local path is d:\abc, 
         // corresponding remote path would be \\localhost\d$\abc
-        remotePath.insert(0, L"\\\\localhost\\");
-        StringUtility::Replace<std::wstring>(remotePath, L":", L"$");
+        remotePath.insert(0, "\\\\localhost\\");
+        StringUtility::Replace<std::string>(remotePath, ":", "$");
         return remotePath;
     }
 }

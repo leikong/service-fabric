@@ -15,7 +15,7 @@ namespace Common
     public:
         ConfigEntry()
             : isEncrypted_(false),
-            encryptedValue_(L"")
+            encryptedValue_("")
         {
         }
 
@@ -33,12 +33,12 @@ namespace Common
 
         bool IsEncrypted() { return isEncrypted_; }
 
-        std::wstring GetEncryptedValue() { return encryptedValue_; }
+        std::string GetEncryptedValue() { return encryptedValue_; }
 
         __declspec(property(get=get_DefaultValue)) T const & DefaultValue;
         T const & get_DefaultValue() const { return defaultValue_; }
 
-        bool LoadValue(std::wstring & stringValue, bool isEncrypted, bool isCheckOnly)
+        bool LoadValue(std::string & stringValue, bool isEncrypted, bool isCheckOnly)
         {
             bool isValid = true;         
             T newValue;
@@ -50,7 +50,7 @@ namespace Common
                     "Encrypted property cannot be empty. Property {0}.{1} is encrypted but has no value", section_, key_);
 
                 newValue = defaultValue_;
-                stringValue = wformatString(defaultValue_);
+                stringValue = formatString(defaultValue_);
             }            
             else
             {
@@ -86,7 +86,7 @@ namespace Common
             {
                 if(!isEncrypted)
                 {
-                    encryptedValue_ = L"";
+                    encryptedValue_ = "";
                     value_ = newValue;
                 }
                 else
@@ -104,12 +104,12 @@ namespace Common
         bool LoadValue()
         {
             bool isEncrypted;
-            std::wstring stringValue = componentConfig_->FabricGetConfigStore().ReadString(section_, key_, isEncrypted);
+            std::string stringValue = componentConfig_->FabricGetConfigStore().ReadString(section_, key_, isEncrypted);
 
             return LoadValue(stringValue, isEncrypted, false);
         }
 
-        static T DecryptValue(std::wstring const & section, std::wstring const & key, std::wstring const & encryptedValue)
+        static T DecryptValue(std::string const & section, std::string const & key, std::string const & encryptedValue)
         {
 #if !defined(PLATFORM_UNIX)
             SecureString decryptedValue;
@@ -147,7 +147,7 @@ namespace Common
 #endif
         }
 
-        void Load(ComponentConfig const * componentConfig, std::wstring const & section, std::wstring const & key, T const & defaultValue, ConfigEntryUpgradePolicy::Enum upgradePolicy)
+        void Load(ComponentConfig const * componentConfig, std::string const & section, std::string const & key, T const & defaultValue, ConfigEntryUpgradePolicy::Enum upgradePolicy)
         {
             defaultValue_ = defaultValue;
             Initialize(componentConfig, section, key, upgradePolicy);
@@ -156,14 +156,14 @@ namespace Common
         }
 
         template <class Pred>
-        void Load(ComponentConfig const * componentConfig, std::wstring const & section, std::wstring const & key, T const & defaultValue,  ConfigEntryUpgradePolicy::Enum upgradePolicy, Pred pred)
+        void Load(ComponentConfig const * componentConfig, std::string const & section, std::string const & key, T const & defaultValue,  ConfigEntryUpgradePolicy::Enum upgradePolicy, Pred pred)
         {
     		validator_ = std::unique_ptr<Validator<T>>(static_cast<Validator<T>*>(new Pred(pred)));
 
             Load(componentConfig, section, key, defaultValue, upgradePolicy);
         }
 
-		void SetValue(ComponentConfig const * componentConfig, std::wstring const & section, std::wstring const & key, T const & value, T const & defaultValue, ConfigEntryUpgradePolicy::Enum upgradePolicy)
+		void SetValue(ComponentConfig const * componentConfig, std::string const & section, std::string const & key, T const & value, T const & defaultValue, ConfigEntryUpgradePolicy::Enum upgradePolicy)
 		{
 			defaultValue_ = defaultValue;
 			Initialize(componentConfig, section, key, upgradePolicy);
@@ -181,7 +181,7 @@ namespace Common
 		}
 
         template <class Pred>
-        void SetValue(ComponentConfig const * componentConfig, std::wstring const & section, std::wstring const & key, T const & value, T const & defaultValue, ConfigEntryUpgradePolicy::Enum upgradePolicy, Pred pred)
+        void SetValue(ComponentConfig const * componentConfig, std::string const & section, std::string const & key, T const & value, T const & defaultValue, ConfigEntryUpgradePolicy::Enum upgradePolicy, Pred pred)
         {
     		validator_ = std::unique_ptr<Validator<T>>(static_cast<Validator<T>*>(new Pred(pred)));
 
@@ -191,7 +191,7 @@ namespace Common
     private:
         T value_;
         T defaultValue_;
-        std::wstring encryptedValue_;
+        std::string encryptedValue_;
         bool isEncrypted_;        
         std::unique_ptr<Validator<T>> validator_;
 

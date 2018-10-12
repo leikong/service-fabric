@@ -68,9 +68,9 @@ pid_t ProcessUtility::GetProcessId()
 }
 
 ErrorCode ProcessUtility::CreateProcess(
-    wstring const & commandLine,
-    wstring const & workingDirectory,
-    vector<wchar_t> & environmentBlock,
+    string const & commandLine,
+    string const & workingDirectory,
+    vector<char> & environmentBlock,
     DWORD dwCreationFlags,
     __out HandleUPtr & processHandle,
     __out HandleUPtr & threadHandle)
@@ -87,9 +87,9 @@ ErrorCode ProcessUtility::CreateProcess(
 };
 
 ErrorCode ProcessUtility::CreateProcess(
-    wstring const & commandLine,
-    wstring const & workingDirectory,
-    vector<wchar_t> & environmentBlock,
+    string const & commandLine,
+    string const & workingDirectory,
+    vector<char> & environmentBlock,
     DWORD dwCreationFlags,
     __out HandleUPtr & processHandle,
     __out HandleUPtr & threadHandle,
@@ -128,13 +128,13 @@ ErrorCode ProcessUtility::CreateProcess(
     threadHandle.reset();
 
 #if defined(PLATFORM_UNIX)
-    wchar_t* env = environmentBlock.data();
+    char* env = environmentBlock.data();
     vector<char> ansiEnvironment;
     while (*env)
     {
         string enva;
-        wstring envw(env);
-        StringUtility::Utf16ToUtf8(envw, enva);
+        string envw(env);
+        Utf16ToUtf8NotNeeded2(envw, enva);
         ansiEnvironment.insert(ansiEnvironment.end(), enva.begin(), enva.end());
         ansiEnvironment.push_back(0);
         env += envw.length() + 1;
@@ -202,11 +202,11 @@ ErrorCode ProcessUtility::CreateProcess(
 }
 
 #if !defined(PLATFORM_UNIX)
-ErrorCode ProcessUtility::ExecuteCommandLine(wstring const & commandLine, DWORD timeoutInMilliseconds)
+ErrorCode ProcessUtility::ExecuteCommandLine(string const & commandLine, DWORD timeoutInMilliseconds)
 {
     HandleUPtr procHandle;
     HandleUPtr threadHandle;
-    vector<wchar_t> envBlock(0);
+    vector<char> envBlock(0);
 
     auto error = ProcessUtility::CreateProcessW(
         commandLine,
@@ -511,7 +511,7 @@ ErrorCode ProcessUtility::GetProcessExitCode(
 }
 #endif
 
-ErrorCode ProcessUtility::ParseCommandLine(wstring const & commandLine, wstring & exePath, wstring & arguments)
+ErrorCode ProcessUtility::ParseCommandLine(string const & commandLine, string & exePath, string & arguments)
 {
     if (commandLine.empty()) 
     { 
@@ -522,11 +522,11 @@ ErrorCode ProcessUtility::ParseCommandLine(wstring const & commandLine, wstring 
         return ErrorCode::FromHResult(E_INVALIDARG); 
     }
 
-    arguments = L"";
-    if (commandLine[0] == L'"')
+    arguments = "";
+    if (commandLine[0] == '"')
     {
         // find next quote
-        size_t i = commandLine.find_first_of(L'"', 1);
+        size_t i = commandLine.find_first_of('"', 1);
         if (i == string::npos)
         {
              WriteWarning(
@@ -545,7 +545,7 @@ ErrorCode ProcessUtility::ParseCommandLine(wstring const & commandLine, wstring 
     }
     else
     {
-        size_t i = commandLine.find_first_of(L' ', 1);
+        size_t i = commandLine.find_first_of(' ', 1);
         if (i == string::npos)
         {
             exePath = commandLine;
@@ -564,37 +564,37 @@ ErrorCode ProcessUtility::ParseCommandLine(wstring const & commandLine, wstring 
     return ErrorCode(ErrorCodeValue::Success);
 }
 
-wstring ProcessUtility::GetCommandLine(wstring const & exePath, wstring const & arguments)
+string ProcessUtility::GetCommandLine(string const & exePath, string const & arguments)
 {
-    wstring commandLine = L"";
+    string commandLine = "";
 
     if (arguments.length() == 0)
     {
-        if (!StringUtility::StartsWith<wstring>(exePath, L"\""))
+        if (!StringUtility::StartsWith<string>(exePath, "\""))
         {
-            commandLine.append(L"\"");
+            commandLine.append("\"");
         }
         commandLine.append(exePath);
 
-        if (!StringUtility::EndsWith<wstring>(exePath, L"\""))
+        if (!StringUtility::EndsWith<string>(exePath, "\""))
         {
-            commandLine.append(L"\"");
+            commandLine.append("\"");
         }
 
     }
     else
     {
-        if (!StringUtility::StartsWith<wstring>(exePath, L"\""))
+        if (!StringUtility::StartsWith<string>(exePath, "\""))
         {
-            commandLine.append(L"\"");
+            commandLine.append("\"");
         }
         commandLine.append(exePath);
 
-        if (!StringUtility::EndsWith<wstring>(exePath, L"\""))
+        if (!StringUtility::EndsWith<string>(exePath, "\""))
         {
-            commandLine.append(L"\"");
+            commandLine.append("\"");
         }
-        commandLine.append(L" ");
+        commandLine.append(" ");
         commandLine.append(arguments);
     }
 
@@ -639,13 +639,13 @@ ErrorCode ProcessUtility::EnableSynchronizeAccess(ProcessHandle const & processH
 
 
 #if !defined(PLATFORM_UNIX)
-ErrorCode ProcessUtility::GetProcessSidString(__out wstring & stringSid)
+ErrorCode ProcessUtility::GetProcessSidString(__out string & stringSid)
 {
     ProcessHandle thisProcess(::GetCurrentProcess(), false);
     return ProcessUtility::GetProcessSidString(thisProcess, stringSid);
 }
 
-ErrorCode ProcessUtility::GetProcessSidString(ProcessHandle const & processHandle, __out wstring & stringSid)
+ErrorCode ProcessUtility::GetProcessSidString(ProcessHandle const & processHandle, __out string & stringSid)
 {
     WriteNoise(
         TraceType_ProcessUtility,
@@ -686,7 +686,7 @@ ErrorCode ProcessUtility::GetProcessSidString(ProcessHandle const & processHandl
 }
 #endif
 
-ErrorCode ProcessUtility::CreateDefaultEnvironmentBlock(__out vector<wchar_t> & envBlock)
+ErrorCode ProcessUtility::CreateDefaultEnvironmentBlock(__out vector<char> & envBlock)
 {
     EnvironmentMap envMap;
     if (!Environment::GetEnvironmentMap(envMap)) { return ErrorCode(ErrorCodeValue::OperationFailed); }
@@ -703,7 +703,7 @@ ErrorCode ProcessUtility::CreateDefaultEnvironmentBlock(__out vector<wchar_t> & 
 
 #if !defined(PLATFORM_UNIX)
 _Use_decl_annotations_
-ErrorCode ProcessUtility::GetProcessImageName(DWORD processId, wstring & imageName)
+ErrorCode ProcessUtility::GetProcessImageName(DWORD processId, string & imageName)
 {
     imageName.clear();
 
@@ -714,7 +714,7 @@ ErrorCode ProcessUtility::GetProcessImageName(DWORD processId, wstring & imageNa
         return error;
     }
 
-    vector<WCHAR> buffer(1024);
+    vector<CHAR> buffer(1024);
     for (int i = 0; i < 3; ++ i)
     {
         if (::GetProcessImageFileName(process->Value, buffer.data(), (DWORD)buffer.size()) > 0)

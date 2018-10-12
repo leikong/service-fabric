@@ -16,7 +16,7 @@ namespace Transport
         {
         }
 
-        ForwardMessageHeader(Actor::Enum const actor, std::wstring const& action)
+        ForwardMessageHeader(Actor::Enum const actor, std::string const& action)
             : originalActor_(actor)
             , originalAction_(action)
         {
@@ -31,8 +31,8 @@ namespace Transport
         __declspec(property(get=get_Actor)) Actor::Enum Actor;
         Actor::Enum get_Actor() const { return originalActor_; }
 
-        __declspec(property(get=get_Action)) std::wstring const& Action;
-        std::wstring const& get_Action() const { return originalAction_; }
+        __declspec(property(get=get_Action)) std::string const& Action;
+        std::string const& get_Action() const { return originalAction_; }
 
         void WriteTo(Common::TextWriter& w, Common::FormatOptions const&) const
         {
@@ -46,6 +46,6 @@ namespace Transport
 
     private:
         Actor::Enum originalActor_;
-        std::wstring originalAction_;
+        std::string originalAction_;
     };
 }

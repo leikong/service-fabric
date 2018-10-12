@@ -24,17 +24,17 @@ namespace Common
         virtual ~ComConfigStore();
 
         HRESULT STDMETHODCALLTYPE GetSections( 
-            /* [in] */ LPCWSTR partialSectionName,
+            /* [in] */ LPCSTR partialSectionName,
             /* [retval][out] */ IFabricStringListResult **result);
         
         HRESULT STDMETHODCALLTYPE GetKeys( 
-            /* [in] */ LPCWSTR sectionName,
-            /* [in] */ LPCWSTR partialKeyName,
+            /* [in] */ LPCSTR sectionName,
+            /* [in] */ LPCSTR partialKeyName,
             /* [retval][out] */ IFabricStringListResult **result);
         
         HRESULT STDMETHODCALLTYPE ReadString( 
-            /* [in] */ LPCWSTR section,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR section,
+            /* [in] */ LPCSTR key,
             /* [out] */ BOOLEAN * isEncrypted,
             /* [retval][out] */ IFabricStringResult **result);
 
@@ -44,8 +44,8 @@ namespace Common
 
     private:
         ULONG STDMETHODCALLTYPE TryAddRef();
-        bool OnUpdate(std::wstring const & section, std::wstring const & key);
-        bool CheckUpdate(std::wstring const & section, std::wstring const & key, std::wstring const & value, bool isEncrypted);
+        bool OnUpdate(std::string const & section, std::string const & key);
+        bool CheckUpdate(std::string const & section, std::string const & key, std::string const & value, bool isEncrypted);
 
         class ConfigUpdateSink;
         ConfigStoreSPtr store_;

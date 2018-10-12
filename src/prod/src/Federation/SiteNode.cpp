@@ -329,7 +329,7 @@ void SiteNode::SetHealthClient(Client::HealthReportingComponentSPtr const & valu
 
 ErrorCode SiteNode::Initialize(SiteNodeSPtr & siteNodeSPtr)
 {
-    channelSPtr_ = DatagramTransportFactory::CreateTcp(PartnerNode::Address, siteNodeSPtr->IdString, L"SiteNode");
+    channelSPtr_ = DatagramTransportFactory::CreateTcp(PartnerNode::Address, siteNodeSPtr->IdString, "SiteNode");
     channelSPtr_->SetConnectionIdleTimeout(FederationConfig::GetConfig().ConnectionIdleTimeout);
     channelSPtr_->SetInstance(Instance.InstanceId);
     channelSPtr_->SetPerTargetSendQueueLimit(FederationConfig::GetConfig().SendQueueSizeLimit);
@@ -417,7 +417,7 @@ void SiteNode::Route(
     TimeSpan retryTimeout,
     TimeSpan timeout)
 {
-    wstring const & action = message->Action;
+    string const & action = message->Action;
     BeginRoute(
         move(message), 
         nodeId, 
@@ -429,7 +429,7 @@ void SiteNode::Route(
         this->CreateAsyncOperationRoot());
 }
 
-void SiteNode::RouteCallback(AsyncOperationSPtr const & operation, wstring const & action)
+void SiteNode::RouteCallback(AsyncOperationSPtr const & operation, string const & action)
 {
     ErrorCode error = EndRoute(operation);
     if (!error.IsSuccess())
@@ -444,7 +444,7 @@ AsyncOperationSPtr SiteNode::OnBeginRoute(
     MessageUPtr && message,
     NodeId nodeId,
     uint64 instance,
-    wstring const & toRing,
+    string const & toRing,
     bool useExactRouting,
     TimeSpan retryTimeout,
     TimeSpan timeout,
@@ -463,7 +463,7 @@ AsyncOperationSPtr SiteNode::OnBeginRouteRequest(
     MessageUPtr && request,
     NodeId nodeId,
     uint64 instance,
-    wstring const & toRing,
+    string const & toRing,
     bool useExactRouting,
     TimeSpan retryTimeout,
     TimeSpan timeout,
@@ -664,7 +664,7 @@ void SiteNode::AbortSiteNodeOnFailure(ErrorCodeValue::Enum errorCodeValue)
     Abort();
 }
 
-void SiteNode::OnRemoteLeasingApplicationFailed(std::wstring const & remoteId)
+void SiteNode::OnRemoteLeasingApplicationFailed(std::string const & remoteId)
 {
     NodeInstance nodeInstance;
     bool isValid = NodeInstance::TryParse(remoteId, nodeInstance);
@@ -674,7 +674,7 @@ void SiteNode::OnRemoteLeasingApplicationFailed(std::wstring const & remoteId)
 
 void SiteNode::FederationOneWayMessageHandler(__in Message & message, OneWayReceiverContext & oneWayReceiverContext)
 {
-    wstring const & action = message.Action;
+    string const & action = message.Action;
 
     if (action == FederationMessage::GetLockRequest().Action)
     {
@@ -1230,7 +1230,7 @@ void SiteNode::ReportArbitrationFailure(LeaseAgentInstance const & local, LeaseA
 {
     if (InterlockedIncrement(&arbitrationFailure_) == 1)
     {
-        ArbitrationEventSource::Events->Failure(local.Id, local.InstanceId, remote.Id, remote.InstanceId, L"LeaseFailed", monitorLeaseInstance, subjectLeaseInstance, arbitrationType);
+        ArbitrationEventSource::Events->Failure(local.Id, local.InstanceId, remote.Id, remote.InstanceId, "LeaseFailed", monitorLeaseInstance, subjectLeaseInstance, arbitrationType);
     }
 }
 
@@ -1300,13 +1300,13 @@ void SiteNode::ProcessLivenessQueryResponse(NodeInstance const & targetInstance,
     }
 }
 
-uint64 SiteNode::RetrieveInstanceID(std::wstring const & dir, Federation::NodeId nodeId)
+uint64 SiteNode::RetrieveInstanceID(std::string const & dir, Federation::NodeId nodeId)
 {
     SiteNodeSavedInfo sni(0);          
     File file;  
     std::vector<byte> data;     
     
-    std::wstring fullpath = Path::Combine(dir, nodeId.ToString() + L".sni");          
+    std::string fullpath = Path::Combine(dir, nodeId.ToString() + ".sni");          
     auto error = file.TryOpen(fullpath, FileMode::OpenOrCreate, FileAccess::ReadWrite);
     if (error.IsSuccess())
     {
@@ -1365,11 +1365,11 @@ uint64 SiteNode::RetrieveInstanceID(std::wstring const & dir, Federation::NodeId
 }
 
 ISendTarget::SPtr SiteNode::ResolveTarget(
-    wstring const & address,
-    wstring const & targetId,
+    string const & address,
+    string const & targetId,
     uint64 instance)
 {
-    return channelSPtr_->ResolveTarget(address, targetId, L"", instance);
+    return channelSPtr_->ResolveTarget(address, targetId, "", instance);
 }
 
 Common::TimeSpan SiteNode::GetLeaseDuration(PartnerNode const & remotePartner, LEASE_DURATION_TYPE & durationType)

@@ -20,7 +20,7 @@ namespace Federation
                 Transport::MessageUPtr && message,
                 NodeId nodeId,
                 uint64 instance,
-                std::wstring const & toRing,
+                std::string const & toRing,
                 bool useExactRouting,
                 Common::TimeSpan retryTimeout,
                 Common::TimeSpan timeout,
@@ -33,7 +33,7 @@ namespace Federation
                 Transport::MessageUPtr && request,
                 NodeId nodeId,
                 uint64 instance,
-                std::wstring const & toRing,
+                std::string const & toRing,
                 bool useExactRouting,
                 Common::TimeSpan retryTimeout,
                 Common::TimeSpan timeout,
@@ -75,7 +75,7 @@ namespace Federation
         RoutingHeader GetRoutingHeader(
             __in Transport::Message & message,
             NodeInstance const & target,
-            std::wstring const & toRing,
+            std::string const & toRing,
             Common::TimeSpan expiration,
             Common::TimeSpan retryTimeout,
             bool useExactRouting,
@@ -86,7 +86,7 @@ namespace Federation
             bool isRequest,
             NodeId nodeId,
             uint64 instance,
-            std::wstring const & toRing,
+            std::string const & toRing,
             bool useExactRouting,
             Common::TimeSpan retryTimeout,
             Common::TimeSpan timeout,
@@ -104,7 +104,7 @@ namespace Federation
 
         bool TryAddMessageIdToProcessingSet(Transport::MessageId const & id);
 
-        bool TryGetRoutingHop(__in RoutingContextUPtr & context, std::wstring const & toRing, PartnerNodeSPtr & closestNode, __out bool & thisOwnsRoutingToken);
+        bool TryGetRoutingHop(__in RoutingContextUPtr & context, std::string const & toRing, PartnerNodeSPtr & closestNode, __out bool & thisOwnsRoutingToken);
 
         void OnRouteReply(RoutingContextUPtr && context, bool sendRoutingAck, PartnerNodeSPtr const & hopTo, Common::AsyncOperationSPtr const & contextSPtr);
 

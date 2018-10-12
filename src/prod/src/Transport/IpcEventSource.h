@@ -13,16 +13,16 @@ namespace Transport
     class IpcEventSource
     {
     public:
-        DECLARE_STRUCTURED_TRACE(ServerFailedToSend, std::wstring, std::wstring, uint32);
-        DECLARE_STRUCTURED_TRACE(ServerCannotSendToUnknownClient, std::wstring, std::wstring, MessageId, Actor::Trace, std::wstring);
-        DECLARE_STRUCTURED_TRACE(ServerCreated, std::wstring, std::wstring);
-        DECLARE_STRUCTURED_TRACE(ServerReceivedReconnect, std::wstring, std::wstring, uint32, std::wstring);
-        DECLARE_STRUCTURED_TRACE(ServerReceivedBadReconnect, std::wstring, MessageId, std::wstring);
-        DECLARE_STRUCTURED_TRACE(ServerFailedToRemoveClient, std::wstring, std::wstring);
-        DECLARE_STRUCTURED_TRACE(ServerRemovedClient, std::wstring, std::wstring);
+        DECLARE_STRUCTURED_TRACE(ServerFailedToSend, std::string, std::string, uint32);
+        DECLARE_STRUCTURED_TRACE(ServerCannotSendToUnknownClient, std::string, std::string, MessageId, Actor::Trace, std::string);
+        DECLARE_STRUCTURED_TRACE(ServerCreated, std::string, std::string);
+        DECLARE_STRUCTURED_TRACE(ServerReceivedReconnect, std::string, std::string, uint32, std::string);
+        DECLARE_STRUCTURED_TRACE(ServerReceivedBadReconnect, std::string, MessageId, std::string);
+        DECLARE_STRUCTURED_TRACE(ServerFailedToRemoveClient, std::string, std::string);
+        DECLARE_STRUCTURED_TRACE(ServerRemovedClient, std::string, std::string);
 
-        DECLARE_STRUCTURED_TRACE(ClientCreated, std::wstring, std::wstring);
-        DECLARE_STRUCTURED_TRACE(ClientReconnect, std::wstring, MessageId);
+        DECLARE_STRUCTURED_TRACE(ClientCreated, std::string, std::string);
+        DECLARE_STRUCTURED_TRACE(ClientReconnect, std::string, MessageId);
 
         IpcEventSource()
             : IPC_STRUCTURED_TRACE(

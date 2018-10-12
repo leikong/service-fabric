@@ -23,12 +23,12 @@ using namespace PyHost;
 
 StringLiteral const TraceComponent("Host");
 
-wstring const PyCallback_OnInitialize = L"OnInitialize";
-wstring const PyCallback_OnNodeIdAcquired = L"OnNodeIdAcquired";
-wstring const PyCallback_OnNodeIdReleased = L"OnNodeIdReleased";
-wstring const PyCallback_OnBroadcast = L"OnBroadcast";
+string const PyCallback_OnInitialize = "OnInitialize";
+string const PyCallback_OnNodeIdAcquired = "OnNodeIdAcquired";
+string const PyCallback_OnNodeIdReleased = "OnNodeIdReleased";
+string const PyCallback_OnBroadcast = "OnBroadcast";
 
-wstring const PyQuery_SeedNodes = L"seednodes";
+string const PyQuery_SeedNodes = "seednodes";
 
 //
 // Impl
@@ -67,8 +67,8 @@ public:
             return ErrorCodeValue::Success;
         }
 
-        vector<wstring> tokens;
-        StringUtility::Split<wstring>(moduleNames, tokens, L",");
+        vector<string> tokens;
+        StringUtility::Split<string>(moduleNames, tokens, ",");
 
         for (auto const & moduleName : tokens)
         {
@@ -76,7 +76,7 @@ public:
 
             Trace.WriteInfo(TraceComponent, "Initializing Python module '{0}' on node {1} ...", moduleName, fs->Id);
 
-            vector<wstring> args;
+            vector<string> args;
             args.push_back(fs->IdString);
             auto error = pyInterpreter_.Execute(moduleName, PyCallback_OnInitialize, args);
             if (!error.IsSuccess()) { return error; } 
@@ -154,7 +154,7 @@ public:
 
         for (auto const & module : modules_)
         {
-            vector<wstring> args;
+            vector<string> args;
             args.push_back(contents);
 
             auto error = pyInterpreter_.ExecuteIfFound(module.first, PyCallback_OnBroadcast, args);
@@ -170,17 +170,17 @@ public:
 private:
     void Register_PyCallbacks()
     {
-        pyInterpreter_.Register_SetNodeIdOwnership([this](wstring const & moduleName, wstring const & nodeId)
+        pyInterpreter_.Register_SetNodeIdOwnership([this](string const & moduleName, string const & nodeId)
         {
             return SetNodeIdOwnership(moduleName, nodeId);
         });
 
-        pyInterpreter_.Register_Broadcast([this](wstring const & contents)
+        pyInterpreter_.Register_Broadcast([this](string const & contents)
         {
             return Broadcast(contents);
         });
 
-        pyInterpreter_.Register_Query([this](wstring const & query, wstring & result)
+        pyInterpreter_.Register_Query([this](string const & query, string & result)
         {
             return Query(query, result);
         });
@@ -192,14 +192,14 @@ private:
     // Python -> C++
     //
 
-    ErrorCode SetNodeIdOwnership(wstring const & moduleName, wstring const & nodeIdString)
+    ErrorCode SetNodeIdOwnership(string const & moduleName, string const & nodeIdString)
     {
         AcquireWriteLock lock(lock_);
 
         NodeId newNodeId;
         if (!NodeId::TryParse(nodeIdString, newNodeId))
         {
-            auto msg = wformatString("Failed to parse '{0}' as NodeId", nodeIdString);
+            auto msg = formatString("Failed to parse '{0}' as NodeId", nodeIdString);
             Trace.WriteWarning(TraceComponent, "{0}", msg);
             return ErrorCode(ErrorCodeValue::InvalidArgument, move(msg));
         }
@@ -251,7 +251,7 @@ private:
         }
     }
 
-    ErrorCode Broadcast(wstring const & contents)
+    ErrorCode Broadcast(string const & contents)
     {
         auto msg = BroadcastMessageBody::CreateMessage(contents);
 
@@ -263,7 +263,7 @@ private:
         return ErrorCodeValue::Success;
     }
 
-    ErrorCode Query(wstring const & query, wstring & result)
+    ErrorCode Query(string const & query, string & result)
     {
         if (query == PyQuery_SeedNodes)
         {
@@ -274,25 +274,25 @@ private:
             fs->GetSeedNodes(seedNodes);
 
             // Manually build JSON for now
-            result = L"{\"seednodes\":[";
+            result = "{\"seednodes\":[";
             for (auto const & nodeId : seedNodes)
             {
                 if (result.back() != '[')
                 {
-                    result.append(L",");
+                    result.append(",");
                 }
-                result.append(L"\"");
+                result.append("\"");
                 result.append(nodeId.ToString());
-                result.append(L"\"");
+                result.append("\"");
             }
-            result.append(L"]}");
+            result.append("]}");
 
             return ErrorCodeValue::Success;
         }
         else
         {
-            auto msg = wformatString("Invalid query '{0}'. Valid queries: ", query);
-            msg.append(wformatString("'{0}'", PyQuery_SeedNodes));
+            auto msg = formatString("Invalid query '{0}'. Valid queries: ", query);
+            msg.append(formatString("'{0}'", PyQuery_SeedNodes));
 
             Trace.WriteWarning(TraceComponent, "{0}", msg);
 
@@ -310,20 +310,20 @@ private:
         return fs->Token.getRange().Contains(nodeId);
     }
 
-    ErrorCode NotifyNodeIdAcquired(wstring const & moduleName, shared_ptr<ModuleEntry> const & entry)
+    ErrorCode NotifyNodeIdAcquired(string const & moduleName, shared_ptr<ModuleEntry> const & entry)
     {
         entry->IsOwned = true;
 
-        vector<wstring> args;
+        vector<string> args;
         args.push_back(entry->Id.ToString());
         return pyInterpreter_.Execute(moduleName, PyCallback_OnNodeIdAcquired, args);
     }
 
-    ErrorCode NotifyNodeIdReleased(wstring const & moduleName, shared_ptr<ModuleEntry> const & entry)
+    ErrorCode NotifyNodeIdReleased(string const & moduleName, shared_ptr<ModuleEntry> const & entry)
     {
         entry->IsOwned = false;
 
-        vector<wstring> args;
+        vector<string> args;
         args.push_back(entry->Id.ToString());
         return pyInterpreter_.Execute(moduleName, PyCallback_OnNodeIdReleased, args);
     }
@@ -355,7 +355,7 @@ private:
 
     PyInterpreter pyInterpreter_;
     weak_ptr<FederationSubsystem> fs_;
-    unordered_map<wstring, shared_ptr<ModuleEntry>> modules_;
+    unordered_map<string, shared_ptr<ModuleEntry>> modules_;
     RwLock lock_;
 };
 

@@ -31,18 +31,18 @@ namespace Common
         virtual ~AccessToken();
 
         static Common::ErrorCode CreateUserToken(
-            std::wstring const & accountName,
-            std::wstring const & domain,
-            std::wstring const & password,
+            std::string const & accountName,
+            std::string const & domain,
+            std::string const & password,
             DWORD logonType,
             DWORD logonProvider,
             bool loadProfile,
             PSID const & sid,
             __out AccessTokenSPtr & accessToken);
         static Common::ErrorCode CreateUserToken(
-            std::wstring const & accountName,
-            std::wstring const & domain,
-            std::wstring const & password,
+            std::string const & accountName,
+            std::string const & domain,
+            std::string const & password,
             DWORD logonType,
             DWORD logonProvider,
             bool loadProfile,
@@ -50,8 +50,8 @@ namespace Common
             __out AccessTokenUPtr & accessToken);
 
         static Common::ErrorCode CreateDomainUserToken(
-            std::wstring const & username,
-            std::wstring const & domain,
+            std::string const & username,
+            std::string const & domain,
             Common::SecureString const & password,
             bool interactiveLogon,
             bool loadProfile,
@@ -59,15 +59,15 @@ namespace Common
             __out AccessTokenSPtr & accessToken);
 
         static Common::ErrorCode CreateServiceAccountToken(
-            std::wstring const & serviceAccountName,
-            std::wstring const & domain,
-            std::wstring const & password,
+            std::string const & serviceAccountName,
+            std::string const & domain,
+            std::string const & password,
             PSID const & sid,
             __out AccessTokenSPtr & accessToken);
 
         static Common::ErrorCode CreateProcessToken(HANDLE processHandle, DWORD desiredAccess, __out AccessTokenSPtr & accessToken);
 
-        static Common::ErrorCode UpdateCachedCredentials(std::wstring const & username, std::wstring const & domain, std::wstring const & password);
+        static Common::ErrorCode UpdateCachedCredentials(std::string const & username, std::string const & domain, std::string const & password);
 
         __declspec(property(get = get_TokenHandle)) TokenHandleSPtr const & TokenHandle;
         TokenHandleSPtr const & get_TokenHandle() const { return this->tokenHandle_; }
@@ -75,8 +75,8 @@ namespace Common
         __declspec(property(get = get_ProfileHandle)) ProfileHandleSPtr const & ProfileHandle;
         ProfileHandleSPtr const & get_ProfileHandle() const { return this->profileHandle_; }
 
-        Common::ErrorCode IsAllowedPrivilege(__in std::wstring const & privilege, __out bool & isAllowed);
-        Common::ErrorCode EnablePrivilege(__in std::wstring const & privilege);
+        Common::ErrorCode IsAllowedPrivilege(__in std::string const & privilege, __out bool & isAllowed);
+        Common::ErrorCode EnablePrivilege(__in std::string const & privilege);
         Common::ErrorCode CreateRestrictedToken(__out AccessTokenSPtr & restrictedToken);
         Common::ErrorCode CreateRestrictedToken(PSID sidToDeny, __out AccessTokenSPtr & restrictedToken);
         Common::ErrorCode GetUserSid(__out SidSPtr & sid);
@@ -89,9 +89,9 @@ namespace Common
 #if !defined(PLATFORM_UNIX)
     private:
         static Common::ErrorCode GetUserTokenAndProfileHandle(
-            std::wstring const & accountName,
-            std::wstring const & domain,
-            std::wstring const & password,
+            std::string const & accountName,
+            std::string const & domain,
+            std::string const & password,
             DWORD logonType,
             DWORD logonProvider,
             bool loadProfile,
@@ -100,9 +100,9 @@ namespace Common
             __out ProfileHandleSPtr & profileHandle);
 
         static Common::ErrorCode CreateUserTokenWithSid(
-            std::wstring const & accountName,
-            std::wstring const & domain,
-            std::wstring const & password,
+            std::string const & accountName,
+            std::string const & domain,
+            std::string const & password,
             DWORD logonType,
             DWORD logonProvider,
             PSID const & sidToAdd,
@@ -129,18 +129,18 @@ namespace Common
 
 #if defined(PLATFORM_UNIX)
         uid_t uid_;
-        wstring accountName_;
-        wstring password_;
+        string accountName_;
+        string password_;
 
     public:
         __declspec(property(get = get_Uid)) uid_t const Uid;
         uid_t const get_Uid() const { return this->uid_; }
 
-        __declspec(property(get = get_AccountName)) wstring const AccountName;
-        wstring const get_AccountName() const { return this->accountName_; }
+        __declspec(property(get = get_AccountName)) string const AccountName;
+        string const get_AccountName() const { return this->accountName_; }
 
-        __declspec(property(get = get_Password)) wstring const Password;
-        wstring const get_Password() const { return this->password_; }
+        __declspec(property(get = get_Password)) string const Password;
+        string const get_Password() const { return this->password_; }
 
 #endif
     };

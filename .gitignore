@@ -50,6 +50,7 @@ build.dbb
 buildd.evt
 build.evt
 build.prod
+/build/**
 
 # CloudBuild
 BuildSessionInfo.json

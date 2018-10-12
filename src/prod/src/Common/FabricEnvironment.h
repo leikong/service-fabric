@@ -12,130 +12,130 @@ namespace Common
     {
 
     public:
-        static Common::GlobalWString FabricDataRootEnvironmentVariable;
-        static Common::GlobalWString FabricRootEnvironmentVariable;
-        static Common::GlobalWString FabricBinRootEnvironmentVariable;
-        static Common::GlobalWString FabricLogRootEnvironmentVariable;
-        static Common::GlobalWString EnableCircularTraceSessionEnvironmentVariable;
-        static Common::GlobalWString FabricCodePathEnvironmentVariable;
-        static Common::GlobalWString HostedServiceNameEnvironmentVariable;
-        static Common::GlobalWString FileConfigStoreEnvironmentVariable;
-        static Common::GlobalWString PackageConfigStoreEnvironmentVariable;
-        static Common::GlobalWString SettingsConfigStoreEnvironmentVariable;
-        static Common::GlobalWString RemoveNodeConfigurationEnvironmentVariable;
+        static Common::GlobalString FabricDataRootEnvironmentVariable;
+        static Common::GlobalString FabricRootEnvironmentVariable;
+        static Common::GlobalString FabricBinRootEnvironmentVariable;
+        static Common::GlobalString FabricLogRootEnvironmentVariable;
+        static Common::GlobalString EnableCircularTraceSessionEnvironmentVariable;
+        static Common::GlobalString FabricCodePathEnvironmentVariable;
+        static Common::GlobalString HostedServiceNameEnvironmentVariable;
+        static Common::GlobalString FileConfigStoreEnvironmentVariable;
+        static Common::GlobalString PackageConfigStoreEnvironmentVariable;
+        static Common::GlobalString SettingsConfigStoreEnvironmentVariable;
+        static Common::GlobalString RemoveNodeConfigurationEnvironmentVariable;
 
-        static Common::GlobalWString LogDirectoryRelativeToDataRoot;
-        static Common::GlobalWString WindowsFabricRemoveNodeConfigurationRegValue;
+        static Common::GlobalString LogDirectoryRelativeToDataRoot;
+        static Common::GlobalString WindowsFabricRemoveNodeConfigurationRegValue;
 
-        static Common::GlobalWString FabricDnsServerIPAddressEnvironmentVariable;
+        static Common::GlobalString FabricDnsServerIPAddressEnvironmentVariable;
 
         static Common::ErrorCode GetStoreTypeAndLocation(HMODULE dllModule,
             __out ConfigStoreType::Enum & storeType,
-            __out std::wstring & storeLocation);
+            __out std::string & storeLocation);
 
         static Common::ErrorCode GetInfrastructureManifest(
-            std::wstring const &,
-            __out std::wstring &);
+            std::string const &,
+            __out std::string &);
 
         static Common::ErrorCode GetFabricRoot(
-            __out std::wstring &);
+            __out std::string &);
 
         static Common::ErrorCode GetFabricRoot(
-            LPCWSTR machineName, __out std::wstring &);
+            LPCSTR machineName, __out std::string &);
 
         static Common::ErrorCode GetFabricBinRoot(
-            __out std::wstring &);
+            __out std::string &);
 
         static Common::ErrorCode GetFabricBinRoot(
-            LPCWSTR machineName, __out std::wstring &);
+            LPCSTR machineName, __out std::string &);
 
         static Common::ErrorCode GetFabricCodePath(
-            __out std::wstring &);
+            __out std::string &);
 
         static Common::ErrorCode GetFabricCodePath(
-            LPCWSTR machineName, __out std::wstring &);
+            LPCSTR machineName, __out std::string &);
 
         static Common::ErrorCode GetFabricCodePath(
-            HMODULE dllModule, __out std::wstring & fabricCodePath);
+            HMODULE dllModule, __out std::string & fabricCodePath);
 
         static Common::ErrorCode GetFabricCodePath(
-            HMODULE dllModule, LPCWSTR machineName, __out std::wstring & fabricCodePath);
+            HMODULE dllModule, LPCSTR machineName, __out std::string & fabricCodePath);
 
         static Common::ErrorCode GetFabricDataRoot(
-            __out std::wstring &);
+            __out std::string &);
 
         static Common::ErrorCode GetFabricDataRoot(
-            LPCWSTR machineName, __out std::wstring &);
+            LPCSTR machineName, __out std::string &);
 
         static Common::ErrorCode GetFabricLogRoot(
-            __out std::wstring &);
+            __out std::string &);
 
         static Common::ErrorCode GetFabricLogRoot(
-            LPCWSTR machineName, __out std::wstring &);
+            LPCSTR machineName, __out std::string &);
 
         static Common::ErrorCode GetEnableCircularTraceSession(
             __out BOOLEAN &);
 
         static Common::ErrorCode GetEnableCircularTraceSession(
-            LPCWSTR machineName, __out BOOLEAN &);
+            LPCSTR machineName, __out BOOLEAN &);
 
         static Common::ErrorCode GetFabricDnsServerIPAddress(
-            __out std::wstring &);
+            __out std::string &);
 
         static Common::ErrorCode GetFabricDnsServerIPAddress(
-            LPCWSTR machineName, __out std::wstring &);
+            LPCSTR machineName, __out std::string &);
 
         static Common::ErrorCode SetFabricRoot(
-            const std::wstring &);
+            const std::string &);
 
         static Common::ErrorCode SetFabricRoot(
-            const std::wstring &, LPCWSTR machineName);
+            const std::string &, LPCSTR machineName);
 
         static Common::ErrorCode SetFabricBinRoot(
-            const std::wstring &);
+            const std::string &);
 
         static Common::ErrorCode SetFabricBinRoot(
-            const std::wstring &, LPCWSTR machineName);
+            const std::string &, LPCSTR machineName);
 
         static Common::ErrorCode SetFabricCodePath(
-            const std::wstring &);
+            const std::string &);
 
         static Common::ErrorCode SetFabricCodePath(
-            const std::wstring &, LPCWSTR machineName);
+            const std::string &, LPCSTR machineName);
 
         static Common::ErrorCode SetFabricDataRoot(
-            const std::wstring &);
+            const std::string &);
 
         static Common::ErrorCode SetFabricDataRoot(
-            const std::wstring &, LPCWSTR machineName);
+            const std::string &, LPCSTR machineName);
 
         static Common::ErrorCode SetFabricLogRoot(
-            const std::wstring &);
+            const std::string &);
 
         static Common::ErrorCode SetFabricLogRoot(
-            const std::wstring &, LPCWSTR machineName);
+            const std::string &, LPCSTR machineName);
 
         static Common::ErrorCode SetEnableCircularTraceSession(
-            BOOLEAN, LPCWSTR machineName);
+            BOOLEAN, LPCSTR machineName);
 
         static Common::ErrorCode SetEnableUnsupportedPreviewFeatures(
-            BOOLEAN, LPCWSTR machineName);
+            BOOLEAN, LPCSTR machineName);
 
         static Common::ErrorCode GetEnableUnsupportedPreviewFeatures(
             __out bool &);
 
         static Common::ErrorCode SetIsSFVolumeDiskServiceEnabled(
-            BOOLEAN, LPCWSTR machineName);
+            BOOLEAN, LPCSTR machineName);
 
         static Common::ErrorCode GetIsSFVolumeDiskServiceEnabled(
             __out bool &);
 
         static void GetFabricTracesTestKeyword(
-            __out std::wstring &);
+            __out std::string &);
 
-        static Common::ErrorCode GetRemoveNodeConfigurationValue(__out std::wstring &);
+        static Common::ErrorCode GetRemoveNodeConfigurationValue(__out std::string &);
 
-        static Common::ErrorCode GetFabricVersion(__out std::wstring &);
+        static Common::ErrorCode GetFabricVersion(__out std::string &);
 
 #if defined(PLATFORM_UNIX)
         static Common::ErrorCode GetLinuxPackageManagerType(__out Common::LinuxPackageManagerType::Enum &);
@@ -143,40 +143,40 @@ namespace Common
 
     private:
         static Common::ErrorCode GetRegistryKeyHelper(
-            const std::wstring &, const std::wstring &, ErrorCode, LPCWSTR, __out std::wstring &);
+            const std::string &, const std::string &, ErrorCode, LPCSTR, __out std::string &);
 
         static Common::ErrorCode GetRegistryKeyHelper(
-            const std::wstring &, const std::wstring &, ErrorCode, LPCWSTR, __out DWORD &);
+            const std::string &, const std::string &, ErrorCode, LPCSTR, __out DWORD &);
 
         static Common::ErrorCode GetRegistryKeyHelper(
-            RegistryKey &, const std::wstring &, ErrorCode, __out std::wstring &);
+            RegistryKey &, const std::string &, ErrorCode, __out std::string &);
 
         static Common::ErrorCode GetRegistryKeyHelper(
-            RegistryKey &, const std::wstring &, ErrorCode, __out DWORD &);
+            RegistryKey &, const std::string &, ErrorCode, __out DWORD &);
 
         static Common::ErrorCode SetRegistryKeyHelper(
-            const std::wstring &, const std::wstring &, LPCWSTR);
+            const std::string &, const std::string &, LPCSTR);
 
         static Common::ErrorCode SetRegistryKeyHelper(
-            const std::wstring &, DWORD, LPCWSTR);
+            const std::string &, DWORD, LPCSTR);
 
         static Common::ErrorCode SetRegistryKeyHelper(
-            RegistryKey &, const std::wstring &, const std::wstring &);
+            RegistryKey &, const std::string &, const std::string &);
 
         static Common::ErrorCode SetRegistryKeyHelper(
-            RegistryKey &, const std::wstring &, DWORD);
+            RegistryKey &, const std::string &, DWORD);
 
         static Common::ErrorCode GetEtcConfigValue(
-            const std::wstring &, ErrorCode, __out std::wstring &);
+            const std::string &, ErrorCode, __out std::string &);
 
         static Common::ErrorCode GetEtcConfigValue(
-            const std::wstring &, ErrorCode, __out DWORD &);
+            const std::string &, ErrorCode, __out DWORD &);
 
         static Common::ErrorCode SetEtcConfigValue(
-            const std::wstring &, const std::wstring &);
+            const std::string &, const std::string &);
 
         static Common::ErrorCode SetEtcConfigValue(
-            const std::wstring &, DWORD);
+            const std::string &, DWORD);
 
     private:
 #if defined(PLATFORM_UNIX)

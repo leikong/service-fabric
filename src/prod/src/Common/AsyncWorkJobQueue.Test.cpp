@@ -89,10 +89,10 @@ namespace Common
             , ExpectedCompletedSync(expectedCompletedSync)
             , owner_(owner)
             , endCalled_()
-            , blockStart_(L"BlockStart", useWaitProcessStartSignal)
-            , blockCallback_(L"BlockCallback", useWaitProcessCallbackSignal)
-            , blockEnd_(L"BlockEnd", useWaitProcessEndSignal)
-            , blockCompleteStart_(L"BlockCompleteStart", useWaitCompleteStartSignal)
+            , blockStart_("BlockStart", useWaitProcessStartSignal)
+            , blockCallback_("BlockCallback", useWaitProcessCallbackSignal)
+            , blockEnd_("BlockEnd", useWaitProcessEndSignal)
+            , blockCompleteStart_("BlockCompleteStart", useWaitCompleteStartSignal)
             , endWorkCalled_(false)
         {
             Trace.WriteInfo("TestAsyncWorkJobItem", "ctor {0}, {1}", this->SequenceNumber, this->State);
@@ -218,7 +218,7 @@ namespace Common
         {
             DENY_COPY(BlockSignal)
         public:
-            BlockSignal(std::wstring const & name, bool enable)
+            BlockSignal(std::string const & name, bool enable)
                 : name_(name)
                 , event_()
             {
@@ -248,7 +248,7 @@ namespace Common
             }
 
         private:
-            wstring name_;
+            string name_;
             unique_ptr<ManualResetEvent> event_;
         };
 
@@ -301,7 +301,7 @@ namespace Common
                 (itemCount == expectedItemCount) &&
                 (asyncReadyItemCount == expectedAsyncReadyItemCount) &&
                 (pendingProcessItemCount == expectedPendingProcessItemCount);
-            wstring msg;
+            string msg;
             StringWriter writer(msg);
             writer.Write(
                 "configuration: maxThreads={0}/{1},maxQueueSize={2}/{3},maxPending={4}/{5} ",
@@ -342,7 +342,7 @@ namespace Common
             }
         }
 
-        VERIFY_FAIL(L"CheckJobQueueStatistics failed and no retries left");
+        VERIFY_FAIL("CheckJobQueueStatistics failed and no retries left");
     }
 
     //
@@ -362,7 +362,7 @@ namespace Common
             TestAsyncWorkJobItem syncJobItem(jobRoot, true, false, false, false);
             syncJobItem.CheckState(AsyncWorkJobItemState::NotStarted);
 
-            auto state = syncJobItem.ProcessJob([](uint64){ VERIFY_FAIL(L"The sync jobs should not call the callback"); });
+            auto state = syncJobItem.ProcessJob([](uint64){ VERIFY_FAIL("The sync jobs should not call the callback"); });
             VERIFY_ARE_EQUAL2(state, AsyncWorkJobItemState::CompletedSync);
             syncJobItem.CheckState(AsyncWorkJobItemState::CompletedSync);
         }
@@ -397,8 +397,8 @@ namespace Common
 
         auto jobRootCopy = jobRoot;
         AsyncWorkJobQueue<TestAsyncWorkJobItemSPtr> jobQueue(
-            L"TestAsyncWorkJobQueueStatistics",
-            L"",
+            "TestAsyncWorkJobQueueStatistics",
+            "",
             move(jobRootCopy),
             make_unique<DefaultJobQueueConfigSettingsHolder>(maxThreads, maxQueueSize, maxProcessingCount),
             false);
@@ -488,8 +488,8 @@ namespace Common
 
         auto jobRootCopy = jobRoot;
         AsyncWorkJobQueue<TestAsyncWorkJobItemSPtr> jobQueue(
-            L"TestAsyncWorkJobQueueWithSyncWorkAndQueueFull",
-            L"",
+            "TestAsyncWorkJobQueueWithSyncWorkAndQueueFull",
+            "",
             move(jobRootCopy),
             make_unique<DefaultJobQueueConfigSettingsHolder>(maxThreads, maxQueueSize, maxProcessingCount),
             false);
@@ -631,8 +631,8 @@ namespace Common
 
         auto jobRootCopy = jobRoot;
         AsyncWorkJobQueue<TestAsyncWorkJobItemSPtr> jobQueue(
-            L"TestAsyncWorkJobQueueWithAsyncWorkAndQueueFull",
-            L"",
+            "TestAsyncWorkJobQueueWithAsyncWorkAndQueueFull",
+            "",
             move(jobRootCopy),
             make_unique<DefaultJobQueueConfigSettingsHolder>(maxThreads, maxQueueSize, maxProcessingCount),
             false,
@@ -781,8 +781,8 @@ namespace Common
 
         auto jobRootCopy = jobRoot;
         AsyncWorkJobQueue<TestAsyncWorkJobItemSPtr> jobQueue(
-            L"TestAsyncWorkJobQueueThrottlePendingMaxCount",
-            L"",
+            "TestAsyncWorkJobQueueThrottlePendingMaxCount",
+            "",
             move(jobRootCopy),
             make_unique<DefaultJobQueueConfigSettingsHolder>(maxThreads, maxQueueSize, maxProcessingCount),
             false);
@@ -848,8 +848,8 @@ namespace Common
 
         auto jobRootCopy = jobRoot;
         AsyncWorkJobQueue<TestAsyncWorkJobItemSPtr> jobQueue(
-            L"TestAsyncWorkJobQueueTimedOutJobs",
-            L"",
+            "TestAsyncWorkJobQueueTimedOutJobs",
+            "",
             move(jobRootCopy),
             make_unique<DefaultJobQueueConfigSettingsHolder>(maxThreads, maxQueueSize, maxProcessingCount),
             false);
@@ -902,8 +902,8 @@ namespace Common
         int maxProcessingCount = 10;
         auto jobRootCopy = jobRoot;
         AsyncWorkJobQueue<TestAsyncWorkJobItemSPtr> jobQueue(
-            L"TestAsyncWorkJobQueueParallelStartAndReadyToComplete",
-            L"",
+            "TestAsyncWorkJobQueueParallelStartAndReadyToComplete",
+            "",
             move(jobRootCopy),
             make_unique<DefaultJobQueueConfigSettingsHolder>(maxThreads, maxQueueSize, maxProcessingCount),
             false);
@@ -940,8 +940,8 @@ namespace Common
         int maxProcessingCount = maxQueueSize;
         auto jobRootCopy = jobRoot;
         AsyncWorkJobQueue<TestAsyncWorkJobItemSPtr> jobQueue(
-            L"TestAsyncWorkJobItemCloseRootAfterClosed",
-            L"",
+            "TestAsyncWorkJobItemCloseRootAfterClosed",
+            "",
             move(jobRootCopy),
             make_unique<DefaultJobQueueConfigSettingsHolder>(maxThreads, maxQueueSize, maxProcessingCount),
             false);
@@ -1016,7 +1016,7 @@ namespace Common
             if (retryCount == 0)
             {
                 Trace.WriteError("AsyncWorkJobQueueTest", "TestAsyncWorkJobQueueClose: root not reset after close, retry exhausted. Use count={0}", root.use_count());
-                VERIFY_FAIL(L"Root not reset after close");
+                VERIFY_FAIL("Root not reset after close");
             }
 
             Trace.WriteInfo("AsyncWorkJobQueueTest", "TestAsyncWorkJobQueueClose: root not reset after close, retry");

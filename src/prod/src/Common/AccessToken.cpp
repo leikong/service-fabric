@@ -71,16 +71,16 @@ ErrorCode AccessToken::CreateRestrictedToken(PSID sidToDeny, __out AccessTokenSP
     return ErrorCode::Success();
 }
 
-ErrorCode AccessToken::CreateServiceAccountToken(wstring const & serviceAccountName, wstring const & domain, wstring const & password, PSID const & sid, __out AccessTokenSPtr & accessToken)
+ErrorCode AccessToken::CreateServiceAccountToken(string const & serviceAccountName, string const & domain, string const & password, PSID const & sid, __out AccessTokenSPtr & accessToken)
 {
     accessToken = make_shared<AccessToken>();
     return ErrorCode::Success();
 }
 
 ErrorCode AccessToken::CreateUserToken(
-    wstring const & accountName,
-    wstring const & domain,
-    wstring const & password,
+    string const & accountName,
+    string const & domain,
+    string const & password,
     DWORD logonType,
     DWORD logonProvider,
     bool loadProfile,
@@ -233,9 +233,9 @@ ErrorCode AccessToken::CreateProcessToken(HANDLE processHandle, DWORD desiredAcc
 }
 
 ErrorCode AccessToken::GetUserTokenAndProfileHandle(
-    wstring const & accountName,
-    wstring const & domain,
-    wstring const & password,
+    string const & accountName,
+    string const & domain,
+    string const & password,
     DWORD logonType,
     DWORD logonProvider,
     bool loadProfile,
@@ -275,7 +275,7 @@ ErrorCode AccessToken::GetUserTokenAndProfileHandle(
         PROFILEINFO profileInfo = { 0 };
         ::ZeroMemory(&profileInfo, sizeof(PROFILEINFO));
         profileInfo.dwSize = sizeof(profileInfo);
-        profileInfo.lpUserName = (LPWSTR)&accountName[0];
+        profileInfo.lpUserName = (LPSTR)&accountName[0];
 
         if (!::LoadUserProfileW(tokenHandle->Value, &profileInfo))
         {
@@ -295,9 +295,9 @@ ErrorCode AccessToken::GetUserTokenAndProfileHandle(
 }
 
 ErrorCode AccessToken::CreateUserToken(
-    wstring const & accountName,
-    wstring const & domain,
-    wstring const & password,
+    string const & accountName,
+    string const & domain,
+    string const & password,
     DWORD logonType,
     DWORD logonProvider,
     bool loadProfile,
@@ -328,9 +328,9 @@ ErrorCode AccessToken::CreateUserToken(
 }
 
 ErrorCode AccessToken::CreateUserToken(
-    wstring const & accountName,
-    wstring const & domain,
-    wstring const & password,
+    string const & accountName,
+    string const & domain,
+    string const & password,
     DWORD logonType,
     DWORD logonProvider,
     bool loadProfile,
@@ -360,9 +360,9 @@ ErrorCode AccessToken::CreateUserToken(
 }
 
 ErrorCode AccessToken::CreateUserTokenWithSid(
-    wstring const & accountName,
-    wstring const & domain,
-    wstring const & password,
+    string const & accountName,
+    string const & domain,
+    string const & password,
     DWORD logonType,
     DWORD logonProvider,
     PSID const & sidToAdd,
@@ -434,7 +434,7 @@ ErrorCode AccessToken::CreateUserTokenWithSid(
 
     // As stated at https://docs.microsoft.com/en-us/windows/desktop/secauthn/logonuserexexw, LogonUserExExW method is not direclty available in any public header
     // You must use the GetModuleHandle and GetProcAddress functions to dynamically link to Advapi32.dll and invoke the function.
-    auto moduleHandle = GetModuleHandle(L"Advapi32");
+    auto moduleHandle = GetModuleHandle("Advapi32");
     if (moduleHandle == nullptr)
     {
         error = ErrorCode::FromWin32Error();
@@ -509,8 +509,8 @@ ErrorCode AccessToken::FreeSidAndReturnError(
 }
 
 ErrorCode AccessToken::CreateDomainUserToken(
-    wstring const & userName,
-    wstring const & domain,
+    string const & userName,
+    string const & domain,
     SecureString const & password,
     bool interactiveLogon,
     bool loadProfile,
@@ -521,7 +521,7 @@ ErrorCode AccessToken::CreateDomainUserToken(
     return AccessToken::CreateUserToken(userName, domain, password.GetPlaintext(), logonType, LOGON32_PROVIDER_DEFAULT, loadProfile, sid, accessToken);
 }
 
-ErrorCode AccessToken::CreateServiceAccountToken(wstring const & serviceAccountName, wstring const & domain, wstring const & password, PSID const & sid, __out AccessTokenSPtr & accessToken)
+ErrorCode AccessToken::CreateServiceAccountToken(string const & serviceAccountName, string const & domain, string const & password, PSID const & sid, __out AccessTokenSPtr & accessToken)
 {
     TokenHandleSPtr tokenHandle = nullptr;
     ProfileHandleSPtr profileHandle;
@@ -581,7 +581,7 @@ ErrorCode AccessToken::DuplicateToken(DWORD desiredAccess, __out AccessTokenSPtr
     return ErrorCode(ErrorCodeValue::Success);
 }
 
-ErrorCode AccessToken::IsAllowedPrivilege(__in wstring const & privilege, __out bool & isAllowed)
+ErrorCode AccessToken::IsAllowedPrivilege(__in string const & privilege, __out bool & isAllowed)
 {
     LUID luid = { 0 };
     if (!::LookupPrivilegeValue(NULL, &privilege[0], &luid))
@@ -613,7 +613,7 @@ ErrorCode AccessToken::IsAllowedPrivilege(__in wstring const & privilege, __out 
     return ErrorCode(ErrorCode(ErrorCodeValue::Success));
 }
 
-ErrorCode AccessToken::EnablePrivilege(__in wstring const & privilege)
+ErrorCode AccessToken::EnablePrivilege(__in string const & privilege)
 {
     if (privilege.empty())
     {
@@ -1040,7 +1040,7 @@ ErrorCode AccessToken::CreateSecurityDescriptor(DWORD access, __out SecurityDesc
     return TokenSecurityDescriptor::CreateSPtr(dacl, sd);
 }
 
-ErrorCode AccessToken::UpdateCachedCredentials(wstring const & username, wstring const & domain, wstring const & password)
+ErrorCode AccessToken::UpdateCachedCredentials(string const & username, string const & domain, string const & password)
 {
     ErrorCode error(ErrorCodeValue::Success);
 
@@ -1054,9 +1054,9 @@ ErrorCode AccessToken::UpdateCachedCredentials(wstring const & username, wstring
     size_t domainLen = domain.size();
     size_t passwordLen = password.size();
 
-    size_t usernameBufSize = (usernameLen + 1) * sizeof(WCHAR);
-    size_t domainBufSize = (domainLen + 1) * sizeof(WCHAR);
-    size_t passwordBufSize = (passwordLen + 1) * sizeof(WCHAR);
+    size_t usernameBufSize = (usernameLen + 1) * sizeof(CHAR);
+    size_t domainBufSize = (domainLen + 1) * sizeof(CHAR);
+    size_t passwordBufSize = (passwordLen + 1) * sizeof(CHAR);
 
 
     cbLogonInfo = sizeof(MSV1_0_CHANGEPASSWORD_REQUEST);
@@ -1093,17 +1093,17 @@ ErrorCode AccessToken::UpdateCachedCredentials(wstring const & username, wstring
 
 
 
-    pLogonInfo->AccountName.Length = (USHORT)usernameLen * sizeof(WCHAR);
-    pLogonInfo->AccountName.MaximumLength = (USHORT)usernameLen * sizeof(WCHAR);
-    pLogonInfo->AccountName.Buffer = (WCHAR*)(pLogonInfo + 1);
+    pLogonInfo->AccountName.Length = (USHORT)usernameLen * sizeof(CHAR);
+    pLogonInfo->AccountName.MaximumLength = (USHORT)usernameLen * sizeof(CHAR);
+    pLogonInfo->AccountName.Buffer = (CHAR*)(pLogonInfo + 1);
 
-    pLogonInfo->DomainName.Length = (USHORT)domainLen * sizeof(WCHAR);
-    pLogonInfo->DomainName.MaximumLength = (USHORT)domainLen * sizeof(WCHAR);
-    pLogonInfo->DomainName.Buffer = (WCHAR*)((PBYTE)(pLogonInfo + 1) + usernameBufSize);
+    pLogonInfo->DomainName.Length = (USHORT)domainLen * sizeof(CHAR);
+    pLogonInfo->DomainName.MaximumLength = (USHORT)domainLen * sizeof(CHAR);
+    pLogonInfo->DomainName.Buffer = (CHAR*)((PBYTE)(pLogonInfo + 1) + usernameBufSize);
 
-    pLogonInfo->NewPassword.Length = (USHORT)passwordLen * sizeof(WCHAR);
-    pLogonInfo->NewPassword.MaximumLength = (USHORT)passwordLen * sizeof(WCHAR);
-    pLogonInfo->NewPassword.Buffer = (WCHAR*)((PBYTE)(pLogonInfo + 1) + usernameBufSize + domainBufSize);
+    pLogonInfo->NewPassword.Length = (USHORT)passwordLen * sizeof(CHAR);
+    pLogonInfo->NewPassword.MaximumLength = (USHORT)passwordLen * sizeof(CHAR);
+    pLogonInfo->NewPassword.Buffer = (CHAR*)((PBYTE)(pLogonInfo + 1) + usernameBufSize + domainBufSize);
 
     pLogonInfo->OldPassword.Length = 0;
     pLogonInfo->OldPassword.MaximumLength = 0;

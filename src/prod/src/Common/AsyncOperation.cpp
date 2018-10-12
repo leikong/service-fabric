@@ -11,7 +11,7 @@ namespace Common
 {
     StringLiteral TraceType_AsyncOperation = "AsyncOperation";
 
-    const wstring AsyncOperationLifetimeSource = L"AsyncOperation.Lifetime";
+    const string AsyncOperationLifetimeSource = "AsyncOperation.Lifetime";
 
     AsyncOperation::AsyncOperation()
         : enable_shared_from_this<AsyncOperation>(),
@@ -23,7 +23,7 @@ namespace Common
           children_(),
           skipCompleteOnCancel_(false)
     {
-        traceId_ = wformatString("{0}", static_cast<void*>(this));
+        traceId_ = formatString.L("{0}", static_cast<void*>(this));
     }
 
     AsyncOperation::AsyncOperation(AsyncCallback const & callback, AsyncOperationSPtr const & parent, bool skipCompleteOnCancel)
@@ -36,7 +36,7 @@ namespace Common
           children_(),
           skipCompleteOnCancel_(skipCompleteOnCancel)
     {
-        traceId_ = wformatString("{0}", static_cast<void*>(this));
+        traceId_ = formatString.L("{0}", static_cast<void*>(this));
     }
 
     AsyncOperation::~AsyncOperation()
@@ -226,7 +226,7 @@ namespace Common
             TraceType_AsyncOperation,
             traceId_,
             "Attempting to attach child AsyncOperation {0}.",
-            wformatString("{0}", static_cast<void*>(child.get())));
+            formatString.L("{0}", static_cast<void*>(child.get())));
 
         {
             AcquireExclusiveLock acquire(childLock_);
@@ -247,7 +247,7 @@ namespace Common
             TraceType_AsyncOperation,
             traceId_,
             "Not attaching child AsyncOperation {0} as parent in completed/completing/cancelling.",
-            wformatString("{0}", static_cast<void*>(child.get())));
+            formatString.L("{0}", static_cast<void*>(child.get())));
 
         return false;
     }
@@ -264,7 +264,7 @@ namespace Common
             TraceType_AsyncOperation,
             traceId_,
             "Detaching child AsyncOperation {0}.",
-            wformatString("{0}", static_cast<void*>(child.get())));
+            formatString.L("{0}", static_cast<void*>(child.get())));
 
         {
             AcquireExclusiveLock acquire(childLock_);

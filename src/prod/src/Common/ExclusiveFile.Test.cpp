@@ -24,7 +24,7 @@ namespace Common
     DWORD _stdcall TestAccessThreadCallback(void *)
     {
         const int iterationCount = 10;
-        wstring path = L"ExclusiveFile.lock";
+        string path = "ExclusiveFile.lock";
 
         for (int i=0; i<iterationCount; i++)
         {

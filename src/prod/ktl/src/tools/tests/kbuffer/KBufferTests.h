@@ -27,5 +27,5 @@ Abstract:
 
 NTSTATUS
 KBufferTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     );

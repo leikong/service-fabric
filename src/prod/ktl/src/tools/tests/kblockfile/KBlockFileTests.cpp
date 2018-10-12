@@ -1724,9 +1724,9 @@ NTSTATUS ReadAheadCacheTests(
     deviceId.CreateNew();
     fileName = dirName;
 #if !defined(PLATFORM_UNIX)
-    fileName += L"\\SparseRH.test";
+    fileName += "\\SparseRH.test";
 #else
-    fileName += L"/SparseRH.test";
+    fileName += "/SparseRH.test";
 #endif
 
     KTestPrintf("Start Sparse ReadAhead test\n");
@@ -1786,9 +1786,9 @@ NTSTATUS ReadAheadCacheTests(
     deviceId.CreateNew();
     fileName = dirName;
 #if !defined(PLATFORM_UNIX)
-    fileName += L"\\NonSparseRH.test";
+    fileName += "\\NonSparseRH.test";
 #else
-    fileName += L"/NonSparseRH.test";
+    fileName += "/NonSparseRH.test";
 #endif
 
     KTestPrintf("\n");
@@ -1830,9 +1830,9 @@ NTSTATUS ReadAheadCacheTests(
     deviceId.CreateNew();
     fileName = dirName;
 #if !defined(PLATFORM_UNIX)
-    fileName += L"\\Sparse.test";
+    fileName += "\\Sparse.test";
 #else
-    fileName += L"/Sparse.test";
+    fileName += "/Sparse.test";
 #endif
 
     KTestPrintf("\n");
@@ -1874,9 +1874,9 @@ NTSTATUS ReadAheadCacheTests(
     deviceId.CreateNew();
     fileName = dirName;
 #if !defined(PLATFORM_UNIX)
-    fileName += L"\\NonSparse.test";
+    fileName += "\\NonSparse.test";
 #else
-    fileName += L"/NonSparse.test";
+    fileName += "/NonSparse.test";
 #endif
 
     KTestPrintf("\n");
@@ -2005,9 +2005,9 @@ NTSTATUS WriteAfterCloseTest(
 
     fileName = dirName;
 #if !defined(PLATFORM_UNIX)
-    fileName += L"\\writeafterclose.test";
+    fileName += "\\writeafterclose.test";
 #else
-    fileName += L"/writeafterclose.test";
+    fileName += "/writeafterclose.test";
 #endif
     
     status = KBlockFile::Create(fileName,
@@ -2170,9 +2170,9 @@ NTSTATUS MiscTest(
     
     fileName = dirName;
 #if !defined(PLATFORM_UNIX)
-    fileName += L"\\misc.test";
+    fileName += "\\misc.test";
 #else
-    fileName += L"/misc.test";
+    fileName += "/misc.test";
 #endif
 
     KTestPrintf("Start Sparse misc test\n");
@@ -2443,9 +2443,9 @@ NTSTATUS MiscTest(
     //
     fileName = dirName;
 #if !defined(PLATFORM_UNIX)
-    fileName += L"\\miscns.test";
+    fileName += "\\miscns.test";
 #else
-    fileName += L"/miscns.test";
+    fileName += "/miscns.test";
 #endif
 
     KTestPrintf("Start Non Sparse misc test\n");
@@ -2945,7 +2945,7 @@ Finish:
 
 NTSTATUS
 KBlockFileTestX(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     UNREFERENCED_PARAMETER(argc);
@@ -3021,7 +3021,7 @@ Finish:
 
 NTSTATUS
 KBlockFileTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     KTestPrintf("KBlockFileTest: STARTED\n");
@@ -3053,7 +3053,7 @@ KBlockFileTest(
 #if CONSOLE_TEST
 int
 #if !defined(PLATFORM_UNIX)
-main(int argc, WCHAR* args[])
+main(int argc, CHAR* args[])
 {
 #else
 main(int argc, char* cargs[])

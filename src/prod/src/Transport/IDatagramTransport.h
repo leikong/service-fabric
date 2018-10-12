@@ -17,9 +17,9 @@ namespace Transport
         virtual Common::ErrorCode CompleteStart() = 0;
         virtual void Stop(Common::TimeSpan timeout = Common::TimeSpan::Zero) = 0;
 
-        __declspec (property(get=get_IdString)) std::wstring const & IdString;
-        virtual std::wstring const & get_IdString() const = 0;
-        virtual std::wstring const & TraceId() const = 0;
+        __declspec (property(get=get_IdString)) std::string const & IdString;
+        virtual std::string const & get_IdString() const = 0;
+        virtual std::string const & TraceId() const = 0;
 
         virtual void SetInstance(uint64 instance) = 0;
 
@@ -51,17 +51,17 @@ namespace Transport
         ISendTarget::SPtr ResolveTarget(NamedAddress const & namedAddress);
 
         ISendTarget::SPtr ResolveTarget(
-            std::wstring const & address,
-            std::wstring const & targetId = L"",
+            std::string const & address,
+            std::string const & targetId = "",
             uint64 instance = 0);
 
         ISendTarget::SPtr ResolveTarget(
-            std::wstring const & address,
-            std::wstring const & targetId,
-            std::wstring const & sspiTarget,
+            std::string const & address,
+            std::string const & targetId,
+            std::string const & sspiTarget,
             uint64 instance = 0);
 
-        static std::wstring TargetAddressToTransportAddress(std::wstring const & targetAddress);
+        static std::string TargetAddressToTransportAddress(std::string const & targetAddress);
 
         virtual size_t SendTargetCount() const = 0;
 
@@ -109,7 +109,7 @@ namespace Transport
         virtual void SetConnectionFaultHandler(ConnectionFaultHandler const &) = 0;
         virtual void RemoveConnectionFaultHandler() = 0;
 
-        virtual std::wstring const & ListenAddress() const = 0;
+        virtual std::string const & ListenAddress() const = 0;
 
         // Set send queue size limit per send target
         virtual Common::ErrorCode SetPerTargetSendQueueLimit(ULONG limitInBytes) = 0;
@@ -156,15 +156,15 @@ namespace Transport
 
         using HealthReportingCallback = std::function<void(
             Common::SystemHealthReportCode::Enum reportCode,
-            std::wstring const & dynamicProperty,
-            std::wstring const & description,
+            std::string const & dynamicProperty,
+            std::string const & description,
             Common::TimeSpan ttl)>;
 
         static void SetHealthReportingCallback(HealthReportingCallback && callback);
         static void RerportHealth(
             Common::SystemHealthReportCode::Enum reportCode,
-            std::wstring const & dynamicProperty,
-            std::wstring const & description,
+            std::string const & dynamicProperty,
+            std::string const & description,
             Common::TimeSpan ttl = Common::TimeSpan::MaxValue);
 
         // TODO: FLOW CONTROL
@@ -173,9 +173,9 @@ namespace Transport
 
     private:
         virtual ISendTarget::SPtr Resolve(
-            std::wstring const & address,
-            std::wstring const & targetId,
-            std::wstring const & sspiTarget,
+            std::string const & address,
+            std::string const & targetId,
+            std::string const & sspiTarget,
             uint64 instance) = 0;
 
         friend class UnreliableTransport;

@@ -26,5 +26,5 @@ Abstract:
 
 const KU_TEST_ENTRY gs_KuTestCases[] =
 {
-    {   L"KBlockFileTest",              KBlockFileTest,         L"BVT", L"KBlockFileTests -- requires a GPT disk"}
+    {   "KBlockFileTest",              KBlockFileTest,         "BVT", "KBlockFileTests -- requires a GPT disk"}
 };

@@ -137,7 +137,7 @@ Finish:
 
 NTSTATUS
 KChecksumTestX(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     UNREFERENCED_PARAMETER(argc);
@@ -260,7 +260,7 @@ Finish:
 
 NTSTATUS
 KChecksumTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     KTestPrintf("KChecksumTest: STARTED\n");

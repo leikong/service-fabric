@@ -7,7 +7,7 @@
 
 namespace Transport
 {
-    typedef std::map<std::wstring, std::weak_ptr<IDatagramTransport> > TransportLookupTable;
+    typedef std::map<std::string, std::weak_ptr<IDatagramTransport> > TransportLookupTable;
 
     class TransportTable
     {
@@ -16,13 +16,13 @@ namespace Transport
 
         ~TransportTable();
 
-        void Add(std::wstring const & name, std::weak_ptr<IDatagramTransport> const & item);
+        void Add(std::string const & name, std::weak_ptr<IDatagramTransport> const & item);
 
-        bool Contains(std::wstring const & name);
+        bool Contains(std::string const & name);
 
-        bool Remove(std::wstring const & name);
+        bool Remove(std::string const & name);
 
-        bool TryGet(std::wstring const & name, std::weak_ptr<IDatagramTransport> & item);
+        bool TryGet(std::string const & name, std::weak_ptr<IDatagramTransport> & item);
 
         size_t Count()
         {

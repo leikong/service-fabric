@@ -137,7 +137,7 @@ class KBlockFile : public KObject<KBlockFile>, public KShared<KBlockFile> {
         static
         ktl::Awaitable<NTSTATUS>
         CreateAsync(
-            __in LPCWSTR FileName,
+            __in LPCSTR FileName,
             __in BOOLEAN IsWriteThrough,
             __in CreateDisposition Disposition,
             __out KBlockFile::SPtr& File,
@@ -178,7 +178,7 @@ class KBlockFile : public KObject<KBlockFile>, public KShared<KBlockFile> {
         static
         ktl::Awaitable<NTSTATUS>
         CreateAsync(
-           __in LPCWSTR FileName,
+           __in LPCSTR FileName,
            __in BOOLEAN IsWriteThrough,
            __in CreateDisposition Disposition,
            __in CreateOptions Options,
@@ -223,7 +223,7 @@ class KBlockFile : public KObject<KBlockFile>, public KShared<KBlockFile> {
         static
         ktl::Awaitable<NTSTATUS>
         CreateAsync(
-           __in LPCWSTR FileName,
+           __in LPCSTR FileName,
            __in BOOLEAN IsWriteThrough,
            __in CreateDisposition Disposition,
            __in CreateOptions Options,
@@ -264,7 +264,7 @@ class KBlockFile : public KObject<KBlockFile>, public KShared<KBlockFile> {
         static
         ktl::Awaitable<NTSTATUS>
         CreateSparseFileAsync(
-            __in LPCWSTR FileName,
+            __in LPCSTR FileName,
             __in BOOLEAN IsWriteThrough,
             __in CreateDisposition Disposition,
             __out KBlockFile::SPtr& File,
@@ -306,7 +306,7 @@ class KBlockFile : public KObject<KBlockFile>, public KShared<KBlockFile> {
         static
         ktl::Awaitable<NTSTATUS>
         CreateSparseFileAsync(
-            __in LPCWSTR FileName,
+            __in LPCSTR FileName,
             __in BOOLEAN IsWriteThrough,
             __in CreateDisposition Disposition,
             __in CreateOptions Options,
@@ -350,7 +350,7 @@ class KBlockFile : public KObject<KBlockFile>, public KShared<KBlockFile> {
         static
         ktl::Awaitable<NTSTATUS>
         CreateSparseFileAsync(
-            __in LPCWSTR FileName,
+            __in LPCSTR FileName,
             __in BOOLEAN IsWriteThrough,
             __in CreateDisposition Disposition,
             __in CreateOptions Options,
@@ -363,7 +363,7 @@ class KBlockFile : public KObject<KBlockFile>, public KShared<KBlockFile> {
 #endif
         
         virtual
-        const WCHAR*
+        const CHAR*
         GetFileName(
             ) = 0;
 

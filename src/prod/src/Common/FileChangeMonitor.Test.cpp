@@ -14,7 +14,7 @@ using namespace Common;
 
 #define FAIL_TEST( fmt, ...) \
     { \
-        wstring tmp; \
+        string tmp; \
         StringWriter writer(tmp); \
         writer.Write(fmt, __VA_ARGS__); \
         Trace.WriteError(FileChangeMonitorTestTraceType, "{0}", tmp); \
@@ -32,19 +32,19 @@ protected:
     class TestContext;
     typedef shared_ptr<TestContext> TestContextSPtr;
     
-    wstring ReadFromFile(wstring const & filepath);
-    void WriteToFile(wstring const & filepath, wstring const & filetext);
-    void TouchFile(wstring const &, int round);
+    string ReadFromFile(string const & filepath);
+    void WriteToFile(string const & filepath, string const & filetext);
+    void TouchFile(string const &, int round);
     void VerifyNotificationCount(LONG expectedNotificationCount, TimeSpan waitTimeMax);
     
     vector<TestContextSPtr> contexts_;
 
-    wstring testCaseFolder_;
-    wstring testFilePath_;
+    string testCaseFolder_;
+    string testFilePath_;
 
-    static wstring TestDirectoryName;
-    static wstring TestFileName;
-    static wstring TestFileContents;
+    static string TestDirectoryName;
+    static string TestFileName;
+    static string TestFileContents;
 };
 
 class FileChangeMonitorTest::TestContext
@@ -74,9 +74,9 @@ public:
     AutoResetEvent readyToProcessFileChange_;
 };
 
-wstring FileChangeMonitorTest::TestDirectoryName = L"FileChangeMonitorTest.Data";
-wstring FileChangeMonitorTest::TestFileName = L"MonitoredFile.txt";
-wstring FileChangeMonitorTest::TestFileContents = L".";
+string FileChangeMonitorTest::TestDirectoryName = "FileChangeMonitorTest.Data";
+string FileChangeMonitorTest::TestFileName = "MonitoredFile.txt";
+string FileChangeMonitorTest::TestFileContents = ".";
 
 BOOST_FIXTURE_TEST_SUITE(FileChangeMonitor,FileChangeMonitorTest)
 
@@ -180,11 +180,11 @@ bool FileChangeMonitorTest::CleanupTestCase()
     return true;
 }
 
-void FileChangeMonitorTest::WriteToFile(wstring const & filePath, wstring const & fileText)
+void FileChangeMonitorTest::WriteToFile(string const & filePath, string const & fileText)
 {
-    wstring directoryName = Path::GetDirectoryName(filePath);
-    wstring tempFileName = Guid::NewGuid().ToString();
-    wstring tempFilePath = Path::Combine(directoryName, tempFileName);
+    string directoryName = Path::GetDirectoryName(filePath);
+    string tempFileName = Guid::NewGuid().ToString();
+    string tempFilePath = Path::Combine(directoryName, tempFileName);
 
     File file;
     auto error = file.TryOpen(tempFilePath, FileMode::Create, FileAccess::Write, FileShare::ReadWrite);
@@ -195,7 +195,7 @@ void FileChangeMonitorTest::WriteToFile(wstring const & filePath, wstring const 
     }
     
 
-    int size = static_cast<int>(fileText.length() * sizeof(wchar_t));
+    int size = static_cast<int>(fileText.length() * sizeof(char));
     int written = file.TryWrite((void*)fileText.c_str(), size);
     if (!error.IsSuccess())
     {
@@ -210,7 +210,7 @@ void FileChangeMonitorTest::WriteToFile(wstring const & filePath, wstring const 
     File::Delete(tempFilePath, Common::NOTHROW());
 }
 
-wstring FileChangeMonitorTest::ReadFromFile(wstring const & filePath)
+string FileChangeMonitorTest::ReadFromFile(string const & filePath)
 {
     File file;
     auto error = file.TryOpen(filePath, FileMode::Open, FileAccess::Read);
@@ -220,7 +220,7 @@ wstring FileChangeMonitorTest::ReadFromFile(wstring const & filePath)
     }
 
     int fileSize = static_cast<int>(file.size()+1); //+1 for string terminator
-    vector<wchar_t> buffer(fileSize);
+    vector<char> buffer(fileSize);
     int readCount = file.TryRead(buffer.data(), fileSize);
     if (!error.IsSuccess())
     {
@@ -229,12 +229,12 @@ wstring FileChangeMonitorTest::ReadFromFile(wstring const & filePath)
     
     file.Close();
 
-    return wstring(buffer.data());
+    return string(buffer.data());
 }
 
-void FileChangeMonitorTest::TouchFile(wstring const & filePath, int round)
+void FileChangeMonitorTest::TouchFile(string const & filePath, int round)
 {
-    wstring fileContents = FileChangeMonitorTest::ReadFromFile(filePath);
+    string fileContents = FileChangeMonitorTest::ReadFromFile(filePath);
     Sleep(30); // NTFS last write time has a resolution greater than 1 millisecond
 
     for(auto const & context : contexts_)

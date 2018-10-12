@@ -12,7 +12,7 @@ namespace Common
     class FileReaderLock : public FileLock<true>
     {
     public:
-        FileReaderLock(std::wstring const & path);
+        FileReaderLock(std::string const & path);
 
         ErrorCode Acquire(TimeSpan timeout = TimeSpan::Zero) override;
     };

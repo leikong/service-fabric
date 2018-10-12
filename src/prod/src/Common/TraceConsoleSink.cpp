@@ -17,7 +17,7 @@ namespace Common
     {
     }
 
-    void TraceConsoleSink::Write(LogLevel::Enum level, std::wstring const & data)
+    void TraceConsoleSink::Write(LogLevel::Enum level, std::string const & data)
     {
         AcquireWriteLock lock(Singleton->lock_);
         {
@@ -36,7 +36,7 @@ namespace Common
         }
     }
   
-    void TraceConsoleSink::Write(DWORD color, std::wstring const & data)
+    void TraceConsoleSink::Write(DWORD color, std::string const & data)
     {
         AcquireWriteLock lock(Singleton->lock_);
         {
@@ -44,15 +44,15 @@ namespace Common
         }
     }
 
-    void TraceConsoleSink::PrivateWrite(std::wstring const & data)
+    void TraceConsoleSink::PrivateWrite(std::string const & data)
     {
         console_.WriteUnicodeBuffer(data.c_str(), data.size());
-        wstring newLine = L"\r\n";
+        string newLine = "\r\n";
         console_.WriteUnicodeBuffer(newLine.c_str(), newLine.size());
         console_.Flush();
     }
 
-    void TraceConsoleSink::PrivateWrite(DWORD color, std::wstring const & data)
+    void TraceConsoleSink::PrivateWrite(DWORD color, std::string const & data)
     {
         console_.SetColor(color);
         PrivateWrite(data);

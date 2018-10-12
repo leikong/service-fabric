@@ -66,9 +66,9 @@ namespace Transport
         timeout_.WriteTo(w, f);
     }
 
-    wstring TimeoutHeader::ToString() const
+    string TimeoutHeader::ToString() const
     {
-        wstring result;
+        string result;
         StringWriter writer(result);
         writer.Write("{0}", timeout_);
         return result;

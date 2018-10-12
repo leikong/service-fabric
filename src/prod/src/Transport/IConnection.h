@@ -19,17 +19,17 @@ namespace Transport
     {
         virtual ~IConnection() = 0;
 
-        virtual std::wstring const & TraceId() const = 0;
+        virtual std::string const & TraceId() const = 0;
         virtual IConnectionWPtr GetWPtr() = 0;
 
         virtual TransportPriority::Enum GetPriority() const = 0;
         virtual TransportFlags & GetTransportFlags() = 0;
 
-        virtual void SetSecurityContext(TransportSecuritySPtr const & transportSecurity, std::wstring const & sspiTarget) = 0;
+        virtual void SetSecurityContext(TransportSecuritySPtr const & transportSecurity, std::string const & sspiTarget) = 0;
         virtual void ScheduleSessionExpiration(Common::TimeSpan expiration, bool securitySettingsUpdated = false) = 0;
         virtual void OnSessionExpired() = 0;
         virtual void SetConnectionAuthStatus(Common::ErrorCode const & authStatus, RoleMask::Enum roleGranted) = 0;
-        virtual void CompleteClaimsRetrieval(Common::ErrorCode const &, std::wstring const & localClaims) = 0;
+        virtual void CompleteClaimsRetrieval(Common::ErrorCode const &, std::string const & localClaims) = 0;
 
         virtual bool Open() = 0;
         using ReadyCallback = std::function<void(IConnection*)>; //called when opened successfully
@@ -82,6 +82,6 @@ namespace Transport
 
         virtual void PurgeExpiredOutgoingMessages(Common::StopwatchTime now) = 0;
 
-        virtual std::wstring ToString() const = 0;
+        virtual std::string ToString() const = 0;
     };
 }

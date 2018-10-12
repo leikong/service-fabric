@@ -30,7 +30,7 @@ OverlayStreamFreeService::OverlayStreamFreeService(
 {
     NTSTATUS status;
 
-    _DedicatedLogContainerType = L"Winfab Dedicated Logical Log";
+    _DedicatedLogContainerType = "Winfab Dedicated Logical Log";
     status = _DedicatedLogContainerType.Status();
     if (! NT_SUCCESS(status))
     {

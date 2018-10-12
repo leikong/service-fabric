@@ -8,7 +8,7 @@
 using namespace Common;
 using namespace std;
 
-GlobalWString TestPortHelper::EnvVarName_WinFabTestPorts = make_global<std::wstring>(L"WinFabTestPorts");
+GlobalString TestPortHelper::EnvVarName_WinFabTestPorts = make_global<std::string>("WinFabTestPorts");
 USHORT const TestPortHelper::DefaultStartPort = 22000;
 USHORT const TestPortHelper::DefaultEndPort = 22979;
 USHORT const TestPortHelper::DefaultEndLeasePort = 22999;
@@ -22,8 +22,8 @@ USHORT TestPortHelper::leaseIndex_ = 0;
 ExclusiveLock TestPortHelper::portLock_;
 
 StringLiteral const TraceComponent("TestPortHelper");
-WStringLiteral const TraceTypeGetPorts(L"GetPorts");
-WStringLiteral const TraceGetPortOwnerInfo(L"GetPortOwnerInfo");
+StringLiteral const TraceTypeGetPorts("GetPorts");
+StringLiteral const TraceGetPortOwnerInfo("GetPortOwnerInfo");
 
 static const int GetTcpTableRetryLimit = 3;
 
@@ -47,11 +47,11 @@ void TestPortHelper::GetPorts(USHORT numberOfPorts, USHORT & startPort)
     AcquireExclusiveLock grab(portLock_);
     if(startPort_ == 0 && endPort_ == 0)
     {
-        std::wstring ports;
+        std::string ports;
         if(Environment::GetEnvironmentVariableW(TestPortHelper::EnvVarName_WinFabTestPorts, ports, NOTHROW()))
         {
             StringCollection portsCollection;
-            StringUtility::Split<std::wstring>(ports, portsCollection, L",");
+            StringUtility::Split<std::string>(ports, portsCollection, ",");
             if(portsCollection.size() == 2)
             {
                 startPort_ = static_cast<USHORT>(Int32_Parse(portsCollection[0]));
@@ -63,7 +63,7 @@ void TestPortHelper::GetPorts(USHORT numberOfPorts, USHORT & startPort)
             {
                 Trace.WriteWarning(
                     TraceComponent,
-                    wstring(TraceTypeGetPorts.begin()),
+                    TraceTypeGetPorts,
                     "Invalid environment {0}. Reverting to default",
                     ports);
                 startPort_ = TestPortHelper::DefaultStartPort;
@@ -75,7 +75,7 @@ void TestPortHelper::GetPorts(USHORT numberOfPorts, USHORT & startPort)
         {
             Trace.WriteNoise(
                 TraceComponent,
-                wstring(TraceTypeGetPorts.begin()),
+                TraceTypeGetPorts,
                 "Env {0} not set. Reverting to default",
                 TestPortHelper::EnvVarName_WinFabTestPorts);
             startPort_ = TestPortHelper::DefaultStartPort;
@@ -92,7 +92,7 @@ void TestPortHelper::GetPorts(USHORT numberOfPorts, USHORT & startPort)
     {
         Trace.WriteInfo(
             TraceComponent,
-            wstring(TraceTypeGetPorts.begin()),
+            TraceTypeGetPorts,
             "Allocating test ports from [{0}, {1}]: start = {2} count = {3}",
             startPort_,
             endPort_,
@@ -106,7 +106,7 @@ void TestPortHelper::GetPorts(USHORT numberOfPorts, USHORT & startPort)
     {
         Trace.WriteInfo(
             TraceComponent,
-            wstring(TraceTypeGetPorts.begin()),
+            TraceTypeGetPorts,
             "Allocating overflow test ports from [{0}, {1}]: count = {2}",
             startPort_,
             endPort_,
@@ -122,7 +122,7 @@ template <typename TTcpTable, typename TTcpRow>
 ErrorCode GetTcpPortOwnerInfoImpl(
     ULONG (*TcpTableFunc) (TTcpTable* tcpTable, PULONG sizePointer, BOOL order),
     USHORT port,
-    wstring _Out_ & ownerInfo)
+    string _Out_ & ownerInfo)
 {
     ownerInfo.clear();
 
@@ -164,13 +164,13 @@ ErrorCode GetTcpPortOwnerInfoImpl(
         USHORT localPort = ntohs(static_cast<USHORT>(tcpRow.dwLocalPort));
         if (localPort == port)
         {
-            ownerInfo = wformatString("process {0}", tcpRow.dwOwningPid);
+            ownerInfo = formatString.L("process {0}", tcpRow.dwOwningPid);
             if (tcpRow.dwOwningPid != 0) // 0 means socket is in wait states
             {
-                wstring processImageName;
+                string processImageName;
                 if (ProcessUtility::GetProcessImageName(tcpRow.dwOwningPid, processImageName).IsSuccess())
                 {
-                    ownerInfo += L' ';
+                    ownerInfo += ' ';
                     ownerInfo += std::move(processImageName);
                 }
             }
@@ -194,7 +194,7 @@ TestPortHelper::PortMap GetPortsInUseImpl(ULONG(*TcpTableFunc) (TTcpTable* tcpTa
     {
         Trace.WriteWarning(
             TraceComponent,
-            TraceGetPortOwnerInfo.begin(),
+            TraceGetPortOwnerInfo,
             "GetTcpTable() for buffer size failed with {0}",
             getSizeErr);
 
@@ -212,7 +212,7 @@ TestPortHelper::PortMap GetPortsInUseImpl(ULONG(*TcpTableFunc) (TTcpTable* tcpTa
 
         Trace.WriteWarning(
             TraceComponent,
-            TraceGetPortOwnerInfo.begin(),
+            TraceGetPortOwnerInfo,
             "GetTcpTable() failed with {0}",
             getSizeErr);
 
@@ -402,7 +402,7 @@ _Use_decl_annotations_ ErrorCode TestPortHelper::GetTcpPortOwnerInfo(USHORT port
     ownerInfo.clear();
 
     vector<string> lines;
-    string cmd = formatString("netstat -t -l -p | grep :{0}", port);
+    string cmd = formatString.L("netstat -t -l -p | grep :{0}", port);
     auto error = ProcessUtility::GetStatusOutput(cmd, lines);
 
     for(auto const & line : lines)
@@ -422,12 +422,12 @@ _Use_decl_annotations_ ErrorCode TestPortHelper::GetTcpPortOwnerInfo(USHORT port
 
 #else
 
-_Use_decl_annotations_ ErrorCode TestPortHelper::GetTcpPortOwnerInfo(USHORT port, wstring & ownerInfo)
+_Use_decl_annotations_ ErrorCode TestPortHelper::GetTcpPortOwnerInfo(USHORT port, string & ownerInfo)
 {
     return GetTcpPortOwnerInfoImpl<MIB_TCPTABLE2, MIB_TCPROW2>(::GetTcpTable2, port, ownerInfo);
 }
 
-_Use_decl_annotations_ ErrorCode TestPortHelper::GetTcp6PortOwnerInfo(USHORT port, wstring & ownerInfo)
+_Use_decl_annotations_ ErrorCode TestPortHelper::GetTcp6PortOwnerInfo(USHORT port, string & ownerInfo)
 {
     return GetTcpPortOwnerInfoImpl<MIB_TCP6TABLE2, MIB_TCP6ROW2>(::GetTcp6Table2, port, ownerInfo);
 }

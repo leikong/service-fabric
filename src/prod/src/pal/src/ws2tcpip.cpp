@@ -4,12 +4,10 @@
 // ------------------------------------------------------------
 
 #include "ws2tcpip.h"
-#include "util/pal_string_util.h"
 #include <string>
 #include <unistd.h>
 
 using namespace std;
-using namespace Pal;
 
 WINSOCK_API_LINKAGE
 INT
@@ -33,7 +31,7 @@ GetAddrInfoW(
         }
         else
         {
-            nodeName = utf16to8(pNodeName);
+            nodeName = string(pNodeName);
             nodeNamePtr = nodeName.c_str();
         }
     }
@@ -41,7 +39,7 @@ GetAddrInfoW(
     string serviceName;
     if (pServiceName)
     {
-        serviceName = utf16to8(pServiceName);
+        serviceName = string(pServiceName);
     }
 
     return getaddrinfo(

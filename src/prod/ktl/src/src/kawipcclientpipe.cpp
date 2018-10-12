@@ -277,7 +277,7 @@ VOID KAWIpcClientPipe::AsyncConnectToServer::Execute(
     // CONSIDER: Retries ?
     while (! _Cancelled)
     {
-        pipe = CreateFile((PWCHAR)name,
+        pipe = CreateFile((PCHAR)name,
                           GENERIC_ALL,
                           0,
                           nullptr,
@@ -301,7 +301,7 @@ VOID KAWIpcClientPipe::AsyncConnectToServer::Execute(
             }
         }
 
-        b = WaitNamedPipe((PWCHAR)name, 1000);
+        b = WaitNamedPipe((PCHAR)name, 1000);
         if (! b)
         {
             error = GetLastError();

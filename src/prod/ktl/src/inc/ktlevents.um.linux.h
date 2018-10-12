@@ -55,7 +55,7 @@ extern "C" {
     inline ULONG KTraceWrite(const LttngEventTemplate *event, ...)
     {
         char DestA[1024];
-        wchar_t DestW[1024];
+        char DestW[1024];
         va_list args;
         va_start(args, event);
         vsnprintf(DestA, 1024, event->format, args);

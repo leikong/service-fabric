@@ -16,11 +16,11 @@ namespace Common
 
     Guid Guid::empty_ = Guid();
 
-    inline wchar_t HexVal(int ch) {
-        return wchar_t( (ch >= '0' && ch <= '9') ? ch - '0' : ( (ch >= 'a' && ch <= 'f') ? ch - 'a' + 10 : ch - 'A' + 10 ) ); 
+    inline char HexVal(int ch) {
+        return char( (ch >= '0' && ch <= '9') ? ch - '0' : ( (ch >= 'a' && ch <= 'f') ? ch - 'a' + 10 : ch - 'A' + 10 ) ); 
     }
 
-    ::UINT HexHelper(const wchar_t* s, int n)
+    ::UINT HexHelper(const char* s, int n)
     {
         ::UINT res = 0;
         while(n--) {
@@ -42,7 +42,7 @@ namespace Common
         return Guid::empty_;
     }
 
-    Guid::Guid(std::wstring const & value) {
+    Guid::Guid(std::string const & value) {
         coding_error_assert( value.size() == 36 );
 
         Parse(value, *this);
@@ -60,21 +60,21 @@ namespace Common
         KMemCpySafe(bytes.data(), bytes.size(), &guid, sizeof(guid));
     }
 
-    std::wstring Guid::ToString() const
+    std::string Guid::ToString() const
     {
-        std::wstring result;
+        std::string result;
         result.reserve(39);
         StringWriter(result).Write(*this);
         return result;
     }
 
-    std::wstring Guid::ToString(char format) const
+    std::string Guid::ToString(char format) const
     {
         switch (format)
         {
         case 'N':
         {
-            return wformatString(
+            return formatString(
                 "{0,08:x}{1,04:x}{2,04:x}{3,02:x}{4,02:x}{5,02:x}{6,02:x}{7,02:x}{8,02:x}{9,02:x}{10,02:x}",
                 guid.Data1,
                 guid.Data2,
@@ -84,7 +84,7 @@ namespace Common
         }
         case 'D':
         {
-            return wformatString(
+            return formatString(
                 "{0,08:x}-{1,04:x}-{2,04:x}-{3,02:x}{4,02:x}-{5,02:x}{6,02:x}{7,02:x}{8,02:x}{9,02:x}{10,02:x}",
                 guid.Data1,
                 guid.Data2,
@@ -141,7 +141,7 @@ namespace Common
     // Just use a simple weak hash for now. Use a stronger hash if this isn't
     // good enough for testing purposes.
     //
-    Guid Guid::Test_FromStringHashCode(std::wstring const & path)
+    Guid Guid::Test_FromStringHashCode(std::string const & path)
     {
         auto hashCode = StringUtility::GetHash(path);
 
@@ -158,7 +158,7 @@ namespace Common
         return Guid(data1, data2, data3, data4[0], data4[1], data4[2], data4[3], data4[4], data4[5], data4[6], data4[7]);
     }
 
-    bool Guid::TryParse(std::wstring const & value, Guid & guid)
+    bool Guid::TryParse(std::string const & value, Guid & guid)
     {
         if (value.length() != 36) return false;
         for (int i = 0; i < 36; i++) {
@@ -175,7 +175,7 @@ namespace Common
         return true;
     }
 
-    bool Guid::TryParse(std::wstring const & value, std::wstring const & traceId, Guid & guid)
+    bool Guid::TryParse(std::string const & value, std::string const & traceId, Guid & guid)
     {
         if (!Guid::TryParse(value, guid))
         {
@@ -186,7 +186,7 @@ namespace Common
         return true;
     }
     
-    void Guid::Parse(std::wstring const & value, Guid & guid)
+    void Guid::Parse(std::string const & value, Guid & guid)
     {
         guid.guid.Data1 = HexHelper(value.c_str() +  0, 8);
         guid.guid.Data2 = ::USHORT(HexHelper(value.c_str() +  9, 4));

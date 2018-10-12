@@ -31,7 +31,7 @@ namespace Common
             None = 4,
         };
 
-        std::wstring ToString(Enum const & val);
+        std::string ToString(Enum const & val);
         void WriteToTextWriter(Common::TextWriter & w, Enum const & val);
     };
 
@@ -97,48 +97,48 @@ namespace Common
 
         virtual void SetIgnoreUpdateFailures(bool value);
 
-        void RegisterForUpdate(std::wstring const & section, IConfigUpdateSink* sink);
+        void RegisterForUpdate(std::string const & section, IConfigUpdateSink* sink);
 
         void UnregisterForUpdate(IConfigUpdateSink const* sink);
 
-        bool CheckUpdate(std::wstring const & section, std::wstring const & key, std::wstring const & value, bool isEncrypted);
+        bool CheckUpdate(std::string const & section, std::string const & key, std::string const & value, bool isEncrypted);
 
-        virtual std::wstring ReadString(
-            std::wstring const & section,
-            std::wstring const & key,
+        virtual std::string ReadString(
+            std::string const & section,
+            std::string const & key,
             __out bool & isEncrypted) const = 0;
 
         virtual void GetSections(
             Common::StringCollection & sectionNames,
-            std::wstring const & partialName = L"") const = 0;
+            std::string const & partialName = "") const = 0;
 
         virtual void GetKeys(
-            std::wstring const & section,
+            std::string const & section,
             Common::StringCollection & keyNames,
-            std::wstring const & partialName = L"") const = 0;
+            std::string const & partialName = "") const = 0;
 
     protected:
-        bool OnUpdate(std::wstring const & section, std::wstring const & key);
+        bool OnUpdate(std::string const & section, std::string const & key);
 
     private:
-        static Common::GlobalWString CfgStore_EnvironmentVarName;
-        static Common::GlobalWString CfgStore_DefaultFileName;
-        static Common::GlobalWString PackageStore_EnvironmentVarName;
-        static Common::GlobalWString PackageStore_DefaultFileName;
+        static Common::GlobalString CfgStore_EnvironmentVarName;
+        static Common::GlobalString CfgStore_DefaultFileName;
+        static Common::GlobalString PackageStore_EnvironmentVarName;
+        static Common::GlobalString PackageStore_DefaultFileName;
 
         bool InvokeOnSubscribers(
-            std::wstring const & action,
+            std::string const & action,
             std::function<bool(IConfigUpdateSink *)> const & func) const;
 
     private:
         class UpdateSubscriberMap
         {
         public:
-            void Register(std::wstring const & action, IConfigUpdateSink* sink);
+            void Register(std::string const & action, IConfigUpdateSink* sink);
 
-            std::vector<std::wstring> UnRegister(IConfigUpdateSink const* sink);
+            std::vector<std::string> UnRegister(IConfigUpdateSink const* sink);
 
-            IConfigUpdateSinkList Get(std::wstring const & section) const;
+            IConfigUpdateSinkList Get(std::string const & section) const;
 
         private:
             class ConfigUpdateSinkRegistration : public IConfigUpdateSink
@@ -149,18 +149,18 @@ namespace Common
                 {
                 }
 
-                const std::wstring & GetTraceId() const override
+                const std::string & GetTraceId() const override
                 {
                     return sink_->GetTraceId();
                 }
 
-                bool OnUpdate(std::wstring const & section, std::wstring const & key) override
+                bool OnUpdate(std::string const & section, std::string const & key) override
                 {
                     Common::AcquireExclusiveLock grab(lock_);
                     return sink_->OnUpdate(section, key);
                 }
 
-                bool CheckUpdate(std::wstring const & section, std::wstring const & key, std::wstring const & value, bool isEncrypted) override
+                bool CheckUpdate(std::string const & section, std::string const & key, std::string const & value, bool isEncrypted) override
                 {
                     Common::AcquireExclusiveLock grab(lock_);
                     return sink_->CheckUpdate(section, key, value, isEncrypted);
@@ -181,12 +181,12 @@ namespace Common
                 IConfigUpdateSink * sink_;
             };
 
-            std::multimap<std::wstring, std::shared_ptr<ConfigUpdateSinkRegistration>> map_;
+            std::multimap<std::string, std::shared_ptr<ConfigUpdateSinkRegistration>> map_;
         };
 
         mutable RwLock lock_;
         UpdateSubscriberMap updateSubscriberMap_;
-        std::wstring traceId_;
+        std::string traceId_;
         bool ignoreUpdateFailures_;
     };
 } // end namespace Common

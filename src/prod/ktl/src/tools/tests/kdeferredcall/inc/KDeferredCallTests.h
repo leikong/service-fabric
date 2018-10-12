@@ -27,5 +27,5 @@ Abstract:
 
 NTSTATUS
 KDeferredCallTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     );

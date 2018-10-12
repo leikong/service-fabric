@@ -12,12 +12,12 @@ namespace Common
     public:
         ThreadErrorMessages();
 
-        DWORD SetMessage(std::wstring const &);
-        std::wstring GetMessage();
+        DWORD SetMessage(std::string const &);
+        std::string GetMessage();
         void ClearMessage(DWORD tid);
 
     private:
-        std::map<DWORD, std::wstring> tidMessages_;
+        std::map<DWORD, std::string> tidMessages_;
         RwLock lock_;
     };
 }

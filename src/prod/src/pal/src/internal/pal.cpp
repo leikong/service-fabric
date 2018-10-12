@@ -4,7 +4,6 @@
 // ------------------------------------------------------------
 
 #include "pal.h"
-#include "util/pal_string_util.h"
 #include <limits.h>
 #include <pthread.h>
 #include <signal.h>
@@ -16,7 +15,6 @@
 #include "Common/Common.h"
 
 using namespace std;
-using namespace Pal;
 
 #define DUMMY_HEAP  0x01020304
 
@@ -207,21 +205,21 @@ PALIMPORT
 DWORD
 PALAPI
 GetEnvironmentVariableW(
-            IN LPCWSTR lpName,
-            OUT LPWSTR lpBuffer,
+            IN LPCSTR lpName,
+            OUT LPSTR lpBuffer,
             IN DWORD nSize)
 {
-    string name = utf16to8(lpName);
+    string name(lpName);
     char* value = getenv(name.c_str());
     if (value)
     {
-        wstring valueW = utf8to16(value);
+        string valueW(value);
         int len = valueW.length();
         if (nSize < len + 1)
         {
             return len + 1;
         }
-        memcpy(lpBuffer, valueW.c_str(), (len + 1) * sizeof(wchar_t));
+        memcpy(lpBuffer, valueW.c_str(), (len + 1) * sizeof(char));
         return len;
     }
     return 0;
@@ -287,20 +285,20 @@ PALIMPORT
 BOOL
 PALAPI
 CreateProcessW(
-           IN LPCWSTR lpApplicationName,
-           IN LPWSTR lpCommandLine,
+           IN LPCSTR lpApplicationName,
+           IN LPSTR lpCommandLine,
            IN LPSECURITY_ATTRIBUTES lpProcessAttributes,
            IN LPSECURITY_ATTRIBUTES lpThreadAttributes,
            IN BOOL bInheritHandles,
            IN DWORD dwCreationFlags,
            IN LPVOID lpEnvironment,
-           IN LPCWSTR lpCurrentDirectory,
+           IN LPCSTR lpCurrentDirectory,
            IN LPSTARTUPINFOW lpStartupInfo,
            OUT LPPROCESS_INFORMATION lpProcessInformation)
 {
-    string appName = (lpApplicationName == NULL ? "" : utf16to8(lpApplicationName));
-    string cmdline = (lpCommandLine == NULL ? "" : utf16to8(lpCommandLine));
-    string workdir = (lpCurrentDirectory == NULL ? "" : utf16to8(lpCurrentDirectory));
+    string appName = (lpApplicationName == NULL ? "" : (lpApplicationName));
+    string cmdline = (lpCommandLine == NULL ? "" : (lpCommandLine));
+    string workdir = (lpCurrentDirectory == NULL ? "" : (lpCurrentDirectory));
 
     int procid = ForkExec(appName.c_str(), cmdline.c_str(), workdir.c_str(), (const char*)lpEnvironment, 0, 0);
 
@@ -475,7 +473,7 @@ DWORD
 PALAPI
 GetModuleFileNameW(
     IN HMODULE hModule,
-    OUT LPWSTR lpFileName,
+    OUT LPSTR lpFileName,
     IN DWORD nSize)
 {
     char exeName[PATH_MAX] = {0};
@@ -484,9 +482,9 @@ GetModuleFileNameW(
     int res = readlink("/proc/self/exe", exeName, sizeof(exeName) - 1);
     if(res != -1) {
         exeName[res] = 0;
-        wstring exeNameW = utf8to16(exeName);
+        string exeNameW(exeName);
         copied = std::min((int)(nSize - 1), res);
-        memcpy(lpFileName, exeNameW.c_str(), (copied + 1) * sizeof(wchar_t));
+        memcpy(lpFileName, exeNameW.c_str(), (copied + 1) * sizeof(char));
         if (copied < res)
         {
             lpFileName[nSize - 1] = 0;
@@ -586,16 +584,16 @@ PALIMPORT
 BOOL
 PALAPI
 SetEnvironmentVariableW(
-            IN LPCWSTR lpName,
-            IN LPCWSTR lpValue)
+            IN LPCSTR lpName,
+            IN LPCSTR lpValue)
 {
     if (!lpValue)
     {
-        unsetenv(utf16to8(lpName).c_str());
+        unsetenv(lpName);
         return TRUE;
     }
 
-    string nvpair = utf16to8(lpName) + "=" + utf16to8(lpValue);
+    string nvpair = string(lpName) + "=" + string(lpValue);
     char *buf = (char*) malloc(nvpair.length() + 1);
     memcpy(buf, nvpair.c_str(), nvpair.length() + 1);
     return putenv(buf) == 0;
@@ -738,26 +736,26 @@ PALIMPORT errno_t __cdecl memcpy_s(void *dest, size_t destsz, const void *src, s
     return 0;
 }
 
-PALIMPORT int __cdecl swprintf(WCHAR *s, size_t n, const WCHAR *format, ...)
+PALIMPORT int __cdecl swprintf(CHAR *s, size_t n, const CHAR *format, ...)
 {
     va_list arg;
     int r;
 
     va_start(arg, format);
-    if (sizeof(wchar_t) == 4)
+    if (sizeof(char) == 4)
     {
-        r = vswprintf(s, n, format, arg);
+        r = vsnprintf(s, n, format, arg);
     }
     else
     {
         char *buf = new char[n];
-        string formatA = utf16to8(format);
+        string formatA(format);
         r = vsnprintf(buf, n, formatA.c_str(), arg);
         if (r > 0)
         {
-            wstring sW = utf8to16(buf);
+            string sW(buf);
             int count = sW.length();
-            memcpy(s, sW.c_str(), count * sizeof(wchar_t));
+            memcpy(s, sW.c_str(), count * sizeof(char));
             s[count] = 0;
         }
         delete[] buf;
@@ -766,8 +764,3 @@ PALIMPORT int __cdecl swprintf(WCHAR *s, size_t n, const WCHAR *format, ...)
     return r;
 }
 
-PALIMPORT int __cdecl _wtoi(const WCHAR *s)
-{
-    string sa = utf16to8(s);
-    return atoi(sa.c_str());
-}

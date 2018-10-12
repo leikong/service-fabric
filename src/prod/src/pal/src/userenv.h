@@ -28,9 +28,9 @@ USERENVAPI
 BOOL
 WINAPI
 DeleteProfileW (
-        IN LPCWSTR lpSidString,
-        IN LPCWSTR lpProfilePath,
-        IN LPCWSTR lpComputerName);
+        IN LPCSTR lpSidString,
+        IN LPCSTR lpProfilePath,
+        IN LPCSTR lpComputerName);
 #ifdef UNICODE
 #define DeleteProfile  DeleteProfileW
 #else

@@ -5,11 +5,11 @@
 
 #include "stdafx.h"
 
-#define AZURE_SERVICE_FABRIC_KEY_CONTAINER_DEFAULT L"AzureServiceFabricDefault"
+#define AZURE_SERVICE_FABRIC_KEY_CONTAINER_DEFAULT "AzureServiceFabricDefault"
 #define AZURE_SERVICE_FABRIC_CRYPT_RPOVIDER_TYPE PROV_RSA_FULL
 #define BUFFER_SIZE 128
-#define REGKEY32BUILD L"SOFTWARE\\Wow6432Node\\Microsoft\\StrongName\\Verification\\*,31bf3856ad364e35"
-#define REGKEYBUILD L"SOFTWARE\\Microsoft\\StrongName\\Verification\\*,31bf3856ad364e35"
+#define REGKEY32BUILD "SOFTWARE\\Wow6432Node\\Microsoft\\StrongName\\Verification\\*,31bf3856ad364e35"
+#define REGKEYBUILD "SOFTWARE\\Microsoft\\StrongName\\Verification\\*,31bf3856ad364e35"
 #define RANDOM_STRING_LENGTH 25
 
 using namespace Common;
@@ -121,7 +121,7 @@ void CrlOfflineErrCache::SetHealthReportCallback(HealthReportCallback const & ca
     Trace.WriteInfo(CrlOffline::Trace, "healthReportCallback_ set");
 }
 
-void CrlOfflineErrCache::ReportHealth_LockHeld(size_t errCount, std::wstring const & description)
+void CrlOfflineErrCache::ReportHealth_LockHeld(size_t errCount, std::string const & description)
 {
     if (!healthReportCallback_)
     {
@@ -136,7 +136,7 @@ void CrlOfflineErrCache::ReportHealth_LockHeld(size_t errCount, std::wstring con
     Threadpool::Post([callback = healthReportCallback_, errCount, description] { callback(errCount, description); });
 }
 
-void CrlOfflineErrCache::GetHealthReport_LockHeld(size_t & cacheSize, std::wstring & description)
+void CrlOfflineErrCache::GetHealthReport_LockHeld(size_t & cacheSize, std::string & description)
 {
     cacheSize = cache_.size();
     description.clear();
@@ -181,7 +181,7 @@ void CrlOfflineErrCache::TryRemoveError(Thumbprint const & cert, uint certChainF
 
     if (cache_.erase(cert) && cache_.empty())
     {
-        ReportHealth_LockHeld(0, wstring());
+        ReportHealth_LockHeld(0, string());
     }
 }
 
@@ -220,7 +220,7 @@ void CrlOfflineErrCache::AddError(Thumbprint const & cert, CertContext const* ce
     Invariant(enabled);
 
     size_t cacheSize = 0;
-    wstring report;
+    string report;
     bool shouldReport = true;
     bool shouldScheduleCleanup = false;
     auto& config = SecurityConfig::GetConfig();
@@ -288,7 +288,7 @@ void CrlOfflineErrCache::AddError(Thumbprint const & cert, CertContext const* ce
 
 void CrlOfflineErrCache::ScheduleCleanup()
 {
-    // Schedule cleanup ahead of expiry, in hope that CrlRecheck will successfully retrieve CRL
+    // Schedule cleanup ahead of expiry, in hope that CrlRecheck will successfully retrieve CR'
     // before next "real" check in actual certificate verification for secure session setup 
     auto delay = TimeSpan::FromMilliseconds(
         SecurityConfig::GetConfig().CrlDisablePeriod.TotalPositiveMilliseconds() * 2.0 / 3.0);
@@ -328,7 +328,7 @@ void CrlOfflineErrCache::CleanUp()
         if (cache_.empty())
         {
             cleanupActive_ = false;
-            ReportHealth_LockHeld(0, wstring());
+            ReportHealth_LockHeld(0, string());
             return;
         }
 
@@ -494,17 +494,17 @@ void CrlOfflineErrCache::Test_Reset()
 
 #ifdef PLATFORM_UNIX
 
-wstring const & X509Default::StoreName()
+string const & X509Default::StoreName()
 {
-    static auto defaultStoreName = make_global<wstring>(L""); // SecurityConfig::X509Folder will be used
+    static auto defaultStoreName = make_global<string>(""); // SecurityConfig::X509Folder will be used
     return *defaultStoreName;
 }
 
 #else
 
-wstring const & X509Default::StoreName()
+string const & X509Default::StoreName()
 {
-    static auto defaultStoreName = make_global<wstring>(L"My");
+    static auto defaultStoreName = make_global<string>("My");
     return *defaultStoreName;
 }
 
@@ -516,13 +516,13 @@ const string BcdeditCommand = "bcdedit.exe";
 const string AccessDeniedString = "Accessisdenied";
 
 Common::ErrorCode CryptoUtility::SignMessage(
-    wstring const & message,
+    string const & message,
     CertContextUPtr const & certContext,
     _Out_ ByteBuffer & signedMessage)
 {
     return SignMessage(
         (BYTE const*)message.c_str(),
-        message.size() * sizeof(wchar_t),
+        message.size() * sizeof(char),
         szOID_RSA_SHA1RSA,
         certContext,
         signedMessage);
@@ -623,9 +623,9 @@ ErrorCode CryptoUtility::SignMessage(
 
 ErrorCode CryptoUtility::GetCertificatePrivateKeyFileName(
     X509StoreLocation::Enum certificateStoreLocation,
-    wstring const & certificateStoreName,
+    string const & certificateStoreName,
     shared_ptr<X509FindValue> const & findValue,
-    wstring & privateKeyFileName)
+    string & privateKeyFileName)
 {
     PLATFORM_VALIDATE(certificateStoreLocation)
 
@@ -646,9 +646,9 @@ ErrorCode CryptoUtility::GetCertificatePrivateKeyFileName(
 
 ErrorCode CryptoUtility::GetCertificatePrivateKeyFileName(
     X509StoreLocation::Enum certificateStoreLocation,
-    std::wstring const & certificateStoreName,
+    std::string const & certificateStoreName,
     std::shared_ptr<X509FindValue> const & findValue,
-    std::vector<std::wstring> & privateKeyFileNames)
+    std::vector<std::string> & privateKeyFileNames)
 {
     PLATFORM_VALIDATE(certificateStoreLocation)
 
@@ -673,7 +673,7 @@ ErrorCode CryptoUtility::GetCertificatePrivateKeyFileName(
 	{
 		for (auto certContextIter = certContexts.begin(); certContextIter != certContexts.end(); ++certContextIter)
 		{
-			wstring  privateKeyFileName;
+			string  privateKeyFileName;
 			error = CryptoUtility::GetCertificatePrivateKeyFileName(*certContextIter, privateKeyFileName);
 			if (!error.IsSuccess())
 			{
@@ -702,7 +702,7 @@ ErrorCode CryptoUtility::GetCertificatePrivateKeyFileName(
 	return succeeded ? error.Success() : ErrorCode::FromHResult(E_FAIL);
 }
 
-ErrorCode CryptoUtility::GetCertificatePrivateKeyFileName(CertContextUPtr const & certContext, _Out_ wstring & privateKeyFileName)
+ErrorCode CryptoUtility::GetCertificatePrivateKeyFileName(CertContextUPtr const & certContext, _Out_ string & privateKeyFileName)
 {
     ErrorCode error = ErrorCode::Success();
 
@@ -765,7 +765,7 @@ ErrorCode CryptoUtility::GetCertificatePrivateKeyFileName(CertContextUPtr const 
     }
 
     //fileNameSize counts null terminator
-    vector<wchar_t> fileNameStringBuffer(fileNameSize);
+    vector<char> fileNameStringBuffer(fileNameSize);
     size_t converted = 0;
     auto retval = mbstowcs_s(&converted, fileNameStringBuffer.data(), fileNameSize, (char *)fileNameByteBuffer.data(), fileNameSize);
     TextTraceComponent<TraceTaskCodes::Common>::WriteTrace(
@@ -783,12 +783,12 @@ ErrorCode CryptoUtility::GetCertificatePrivateKeyFileName(CertContextUPtr const 
         return error;
     }
 
-    wstring fileName = fileNameStringBuffer.data();
+    string fileName = fileNameStringBuffer.data();
 
-    vector<wstring> matchingFiles;
+    vector<string> matchingFiles;
 
-    wstring commonAppDataKeyStore;
-    error = GetKnownFolderName(CSIDL_COMMON_APPDATA, L"Microsoft\\Crypto\\RSA\\MachineKeys", commonAppDataKeyStore);
+    string commonAppDataKeyStore;
+    error = GetKnownFolderName(CSIDL_COMMON_APPDATA, "Microsoft\\Crypto\\RSA\\MachineKeys", commonAppDataKeyStore);
     if (error.IsSuccess())
     {
         matchingFiles = Directory::Find(commonAppDataKeyStore, fileName, 1, true);
@@ -796,8 +796,8 @@ ErrorCode CryptoUtility::GetCertificatePrivateKeyFileName(CertContextUPtr const 
 
     if (matchingFiles.empty())
     {
-        wstring appDataKeyStore;
-        error = GetKnownFolderName(CSIDL_APPDATA, L"Microsoft\\Crypto\\RSA", appDataKeyStore);
+        string appDataKeyStore;
+        error = GetKnownFolderName(CSIDL_APPDATA, "Microsoft\\Crypto\\RSA", appDataKeyStore);
         if (error.IsSuccess())
         {
             matchingFiles = Directory::Find(appDataKeyStore, fileName, 1, true);
@@ -824,9 +824,9 @@ ErrorCode CryptoUtility::GetCertificatePrivateKeyFileName(CertContextUPtr const 
 
 _Use_decl_annotations_ ErrorCode CryptoUtility::GetCertificateExpiration(
     X509StoreLocation::Enum certificateStoreLocation,
-    wstring const & certificateStoreName,
-    wstring const & findType,
-    wstring const & findValue,
+    string const & certificateStoreName,
+    string const & findType,
+    string const & findValue,
     DateTime & expiration)
 {
     expiration = DateTime::Zero;
@@ -863,7 +863,7 @@ _Use_decl_annotations_ ErrorCode CryptoUtility::GetCertificateExpiration(
 _Use_decl_annotations_
 ErrorCode CryptoUtility::GetCertificateExpiration(
     X509StoreLocation::Enum certificateStoreLocation,
-    wstring const & certificateStoreName,
+    string const & certificateStoreName,
     shared_ptr<X509FindValue> const & findValue,
     DateTime & expiration)
 {
@@ -886,9 +886,9 @@ ErrorCode CryptoUtility::GetCertificateExpiration(
 _Use_decl_annotations_
 ErrorCode CryptoUtility::GetCertificate(
 X509StoreLocation::Enum certificateStoreLocation,
-wstring const & certificateStoreName,
-wstring const & findType,
-wstring const & findValue,
+string const & certificateStoreName,
+string const & findType,
+string const & findValue,
 CertContextUPtr & certContext)
 {
     TraceInfo(
@@ -920,9 +920,9 @@ CertContextUPtr & certContext)
 _Use_decl_annotations_
 ErrorCode CryptoUtility::GetCertificate(
     X509StoreLocation::Enum certificateStoreLocation,
-    wstring const & certificateStoreName,
-    wstring const & findType,
-    wstring const & findValue,
+    string const & certificateStoreName,
+    string const & findType,
+    string const & findValue,
     CertContexts & certContexts)
 {
     TraceInfo(
@@ -951,7 +951,7 @@ ErrorCode CryptoUtility::GetCertificate(
 
 _Use_decl_annotations_ ErrorCode CryptoUtility::GetCertificate(
     X509StoreLocation::Enum certificateStoreLocation,
-    wstring const & certificateStoreName,
+    string const & certificateStoreName,
     shared_ptr<X509FindValue> const & findValue,
     CertContextUPtr & certContext)
 {
@@ -965,7 +965,7 @@ _Use_decl_annotations_ ErrorCode CryptoUtility::GetCertificate(
 
 _Use_decl_annotations_ ErrorCode CryptoUtility::GetCertificate(
     X509StoreLocation::Enum certificateStoreLocation,
-    wstring const & certificateStoreName,
+    string const & certificateStoreName,
     shared_ptr<X509FindValue> const & findValue,
     CertContexts & certContexts)
 {
@@ -979,7 +979,7 @@ _Use_decl_annotations_ ErrorCode CryptoUtility::GetCertificate(
 
 _Use_decl_annotations_ ErrorCode CryptoUtility::GetCertificate(
     X509StoreLocation::Enum certificateStoreLocation,
-    wstring const & certificateStoreName,
+    string const & certificateStoreName,
     DWORD storeOpenFlag,
     shared_ptr<X509FindValue> const & findValue,
     CertContextUPtr & certContext)
@@ -1001,7 +1001,7 @@ _Use_decl_annotations_ ErrorCode CryptoUtility::GetCertificate(
 
 _Use_decl_annotations_ ErrorCode CryptoUtility::GetCertificate(
     X509StoreLocation::Enum certificateStoreLocation,
-    wstring const & certificateStoreName,
+    string const & certificateStoreName,
     DWORD storeOpenFlag,
     shared_ptr<X509FindValue> const & findValue,
     CertContexts & certContexts)
@@ -1055,18 +1055,18 @@ _Use_decl_annotations_ ErrorCode CryptoUtility::GetCertificate(
 
 _Use_decl_annotations_ ErrorCode CryptoUtility::GetAllCertificates(
     X509StoreLocation::Enum certificateStoreLocation,
-    wstring const & certStorePath,
+    string const & certStorePath,
     DWORD storeOpenFlag,
     std::vector<std::string> & certFiles)
 {
-    if (StringUtility::AreEqualCaseInsensitive(certStorePath, L"My"))
+    if (StringUtility::AreEqualCaseInsensitive(certStorePath, "My"))
     {
         WriteInfo(
             TraceType_CryptoUtility,
             "certificate file/folder path '{0}' is treated as empty path on PLATFORM_UNIX",
             certStorePath);
 
-        certFiles = LinuxCryptUtil().GetCertFiles(L"");
+        certFiles = LinuxCryptUtil().GetCertFiles("");
         return ErrorCodeValue::Success;
     }
 
@@ -1101,9 +1101,7 @@ _Use_decl_annotations_ bool CryptoUtility::IsMatch(
             SubjectName const & querySubjectName = (SubjectName const &)(*findValue);
 
             std::string sn = LinuxCryptUtil().GetSubjectName(pcertContext);
-            wstring wsn;
-            StringUtility::Utf8ToUtf16(sn, wsn);
-            SubjectName newMatchSubjectName(wsn);
+            SubjectName newMatchSubjectName(sn);
             auto error = newMatchSubjectName.Initialize();
             if (!error.IsSuccess()) {return false;}
 
@@ -1119,7 +1117,7 @@ _Use_decl_annotations_ bool CryptoUtility::IsMatch(
             ErrorCode error =  LinuxCryptUtil().GetCommonName((X509*)pcertContext, cn);
             if (!error.IsSuccess()) {return false;}
         
-            std::wstring wcn(cn.begin(), cn.end());
+            std::string wcn(cn.begin(), cn.end());
             CommonName newMatchCommonName(wcn);
             return queryCommonName.PrimaryValueEqualsTo(newMatchCommonName);
         }
@@ -1134,9 +1132,8 @@ _Use_decl_annotations_ bool CryptoUtility::IsMatch(
             }
             vector<string> names = LinuxCryptUtil().GetSubjectAltName(pcertContext);
             for (int i = 0; i < names.size(); ++i) {
-                wstring wname;
-                StringUtility::Utf8ToUtf16(names[i], wname);
-                LPWSTR dnsName = ((CERT_ALT_NAME_ENTRY*)subjectAltName->Value())->pwszDNSName;
+                string wname(names[i]);
+                LPSTR dnsName = ((CERT_ALT_NAME_ENTRY*)subjectAltName->Value())->pwszDNSName;
                 if(StringUtility::AreEqualCaseInsensitive(wname, dnsName)) {
                     return true;
                 }
@@ -1160,7 +1157,7 @@ _Use_decl_annotations_ bool CryptoUtility::IsMatch(
 #else
 _Use_decl_annotations_ ErrorCode CryptoUtility::GetCertificate(
     X509StoreLocation::Enum certificateStoreLocation,
-    wstring const & certificateStoreName,
+    string const & certificateStoreName,
     DWORD storeOpenFlag,
     shared_ptr<X509FindValue> const & findValue,
     CertContexts & certContexts)
@@ -1297,13 +1294,13 @@ _Use_decl_annotations_ ErrorCode CryptoUtility::GetCertificate(
 #endif
 
 _Use_decl_annotations_
-ErrorCode CryptoUtility::DecryptText(wstring const & encryptedText, SecureString & decryptedText)
+ErrorCode CryptoUtility::DecryptText(string const & encryptedText, SecureString & decryptedText)
 {
     return DecryptText(encryptedText, X509Default::StoreLocation(), decryptedText);
 }
 
 #if defined(PLATFORM_UNIX)
-ErrorCode CryptoUtility::DecryptText(wstring const & encryptedText, X509StoreLocation::Enum certStoreLocation, SecureString & decryptedText)
+ErrorCode CryptoUtility::DecryptText(string const & encryptedText, X509StoreLocation::Enum certStoreLocation, SecureString & decryptedText)
 {
     PLATFORM_VALIDATE(certStoreLocation)
 
@@ -1314,26 +1311,26 @@ ErrorCode CryptoUtility::DecryptText(wstring const & encryptedText, X509StoreLoc
         decryptedTextBuffer);
     if (!error.IsSuccess()) return error;
 
-    vector<WCHAR> alignedBuffer(decryptedTextBuffer.size()/sizeof(WCHAR) + 1);
+    vector<char> alignedBuffer(decryptedTextBuffer.size()/sizeof(char) + 1);
     memcpy(alignedBuffer.data(), decryptedTextBuffer.data(), decryptedTextBuffer.size());
     decryptedText = SecureString(alignedBuffer.data()); 
     return error;
 }
 #else
 _Use_decl_annotations_
-ErrorCode CryptoUtility::DecryptText(wstring const & encryptedText, X509StoreLocation::Enum certStoreLocation, SecureString & decryptedText)
+ErrorCode CryptoUtility::DecryptText(string const & encryptedText, X509StoreLocation::Enum certStoreLocation, SecureString & decryptedText)
 {
     PLATFORM_VALIDATE(certStoreLocation)
 
     ErrorCode error;
-    decryptedText = SecureString(L"");
+    decryptedText = SecureString("");
     TraceNoise(
         TraceTaskCodes::Common,
         TraceType_CryptoUtility,
         "DecryptText called with encryptedText:{0}",
         encryptedText);
 
-    wstring storeName = SecurityConfig::GetConfig().SettingsX509StoreName;
+    string storeName = SecurityConfig::GetConfig().SettingsX509StoreName;
     CertStoreUPtr certStore(CertOpenStore(
         CERT_STORE_PROV_SYSTEM,
         X509_ASN_ENCODING | PKCS_7_ASN_ENCODING,
@@ -1406,7 +1403,7 @@ ErrorCode CryptoUtility::DecryptText(wstring const & encryptedText, X509StoreLoc
         return error;
     }
 
-    decryptedText = SecureString(reinterpret_cast<WCHAR *>(decryptedMessageBuffer.data()));
+    decryptedText = SecureString(reinterpret_cast<char *>(decryptedMessageBuffer.data()));
 
     SecureZeroMemory((void *)decryptedMessageBuffer.data(), decryptedMessageBuffer.size());
     return error;
@@ -1417,15 +1414,15 @@ ErrorCode CryptoUtility::DecryptText(wstring const & encryptedText, X509StoreLoc
 
 _Use_decl_annotations_
 ErrorCode CryptoUtility::EncryptText(
-wstring const & plainText,
+string const & plainText,
 PCCertContext certContext,
 LPCSTR algorithmOid, // algorithmOid is ignored. //LINUXTODO implement other algorithms.
-wstring & encryptedText)
+string & encryptedText)
 {
   std::vector<PCCertContext> recipientCertificates;
   recipientCertificates.push_back(certContext);
   const BYTE * byteBuffer = reinterpret_cast<const BYTE *>(plainText.c_str());
-  DWORD plainTextSize = (DWORD)plainText.size() * sizeof(WCHAR);
+  DWORD plainTextSize = (DWORD)plainText.size() * sizeof(char);
   ByteBuffer plainTextBuffer(byteBuffer, byteBuffer + plainTextSize);
   return LinuxCryptUtil().Pkcs7Encrypt(recipientCertificates, plainTextBuffer, encryptedText);
 }
@@ -1433,10 +1430,10 @@ wstring & encryptedText)
 #else
 _Use_decl_annotations_
 ErrorCode CryptoUtility::EncryptText(
-wstring const & plainText,
+string const & plainText,
 PCCertContext certContext,
 LPCSTR algorithmOid,
-wstring & encryptedText)
+string & encryptedText)
 {
     PCCertContext recipientCertificateArray[] = { certContext };
 
@@ -1456,7 +1453,7 @@ wstring & encryptedText)
         1,
         recipientCertificateArray,
         reinterpret_cast<const BYTE *>(plainText.c_str()),
-        (DWORD)plainText.size() * sizeof(WCHAR),
+        (DWORD)plainText.size() * sizeof(char),
         NULL,
         &cipherTextSize))
     {
@@ -1478,7 +1475,7 @@ wstring & encryptedText)
         1,
         recipientCertificateArray,
         reinterpret_cast<const BYTE *>(plainText.c_str()),
-        (DWORD)plainText.size() * sizeof(WCHAR),
+        (DWORD)plainText.size() * sizeof(char),
         cipherTextBuffer.data(),
         &cipherTextSize))
     {
@@ -1501,12 +1498,12 @@ wstring & encryptedText)
 
 _Use_decl_annotations_
 ErrorCode CryptoUtility::EncryptText(
-    wstring const & plainText,
-    wstring const & certThumbPrint,
-    wstring const & certStoreName,
+    string const & plainText,
+    string const & certThumbPrint,
+    string const & certStoreName,
     X509StoreLocation::Enum certStoreLocation,
     LPCSTR algorithmOid,
-    wstring & encryptedText)
+    string & encryptedText)
 {
     TraceNoise(
         TraceTaskCodes::Common,
@@ -1545,10 +1542,10 @@ ErrorCode CryptoUtility::EncryptText(
 
 _Use_decl_annotations_
 ErrorCode CryptoUtility::EncryptText(
-wstring const & plainText,
-wstring const & certFilePath,
+string const & plainText,
+string const & certFilePath,
 LPCSTR algorithmOid,
-wstring & encryptedText)
+string & encryptedText)
 {
     TraceNoise(
         TraceTaskCodes::Common,
@@ -1571,9 +1568,9 @@ wstring & encryptedText)
 #if defined(PLATFORM_UNIX)
 //LINUXTODO
 #else
-ErrorCode CryptoUtility::GetKnownFolderName(int csidl, wstring const & relativePath, wstring & folderName)
+ErrorCode CryptoUtility::GetKnownFolderName(int csidl, string const & relativePath, string & folderName)
 {
-    vector<wchar_t> folderNameBuffer(MAX_PATH);
+    vector<char> folderNameBuffer(MAX_PATH);
 
     HRESULT result = SHGetFolderPathW(NULL, csidl, NULL, 0, folderNameBuffer.data());
 
@@ -1591,12 +1588,12 @@ ErrorCode CryptoUtility::GetKnownFolderName(int csidl, wstring const & relativeP
 }
 #endif
 
-bool CryptoUtility::IsBase64(WCHAR c)
+bool CryptoUtility::IsBase64(char c)
 {
-    return (isalnum(c) || (c == L'+') || (c == L'/'));
+    return (isalnum(c) || (c == '+') || (c == '/'));
 }
 
-void CryptoUtility::Base64StringToBytes(wstring const& encodedString, ByteBuffer & decodedBytes)
+void CryptoUtility::Base64StringToBytes(string const& encodedString, ByteBuffer & decodedBytes)
 {
     size_t indexLength = encodedString.size();
     size_t i = 0, j = 0;
@@ -1649,8 +1646,8 @@ void CryptoUtility::Base64StringToBytes(wstring const& encodedString, ByteBuffer
     }
 }
 
-wstring CryptoUtility::BytesToBase64String(BYTE const* bytesToEncode, unsigned int length) {
-    wstring encodedString;
+string CryptoUtility::BytesToBase64String(BYTE const* bytesToEncode, unsigned int length) {
+    string encodedString;
     int i = 0, j = 0;
     BYTE array_3[3];
     BYTE array_4[4];
@@ -1863,12 +1860,10 @@ PCCertContext CryptoUtility::GetCertificateFromStore(
 
 #if defined(PLATFORM_UNIX)
 _Use_decl_annotations_
-ErrorCode CryptoUtility::GetCertificate(wstring const & certFilePath, CertContextUPtr & certContext)
+ErrorCode CryptoUtility::GetCertificate(string const & certFilePath, CertContextUPtr & certContext)
 {
     certContext.reset();
-    std::string certFilePath2;
-    StringUtility::Utf16ToUtf8(certFilePath, certFilePath2);
-    certContext = LinuxCryptUtil().LoadCertificate(certFilePath2);
+    certContext = LinuxCryptUtil().LoadCertificate(certFilePath);
     if(certContext.get() == NULL)
     {
          ErrorCode::FromErrno();
@@ -1878,7 +1873,7 @@ ErrorCode CryptoUtility::GetCertificate(wstring const & certFilePath, CertContex
 }
 #else
 _Use_decl_annotations_
-ErrorCode CryptoUtility::GetCertificate(wstring const & certFilePath, CertContextUPtr & certContext)
+ErrorCode CryptoUtility::GetCertificate(string const & certFilePath, CertContextUPtr & certContext)
 {
     certContext.reset();
 
@@ -1964,10 +1959,10 @@ ErrorCode CryptoUtility::GetCertificate(wstring const & certFilePath, CertContex
 
 ErrorCode CryptoUtility::GetCertificateCommonName(
     X509StoreLocation::Enum certificateStoreLocation,
-    wstring const & certificateStoreName,
-    wstring const & findType,
-    wstring const & findValue,
-    wstring & commonName)
+    string const & certificateStoreName,
+    string const & findType,
+    string const & findValue,
+    string & commonName)
 {
     commonName.clear();
 
@@ -1985,7 +1980,7 @@ ErrorCode CryptoUtility::GetCertificateCommonName(
 }
 
 _Use_decl_annotations_
-ErrorCode CryptoUtility::GetCertificateCommonName(PCCertContext certContext, wstring & commonName)
+ErrorCode CryptoUtility::GetCertificateCommonName(PCCertContext certContext, string & commonName)
 {
 #if defined(PLATFORM_UNIX)
     if(certContext == NULL)
@@ -2000,7 +1995,7 @@ ErrorCode CryptoUtility::GetCertificateCommonName(PCCertContext certContext, wst
         return error;
     }
 
-    StringUtility::Utf8ToUtf16(cn, commonName);
+    commonName = cn;
     return ErrorCode::Success();
 #else
     DWORD length = 0;
@@ -2019,7 +2014,7 @@ ErrorCode CryptoUtility::GetCertificateCommonName(PCCertContext certContext, wst
         return error;
     }
 
-    vector<WCHAR> nameBuffer(length);
+    vector<char> nameBuffer(length);
     if (!CertGetNameString(
         certContext,
         CERT_NAME_ATTR_TYPE,
@@ -2041,9 +2036,9 @@ ErrorCode CryptoUtility::GetCertificateCommonName(PCCertContext certContext, wst
 _Use_decl_annotations_
 ErrorCode CryptoUtility::GetCertificateCommonName(
 X509StoreLocation::Enum certificateStoreLocation,
-wstring const & certificateStoreName,
+string const & certificateStoreName,
 shared_ptr<X509FindValue> const & findValue,
-wstring & commonName)
+string & commonName)
 {
     commonName.clear();
 
@@ -2063,7 +2058,7 @@ wstring & commonName)
 }
 
 _Use_decl_annotations_ ErrorCode CryptoUtility::CreateSelfSignedCertificate(
-    wstring const & subjectName,
+    string const & subjectName,
     CertContextUPtr & cert)
 {
     return CreateSelfSignedCertificate(
@@ -2073,8 +2068,8 @@ _Use_decl_annotations_ ErrorCode CryptoUtility::CreateSelfSignedCertificate(
 }
 
 _Use_decl_annotations_ ErrorCode CryptoUtility::CreateSelfSignedCertificate(
-    wstring const & subjectName,
-    wstring const & keyContainerName,
+    string const & subjectName,
+    string const & keyContainerName,
     CertContextUPtr & cert)
 {
     return CreateSelfSignedCertificate(
@@ -2085,7 +2080,7 @@ _Use_decl_annotations_ ErrorCode CryptoUtility::CreateSelfSignedCertificate(
 }
 
 _Use_decl_annotations_ ErrorCode CryptoUtility::CreateSelfSignedCertificate(
-    wstring const & subjectName,
+    string const & subjectName,
     DateTime expiration,
     CertContextUPtr & cert)
 {
@@ -2097,9 +2092,9 @@ _Use_decl_annotations_ ErrorCode CryptoUtility::CreateSelfSignedCertificate(
 }
 
 _Use_decl_annotations_ ErrorCode CryptoUtility::CreateSelfSignedCertificate(
-    wstring const & subjectName,
+    string const & subjectName,
     DateTime expiration,
-    wstring const & keyContainerName,
+    string const & keyContainerName,
     CertContextUPtr & cert)
 {
     return CreateSelfSignedCertificate(
@@ -2111,10 +2106,10 @@ _Use_decl_annotations_ ErrorCode CryptoUtility::CreateSelfSignedCertificate(
 }
 
 _Use_decl_annotations_ ErrorCode CryptoUtility::CreateSelfSignedCertificate(
-    wstring const & subjectName,
-    const vector<wstring> * subjectAltNames,
+    string const & subjectName,
+    const vector<string> * subjectAltNames,
     DateTime expiration,
-    wstring const & keyContainerName,
+    string const & keyContainerName,
     CertContextUPtr & cert)
 {
     if (subjectAltNames)
@@ -2143,8 +2138,6 @@ _Use_decl_annotations_ ErrorCode CryptoUtility::CreateSelfSignedCertificate(
     cert.reset();
 
 #if defined(PLATFORM_UNIX)
-    std::string sn1;
-    StringUtility::Utf16ToUtf8(subjectName, sn1);
     return LinuxCryptUtil().CreateSelfSignedCertificate(
         subjectName,
         subjectAltNames,
@@ -2158,7 +2151,7 @@ _Use_decl_annotations_ ErrorCode CryptoUtility::CreateSelfSignedCertificate(
     if (!err.IsSuccess()) return err;
 
     CRYPT_KEY_PROV_INFO keyProvInfo = {};
-    keyProvInfo.pwszContainerName = (LPWSTR)(keyContainerName.c_str());
+    keyProvInfo.pwszContainerName = (LPSTR)(keyContainerName.c_str());
     keyProvInfo.pwszProvName = MS_ENHANCED_PROV_W;
     keyProvInfo.dwProvType = AZURE_SERVICE_FABRIC_CRYPT_RPOVIDER_TYPE;
     keyProvInfo.dwFlags = CRYPT_MACHINE_KEYSET;
@@ -2202,7 +2195,7 @@ _Use_decl_annotations_ ErrorCode CryptoUtility::CreateSelfSignedCertificate(
         for (int i = 0; i < subjectAltNames->size(); i++)
         {
             altNames[i].dwAltNameChoice = CERT_ALT_NAME_DNS_NAME;
-            altNames[i].pwszDNSName = (LPWSTR)((*subjectAltNames)[i].c_str());
+            altNames[i].pwszDNSName = (LPSTR)((*subjectAltNames)[i].c_str());
         }
 
         auto retCode = CryptEncodeObjectEx(
@@ -2244,7 +2237,7 @@ _Use_decl_annotations_ ErrorCode CryptoUtility::CreateSelfSignedCertificate(
 ErrorCode CryptoUtility::InstallCertificate(
     CertContextUPtr & certContext,
     X509StoreLocation::Enum certificateStoreLocation,
-    wstring const & certificateStoreName)
+    string const & certificateStoreName)
 {
     TraceInfo(
         TraceTaskCodes::Common,
@@ -2260,13 +2253,13 @@ ErrorCode CryptoUtility::InstallCertificate(
 
     auto x509Folder = certificateStoreName;
 #if defined(PLATFORM_UNIX)
-    if (StringUtility::AreEqualCaseInsensitive(certificateStoreName, L"My"))
+    if (StringUtility::AreEqualCaseInsensitive(certificateStoreName, "My"))
     {
         WriteInfo(
             TraceType_CryptoUtility,
             "certificate file/folder path '{0}' is treated as empty path on PLATFORM_UNIX",
             certificateStoreName);
-        x509Folder = L"";
+        x509Folder = "";
     }
 
     error = LinuxCryptUtil().InstallCertificate(certContext, x509Folder);
@@ -2326,9 +2319,9 @@ ErrorCode CryptoUtility::InstallCertificate(
 
 ErrorCode CryptoUtility::UninstallCertificate(
     X509StoreLocation::Enum certStoreLocation,
-    wstring const & certStoreName,
+    string const & certStoreName,
     shared_ptr<X509FindValue> const & findValue,
-    wstring const & keyContainerFilePath)
+    string const & keyContainerFilePath)
 {
     TraceInfo(
         TraceTaskCodes::Common,
@@ -2408,11 +2401,11 @@ ErrorCode CryptoUtility::UninstallCertificate(
 }
 
 InstallTestCertInScope::InstallTestCertInScope(
-    wstring const & subjectName,
-    const vector<wstring> *subjectAltNames,
+    string const & subjectName,
+    const vector<string> *subjectAltNames,
     TimeSpan expiration,
-    wstring const & storeName,
-    wstring const & keyContainerName,
+    string const & storeName,
+    string const & keyContainerName,
     X509StoreLocation::Enum storeLocation)
     : InstallTestCertInScope(true, subjectName, subjectAltNames, expiration, storeName, keyContainerName, storeLocation)
 {
@@ -2421,13 +2414,13 @@ InstallTestCertInScope::InstallTestCertInScope(
 
 InstallTestCertInScope::InstallTestCertInScope(
     bool install,
-    wstring const & subjectName,
-    const vector<wstring> *subjectAltNames,
+    string const & subjectName,
+    const vector<string> *subjectAltNames,
     TimeSpan expiration,
-    wstring const & storeName,
-    wstring const & keyContainerName,
+    string const & storeName,
+    string const & keyContainerName,
     X509StoreLocation::Enum storeLocation)
-    : subjectName_(subjectName.empty() ? (L"CN=" + Guid::NewGuid().ToString()) : subjectName)
+    : subjectName_(subjectName.empty() ? ("CN=" + Guid::NewGuid().ToString()) : subjectName)
     , storeName_(storeName)
     , storeLocation_(storeLocation)
     , uninstallOnDestruction_(true)
@@ -2458,7 +2451,7 @@ InstallTestCertInScope::InstallTestCertInScope(
             subjectName_, thumbprint_, expiration);
 
 #ifdef PLATFORM_UNIX
-        keyContainerFilePath_ = L"DummyValueIgnoredOnLinux";
+        keyContainerFilePath_ = "DummyValueIgnoredOnLinux";
 #else
         error = CryptoUtility::GetCertificatePrivateKeyFileName(
             storeLocation_,
@@ -2528,7 +2521,7 @@ void InstallTestCertInScope::Uninstall(bool deleteKeyContainer)
         storeLocation_,
         storeName_,
         thumbprint_,
-        deleteKeyContainer ? keyContainerFilePath_ : L"");
+        deleteKeyContainer ? keyContainerFilePath_ : "");
     if (!error.IsSuccess())
     {
         TraceWarning(
@@ -2580,12 +2573,12 @@ Thumbprint::SPtr const & InstallTestCertInScope::Thumbprint() const
     return thumbprint_;
 }
 
-wstring const & InstallTestCertInScope::SubjectName() const
+string const & InstallTestCertInScope::SubjectName() const
 {
     return subjectName_;
 }
 
-wstring const & InstallTestCertInScope::StoreName() const
+string const & InstallTestCertInScope::StoreName() const
 {
     return storeName_;
 }
@@ -2614,7 +2607,7 @@ const char CryptoUtility::alphanum[] = "0123456789"
 
 ErrorCode CryptoUtility::GenerateRandomString(_Out_ SecureString & password)
 {    
-    wstring pass;
+    string pass;
     for (auto i = 0; i < RANDOM_STRING_LENGTH; ++i)
     {
         pass += alphanum[rand() % (sizeof(alphanum) - 1)];
@@ -2796,7 +2789,7 @@ bool CheckMachineModeAndRegKeys()
     return true;
 }
 
-ErrorCode CryptoUtility::VerifyEmbeddedSignature(wstring const & fileName)
+ErrorCode CryptoUtility::VerifyEmbeddedSignature(string const & fileName)
 {
     LONG lStatus;
     DWORD dwLastError;
@@ -2985,7 +2978,7 @@ ErrorCode CryptoUtility::GenerateRandomString(_Out_ SecureString & password)
         return ErrorCode::FromWin32Error(::GetLastError());
     }
 
-    wstring pass;
+    string pass;
     StringWriter writer(pass);
     for (DWORD i = 0; i < RANDOM_STRING_LENGTH; ++i)
     {
@@ -3000,7 +2993,7 @@ ErrorCode CryptoUtility::GenerateRandomString(_Out_ SecureString & password)
 
 ErrorCode CryptoUtility::CreateCertFromKey(
     ByteBuffer const & buffer,
-    wstring const & certKey,
+    string const & certKey,
     CertContextUPtr & certContext)
 {
 #ifdef PLATFORM_UNIX
@@ -3034,7 +3027,7 @@ ErrorCode CryptoUtility::CreateCertFromKey(
 
     CRYPT_KEY_PROV_INFO kpi;
     ZeroMemory(&kpi, sizeof(kpi));
-    kpi.pwszContainerName =  (LPWSTR)(containerName.c_str());
+    kpi.pwszContainerName =  (LPSTR)(containerName.c_str());
     kpi.dwProvType = PROV_RSA_FULL;
     kpi.dwKeySpec = AT_KEYEXCHANGE;
     kpi.dwFlags = CRYPT_MACHINE_KEYSET;
@@ -3055,7 +3048,7 @@ ErrorCode CryptoUtility::CreateCertFromKey(
 #endif
 }
 
-ErrorCode CryptoUtility::ImportCertKey(wstring const& keyContainerName, wstring const& key)
+ErrorCode CryptoUtility::ImportCertKey(string const& keyContainerName, string const& key)
 {
 #ifdef PLATFORM_UNIX
     return ErrorCodeValue::NotImplemented; // LINUXTODO implement create cert from key.
@@ -3066,7 +3059,7 @@ ErrorCode CryptoUtility::ImportCertKey(wstring const& keyContainerName, wstring 
 
     if (!::CryptAcquireContext(
         &hProv,
-        (LPWSTR)(keyContainerName.c_str()),
+        (LPSTR)(keyContainerName.c_str()),
         NULL,
         PROV_RSA_FULL,
         CRYPT_NEWKEYSET | CRYPT_MACHINE_KEYSET))
@@ -3107,7 +3100,7 @@ ErrorCode CryptoUtility::ImportCertKey(wstring const& keyContainerName, wstring 
 #endif
 }
 
-ErrorCode CryptoUtility::GenerateExportableKey(wstring const& keyContainerName, _Out_ SecureString & key)
+ErrorCode CryptoUtility::GenerateExportableKey(string const& keyContainerName, _Out_ SecureString & key)
 {
 #ifdef PLATFORM_UNIX
         return ErrorCodeValue::NotImplemented; // LINUXTODO implement create cert from key.
@@ -3117,7 +3110,7 @@ ErrorCode CryptoUtility::GenerateExportableKey(wstring const& keyContainerName, 
 
     if (!::CryptAcquireContext(
         &hCryptProv,
-        (LPWSTR)(keyContainerName.c_str()),
+        (LPSTR)(keyContainerName.c_str()),
         NULL,
         PROV_RSA_FULL,
         CRYPT_NEWKEYSET | CRYPT_MACHINE_KEYSET))
@@ -3202,10 +3195,10 @@ ErrorCode CryptoUtility::GenerateExportableKey(wstring const& keyContainerName, 
 #endif
 }
 
-wstring CryptoUtility::CertToBase64String(CertContextUPtr const & cert)
+string CryptoUtility::CertToBase64String(CertContextUPtr const & cert)
 {
 #ifdef PLATFORM_UNIX
-        return L""; // LINUXTODO implement create cert from key.
+        return ""; // LINUXTODO implement create cert from key.
 #else
 
     return CryptoUtility::BytesToBase64String(cert->pbCertEncoded, cert->cbCertEncoded);
@@ -3213,7 +3206,7 @@ wstring CryptoUtility::CertToBase64String(CertContextUPtr const & cert)
 #endif
 }
 
-ErrorCode CryptoUtility::CreateAndACLPasswordFile(wstring const & passwordFilePath, SecureString & password, vector<wstring> const & machineAccountNamesForACL)
+ErrorCode CryptoUtility::CreateAndACLPasswordFile(string const & passwordFilePath, SecureString & password, vector<string> const & machineAccountNamesForACL)
 {
     FileWriter passwordFile;
     auto error = passwordFile.TryOpen(passwordFilePath);

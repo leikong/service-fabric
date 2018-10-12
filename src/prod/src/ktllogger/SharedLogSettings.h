@@ -36,24 +36,24 @@ namespace KtlLogger
         {
         public:
 
-            WCharArrayWrapper(WCHAR path[size])
+            WCharArrayWrapper(CHAR path[size])
                 : path_(path)
             {
             }
 
             NTSTATUS FabricSerialize(FabricSerializationHelper * helper) const
             {
-                return helper->WriteByteArray(static_cast<PVOID>(path_), size * sizeof(WCHAR));
+                return helper->WriteByteArray(static_cast<PVOID>(path_), size * sizeof(CHAR));
             }
 
             NTSTATUS FabricDeserialize(FabricSerializationHelper * helper) const
             {
-                NTSTATUS status = helper->ReadByteArray(static_cast<PVOID>(path_), size * sizeof(WCHAR));
+                NTSTATUS status = helper->ReadByteArray(static_cast<PVOID>(path_), size * sizeof(CHAR));
                 CheckReadFieldSuccess(status);
                 return status;
             }
 
-            PWCHAR path_;
+            PCHAR path_;
         };
 
         __declspec(property(get = get_PathWrapper)) KtlLogger::SharedLogSettings::WCharArrayWrapper<512> PathWrapper;

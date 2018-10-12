@@ -17,7 +17,7 @@ ConfigEntryBase::ConfigEntryBase()
 {
 }
 
-void ConfigEntryBase::Initialize(ComponentConfig const * componentConfig, std::wstring const & section, std::wstring const & key, ConfigEntryUpgradePolicy::Enum upgradePolicy)
+void ConfigEntryBase::Initialize(ComponentConfig const * componentConfig, std::string const & section, std::string const & key, ConfigEntryUpgradePolicy::Enum upgradePolicy)
 {
     if (!initialized_)
     {
@@ -67,13 +67,13 @@ bool ConfigEntryBase::OnUpdate()
     return true;
 }
 
-bool ConfigEntryBase::CheckUpdate(wstring const & value, bool isEncrypted)
+bool ConfigEntryBase::CheckUpdate(string const & value, bool isEncrypted)
 {
-    wstring stringValue = value;
+    string stringValue = value;
     return ((upgradePolicy_ == ConfigEntryUpgradePolicy::Dynamic) || !LoadValue(stringValue, isEncrypted, true));
 }
 
-bool ConfigEntryBase::Matches(std::wstring const & key)
+bool ConfigEntryBase::Matches(std::string const & key)
 {
     return (key_ == key || key_.size() == 0);
 }

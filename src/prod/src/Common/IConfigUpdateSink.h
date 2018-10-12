@@ -12,9 +12,9 @@ namespace Common
     public:
         virtual ~IConfigUpdateSink() = 0 {}
 
-        virtual const std::wstring & GetTraceId() const = 0;
-        virtual bool OnUpdate(std::wstring const & section, std::wstring const & key) = 0;
-        virtual bool CheckUpdate(std::wstring const & section, std::wstring const & key, std::wstring const & value, bool isEncrypted) = 0;
+        virtual const std::string & GetTraceId() const = 0;
+        virtual bool OnUpdate(std::string const & section, std::string const & key) = 0;
+        virtual bool CheckUpdate(std::string const & section, std::string const & key, std::string const & value, bool isEncrypted) = 0;
     };
 
     typedef std::shared_ptr<IConfigUpdateSink> IConfigUpdateSinkSPtr;

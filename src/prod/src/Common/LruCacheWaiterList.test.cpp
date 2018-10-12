@@ -31,14 +31,14 @@ namespace Common
         TEST_METHOD_SETUP(TestcaseSetup)
 
         typedef function<void(WaiterList &, int)> TestCaseHelperAction;
-        void TestCaseHelper(wstring const & testcase, TestCaseHelperAction const &);
+        void TestCaseHelper(string const & testcase, TestCaseHelperAction const &);
 
         static void AddWaiters(WaiterList &, int waiterCount, ManualResetEvent &, atomic_long &, vector<WaiterSPtr> &, TimeSpan const timeout);
         static void AddAndCompleteWaiters(WaiterList &, int waiterCount);
         static void AddAndFailWaiters(WaiterList &, int waiterCount);
         static void AddAndTimeoutWaiters(WaiterList &, int waiterCount);
         static void AddMixedWaiters(WaiterList &, int waiterCount);
-        static TimeSpan GetRandomTimeout(Random &, wstring const & traceTag);
+        static TimeSpan GetRandomTimeout(Random &, string const & traceTag);
         static void VerifyWaiterUseCounts(vector<WaiterSPtr> &);
     };
 
@@ -68,7 +68,7 @@ namespace Common
 
             if (waiterTimeout == TimeSpan::Zero)
             {
-                waiterTimeout = GetRandomTimeout(rand, wformatString("waiter_timeout_{0}", ix));
+                waiterTimeout = GetRandomTimeout(rand, formatString.L("waiter_timeout_{0}", ix));
             }
 
             auto waiter = list.AddWaiter(
@@ -245,7 +245,7 @@ namespace Common
 
         auto expectedValue = rand.Next();
 
-        auto delay = GetRandomTimeout(rand, L"first_waiter_delay").TotalMilliseconds();
+        auto delay = GetRandomTimeout(rand, "first_waiter_delay").TotalMilliseconds();
 
         Sleep(static_cast<DWORD>(delay));
 
@@ -304,7 +304,7 @@ namespace Common
             timeoutCount);
     }
 
-    TimeSpan LruCacheWaiterListTest::GetRandomTimeout(Random & rand, wstring const & traceTag)
+    TimeSpan LruCacheWaiterListTest::GetRandomTimeout(Random & rand, string const & traceTag)
     {
         auto min = SmallTimeoutInMilliseconds * TimeoutFactor;
         auto max = min * 2;
@@ -349,7 +349,7 @@ namespace Common
     }
 
     void LruCacheWaiterListTest::TestCaseHelper(
-        wstring const & testcase,
+        string const & testcase,
         TestCaseHelperAction const & action)
     {
         WaiterList list;
@@ -376,7 +376,7 @@ namespace Common
             TraceComponent,
             "CompleteWaitersTest");
 
-        TestCaseHelper(L"CompleteWaitersTest", AddAndCompleteWaiters);
+        TestCaseHelper("CompleteWaitersTest", AddAndCompleteWaiters);
     }
 
     // Test completion of pending waiters on failure
@@ -387,7 +387,7 @@ namespace Common
             TraceComponent,
             "FailWaitersTest");
 
-        TestCaseHelper(L"FailWaitersTest", AddAndFailWaiters);
+        TestCaseHelper("FailWaitersTest", AddAndFailWaiters);
     }
 
     // Test timeout of pending waiters
@@ -398,7 +398,7 @@ namespace Common
             TraceComponent,
             "TimeoutWaitersTest");
 
-        TestCaseHelper(L"TimeoutWaitersTest", AddAndTimeoutWaiters);
+        TestCaseHelper("TimeoutWaitersTest", AddAndTimeoutWaiters);
     }
 
     // Test successful completion of pending waiters with some waiters already timed out.
@@ -409,7 +409,7 @@ namespace Common
             TraceComponent,
             "MixedWaitersTest");
 
-        TestCaseHelper(L"MixedWaitersTest", AddMixedWaiters);
+        TestCaseHelper("MixedWaitersTest", AddMixedWaiters);
     }
 
     BOOST_AUTO_TEST_CASE(CreateCompletedTest)

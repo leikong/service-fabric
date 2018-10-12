@@ -10,29 +10,29 @@ namespace Common
     namespace IpUtility
     {
         ErrorCode GetDnsServers(
-            __out std::vector<std::wstring> & list
+            __out std::vector<std::string> & list
             );
 
         ErrorCode GetDnsServersPerAdapter(
-            __out std::map<std::wstring, std::vector<std::wstring>> & map
+            __out std::map<std::string, std::vector<std::string>> & map
             );
 
         ErrorCode GetIpAddressesPerAdapter(
-            __out std::map<std::wstring, std::vector<Common::IPPrefix>> & map
+            __out std::map<std::string, std::vector<Common::IPPrefix>> & map
             );
 
         ErrorCode GetAdapterAddressOnTheSameNetwork(
-            __in std::wstring input,
-            __out std::wstring& output
+            __in std::string input,
+            __out std::string& output
             );
 
         ErrorCode GetGatewaysPerAdapter(
-            __out std::map<std::wstring, std::vector<std::wstring>> &map
+            __out std::map<std::string, std::vector<std::string>> &map
             );
 
         ErrorCode GetFirstNonLoopbackAddress(
-            std::map<std::wstring, std::vector<Common::IPPrefix>> addressesPerAdapter,
-            __out wstring &nonLoopbackIp
+            std::map<std::string, std::vector<Common::IPPrefix>> addressesPerAdapter,
+            __out string &nonLoopbackIp
             );
     }
 }

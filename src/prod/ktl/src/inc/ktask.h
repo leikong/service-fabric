@@ -109,7 +109,7 @@ public:
     // Executes a query over the table.
     //
     // Parameters:
-    //      QueryText       The text of the query.  For singleton tables the query string is always L"GET"
+    //      QueryText       The text of the query.  For singleton tables the query string is always "GET"
     //
     //      ResultSet       Receives the result set iterator. There will always just be one object in singleton tables.
     //

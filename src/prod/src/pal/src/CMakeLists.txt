@@ -103,7 +103,6 @@ set( WIN_SOURCES
 # Utilities for pal
 set( UTL_SOURCES
     util/pal_hosting_util.cpp
-    util/pal_string_util.cpp
     util/pal_time_util.cpp
     util/pal_ktl_util.cpp
 )

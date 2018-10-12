@@ -11,7 +11,7 @@ IpcHeader::IpcHeader() : fromProcessId_(0)
 { 
 }
 
-IpcHeader::IpcHeader(std::wstring const & from, DWORD fromProcessId) : from_(from), fromProcessId_(fromProcessId)
+IpcHeader::IpcHeader(std::string const & from, DWORD fromProcessId) : from_(from), fromProcessId_(fromProcessId)
 {
 }
 

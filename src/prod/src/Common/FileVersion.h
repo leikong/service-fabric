@@ -12,11 +12,11 @@ namespace Common
     {
     public:
 
-        static std::wstring GetFileVersion(std::wstring const & fileName);
-        static unsigned __int64 GetFileVersionNumber(std::wstring const & fileName, bool traceOnError = true);
-        static std::wstring GetCurrentExeVersion();
+        static std::string GetFileVersion(std::string const & fileName);
+        static unsigned __int64 GetFileVersionNumber(std::string const & fileName, bool traceOnError = true);
+        static std::string GetCurrentExeVersion();
         static unsigned __int64 GetCurrentExeVersionNumber();     
-        static std::wstring NumberVersionToString(unsigned __int64 numVer);
+        static std::string NumberVersionToString(unsigned __int64 numVer);
     };
 };
 

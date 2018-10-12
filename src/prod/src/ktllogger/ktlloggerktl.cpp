@@ -270,7 +270,7 @@ KtlLoggerInitializationContext::FSMContinue(
 #if defined(PLATFORM_UNIX)
                 Status = path;
 #else
-                Status = path->Concat(L"\\??\\");
+                Status = path->Concat("\\??\\");
 #endif
                 if (!NT_SUCCESS(Status))
                 {
@@ -297,7 +297,7 @@ KtlLoggerInitializationContext::FSMContinue(
                     goto StartCleanupOnError;
                 }
 
-                Status = path->Concat(L"\\ReplicatorLog\\ReplicatorShared.log");
+                Status = path->Concat("\\ReplicatorLog\\ReplicatorShared.log");
                 if (!NT_SUCCESS(Status))
                 {
                     KTraceFailedAsyncRequest(Status, this, _State, 0);
@@ -471,7 +471,7 @@ KtlLoggerInitializationContext::StartInitializeKtlLogger(
     __in BOOLEAN UseInprocLogger,
     __in KtlLogManager::MemoryThrottleLimits& MemoryLimits,
     __in KtlLogManager::SharedLogContainerSettings& SharedLogSettings,
-    __in LPCWSTR NodeWorkDirectory,
+    __in LPCSTR NodeWorkDirectory,
     __in_opt KAsyncContextBase* const ParentAsyncContext,
     __in_opt KAsyncContextBase::CompletionCallback CallbackPtr)
 {

@@ -16,9 +16,9 @@ void NodeInstance::WriteTo(TextWriter& w, FormatOptions const&) const
     w.Write("{0}:{1}", id_, instanceId_);
 }
 
-wstring NodeInstance::ToString() const
+string NodeInstance::ToString() const
 {
-    return wformatString(*this);
+    return formatString(*this);
 }
 
 string NodeInstance::AddField(Common::TraceEvent & traceEvent, string const & name)
@@ -38,16 +38,16 @@ void NodeInstance::FillEventData(TraceEventContext & context) const
     context.Write<uint64>(instanceId_);
 }
 
-bool NodeInstance::TryParse(wstring const & data, __out NodeInstance & nodeInstance)
+bool NodeInstance::TryParse(string const & data, __out NodeInstance & nodeInstance)
 {
-    size_t splitLoc = data.find(L":", 0);
-    if (splitLoc == std::wstring::npos || splitLoc == 0 || splitLoc == data.size() - 1)
+    size_t splitLoc = data.find(":", 0);
+    if (splitLoc == std::string::npos || splitLoc == 0 || splitLoc == data.size() - 1)
     {
         return false;
     }
             
-    wstring nodeIdStr = data.substr(0, splitLoc);
-    wstring iIdStr = data.substr(splitLoc + 1);
+    string nodeIdStr = data.substr(0, splitLoc);
+    string iIdStr = data.substr(splitLoc + 1);
 
     uint64 instanceId;
     if (!StringUtility::TryFromWString<uint64>(iIdStr, instanceId))

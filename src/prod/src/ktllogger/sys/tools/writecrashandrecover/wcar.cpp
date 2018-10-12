@@ -31,8 +31,8 @@ KAllocator* g_Allocator;
 typedef struct
 {
     PCHAR ResultName;
-    PWCHAR SharedLogPath;
-    PWCHAR DedicatedLogPath;
+    PCHAR SharedLogPath;
+    PCHAR DedicatedLogPath;
     BOOLEAN UseSparse;
     BOOLEAN UseSharedLog;
     ULONG StreamCount;
@@ -61,8 +61,8 @@ static const UCHAR DriveLetter = 'F';
 
 TestCaseInformation TestInfo = 
     { "WCAR",
-      L"f",
-      L"f",
+      "f",
+      "f",
       TRUE,           // UseSparse
       TRUE,           // UseSharedLog
       1,              // StreamCount
@@ -73,11 +73,11 @@ TestCaseInformation TestInfo =
     };
 
 #if !defined(PLATFORM_UNIX)
-#define OracleFileName L"KtlLogOracle.dat"
-#define ContainerPathName L"KtlLogContainer.log"
+#define OracleFileName "KtlLogOracle.dat"
+#define ContainerPathName "KtlLogContainer.log"
 #else
-#define OracleFileName L"/tmp/KtlLogOracle.dat"
-#define ContainerPathName L"/tmp/KtlLogContainer.log"
+#define OracleFileName "/tmp/KtlLogOracle.dat"
+#define ContainerPathName "/tmp/KtlLogContainer.log"
 #endif
 
 NTSTATUS BuildPathName(
@@ -85,7 +85,7 @@ NTSTATUS BuildPathName(
 #if !defined(PLATFORM_UNIX)
     __in KGuid DiskId,
 #endif
-    __in PWCHAR PathName
+    __in PCHAR PathName
     )
 {
 #if !defined(PLATFORM_UNIX)
@@ -119,8 +119,8 @@ NTSTATUS BuildPathName(
         return(STATUS_UNSUCCESSFUL);
     }   
 
-    FileName = L"\\GLOBAL??\\Volume";
-    FileName += static_cast<WCHAR*>(*guidString);
+    FileName = "\\GLOBAL??\\Volume";
+    FileName += static_cast<CHAR*>(*guidString);
     FileName += KVolumeNamespace::PathSeparator;
     FileName += PathName;
 #else
@@ -1214,7 +1214,7 @@ NTSTATUS PerformKtlLogTestCase(
 
     status = KString::Create(containerPath,
                              *g_Allocator,
-                             (PWCHAR)cPath,
+                             (PCHAR)cPath,
                              TRUE);
     if (! NT_SUCCESS(status))
     {
@@ -1593,7 +1593,7 @@ NTSTATUS CreateContainersAndLogs(
 
     status = KString::Create(containerPath,
                              *g_Allocator,
-                             (PWCHAR)cPath,
+                             (PCHAR)cPath,
                              TRUE);
     if (! NT_SUCCESS(status))
     {
@@ -1644,9 +1644,9 @@ NTSTATUS CreateContainersAndLogs(
         logStreamId = static_cast<KtlLogStreamId>(logStreamGuid);
 
 #if !defined(PLATFORM_UNIX)
-        guidName = L"";
+        guidName = "";
 #else
-        guidName = L"/tmp/";
+        guidName = "/tmp/";
 #endif
         guidName += logStreamGuid;
         
@@ -1654,7 +1654,7 @@ NTSTATUS CreateContainersAndLogs(
 #if !defined(PLATFORM_UNIX)
                                DiskId,
 #endif
-                               (PWCHAR)guidName);
+                               (PCHAR)guidName);
         if (! NT_SUCCESS(status))
         {
             KTraceFailedAsyncRequest(status, nullptr, 0, 0);
@@ -1664,7 +1664,7 @@ NTSTATUS CreateContainersAndLogs(
                 
         status = KString::Create(streamPath,
                                  *g_Allocator,
-                                 (PWCHAR)s,
+                                 (PCHAR)s,
                                  TRUE);
         if (! NT_SUCCESS(status))
         {
@@ -1861,7 +1861,7 @@ NTSTATUS TestSequence()
 
 NTSTATUS
 TheMain(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     UNREFERENCED_PARAMETER(argc);
@@ -1909,18 +1909,18 @@ TheMain(
 }
 
 #define CONVERT_TO_ARGS(argc, cargs) \
-    std::vector<WCHAR*> args_vec(argc);\
-    WCHAR** args = (WCHAR**)args_vec.data();\
-    std::vector<std::wstring> wargs(argc);\
+    std::vector<CHAR*> args_vec(argc);\
+    CHAR** args = (CHAR**)args_vec.data();\
+    std::vector<std::string> wargs(argc);\
     for (int iter = 0; iter < argc; iter++)\
     {\
         wargs[iter] = Utf8To16(cargs[iter]);\
-        args[iter] = (WCHAR*)(wargs[iter].data());\
+        args[iter] = (CHAR*)(wargs[iter].data());\
     }\
 
 #if !defined(PLATFORM_UNIX)
 int
-wmain(int argc, WCHAR* args[])
+wmain(int argc, CHAR* args[])
 {
     return TheMain(argc, args);
 }

@@ -210,7 +210,7 @@ public:
     // This particular pattern is useful so that most code can place this call in an parameter
     // position within another call:
     //
-    //      MyCall(KVariant::Create(L"Foo", Allocator));
+    //      MyCall(KVariant::Create("Foo", Allocator));
     //
     // ...and the receiver can check that the KVariant is valid and/or of the correct type.
     // Note that because a failed KVariant won't have the expected type, just checking for the
@@ -222,7 +222,7 @@ public:
 
     static KVariant
     Create(
-        __in const LPCWSTR Str,
+        __in const LPCSTR Str,
         __in KAllocator& Allocator
         )
     {
@@ -618,7 +618,7 @@ public:
         else if (_Type == Type_KUri_SPtr)
         {
 #ifdef PLATFORM_UNIX
-            KStringView Tmp = (KStringView)((LPCWSTR)(*reinterpret_cast<const KUri::SPtr&>(GetSPtr())));
+            KStringView Tmp = (KStringView)((LPCSTR)(*reinterpret_cast<const KUri::SPtr&>(GetSPtr())));
 #else
             KStringView Tmp = (KStringView) *reinterpret_cast<const KUri::SPtr&>(GetSPtr());
 #endif
@@ -632,7 +632,7 @@ public:
         return nullptr;
     }
 
-    operator LPCWSTR() const
+    operator LPCSTR() const
     {
         return operator PWSTR();
     }
@@ -692,7 +692,7 @@ public:
 
         KFatal((Tmp->Length() * 2) < 0x10000); // KFata if this string is too large for UNICODE_STRING
 
-        Str.Buffer = PWCHAR(*Tmp);
+        Str.Buffer = PCHAR(*Tmp);
         Str.Length = USHORT(Tmp->Length() * 2);
         Str.MaximumLength = USHORT(Tmp->BufferSizeInChars() * 2);
         return Str;
@@ -717,7 +717,7 @@ private:
     KVariant(PUNICODE_STRING);
     KVariant(UNICODE_STRING&);
     KVariant(KStringView&);
-    KVariant(LPCWSTR);
+    KVariant(LPCSTR);
     // End
 
     KSharedUntyped::SPtr&

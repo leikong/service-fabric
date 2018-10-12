@@ -223,7 +223,7 @@ class DPCAsyncContext : public KAsyncContextBase
         }
 
         static NTSTATUS Create(
-            PWCHAR Name,
+            PCHAR Name,
             DPCAsyncContext::SPtr& Context
             );
 
@@ -337,7 +337,7 @@ class DPCAsyncContext : public KAsyncContextBase
     private:
 
     private:
-        PWCHAR _Name;
+        PCHAR _Name;
         BOOLEAN _ExpectDPC;
         DPCAsyncMode _Mode;
         DPCAsyncContext* _Child;
@@ -404,7 +404,7 @@ DPCAsyncContext::~DPCAsyncContext()
 }
 
 NTSTATUS DPCAsyncContext::Create(
-    PWCHAR Name,
+    PCHAR Name,
     DPCAsyncContext::SPtr& Context
     )
 {
@@ -441,13 +441,13 @@ DPCDispatchTest()
     DPCAsyncContext::SPtr parentContext;
     MySynchronizer sync, syncParent;
 
-    status = DPCAsyncContext::Create(L"Child", context);
+    status = DPCAsyncContext::Create("Child", context);
     if (! NT_SUCCESS(status))
     {
         return(status);
     }
 
-    status = DPCAsyncContext::Create(L"Parent", parentContext);
+    status = DPCAsyncContext::Create("Parent", parentContext);
     if (! NT_SUCCESS(status))
     {
         return(status);
@@ -2443,7 +2443,7 @@ PhantomCycleTest(
 }
 
 NTSTATUS
-InternalBasicStateMachine(int argc, WCHAR* args[])
+InternalBasicStateMachine(int argc, CHAR* args[])
 {
     KTestPrintf("KAsyncContextBase Unit Test: Start: BasicStateMachine\n");
 
@@ -2459,7 +2459,7 @@ InternalBasicStateMachine(int argc, WCHAR* args[])
     // Turn on strict allocation tracking
     underlyingSystem->SetStrictAllocationChecks(TRUE);
 
-    auto        Test = ([&] (int argc, WCHAR* args[]) -> NTSTATUS
+    auto        Test = ([&] (int argc, CHAR* args[]) -> NTSTATUS
     {
         UNREFERENCED_PARAMETER(argc);
         UNREFERENCED_PARAMETER(args);
@@ -3222,7 +3222,7 @@ VOID InterceptorTests()
 }
 
 NTSTATUS
-BasicStateMachine(int argc, WCHAR* args[])
+BasicStateMachine(int argc, CHAR* args[])
 {
     KTestPrintf("KAsyncContextBase BasicStateMachine Test: STARTED\n");
     NTSTATUS result = STATUS_SUCCESS;
@@ -3253,7 +3253,7 @@ BasicStateMachine(int argc, WCHAR* args[])
 #if CONSOLE_TEST
 int
 #if !defined(PLATFORM_UNIX)
-main(int argc, WCHAR* args[])
+main(int argc, CHAR* args[])
 {
 #else
 main(int argc, char* cargs[])

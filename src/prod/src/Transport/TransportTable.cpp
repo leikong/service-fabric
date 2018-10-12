@@ -18,7 +18,7 @@ namespace Transport
     {
     }
 
-    void TransportTable::Add(wstring const & name, weak_ptr<IDatagramTransport> const & item)
+    void TransportTable::Add(string const & name, weak_ptr<IDatagramTransport> const & item)
     {
         AcquireExclusiveLock lock(this->transportTableLock_);
 
@@ -29,7 +29,7 @@ namespace Transport
         this->transportTable_[name] = item;
     }
 
-    bool TransportTable::Contains(wstring const & name)
+    bool TransportTable::Contains(string const & name)
     {
         AcquireExclusiveLock lock(this->transportTableLock_);
 
@@ -38,7 +38,7 @@ namespace Transport
         return iter != this->transportTable_.end();
     }
 
-    bool TransportTable::Remove(wstring const & name)
+    bool TransportTable::Remove(string const & name)
     {
         AcquireExclusiveLock lock(this->transportTableLock_);
 
@@ -53,7 +53,7 @@ namespace Transport
         return false;
     }
 
-    bool TransportTable::TryGet(wstring const & name, weak_ptr<IDatagramTransport> & item)
+    bool TransportTable::TryGet(string const & name, weak_ptr<IDatagramTransport> & item)
     {
         AcquireExclusiveLock lock(this->transportTableLock_);
 

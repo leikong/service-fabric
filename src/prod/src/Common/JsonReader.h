@@ -55,14 +55,14 @@ namespace Common
 
         // Returns the current character and advances to the next
         //
-        WCHAR Read()
+        char Read()
         {
             return JsonBufferManagerTraits<CharType>::GetNextChar(*this, &m_pszCharBuffer);
         }
 
         // Returns the current character. Does NOT advance to the next character.
         //
-        WCHAR Peek() const
+        char Peek() const
         {
             void *pContext = 0;
             return Peek(&pContext);
@@ -72,7 +72,7 @@ namespace Common
         // if *ppContext is nullptr, returns the current character and stores a value in *ppContext such
         // that subsequent calls to Peek with that same context will return consecutive characters
         //
-        WCHAR Peek(void** ppContext) const
+        char Peek(void** ppContext) const
         {
             if(ppContext == nullptr) return 0;
 
@@ -90,7 +90,7 @@ namespace Common
         }
 
     private:
-        WCHAR GetNextUTF8Char(LPCSTR* ppszBuffer) const
+        char GetNextUTF8Char(LPCSTR* ppszBuffer) const
         {
             // add an assert because caller does the argument check, and does not expect failure of function.
             //
@@ -131,7 +131,7 @@ namespace Common
                 //
                 if((b2 & 0xC0) == 0x80 && (b3 & 0xC0) == 0x80 && (b1 > 0xE0 || b2 > 0x9F))
                 {
-                    WCHAR wc = ((b1 & 0x0F) << 12) | ((b2 & 0x3F) << 6) | (b3 & 0x3F);
+                    char wc = ((b1 & 0x0F) << 12) | ((b2 & 0x3F) << 6) | (b3 & 0x3F);
 
                     // If the top five bits are 11011, then the value is in the D800-DFFF range, which is not allowed, otherwise, we return the value
                     //
@@ -149,7 +149,7 @@ namespace Common
             return 0;
         }
 
-        WCHAR PeekChar(const CharType** ppszBuffer) const
+        char PeekChar(const CharType** ppszBuffer) const
         {
             if(ppszBuffer == nullptr || m_pszCharBuffer == nullptr) return 0; 
 
@@ -165,7 +165,7 @@ namespace Common
             return JsonBufferManagerTraits<CharType>::GetNextChar(*this, ppszBuffer);
         }
 
-        static WCHAR GetNextUTF16Char(LPCWSTR* ppszBuffer)
+        static char GetNextUTF16Char(LPCSTR* ppszBuffer)
         {
             // add an assert because caller does the argument check, and does not expect failure of function.
             //
@@ -173,7 +173,7 @@ namespace Common
             ATLASSERT(ppszBuffer);
             ATLASSERT(*ppszBuffer);
 
-            WCHAR wc = *(*ppszBuffer)++;
+            char wc = *(*ppszBuffer)++;
             return (wc & 0xF800) == 0xD800 ? 0 : wc;
         }
 
@@ -191,7 +191,7 @@ namespace Common
     template<>
     struct JsonBufferManagerTraits<char>
     {
-        static WCHAR GetNextChar(const JsonBufferManager2<char>& buffer, LPCSTR* ppszBuffer)
+        static char GetNextChar(const JsonBufferManager2<char>& buffer, LPCSTR* ppszBuffer)
         {
             // add an assert because caller does the argument check, and does not expect failure of function.
             //
@@ -232,7 +232,7 @@ namespace Common
                 //
                 if((b2 & 0xC0) == 0x80 && (b3 & 0xC0) == 0x80 && (b1 > 0xE0 || b2 > 0x9F))
                 {
-                    WCHAR wc = ((b1 & 0x0F) << 12) | ((b2 & 0x3F) << 6) | (b3 & 0x3F);
+                    char wc = ((b1 & 0x0F) << 12) | ((b2 & 0x3F) << 6) | (b3 & 0x3F);
 
                     // If the top five bits are 11011, then the value is in the D800-DFFF range, which is not allowed, otherwise, we return the value
                     //
@@ -248,23 +248,6 @@ namespace Common
             //
             *ppszBuffer += 1;
             return 0;
-        }
-    };
-    //-------------------------------------------------------------------------------------------------------------------------------------------
-    template<>
-    struct JsonBufferManagerTraits<wchar_t>
-    {
-        static WCHAR GetNextChar(const JsonBufferManager2<wchar_t>& buffer, LPCWSTR* ppszBuffer)
-        {
-            // add an assert because caller does the argument check, and does not expect failure of function.
-            //
-            //
-            UNREFERENCED_PARAMETER(buffer);
-            ASSERT_IF(!ppszBuffer, "Invalid buffer");
-            ASSERT_IF(!(*ppszBuffer), "Invalid buffer");
-
-            WCHAR wc = *(*ppszBuffer)++;
-            return (wc & 0xF800) == 0xD800 ? 0 : wc;
         }
     };
     //-------------------------------------------------------------------------------------------------------------------------------------------
@@ -315,7 +298,7 @@ namespace Common
             if(FAILED(hr)) return hr; 
 
             DOUBLE d;
-            if (!StringUtility::TryFromWString(std::wstring(m_szNumberConversionBuffer), d))
+            if (!StringUtility::TryFromWString(std::string(m_szNumberConversionBuffer), d))
             {
                 return JSON_E_INVALID_NUMBER;
             }
@@ -326,7 +309,7 @@ namespace Common
 
         HRESULT GetNumberValueFromString(DOUBLE *pdblValue)
         {
-            std::wstring strValue;
+            std::string strValue;
             HRESULT hr = GetStringValue(&strValue);
             if (FAILED(hr)) { return hr; }
 
@@ -337,7 +320,7 @@ namespace Common
             return S_OK;
         }
 
-        HRESULT GetStringValue(std::wstring* pstrData)
+        HRESULT GetStringValue(std::string* pstrData)
         {
             ULONG nLength = 0;
             HRESULT hr = GetStringLength(&nLength);
@@ -347,9 +330,9 @@ namespace Common
             hr = ULongAdd(nLength, 1, &bufferSize);
             if (FAILED(hr)) { return hr; }
 
-            std::vector<WCHAR> buffer(bufferSize);
+            std::vector<char> buffer(bufferSize);
             hr = GetStringValue(buffer.data(), bufferSize);
-            *pstrData = std::wstring(buffer.data());
+            *pstrData = std::string(buffer.data());
 
             return hr;
         }
@@ -369,7 +352,7 @@ namespace Common
             return S_OK;
         }
 
-        HRESULT GetFieldName(__in_ecount(nLength) LPWSTR pszBuffer, __in ULONG nLength)
+        HRESULT GetFieldName(__in_ecount(nLength) LPSTR pszBuffer, __in ULONG nLength)
         {
             if(!pszBuffer) return E_POINTER;
 
@@ -378,7 +361,7 @@ namespace Common
             return GetStringValue(pszBuffer, nLength);
         }
 
-        HRESULT GetStringValue(__in_ecount(nLength) LPWSTR pszBuffer, __in ULONG nLength)
+        HRESULT GetStringValue(__in_ecount(nLength) LPSTR pszBuffer, __in ULONG nLength)
         {
             if(!pszBuffer) return E_POINTER; 
 
@@ -386,43 +369,43 @@ namespace Common
 
             void *pContext = 0;
             // Skip the opening quote
-            WCHAR wcCurrent = m_bufferManager.Peek(&pContext);
+            char wcCurrent = m_bufferManager.Peek(&pContext);
             if (wcCurrent != '"') return JSON_E_INVALID_STRING_CHARACTER;
 
             for(DWORD i=0;i < m_dwStringLength;i++)
             {
                 wcCurrent = m_bufferManager.Peek(&pContext);
-                if(wcCurrent == L'\\')
+                if(wcCurrent == '\\')
                 {
                     wcCurrent = m_bufferManager.Peek(&pContext);
 
                     switch(wcCurrent)
                     {
-                    case L'b':
+                    case 'b':
                         wcCurrent = '\b';
                         break;
-                    case L'f':
+                    case 'f':
                         wcCurrent = '\f';
                         break;
-                    case L'n':
+                    case 'n':
                         wcCurrent = '\n';
                         break;
-                    case L'r':
+                    case 'r':
                         wcCurrent = '\r';
                         break;
-                    case L't':
+                    case 't':
                         wcCurrent = '\t';
                         break;
-                    case L'v':
+                    case 'v':
                         wcCurrent = '\v';
                         break;
-                    case L'u':
+                    case 'u':
                         wcCurrent = 0;
                         for(UINT j = 0;j < 4;j++)
                         {
                             wcCurrent <<= 4;
 
-                            WCHAR wc = m_bufferManager.Peek(&pContext);
+                            char wc = m_bufferManager.Peek(&pContext);
                             if(wc >= '0' && wc <= '9')
                             {
                                 wcCurrent += wc - '0';
@@ -467,7 +450,7 @@ namespace Common
 
             switch(m_bufferManager.Peek())
             {
-            case L'\"':
+            case '\"':
                 if(InObject() && (m_previousTokenType == JsonTokenType_BeginObject || m_previousTokenType == JsonTokenType_ValueSeparator))
                 {
                     return ProcessFieldName();
@@ -476,44 +459,44 @@ namespace Common
                 {
                     return ProcessString();
                 }
-            case L'-':
-            case L'0':
-            case L'1':
-            case L'2':
-            case L'3':
-            case L'4':
-            case L'5':
-            case L'6':
-            case L'7':
-            case L'8':
-            case L'9':
+            case '-':
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
                 return ProcessNumber();
-            case L'[':
+            case '[':
                 return ProcessBeginArray();
-            case L']':
+            case ']':
                 return ProcessEndArray();
-            case L'{':
+            case '{':
                 return ProcessBeginObject();
-            case L'}':
+            case '}':
                 return ProcessEndObject();
-            case L't':
+            case 't':
                 return ProcessTrue();
-            case L'f':
+            case 'f':
                 return ProcessFalse();
-            case L'n':
+            case 'n':
                 return ProcessNull();
-            case L',':
+            case ',':
                 return ProcessValueSeparator();
-            case L':':
+            case ':':
                 return ProcessNameSeparator();
             case 0:
-            case L' ':
-            case L'\t':
-            case L'\n':
-            case L'\r':
-            case L'\v':
-            case L'\b':
-            case L'\f':
+            case ' ':
+            case '\t':
+            case '\n':
+            case '\r':
+            case '\v':
+            case '\b':
+            case '\f':
                 // We will only get here if this is trailing whitespace after the last real token or
                 // we've reached the actual end of the buffer
                 return ProcessEndOfBuffer();
@@ -580,40 +563,40 @@ namespace Common
     private:
         bool InArray() const
         { 
-            return m_stack.Peek() == L'['; 
+            return m_stack.Peek() == '['; 
         }
 
-        bool IsClosingQuote(WCHAR wcCurrent, WCHAR wcPrevious) const
+        bool IsClosingQuote(char wcCurrent, char wcPrevious) const
         { 
-            return wcCurrent == L'\"' && wcPrevious != L'\\'; 
+            return wcCurrent == '\"' && wcPrevious != '\\'; 
         }
 
         bool InObject() const
         { 
-            return m_stack.Peek() == L'{'; 
+            return m_stack.Peek() == '{'; 
         }
 
-        bool IsControlCharacter(WCHAR wc) const
+        bool IsControlCharacter(char wc) const
         {
-            return wc < L'\t' || 
+            return wc < '\t' || 
                 wc == 0x0B || // Vertical Tab
                 wc == 0x0C || // Form Feed
-                (wc > L'\r' && wc < L' ');
+                (wc > '\r' && wc < ' ');
         }
 
-        bool IsHexNumberCharacter(WCHAR wc) const
+        bool IsHexNumberCharacter(char wc) const
         {
             return isdigit(wc) || (wc >= 'a' && wc <= 'f') || (wc >= 'A' && wc <= 'F');        
         }
 
-        bool IsNumberCharacter(WCHAR wc) const
+        bool IsNumberCharacter(char wc) const
         {
-            return isdigit(wc) || wc == L'.' || wc == L'e' || wc == L'E' || wc == L'+' || wc == L'-';
+            return isdigit(wc) || wc == '.' || wc == 'e' || wc == 'E' || wc == '+' || wc == '-';
         }
 
-        bool IsWhitespace(WCHAR wc) const
+        bool IsWhitespace(char wc) const
         { 
-            return wc == L' ' || wc == L'\t' || wc == L'\r' || wc == L'\n';
+            return wc == ' ' || wc == '\t' || wc == '\r' || wc == '\n';
         }
 
         HRESULT CheckPrecedingTokenForValue() const
@@ -637,7 +620,7 @@ namespace Common
 
         DWORD GetLengthOfNumberToken() const
         {
-            ASSERT_IF(m_bufferManager.Peek() != L'-' && !isdigit(m_bufferManager.Peek()), "Invalid Number format");
+            ASSERT_IF(m_bufferManager.Peek() != '-' && !isdigit(m_bufferManager.Peek()), "Invalid Number format");
 
             DWORD dwTokenLength = 0;
 
@@ -655,13 +638,13 @@ namespace Common
         // It sets the value of m_dwCurrentTokenLength and m_dwStringLength;
         HRESULT GetLengthOfStringToken()
         {
-            ASSERT_IF(m_bufferManager.Peek() != L'\"', "Invalid String format");
+            ASSERT_IF(m_bufferManager.Peek() != '\"', "Invalid String format");
             DWORD dwTokenLength = (DWORD)0;
             DWORD dwStringLength = (DWORD)-1; // To account for the fact that the opening quote is NOT part of the string length
-            WCHAR wcPrevious = L'\\';  // This ensures that IsClosingQuote will return false initially
+            char wcPrevious = '\\';  // This ensures that IsClosingQuote will return false initially
 
             void *pContext = 0;
-            WCHAR wcCurrent = m_bufferManager.Peek(&pContext);
+            char wcCurrent = m_bufferManager.Peek(&pContext);
 
             while(!IsClosingQuote(wcCurrent, wcPrevious))
             {
@@ -679,29 +662,29 @@ namespace Common
                 dwStringLength++;
 
                 // Process escaped characters
-                if(wcCurrent == L'\\')
+                if(wcCurrent == '\\')
                 {
                     wcCurrent = m_bufferManager.Peek(&pContext);
 
                     switch (wcCurrent)
                     {
-                    case L'\\':
+                    case '\\':
                         // we escaped a backslash. We must lie about wcCurrent
                         // so that if the next character is a quote we won't
                         // skip past it
                         wcCurrent = 0;
                         // fall through
-                    case L'\"':
-                    case L'/':
-                    case L'b':
-                    case L'f':
-                    case L'n':
-                    case L'r':
-                    case L't':
-                    case L'v':
+                    case '\"':
+                    case '/':
+                    case 'b':
+                    case 'f':
+                    case 'n':
+                    case 'r':
+                    case 't':
+                    case 'v':
                         dwTokenLength++;
                         break;
-                    case L'u':
+                    case 'u':
                         if(!isxdigit(m_bufferManager.Peek(&pContext)) ||
                             !isxdigit(m_bufferManager.Peek(&pContext)) ||
                             !isxdigit(m_bufferManager.Peek(&pContext)) ||
@@ -771,7 +754,7 @@ namespace Common
 
             m_currentTokenType = JsonTokenType_EndArray;
             m_dwCurrentTokenLength = 1;
-            WCHAR wTemp;
+            char wTemp;
             m_stack.Pop(&wTemp);
             return hr;
         }
@@ -794,7 +777,7 @@ namespace Common
 
             m_currentTokenType = JsonTokenType_EndObject;
             m_dwCurrentTokenLength = 1;
-            WCHAR wTemp;
+            char wTemp;
             m_stack.Pop(&wTemp);
             return hr;
         }
@@ -819,11 +802,11 @@ namespace Common
             if(FAILED(hr)) return hr;
 
             void*pContext = 0;
-            if(m_bufferManager.Peek(&pContext) != L'f' ||
-                m_bufferManager.Peek(&pContext) != L'a' ||
-                m_bufferManager.Peek(&pContext) != L'l' ||
-                m_bufferManager.Peek(&pContext) != L's' ||
-                m_bufferManager.Peek(&pContext) != L'e')
+            if(m_bufferManager.Peek(&pContext) != 'f' ||
+                m_bufferManager.Peek(&pContext) != 'a' ||
+                m_bufferManager.Peek(&pContext) != 'l' ||
+                m_bufferManager.Peek(&pContext) != 's' ||
+                m_bufferManager.Peek(&pContext) != 'e')
             {
                 hr = JSON_E_INVALID_TOKEN;
             }
@@ -872,10 +855,10 @@ namespace Common
             if(FAILED(hr)) return hr;
 
             void *pContext = 0;
-            if(m_bufferManager.Peek(&pContext) != L'n' ||
-                m_bufferManager.Peek(&pContext) != L'u' ||
-                m_bufferManager.Peek(&pContext) != L'l' ||
-                m_bufferManager.Peek(&pContext) != L'l')
+            if(m_bufferManager.Peek(&pContext) != 'n' ||
+                m_bufferManager.Peek(&pContext) != 'u' ||
+                m_bufferManager.Peek(&pContext) != 'l' ||
+                m_bufferManager.Peek(&pContext) != 'l')
             {
                 hr = JSON_E_INVALID_TOKEN;
             }
@@ -912,10 +895,10 @@ namespace Common
 
             void *pContext = 0;
 
-            if(m_bufferManager.Peek(&pContext) != L't' ||
-                m_bufferManager.Peek(&pContext) != L'r' ||
-                m_bufferManager.Peek(&pContext) != L'u' ||
-                m_bufferManager.Peek(&pContext) != L'e')
+            if(m_bufferManager.Peek(&pContext) != 't' ||
+                m_bufferManager.Peek(&pContext) != 'r' ||
+                m_bufferManager.Peek(&pContext) != 'u' ||
+                m_bufferManager.Peek(&pContext) != 'e')
             {
                 hr = JSON_E_INVALID_TOKEN;
             }
@@ -1098,14 +1081,14 @@ namespace Common
             {
                 switch (m_bufferManager.Peek())
                 {
-                    case L'[':
+                    case '[':
                     {
                         numberOfBeginArrayTokens++;
                         hr = m_bufferManager.Read();
                         if (FAILED(hr)) { return hr; }
                         break;
                     }
-                    case L']':
+                    case ']':
                     {
                         if (--numberOfBeginArrayTokens == 0)
                         {
@@ -1147,14 +1130,14 @@ namespace Common
             {
                 switch (m_bufferManager.Peek())
                 {
-                case L'{':
+                case '{':
                 {
                     numberOfBeginObjectTokens++;
                     hr = m_bufferManager.Read();
                     if (FAILED(hr)) { return hr; }
                     break;
                 }
-                case L'}':
+                case '}':
                 {
                     if (--numberOfBeginObjectTokens == 0)
                     {
@@ -1182,7 +1165,7 @@ namespace Common
         DWORD                    m_dwStringLength;
         JsonTokenType            m_previousTokenType;
         JSONStack                m_stack;
-        WCHAR                    m_szNumberConversionBuffer[64];
+        char                    m_szNumberConversionBuffer[64];
         bool                     m_contextSaved;
 
         struct ContextRecord
@@ -1245,35 +1228,23 @@ namespace Common
             Initialize(pszBuffer, nullptr, nBufferLength);
         }
 
-        JsonBufferManager(LPCWSTR pszBuffer)
-        {
-            Initialize(nullptr, pszBuffer, (DWORD)wcslen(pszBuffer));
-        }
-
-        JsonBufferManager(LPCWSTR pszBuffer, DWORD nBufferLength)
-        {
-            Initialize(nullptr, pszBuffer, nBufferLength);
-        }
-
         ~JsonBufferManager()
         {
         }
 
         // Returns the current character and advances to the next
         //
-        WCHAR Read()
+        char Read()
         {
             // Figure out whether we're working over a UTF-16 or UTF-8 buffer, check to make sure
             // we've not run off the end of the buffer and return the next character.
             //
-            return m_pszWideCharBuffer != nullptr ?
-                (IsEOF(m_pszWideCharBuffer) ? 0 : GetNextUTF16Char(&m_pszWideCharBuffer)) :
-                (IsEOF(m_pszCharBuffer) ? 0 : GetNextUTF8Char(&m_pszCharBuffer));
+            return (IsEOF(m_pszCharBuffer) ? 0 : GetNextUTF8Char(&m_pszCharBuffer));
         }
 
         // Returns the current character. Does NOT advance to the next character.
         //
-        WCHAR Peek()
+        char Peek()
         {
             void *pContext = 0;
             return Peek(&pContext);
@@ -1283,11 +1254,11 @@ namespace Common
         // if *ppContext is nullptr, returns the current character and stores a value in *ppContext such
         // that subsequent calls to Peek with that same context will return consecutive characters
         //
-        WCHAR Peek(void** ppContext)
+        char Peek(void** ppContext)
         {
             if(ppContext == nullptr) return 0;
 
-            return m_pszWideCharBuffer != nullptr ? PeekChar((LPCWSTR*)ppContext) : PeekChar((LPCSTR*)ppContext);
+            return PeekChar((LPCSTR*)ppContext);
         }
 
         void Skip(DWORD dwCharsToSkip)
@@ -1301,7 +1272,7 @@ namespace Common
         }
 
     private:
-        WCHAR GetNextUTF8Char(LPCSTR* ppszBuffer)
+        char GetNextUTF8Char(LPCSTR* ppszBuffer)
         {
             // add an assert because caller does the argument check, and does not expect failure of function.
             //
@@ -1342,7 +1313,7 @@ namespace Common
                 //
                 if((b2 & 0xC0) == 0x80 && (b3 & 0xC0) == 0x80 && (b1 > 0xE0 || b2 > 0x9F))
                 {
-                    WCHAR wc = ((b1 & 0x0F) << 12) | ((b2 & 0x3F) << 6) | (b3 & 0x3F);
+                    char wc = ((b1 & 0x0F) << 12) | ((b2 & 0x3F) << 6) | (b3 & 0x3F);
 
                     // If the top five bits are 11011, then the value is in the D800-DFFF range, which is not allowed, otherwise, we return the value
                     //
@@ -1360,19 +1331,17 @@ namespace Common
             return 0;
         }
 
-        void Initialize(LPCSTR pszBuffer, LPCWSTR pszWideCharBuffer, DWORD nBufferLength)
+        void Initialize(LPCSTR pszBuffer, LPCSTR pszWideCharBuffer, DWORD nBufferLength)
         {
             ASSERT_IF(
                 ((pszBuffer == nullptr) && (pszWideCharBuffer == nullptr)),
                 "Invalid data");
             m_pszCharBuffer = pszBuffer;
             m_pszCharBufferStart = pszBuffer;
-            m_pszWideCharBuffer = pszWideCharBuffer;
-            m_pszWideCharBufferStart = pszWideCharBuffer;
             m_nBufferLength = nBufferLength;
         }
 
-        WCHAR PeekChar(LPCSTR* ppszBuffer)
+        char PeekChar(LPCSTR* ppszBuffer)
         {
             if(ppszBuffer == nullptr || m_pszCharBuffer == nullptr) return 0; 
 
@@ -1388,50 +1357,15 @@ namespace Common
             return GetNextUTF8Char(ppszBuffer);
         }
 
-        WCHAR PeekChar(LPCWSTR* ppszBuffer)
-        {
-            if(ppszBuffer == nullptr || m_pszWideCharBuffer == nullptr) return 0; 
-
-            if(*ppszBuffer == nullptr) 
-            { 
-                *ppszBuffer = m_pszWideCharBuffer; 
-            }
-
-            if(*ppszBuffer < m_pszWideCharBufferStart) return 0; 
-
-            if(IsEOF(*ppszBuffer)) return 0; 
-
-            return GetNextUTF16Char(ppszBuffer);    
-        }
-
-        static  WCHAR GetNextUTF16Char(LPCWSTR* ppszBuffer)
-        {
-            // add an assert because caller does the argument check, and does not expect failure of function.
-            //
-            //
-            ASSERT_IF(!ppszBuffer, "Invalid data");
-            ASSERT_IF(!(*ppszBuffer), "Invalid data");
-
-            WCHAR wc = *(*ppszBuffer)++;
-            return (wc & 0xF800) == 0xD800 ? 0 : wc;
-        }
-
         bool IsEOF(LPCSTR pszStart) const
         { 
             return pszStart >= m_pszCharBufferStart + m_nBufferLength; 
-        }
-
-        bool IsEOF(LPCWSTR pszStart) const
-        { 
-            return pszStart >= m_pszWideCharBufferStart + m_nBufferLength; 
         }
 
     private:
         // TODO: Discriminated union over various buffer pointers? Might save us 4 bytes...
         LPCSTR  m_pszCharBuffer;
         LPCSTR  m_pszCharBufferStart;
-        LPCWSTR m_pszWideCharBuffer;
-        LPCWSTR m_pszWideCharBufferStart;
         DWORD   m_nBufferLength;
     };
     //-------------------------------------------------------------------------------------------------------------------------------------------
@@ -1489,14 +1423,14 @@ namespace Common
             return m_reader.GetStringLength(pnLength);
         }
 
-        STDMETHODIMP GetFieldName(__in_ecount(nLength) LPWSTR pszBuffer, __in ULONG nLength)
+        STDMETHODIMP GetFieldName(__in_ecount(nLength) LPSTR pszBuffer, __in ULONG nLength)
         {
             if(!pszBuffer) return E_POINTER;
 
             return m_reader.GetFieldName(pszBuffer, nLength);
         }
 
-        STDMETHODIMP GetStringValue(__in_ecount(nLength) LPWSTR pszBuffer, __in ULONG nLength)
+        STDMETHODIMP GetStringValue(__in_ecount(nLength) LPSTR pszBuffer, __in ULONG nLength)
         {
             if(!pszBuffer) return E_POINTER; 
 

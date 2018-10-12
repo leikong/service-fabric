@@ -7677,7 +7677,7 @@ OverlayStream::AsyncCopySharedToBackupContext::FSMContinue(
                     //
                     Status = KString::Create(_Path,
                                              GetThisAllocator(),
-                                             (LPCWSTR)(*(_OverlayStream->GetPath())));
+                                             (LPCSTR)(*(_OverlayStream->GetPath())));
                     if (! NT_SUCCESS(Status))
                     {
                         KTraceFailedAsyncRequest(Status, this, _State, 0);
@@ -7685,7 +7685,7 @@ OverlayStream::AsyncCopySharedToBackupContext::FSMContinue(
                         return;
                     }
 
-                    KStringView tempString(L".Backup");
+                    KStringView tempString(".Backup");
                     b = _Path->Concat(tempString);
                     if (! b)
                     {
@@ -7987,7 +7987,7 @@ OverlayStream::AsyncCopySharedToBackupContext::AsyncCopySharedToBackupContext(
     NTSTATUS status;
     RvdLogStream::AsyncReadContext::SPtr sharedRead;
 
-    _LogType =  L"Winfab Backup Logical Log";
+    _LogType =  "Winfab Backup Logical Log";
     
     status = _LogType.Status();
     if (! NT_SUCCESS(status))

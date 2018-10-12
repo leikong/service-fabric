@@ -33,7 +33,7 @@ namespace Transport
             _Inout_ Common::Socket* acceptedSocket,
             IDatagramTransport::MessageHandlerWPtr const & msgHandlerWPtr,
             TransportSecuritySPtr const & transportSecurity,
-            std::wstring const & sspiTarget,
+            std::string const & sspiTarget,
             TransportPriority::Enum,
             TransportFlags const &,
             Common::TimeSpan openTimeout,
@@ -49,14 +49,14 @@ namespace Transport
 
         ~TcpConnection() override;
 
-        std::wstring const & TraceId() const override;
+        std::string const & TraceId() const override;
         IConnectionWPtr GetWPtr() override;
 
         TransportPriority::Enum GetPriority() const { return priority_; }
 
         TransportFlags & GetTransportFlags() { return flags_; }
 
-        void SetSecurityContext(TransportSecuritySPtr const & transportSecurity, std::wstring const & sspiTarget) override;
+        void SetSecurityContext(TransportSecuritySPtr const & transportSecurity, std::string const & sspiTarget) override;
         void ScheduleSessionExpiration(Common::TimeSpan newExpiration, bool securitySettingsUpdated) override;
         void OnSessionExpired() override;
         void SetConnectionAuthStatus(Common::ErrorCode const & authStatus, RoleMask::Enum roleGranted) override;
@@ -109,7 +109,7 @@ namespace Transport
 
         void PurgeExpiredOutgoingMessages(Common::StopwatchTime now) override;
 
-        std::wstring ToString() const override;
+        std::string ToString() const override;
 
         void SetKeepAliveTimeout(Common::TimeSpan timeout);
 
@@ -134,7 +134,7 @@ namespace Transport
             TcpDatagramTransportSPtr const & transport,
             TcpConnectionSPtr const & thisSPtr,
             TransportSecuritySPtr const & transportSecurity,
-            std::wstring const & sspiTarget);
+            std::string const & sspiTarget);
 
         bool FinishSocketInit();
 
@@ -185,15 +185,15 @@ namespace Transport
         bool TrySetOutgoingFrameSizeLimit(size_t value, bool force = false);
         static size_t ToInternalFrameSizeLimit(uint value);
 
-        std::wstring ToStringChl() const;
+        std::string ToStringChl() const;
 
         void EnqueueListenInstanceMessage(TcpDatagramTransportSPtr const & transport);
         void EnqueueClaimsMessageIfNeeded();
-        std::unique_ptr<Message> CreateClaimsMessage(std::wstring const & claimsToken);
+        std::unique_ptr<Message> CreateClaimsMessage(std::string const & claimsToken);
 
         void OnSessionSecured(MessageUPtr && finalNegoMessage, bool started);
         void ReleaseMessagesOnSecuredConnection();
-        void CompleteClaimsRetrieval(Common::ErrorCode const &, std::wstring const & claimsToken);
+        void CompleteClaimsRetrieval(Common::ErrorCode const &, std::string const & claimsToken);
 
         // Incoming message handlers
         void OnNegotiationMessageReceived(MessageUPtr && message);
@@ -249,7 +249,7 @@ namespace Transport
         TransportPriority::Enum priority_;
         TransportFlags flags_;
 
-        std::wstring const traceId_;
+        std::string const traceId_;
         Common::Guid listenSideNonce_; // for duplicate connection elimination
         uint64 instance_;
         Common::Endpoint groupId_;
@@ -293,12 +293,12 @@ namespace Transport
         TcpReceiveOverlapped receiveOverlapped_;
 #endif
 
-        std::wstring localAddress_;
-        std::wstring targetAddress_;
+        std::string localAddress_;
+        std::string targetAddress_;
         Common::Endpoint remoteEndpoint_;
         ResolveOptions::Enum hostnameResolveOption_;
         std::vector<Common::Endpoint> targetEndpoints_;
-        std::wstring connectToAddress_;
+        std::string connectToAddress_;
         ListenInstance localListenInstance_;
 
         Common::TimeSpan openTimeout_;

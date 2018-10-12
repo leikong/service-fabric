@@ -26,7 +26,7 @@ namespace Common
         class MultiThreadWorkerAsyncOperation;
 
         typedef shared_ptr<TestCacheEntry> TestCacheEntrySPtr;
-        typedef LruCache<wstring, TestCacheEntry> TestCache;
+        typedef LruCache<string, TestCacheEntry> TestCache;
 
         LruCacheTest() { BOOST_REQUIRE(TestcaseSetup()); }
         TEST_METHOD_SETUP(TestcaseSetup)
@@ -36,48 +36,48 @@ namespace Common
             size_t capacity, 
             bool enableTrim);
 
-        static wstring GetRandomKey(Random &);
-        void SyncTryPut(TestCache &, wstring const & key, bool expectedSuccess);
-        void SyncTryPut(TestCache &, wstring const & key, int version, bool expectedSuccess);
-        void SyncTryGet(TestCache &, wstring const & key, bool expectedSuccess);
-        void SyncTryRemove(TestCache &, wstring const & key, bool expectedSuccess);
+        static string GetRandomKey(Random &);
+        void SyncTryPut(TestCache &, string const & key, bool expectedSuccess);
+        void SyncTryPut(TestCache &, string const & key, int version, bool expectedSuccess);
+        void SyncTryGet(TestCache &, string const & key, bool expectedSuccess);
+        void SyncTryRemove(TestCache &, string const & key, bool expectedSuccess);
         void SyncAddRemoveHelper(TestCache &, int keyCount);
         void ClearTestHelper(int keyCount);
     };
 
     // *** Testcase helper classes
 
-    class LruCacheTest::TestCacheEntry : public LruCacheEntryBase<wstring>
+    class LruCacheTest::TestCacheEntry : public LruCacheEntryBase<string>
     {
     public:
-        explicit TestCacheEntry(wstring const & key) 
+        explicit TestCacheEntry(string const & key) 
             : LruCacheEntryBase(key)
             , version_(0) 
             , value_()
         { 
         }
 
-        explicit TestCacheEntry(wstring && key) 
+        explicit TestCacheEntry(string && key) 
             : LruCacheEntryBase(move(key))
             , version_(0) 
             , value_()
         { 
         }
 
-        TestCacheEntry(wstring const & key, int version) 
+        TestCacheEntry(string const & key, int version) 
             : LruCacheEntryBase(key)
             , version_(version) 
             , value_(key)
         { }
 
-        TestCacheEntry(wstring const & key, wstring const & value, int version) 
+        TestCacheEntry(string const & key, string const & value, int version) 
             : LruCacheEntryBase(key)
             , version_(version) 
             , value_(value)
         { }
 
-        static size_t GetHash(wstring const & key) { return StringUtility::GetHash(key); }
-        static bool AreEqualKeys(wstring const & left, wstring const & right) { return left == right; }
+        static size_t GetHash(string const & key) { return StringUtility::GetHash(key); }
+        static bool AreEqualKeys(string const & left, string const & right) { return left == right; }
         static bool ShouldUpdateUnderLock(TestCacheEntry const & existing, TestCacheEntry const & incoming) 
         { 
             if (incoming.version_ == 0 && existing.version_ == 0)
@@ -88,11 +88,11 @@ namespace Common
             return (incoming.version_ > existing.version_); 
         }
 
-        wstring GetValue() const { return value_; }
+        string GetValue() const { return value_; }
 
     private:
         int version_;
-        wstring value_;
+        string value_;
     };
 
     class LruCacheTest::MultiThreadWorkerAsyncOperation : public AsyncOperation
@@ -103,7 +103,7 @@ namespace Common
             Random & rand,
             atomic_long & nextVersion,
             int workerId,
-            wstring const & key,
+            string const & key,
             int targetWaiterCount,
             int targetIterations,
             atomic_long & iteration,
@@ -228,7 +228,7 @@ namespace Common
                 return;
             }
 
-            auto entry = make_shared<TestCacheEntry>(key_, wformatString("worker-{0}-OnGet", workerId_), ++nextVersion_);
+            auto entry = make_shared<TestCacheEntry>(key_, formatString.L("worker-{0}-OnGet", workerId_), ++nextVersion_);
 
             bool success = cache_.TryPutOrGet(entry);
 
@@ -330,7 +330,7 @@ namespace Common
                 return;
             }
 
-            auto entry = make_shared<TestCacheEntry>(key_, wformatString("worker-{0}-OnInvalidate", workerId_), ++nextVersion_);
+            auto entry = make_shared<TestCacheEntry>(key_, formatString.L("worker-{0}-OnInvalidate", workerId_), ++nextVersion_);
 
             bool success = cache_.TryPutOrGet(entry);
 
@@ -393,7 +393,7 @@ namespace Common
         Random & rand_;
         atomic_long & nextVersion_;
         int workerId_;
-        wstring key_;
+        string key_;
         size_t targetWaiterCount_;
         int targetIterations_;
         atomic_long & iteration_;
@@ -453,9 +453,9 @@ namespace Common
 
         TestCache cache(cacheLimit, bucketCount);
 
-        auto key1 = L"aa";
-        auto key2 = L"bb";
-        auto key3 = L"cc";
+        auto key1 = "aa";
+        auto key2 = "bb";
+        auto key3 = "cc";
 
         SyncTryPut(cache, key1, 1, true);
         SyncTryPut(cache, key1, 2, true);
@@ -494,71 +494,71 @@ namespace Common
 
         TestCache cache(cacheLimit, bucketCount);
 
-        SyncTryPut(cache, L"aa", true);
-        SyncTryPut(cache, L"bb", true);
-        SyncTryPut(cache, L"cc", true);
-        SyncTryPut(cache, L"dd", true);
-        SyncTryPut(cache, L"ee", true);
+        SyncTryPut(cache, "aa", true);
+        SyncTryPut(cache, "bb", true);
+        SyncTryPut(cache, "cc", true);
+        SyncTryPut(cache, "dd", true);
+        SyncTryPut(cache, "ee", true);
 
-        SyncTryGet(cache, L"ee", true);
-        SyncTryGet(cache, L"dd", true);
-        SyncTryGet(cache, L"cc", true);
-        SyncTryGet(cache, L"bb", true);
-        SyncTryGet(cache, L"aa", true);
+        SyncTryGet(cache, "ee", true);
+        SyncTryGet(cache, "dd", true);
+        SyncTryGet(cache, "cc", true);
+        SyncTryGet(cache, "bb", true);
+        SyncTryGet(cache, "aa", true);
 
-        SyncTryPut(cache, L"ff", true);
-        SyncTryGet(cache, L"ff", true);
-        SyncTryGet(cache, L"dd", true);
-        SyncTryGet(cache, L"cc", true);
-        SyncTryGet(cache, L"bb", true);
-        SyncTryGet(cache, L"aa", true);
-        SyncTryGet(cache, L"ee", false);
+        SyncTryPut(cache, "ff", true);
+        SyncTryGet(cache, "ff", true);
+        SyncTryGet(cache, "dd", true);
+        SyncTryGet(cache, "cc", true);
+        SyncTryGet(cache, "bb", true);
+        SyncTryGet(cache, "aa", true);
+        SyncTryGet(cache, "ee", false);
 
-        SyncTryPut(cache, L"gg", true);
-        SyncTryGet(cache, L"dd", true);
-        SyncTryGet(cache, L"cc", true);
-        SyncTryGet(cache, L"bb", true);
-        SyncTryGet(cache, L"aa", true);
-        SyncTryGet(cache, L"gg", true);
-        SyncTryGet(cache, L"ee", false);
-        SyncTryGet(cache, L"ff", false);
+        SyncTryPut(cache, "gg", true);
+        SyncTryGet(cache, "dd", true);
+        SyncTryGet(cache, "cc", true);
+        SyncTryGet(cache, "bb", true);
+        SyncTryGet(cache, "aa", true);
+        SyncTryGet(cache, "gg", true);
+        SyncTryGet(cache, "ee", false);
+        SyncTryGet(cache, "ff", false);
 
-        SyncTryPut(cache, L"hh", true);
-        SyncTryGet(cache, L"cc", true);
-        SyncTryGet(cache, L"bb", true);
-        SyncTryGet(cache, L"aa", true);
-        SyncTryGet(cache, L"gg", true);
-        SyncTryGet(cache, L"hh", true);
-        SyncTryGet(cache, L"ee", false);
-        SyncTryGet(cache, L"ff", false);
-        SyncTryGet(cache, L"dd", false);
+        SyncTryPut(cache, "hh", true);
+        SyncTryGet(cache, "cc", true);
+        SyncTryGet(cache, "bb", true);
+        SyncTryGet(cache, "aa", true);
+        SyncTryGet(cache, "gg", true);
+        SyncTryGet(cache, "hh", true);
+        SyncTryGet(cache, "ee", false);
+        SyncTryGet(cache, "ff", false);
+        SyncTryGet(cache, "dd", false);
 
-        SyncTryPut(cache, L"ii", true);
-        SyncTryGet(cache, L"bb", true);
-        SyncTryGet(cache, L"aa", true);
-        SyncTryGet(cache, L"gg", true);
-        SyncTryGet(cache, L"hh", true);
-        SyncTryGet(cache, L"ii", true);
-        SyncTryGet(cache, L"ee", false);
-        SyncTryGet(cache, L"ff", false);
-        SyncTryGet(cache, L"dd", false);
-        SyncTryGet(cache, L"cc", false);
+        SyncTryPut(cache, "ii", true);
+        SyncTryGet(cache, "bb", true);
+        SyncTryGet(cache, "aa", true);
+        SyncTryGet(cache, "gg", true);
+        SyncTryGet(cache, "hh", true);
+        SyncTryGet(cache, "ii", true);
+        SyncTryGet(cache, "ee", false);
+        SyncTryGet(cache, "ff", false);
+        SyncTryGet(cache, "dd", false);
+        SyncTryGet(cache, "cc", false);
 
-        SyncTryPut(cache, L"jj", true);
-        SyncTryPut(cache, L"kk", true);
-        SyncTryPut(cache, L"ll", true);
-        SyncTryGet(cache, L"hh", true);
-        SyncTryGet(cache, L"ii", true);
-        SyncTryGet(cache, L"jj", true);
-        SyncTryGet(cache, L"kk", true);
-        SyncTryGet(cache, L"ll", true);
-        SyncTryGet(cache, L"ee", false);
-        SyncTryGet(cache, L"ff", false);
-        SyncTryGet(cache, L"dd", false);
-        SyncTryGet(cache, L"cc", false);
-        SyncTryGet(cache, L"bb", false);
-        SyncTryGet(cache, L"aa", false);
-        SyncTryGet(cache, L"gg", false);
+        SyncTryPut(cache, "jj", true);
+        SyncTryPut(cache, "kk", true);
+        SyncTryPut(cache, "ll", true);
+        SyncTryGet(cache, "hh", true);
+        SyncTryGet(cache, "ii", true);
+        SyncTryGet(cache, "jj", true);
+        SyncTryGet(cache, "kk", true);
+        SyncTryGet(cache, "ll", true);
+        SyncTryGet(cache, "ee", false);
+        SyncTryGet(cache, "ff", false);
+        SyncTryGet(cache, "dd", false);
+        SyncTryGet(cache, "cc", false);
+        SyncTryGet(cache, "bb", false);
+        SyncTryGet(cache, "aa", false);
+        SyncTryGet(cache, "gg", false);
     }
     
     // Tests cache limit maintenance.
@@ -572,66 +572,66 @@ namespace Common
 
         TestCache cache(cacheLimit, bucketCount);
 
-        SyncTryPut(cache, L"aa", true);
-        SyncTryPut(cache, L"bb", true);
-        SyncTryPut(cache, L"cc", true);
-        SyncTryPut(cache, L"dd", true);
-        SyncTryPut(cache, L"ee", true);
+        SyncTryPut(cache, "aa", true);
+        SyncTryPut(cache, "bb", true);
+        SyncTryPut(cache, "cc", true);
+        SyncTryPut(cache, "dd", true);
+        SyncTryPut(cache, "ee", true);
 
-        SyncTryGet(cache, L"ee", true);
-        SyncTryGet(cache, L"dd", true);
-        SyncTryGet(cache, L"cc", true);
-        SyncTryGet(cache, L"bb", true);
-        SyncTryGet(cache, L"aa", true);
+        SyncTryGet(cache, "ee", true);
+        SyncTryGet(cache, "dd", true);
+        SyncTryGet(cache, "cc", true);
+        SyncTryGet(cache, "bb", true);
+        SyncTryGet(cache, "aa", true);
 
         for (auto ix=0; ix<5; ++ix)
         {
-            SyncTryPut(cache, L"aa", true);
-            SyncTryGet(cache, L"ee", true);
-            SyncTryGet(cache, L"dd", true);
-            SyncTryGet(cache, L"cc", true);
-            SyncTryGet(cache, L"bb", true);
-            SyncTryGet(cache, L"aa", true);
+            SyncTryPut(cache, "aa", true);
+            SyncTryGet(cache, "ee", true);
+            SyncTryGet(cache, "dd", true);
+            SyncTryGet(cache, "cc", true);
+            SyncTryGet(cache, "bb", true);
+            SyncTryGet(cache, "aa", true);
         }
 
         for (auto ix=0; ix<5; ++ix)
         {
-            SyncTryPut(cache, L"bb", true);
-            SyncTryGet(cache, L"ee", true);
-            SyncTryGet(cache, L"dd", true);
-            SyncTryGet(cache, L"cc", true);
-            SyncTryGet(cache, L"bb", true);
-            SyncTryGet(cache, L"aa", true);
+            SyncTryPut(cache, "bb", true);
+            SyncTryGet(cache, "ee", true);
+            SyncTryGet(cache, "dd", true);
+            SyncTryGet(cache, "cc", true);
+            SyncTryGet(cache, "bb", true);
+            SyncTryGet(cache, "aa", true);
         }
 
         for (auto ix=0; ix<5; ++ix)
         {
-            SyncTryPut(cache, L"cc", true);
-            SyncTryGet(cache, L"ee", true);
-            SyncTryGet(cache, L"dd", true);
-            SyncTryGet(cache, L"cc", true);
-            SyncTryGet(cache, L"bb", true);
-            SyncTryGet(cache, L"aa", true);
+            SyncTryPut(cache, "cc", true);
+            SyncTryGet(cache, "ee", true);
+            SyncTryGet(cache, "dd", true);
+            SyncTryGet(cache, "cc", true);
+            SyncTryGet(cache, "bb", true);
+            SyncTryGet(cache, "aa", true);
         }
 
         for (auto ix=0; ix<5; ++ix)
         {
-            SyncTryPut(cache, L"dd", true);
-            SyncTryGet(cache, L"ee", true);
-            SyncTryGet(cache, L"dd", true);
-            SyncTryGet(cache, L"cc", true);
-            SyncTryGet(cache, L"bb", true);
-            SyncTryGet(cache, L"aa", true);
+            SyncTryPut(cache, "dd", true);
+            SyncTryGet(cache, "ee", true);
+            SyncTryGet(cache, "dd", true);
+            SyncTryGet(cache, "cc", true);
+            SyncTryGet(cache, "bb", true);
+            SyncTryGet(cache, "aa", true);
         }
 
         for (auto ix=0; ix<5; ++ix)
         {
-            SyncTryPut(cache, L"ee", true);
-            SyncTryGet(cache, L"ee", true);
-            SyncTryGet(cache, L"dd", true);
-            SyncTryGet(cache, L"cc", true);
-            SyncTryGet(cache, L"bb", true);
-            SyncTryGet(cache, L"aa", true);
+            SyncTryPut(cache, "ee", true);
+            SyncTryGet(cache, "ee", true);
+            SyncTryGet(cache, "dd", true);
+            SyncTryGet(cache, "cc", true);
+            SyncTryGet(cache, "bb", true);
+            SyncTryGet(cache, "aa", true);
         }
     }
 
@@ -747,24 +747,24 @@ namespace Common
         Config cfg;
         return true;
     }
-    wstring LruCacheTest::GetRandomKey(Random & rand)
+    string LruCacheTest::GetRandomKey(Random & rand)
     {
         int minDataLength = MinKeyLength;
         int maxDataLength = MaxKeyLength;
 
         int datalen = rand.Next(minDataLength, maxDataLength);
-        wstring key;
+        string key;
         for (auto jx=0; jx<datalen; ++jx)
         {
-            key.push_back((wchar_t)(rand.Next((int)'a', (int)'z')));
+            key.push_back((char)(rand.Next((int)'a', (int)'z')));
         }
         return key;
     }
-    void LruCacheTest::SyncTryPut(TestCache & cache, wstring const & key, bool expectedSuccess)
+    void LruCacheTest::SyncTryPut(TestCache & cache, string const & key, bool expectedSuccess)
     {
         SyncTryPut(cache, key, 0, expectedSuccess);
     }
-    void LruCacheTest::SyncTryPut(TestCache & cache, wstring const & key, int version, bool expectedSuccess)
+    void LruCacheTest::SyncTryPut(TestCache & cache, string const & key, int version, bool expectedSuccess)
     {
         auto entry = make_shared<TestCacheEntry>(key, version);
 
@@ -790,7 +790,7 @@ namespace Common
             VERIFY_IS_TRUE_FMT(entry.use_count() == 3, "TryPut({0}) use_count({1}) != 3", key, entry.use_count());
         }
     }
-    void LruCacheTest::SyncTryGet(TestCache & cache, wstring const & key, bool expectedSuccess)
+    void LruCacheTest::SyncTryGet(TestCache & cache, string const & key, bool expectedSuccess)
     {
         TestCacheEntrySPtr entry;
         bool success = cache.TryGet(key, entry);
@@ -814,7 +814,7 @@ namespace Common
             VERIFY_IS_TRUE_FMT(entry.use_count() == 2, "TryGet({0}) use_count({1}) != 2", key, entry.use_count());
         }
     }
-    void LruCacheTest::SyncTryRemove(TestCache & cache, wstring const & key, bool expectedSuccess)
+    void LruCacheTest::SyncTryRemove(TestCache & cache, string const & key, bool expectedSuccess)
     {
         TestCacheEntrySPtr entry;
         bool success = cache.TryGet(key, entry);
@@ -844,7 +844,7 @@ namespace Common
 
         Random rand(static_cast<int>(DateTime::Now().Ticks));
 
-        vector<wstring> keys;
+        vector<string> keys;
         for (auto ix=0; ix<keyCount; ++ix)
         {
             keys.push_back(GetRandomKey(rand));
@@ -905,7 +905,7 @@ namespace Common
 
         for (auto ix=0; ix<keyCount; ++ix)
         {
-            auto key = wformatString("key{0}", ix);
+            auto key = formatString.L("key{0}", ix);
             SyncTryPut(*cacheSPtr, key, true);
             SyncTryGet(*cacheSPtr, key, true);
         }
@@ -914,7 +914,7 @@ namespace Common
 
         for (auto ix=0; ix<keyCount; ++ix)
         {
-            auto key = wformatString("key{0}", ix);
+            auto key = formatString.L("key{0}", ix);
 
             TestCacheEntrySPtr entry;
             cacheSPtr->TryGet(key, entry);
@@ -936,7 +936,7 @@ namespace Common
 
         for (auto ix=0; ix<keyCount; ++ix)
         {
-            auto key = wformatString("key{0}", ix);
+            auto key = formatString.L("key{0}", ix);
 
             auto & weakPtr = weakPtrs[ix];
 
@@ -955,7 +955,7 @@ namespace Common
 
         size_t bucketCount = 10240;
 
-        LruCache<wstring, TestCacheEntry> cache(enableTrim ? capacity : 0, bucketCount);
+        LruCache<string, TestCacheEntry> cache(enableTrim ? capacity : 0, bucketCount);
 
         Random rand(static_cast<int>(DateTime::Now().Ticks));
         vector<TestCacheEntrySPtr> entries;

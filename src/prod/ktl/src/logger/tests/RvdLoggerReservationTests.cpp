@@ -34,7 +34,7 @@ Abstract:
 
 
 NTSTATUS
-BasicReservationTests(WCHAR OnDrive, KAllocator& Allocator)
+BasicReservationTests(CHAR OnDrive, KAllocator& Allocator)
 {
     static GUID const   testLogIdGuid = {3, 0, 0, {0, 0, 0, 0, 0, 0, 0, 3}};
     static GUID const   testStreamTypeGuid = {4, 0, 0, {0, 0, 0, 0, 0, 0, 0, 2}};
@@ -70,7 +70,7 @@ BasicReservationTests(WCHAR OnDrive, KAllocator& Allocator)
         RvdLog::SPtr                            log;
         RvdLogManagerImp::RvdOnDiskLog::SPtr    logImp;
 
-        KWString logType(KtlSystem::GlobalNonPagedAllocator(), L"RvdLog");
+        KWString logType(KtlSystem::GlobalNonPagedAllocator(), "RvdLog");
         KInvariant(NT_SUCCESS(logType.Status()));
 
         createLogOp->StartCreateLog(
@@ -233,7 +233,7 @@ BasicReservationTests(WCHAR OnDrive, KAllocator& Allocator)
 
 //** Main Test Entry Point: RvdLoggerReservationTests
 NTSTATUS
-RvdLoggerReservationTests(__in int argc, __in_ecount(argc) WCHAR* args[])
+RvdLoggerReservationTests(__in int argc, __in_ecount(argc) CHAR* args[])
 {
     KDbgPrintf("RvdLoggerReservationTests: Starting\n");
 

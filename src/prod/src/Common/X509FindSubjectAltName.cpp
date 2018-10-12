@@ -15,7 +15,7 @@ X509FindSubjectAltName::X509FindSubjectAltName() : certAltName_()
 }
 
 _Use_decl_annotations_
-ErrorCode X509FindSubjectAltName::Create(wstring const & nameTypeAndValue, SPtr & result)
+ErrorCode X509FindSubjectAltName::Create(string const & nameTypeAndValue, SPtr & result)
 {
     result = make_shared<X509FindSubjectAltName>();
     auto error = result->Initialize(nameTypeAndValue);
@@ -46,24 +46,24 @@ ErrorCode X509FindSubjectAltName::Initialize(CERT_ALT_NAME_ENTRY const & certAlt
     if (certAltName_.dwAltNameChoice != CERT_ALT_NAME_DNS_NAME)
         return ErrorCode::FromNtStatus(STATUS_NOT_SUPPORTED);
 
-    wstring dnsName(certAltName.pwszDNSName);
-    nameBuffer_.resize((dnsName.size() + 1) * sizeof(WCHAR));
+    string dnsName(certAltName.pwszDNSName);
+    nameBuffer_.resize((dnsName.size() + 1) * sizeof(CHAR));
     KMemCpySafe(nameBuffer_.data(), nameBuffer_.size(), certAltName.pwszDNSName, nameBuffer_.size());
 
-    certAltName_.pwszDNSName = (LPWSTR)nameBuffer_.data();
+    certAltName_.pwszDNSName = (LPSTR)nameBuffer_.data();
     return ErrorCode::Success();
 }
 
-ErrorCode X509FindSubjectAltName::Initialize(wstring const & nameTypeAndValue)
+ErrorCode X509FindSubjectAltName::Initialize(string const & nameTypeAndValue)
 {
-    auto pos = nameTypeAndValue.find_first_of(L'=');
-    if (pos == wstring::npos) return ErrorCodeValue::InvalidArgument;
+    auto pos = nameTypeAndValue.find_first_of('=');
+    if (pos == string::npos) return ErrorCodeValue::InvalidArgument;
 
-    wstring nameType = nameTypeAndValue.substr(0, pos);
-    wstring nameValue = nameTypeAndValue.substr(pos + 1, nameTypeAndValue.size() - pos - 1);
+    string nameType = nameTypeAndValue.substr(0, pos);
+    string nameValue = nameTypeAndValue.substr(pos + 1, nameTypeAndValue.size() - pos - 1);
     StringUtility::TrimWhitespaces(nameValue);
 
-    if ((wstringstream(nameType) >> certAltName_.dwAltNameChoice).fail())
+    if ((stringstream(nameType) >> certAltName_.dwAltNameChoice).fail())
     {
         TraceError(
             TraceTaskCodes::Common,
@@ -74,7 +74,7 @@ ErrorCode X509FindSubjectAltName::Initialize(wstring const & nameTypeAndValue)
         return ErrorCodeValue::InvalidArgument;
     }
 
-    certAltName_.pwszDNSName = (LPWSTR)(nameValue.c_str());
+    certAltName_.pwszDNSName = (LPSTR)(nameValue.c_str());
     return Initialize(certAltName_);
 }
 
@@ -91,7 +91,7 @@ void const * X509FindSubjectAltName::Value() const
 void X509FindSubjectAltName::WriteTo(TextWriter & w, FormatOptions const &) const
 {
     // The output must be parsable by X509FindValue::Create()
-    w << szOID_SUBJECT_ALT_NAME2 << L':' << certAltName_.dwAltNameChoice << L'=' << certAltName_.pwszDNSName;
+    w << szOID_SUBJECT_ALT_NAME2 << ':' << certAltName_.dwAltNameChoice << '=' << certAltName_.pwszDNSName;
 }
 
 void X509FindSubjectAltName::OnWriteTo(TextWriter & w, FormatOptions const & f) const
@@ -129,7 +129,7 @@ void* X509FindSubjectAltName::PrimaryValueToPublicPtr(Common::ScopedHeap & heap)
     ReferencePointer<CERT_ALT_NAME_ENTRY> certAltNameRPtr = heap.AddItem<CERT_ALT_NAME_ENTRY>();
     Invariant(certAltName_.dwAltNameChoice == CERT_ALT_NAME_DNS_NAME);
     certAltNameRPtr->dwAltNameChoice = certAltName_.dwAltNameChoice;
-    certAltNameRPtr->pwszDNSName = (LPWSTR)bufferRPtr.GetRawArray();
+    certAltNameRPtr->pwszDNSName = (LPSTR)bufferRPtr.GetRawArray();
 
     return certAltNameRPtr.GetRawPointer();
 }

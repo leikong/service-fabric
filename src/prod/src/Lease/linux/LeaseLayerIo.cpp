@@ -105,13 +105,13 @@ VOID InitializeLeaseLayer()
 }
 
 HRESULT StringCchCopyW(
-    _Out_writes_(cchDest) _Always_(_Post_z_) LPWSTR pszDest,
+    _Out_writes_(cchDest) _Always_(_Post_z_) LPSTR pszDest,
     _In_ size_t cchDest,
-    _In_ LPCWSTR pszSrc)
+    _In_ LPCSTR pszSrc)
 {
-    auto srcLength = wcslen(pszSrc) + 1;
+    auto srcLength = strlen(pszSrc) + 1;
     if (srcLength > cchDest) return E_INVALIDARG;
 
-    wcsncpy(pszDest, pszSrc, cchDest);
+    strncpy(pszDest, pszSrc, cchDest);
     return S_OK;
 }

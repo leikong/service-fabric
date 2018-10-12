@@ -9,14 +9,14 @@ namespace KtlLogger
     class Constants
     {
     public:
-        static const std::wstring DefaultApplicationSharedLogIdString;
+        static const std::string DefaultApplicationSharedLogIdString;
         static const Common::Guid DefaultApplicationSharedLogId;
-        static const std::wstring DefaultApplicationSharedLogName;
-        static const std::wstring DefaultApplicationSharedLogSubdirectory;
-        static const std::wstring DefaultSystemServicesSharedLogIdString;
+        static const std::string DefaultApplicationSharedLogName;
+        static const std::string DefaultApplicationSharedLogSubdirectory;
+        static const std::string DefaultSystemServicesSharedLogIdString;
         static const Common::Guid DefaultSystemServicesSharedLogId;
-        static const std::wstring DefaultSystemServicesSharedLogName;
-        static const std::wstring DefaultSystemServicesSharedLogSubdirectory;
-        static const std::wstring NullGuidString;
+        static const std::string DefaultSystemServicesSharedLogName;
+        static const std::string DefaultSystemServicesSharedLogSubdirectory;
+        static const std::string NullGuidString;
     };
 }

@@ -35,7 +35,7 @@ Revision History:
 #endif
 
 NTSTATUS KAWIpcEventWaiter::CreateEventWaiter(
-    __in_opt PWCHAR Name,
+    __in_opt PCHAR Name,
     __out EVENTHANDLEFD& EventHandleFd
     )
 {

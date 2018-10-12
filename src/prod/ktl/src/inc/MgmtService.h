@@ -305,9 +305,9 @@ class KManagementService : public KIManagementOps
                 //
                 NTSTATUS CopyNodeValue(
                     __in KIDomNode::SPtr Source,
-                    __in LPCWSTR SourceChild,
+                    __in LPCSTR SourceChild,
                     __in KIMutableDomNode::SPtr Destination,
-                    __in LPCWSTR DestinationChild   
+                    __in LPCSTR DestinationChild   
                     );
                 
                 //
@@ -488,7 +488,7 @@ class KManagementService : public KIManagementOps
 
             struct QueryToken
             {
-                LPCWSTR Path;
+                LPCSTR Path;
                 KVariant::KVariantType Type;
                 KVariant* Value;
                 LONG Index;
@@ -520,7 +520,7 @@ class KManagementService : public KIManagementOps
             //
             struct ReplaceToken
             {
-                LPCWSTR TextPlaceholder;
+                LPCSTR TextPlaceholder;
                 KVariant* ReplacementValue;
             };
 

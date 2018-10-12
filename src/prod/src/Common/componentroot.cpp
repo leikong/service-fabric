@@ -249,10 +249,10 @@ namespace Common
 
     void ComponentRoot::WriteTo(Common::TextWriter & w, Common::FormatOptions const &) const
     {
-        w << L"Root[" << traceId_ << L']';
+        w << "Root[" << traceId_ << ']';
     }
 
-    void ComponentRoot::SetTraceId(std::wstring const & traceId, size_t capacity)
+    void ComponentRoot::SetTraceId(std::string const & traceId, size_t capacity)
     { 
         traceId_ = traceId; 
 
@@ -262,7 +262,7 @@ namespace Common
         }
     }
 
-    bool ComponentRoot::TryPutReservedTraceId(std::wstring const & traceId) 
+    bool ComponentRoot::TryPutReservedTraceId(std::string const & traceId) 
     { 
         if (traceId.size() <= traceId_.capacity())
         {

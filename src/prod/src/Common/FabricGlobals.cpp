@@ -24,15 +24,15 @@ namespace Common
 {
     ConfigStoreDescriptionUPtr CreateConfigStore()
     {
-        wstring configFilePath = L"config.ini";
+        string configFilePath = "config.ini";
 
         return make_unique<ConfigStoreDescription>(
             make_shared<FileConfigStore>(configFilePath),
-            L"",
-            L"");
+            "",
+            "");
 /*
         ConfigStoreType::Enum storeType;
-        wstring storeLocation;
+        string storeLocation;
 
         auto error = FabricEnvironment::GetStoreTypeAndLocation(nullptr, storeType, storeLocation);
         ASSERT_IF(!error.IsSuccess(), "FabricEnvironment::GetStoreTypeAndLocation failed with {0}", error);
@@ -51,7 +51,7 @@ namespace Common
         {
             auto store = PackageConfigStore::Create(
                 storeLocation, 
-                L"Fabric.Config",
+                "Fabric.Config",
                 [](Common::ConfigSettings & settings) { ConfigLoader::ProcessFabricConfigSettings(settings); });
 
             return make_unique<ConfigStoreDescription>(
@@ -76,8 +76,8 @@ namespace Common
         {
             return make_unique<ConfigStoreDescription>(
                 make_shared<ConfigSettingsConfigStore>(move(ConfigSettings())),
-                L"",
-                L"");
+                "",
+                "");
         }
 
         Assert::CodingError("unknown config store type {0}", static_cast<int>(storeType));
@@ -127,7 +127,7 @@ FabricGlobals & FabricGlobals::Get()
                 and wants access to globals AND it did not initialize the globals itself
                 it must be depending on FabricCommon (by convention)
             */
-            auto hInstance = ::LoadLibrary(L"FabricCommon");
+            auto hInstance = ::LoadLibrary("FabricCommon");
             if (hInstance == NULL)
             {
                 auto lastError = ::GetLastError();

@@ -102,14 +102,14 @@ public:
 
     NTSTATUS
     RegisterGlobalObject(
-        __in_z const WCHAR* ObjectName,
+        __in_z const CHAR* ObjectName,
         __inout KSharedBase& Object) override;
 
     VOID
-    UnregisterGlobalObject(__in_z const WCHAR* ObjectName) override;
+    UnregisterGlobalObject(__in_z const CHAR* ObjectName) override;
 
     KSharedBase::SPtr
-    GetGlobalObjectSharedBase(__in_z const WCHAR* ObjectName) override;
+    GetGlobalObjectSharedBase(__in_z const CHAR* ObjectName) override;
 
     void
     SetStrictAllocationChecks(BOOLEAN AllocationChecksOn) override;
@@ -256,7 +256,7 @@ private:
             );
 
         KTableEntry TableEntry;
-        const WCHAR* String;
+        const CHAR* String;
 
     };
 

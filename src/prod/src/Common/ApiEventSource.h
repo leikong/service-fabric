@@ -34,16 +34,16 @@ namespace Common
             Common::Guid,
             ApiMonitoring::ApiNameDescription,
             int64,
-            std::wstring,
-            std::wstring);
+            std::string,
+            std::string);
 
         DECLARE_API_STRUCTURED_TRACE(Slow,
             Common::Guid,
             ApiMonitoring::ApiNameDescription,
             int64,
             Common::DateTime,
-            std::wstring,
-            std::wstring);
+            std::string,
+            std::string);
 
         DECLARE_API_STRUCTURED_TRACE(Finish,
             Common::Guid,
@@ -51,20 +51,20 @@ namespace Common
             int64,
             double, /* milliseconds taken */
             Common::ErrorCode,
-            std::wstring,
-            std::wstring,
-            std::wstring);
+            std::string,
+            std::string,
+            std::string);
 
         DECLARE_API_STRUCTURED_TRACE(FinishWithServiceType,
             Common::Guid,
             ApiMonitoring::ApiNameDescription,
             int64,
-            std::wstring, // service type name
+            std::string, // service type name
             double, /* milliseconds taken */
             Common::ErrorCode,
-            std::wstring,
-            std::wstring,
-            std::wstring);
+            std::string,
+            std::string,
+            std::string);
 
         ApiEventSource() :
             API_STRUCTURED_TRACE(Start,                             4,      "Start",            Info,       "Start {1} on node {3}({4}) on partition {0} replica {2}", "id", "api", "replicaId", "nodeId", "nodeName"),

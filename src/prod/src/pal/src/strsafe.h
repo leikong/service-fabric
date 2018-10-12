@@ -16,12 +16,12 @@ extern "C" {
 // 153
 typedef _Null_terminated_ char* STRSAFE_LPSTR;
 typedef _Null_terminated_ const char* STRSAFE_LPCSTR;
-typedef _Null_terminated_ wchar_t* STRSAFE_LPWSTR;
-typedef _Null_terminated_ const wchar_t* STRSAFE_LPCWSTR;
+typedef _Null_terminated_ char* STRSAFE_LPSTR;
+typedef _Null_terminated_ const char* STRSAFE_LPCSTR;
 
 // 165
 typedef  const char* STRSAFE_PCNZCH;
-typedef  const wchar_t* STRSAFE_PCNZWCH;
+typedef  const char* STRSAFE_PCNZWCH;
 
 #ifdef __cplusplus
 }

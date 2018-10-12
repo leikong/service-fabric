@@ -12,11 +12,11 @@ namespace Federation
     {
     public:
         StateMachineTestInfo(
-            std::wstring name,
-            std::wstring initialState,
-            std::wstring triggerEvent,
-            std::wstring finalState,
-            std::wstring actionsTaken)
+            std::string name,
+            std::string initialState,
+            std::string triggerEvent,
+            std::string finalState,
+            std::string actionsTaken)
             : name_(name), 
             initialState_(initialState), 
             triggerEvent_(triggerEvent), 
@@ -25,24 +25,24 @@ namespace Federation
         {
         }
 
-        __declspec(property(get=getName)) std::wstring Name;
-        __declspec(property(get=getInitialState)) std::wstring InitialState;
-        __declspec(property(get=getTriggerEvent)) std::wstring TriggerEvent;
-        __declspec(property(get=getFinalState)) std::wstring FinalState;
-        __declspec(property(get=getActionsTaken)) std::wstring ActionsTaken;
+        __declspec(property(get=getName)) std::string Name;
+        __declspec(property(get=getInitialState)) std::string InitialState;
+        __declspec(property(get=getTriggerEvent)) std::string TriggerEvent;
+        __declspec(property(get=getFinalState)) std::string FinalState;
+        __declspec(property(get=getActionsTaken)) std::string ActionsTaken;
 
-        std::wstring getName() const { return name_; }
-        std::wstring getInitialState() const { return initialState_; }
-        std::wstring getTriggerEvent() const { return triggerEvent_; }
-        std::wstring getFinalState() const { return finalState_; }
-        std::wstring getActionsTaken() const { return actionsTaken_; }
+        std::string getName() const { return name_; }
+        std::string getInitialState() const { return initialState_; }
+        std::string getTriggerEvent() const { return triggerEvent_; }
+        std::string getFinalState() const { return finalState_; }
+        std::string getActionsTaken() const { return actionsTaken_; }
 
     private:
-        std::wstring name_;
-        std::wstring initialState_;
-        std::wstring triggerEvent_;
-        std::wstring finalState_;
-        std::wstring actionsTaken_;
+        std::string name_;
+        std::string initialState_;
+        std::string triggerEvent_;
+        std::string finalState_;
+        std::string actionsTaken_;
     };
 
     class TestNodeInfo
@@ -57,7 +57,7 @@ namespace Federation
         {
         }
 
-        static bool Create(std::wstring string, __out TestNodeInfo & testNode);
+        static bool Create(std::string string, __out TestNodeInfo & testNode);
 
         _declspec(property(get=getNodeId)) NodeId Id;
         _declspec(property(get=getPhase)) NodePhase::Enum Phase;
@@ -65,7 +65,7 @@ namespace Federation
         NodeId getNodeId() const { return nodeId_; }
         NodePhase::Enum getPhase() const { return phase_; }
 
-        std::wstring ToString();
+        std::string ToString();
     private:
         NodeId nodeId_;
         NodePhase::Enum phase_;
@@ -83,7 +83,7 @@ namespace Federation
         {
         }
 
-        static bool Create(std::wstring string, __out TestVoteInfo & testVote);
+        static bool Create(std::string string, __out TestVoteInfo & testVote);
 
         _declspec(property(get=getId)) NodeId Id;
         _declspec(property(get=getSuperTicket)) Common::StopwatchTime SuperTicket;
@@ -93,7 +93,7 @@ namespace Federation
         Common::StopwatchTime getSuperTicket() const { return superTicket_; }
         Common::StopwatchTime getGlobalTicket() const { return globalTicket_; }
 
-        std::wstring ToString();
+        std::string ToString();
     private:
         NodeId voteId_;
         Common::StopwatchTime superTicket_;

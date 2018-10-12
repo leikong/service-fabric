@@ -32,7 +32,7 @@ namespace Common
         }
 
         void WriteTo(__in Common::TextWriter & w, Common::FormatOptions const &) const;
-        static std::wstring ToString(LONG state);
+        static std::string ToString(LONG state);
     
         static const LONG Created  = 1;
         static const LONG Opening  = 2;

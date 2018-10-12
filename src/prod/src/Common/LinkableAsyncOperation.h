@@ -63,8 +63,8 @@ namespace Common
         bool TryPromoteToPrimary();
         bool TryChangePrimary(AsyncOperationSPtr const & primary);
 
-        void CheckIsSecondaryCallerHoldsLock(std::wstring const & methodName);
-        void CheckIsPrimaryCallerHoldsLock(std::wstring const & methodName);
+        void CheckIsSecondaryCallerHoldsLock(std::string const & methodName);
+        void CheckIsPrimaryCallerHoldsLock(std::string const & methodName);
 
         AsyncOperationSPtr primary_;
         // Secondary that is promoted to primary on retryable errors

@@ -44,7 +44,7 @@ namespace Common
 
         T const & GetValue() { return value_; }
 
-        virtual bool LoadValue(std::wstring & stringValue, bool isEncrypted, bool isCheckOnly)
+        virtual bool LoadValue(std::string & stringValue, bool isEncrypted, bool isCheckOnly)
         {
             UNREFERENCED_PARAMETER(stringValue);
             UNREFERENCED_PARAMETER(isEncrypted);
@@ -70,16 +70,16 @@ namespace Common
             return updated;
         }
 
-        void Load(ComponentConfig const * componentConfig, std::wstring const & section, ConfigEntryUpgradePolicy::Enum upgradePolicy)
+        void Load(ComponentConfig const * componentConfig, std::string const & section, ConfigEntryUpgradePolicy::Enum upgradePolicy)
         {
-            Initialize(componentConfig, section, L"", upgradePolicy);
+            Initialize(componentConfig, section, "", upgradePolicy);
 
             LoadValue();
         }
 
-        void SetValue(ComponentConfig const * componentConfig, std::wstring const & section, T const & value, ConfigEntryUpgradePolicy::Enum upgradePolicy)
+        void SetValue(ComponentConfig const * componentConfig, std::string const & section, T const & value, ConfigEntryUpgradePolicy::Enum upgradePolicy)
         {
-            Initialize(componentConfig, section, L"", upgradePolicy);
+            Initialize(componentConfig, section, "", upgradePolicy);
 
             value_ = value;
             hasValue_ = true;

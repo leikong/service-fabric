@@ -10,13 +10,13 @@ using namespace std;
 
 namespace
 {
-    const std::wstring LockExtension = L".RWLock";
-    const std::wstring WriteOngoingMarkerExtension = L".WriteInProgress";
+    const std::string LockExtension = ".RWLock";
+    const std::string WriteOngoingMarkerExtension = ".WriteInProgress";
 
     const StringLiteral RTrace = "FileReaderLock";
     const StringLiteral WTrace = "FileWriterLock";
 
-    wstring LockPath(wstring const & path)
+    string LockPath(string const & path)
     {
         auto inputPath = path;
         if (Path::IsPathRooted(inputPath))
@@ -24,25 +24,18 @@ namespace
             inputPath.erase(inputPath.cbegin());
         }
 
-        auto lockPath = Path::Combine(Environment::GetObjectFolder(), L"file.lock");
+        auto lockPath = Path::Combine(Environment::GetObjectFolder(), "file.lock");
         Path::CombineInPlace(lockPath, inputPath); 
         return lockPath + LockExtension;
     }
 
-    wstring WriteOngoingMarkerPath(wstring const & path)
+    string WriteOngoingMarkerPath(string const & path)
     {
         return path + WriteOngoingMarkerExtension;
     }
-
-    wstring WriteOngoingMarkerPath(string const & path)
-    {
-        wstring pathw;
-        StringUtility::Utf8ToUtf16(path, pathw);
-        return WriteOngoingMarkerPath(pathw); 
-    }
 }
 
-FileReaderLock::FileReaderLock(wstring const & path) : FileLock<true>(LockPath(path))
+FileReaderLock::FileReaderLock(string const & path) : FileLock<true>(LockPath(path))
 {
 }
 
@@ -60,7 +53,7 @@ ErrorCode FileReaderLock::Acquire(TimeSpan timeout)
     return err;
 }
 
-FileWriterLock::FileWriterLock(wstring const & path) : FileLock<false>(LockPath(path)), shouldDeleteMarker_(false)
+FileWriterLock::FileWriterLock(string const & path) : FileLock<false>(LockPath(path)), shouldDeleteMarker_(false)
 {
 }
 
@@ -116,7 +109,7 @@ bool FileWriterLock::Release()
     return deletedMarker.IsSuccess() && released;
 }
 
-wstring FileWriterLock::Test_GetWriteInProgressMarkerPath(wstring const & path)
+string FileWriterLock::Test_GetWriteInProgressMarkerPath(string const & path)
 {
     return WriteOngoingMarkerPath(LockPath(path));
 }

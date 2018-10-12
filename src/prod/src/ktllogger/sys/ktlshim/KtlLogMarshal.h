@@ -5,9 +5,9 @@
 
 #pragma once
 
-#define NTDEVICE_NAME_STRING      L"\\Device\\KtlLogger"
-#define SYMBOLIC_NAME_STRING     L"\\DosDevices\\KtlLogger"
-#define DEVICEFILE_NAME_STRING     L"\\\\.\\KtlLogger"
+#define NTDEVICE_NAME_STRING      "\\Device\\KtlLogger"
+#define SYMBOLIC_NAME_STRING     "\\DosDevices\\KtlLogger"
+#define DEVICEFILE_NAME_STRING     "\\\\.\\KtlLogger"
 
 #define KTLLOGGER_DEVICE_TYPE 32768
 #define KTLLOGGER_DEVICE_IOCTL_X (CTL_CODE(KTLLOGGER_DEVICE_TYPE,                          \
@@ -30,7 +30,7 @@ class RequestMarshaller : public KObject<RequestMarshaller>, public KShared<Requ
             NullObject, LogManager, LogContainer, LogStream
         } OBJECT_TYPE;
 
-        static const PWCHAR KTLLOGGER_DEVICE_NAME;
+        static const PCHAR KTLLOGGER_DEVICE_NAME;
         static const ULONG KTLLOGGER_DEVICE_IOCTL;
         
     protected:

@@ -5,7 +5,7 @@
     kstringview.h
 
     Description:
-      Kernel Tempate Library (KTL): KStringView - WCHAR and CHAR strings supported
+      Kernel Tempate Library (KTL): KStringView - CHAR and CHAR strings supported
 
       String manipulation & conversion utilities
 --*/

@@ -31,13 +31,13 @@ namespace Federation
 
         FederationPartnerNodeHeader(NodeInstance const& instance,
                             NodePhase::Enum phase,
-                            std::wstring const & address,
-                            std::wstring const & leaseAgentAddress,
+                            std::string const & address,
+                            std::string const & leaseAgentAddress,
                             int64 leaseAgentInstanceId,
                             RoutingToken token,
                             Common::Uri const & nodeFaultDomainId,
                             bool endToEnd,
-                            std::wstring const & ringName,
+                            std::string const & ringName,
                             int flags)
            : nodeInstance_(instance),
              phase_(phase),
@@ -90,13 +90,13 @@ namespace Federation
         // Properties
         __declspec (property(get=getInstance)) NodeInstance const & Instance;
         __declspec (property(get=getPhase)) NodePhase::Enum Phase;
-        __declspec (property(get=getAddress)) std::wstring Address;
+        __declspec (property(get=getAddress)) std::string Address;
         __declspec (property(get=getIsAvailable)) bool IsAvailable;
         __declspec (property(get=getToken)) RoutingToken Token;
-        __declspec (property(get=getLeaseAgentAddress)) std::wstring LeaseAgentAddress;
+        __declspec (property(get=getLeaseAgentAddress)) std::string LeaseAgentAddress;
         __declspec (property(get=getLeaseAgentInstanceId)) int64 LeaseAgentInstanceId;
         __declspec (property(get=getNodeFaultDomainId)) Common::Uri const& NodeFaultDomainId;
-        __declspec (property(get=getRingName)) std::wstring const& RingName;
+        __declspec (property(get=getRingName)) std::string const& RingName;
         __declspec (property(get = getFlags)) int Flags;
 
         //Getter functions for properties.
@@ -104,13 +104,13 @@ namespace Federation
 
         NodePhase::Enum getPhase() const { return phase_; }
 
-        std::wstring getAddress() const { return address_; }
+        std::string getAddress() const { return address_; }
 
         RoutingToken getToken() const { return token_; }
 
         bool getIsAvailable() const { return phase_ == NodePhase::Inserting || phase_ == NodePhase::Routing; }
 
-        std::wstring getLeaseAgentAddress() const { return leaseAgentAddress_; }
+        std::string getLeaseAgentAddress() const { return leaseAgentAddress_; }
 
         Common::Uri const& getNodeFaultDomainId() const { return nodeFaultDomainId_; }
 
@@ -118,7 +118,7 @@ namespace Federation
 
         bool IsEndToEnd() const { return endToEnd_; }
 
-        std::wstring getRingName() const { return ringName_; }
+        std::string getRingName() const { return ringName_; }
 
         int getFlags() const { return flags_; }
 
@@ -130,13 +130,13 @@ namespace Federation
     private:       
         NodeInstance nodeInstance_; // The node instance of the node which this information is of.
         NodePhase::Enum phase_; // The phase of the node.
-        std::wstring address_; // The address of the node.
-        std::wstring leaseAgentAddress_; // The address of the lease agent for this node.
+        std::string address_; // The address of the node.
+        std::string leaseAgentAddress_; // The address of the lease agent for this node.
         int64 leaseAgentInstanceId_; // Instance of the lease agent.
         RoutingToken token_; // The token owned by this node.
         Common::Uri nodeFaultDomainId_; // The fault domain setting of this node.
         bool endToEnd_;
-        std::wstring ringName_;
+        std::string ringName_;
         int flags_;
     };
 }

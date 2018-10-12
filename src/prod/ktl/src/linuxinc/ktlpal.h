@@ -23,7 +23,7 @@
 
 /* ---- From WTypes.h, or sspicli.h, sspi.h ----*/
 #define SEC_FAR
-typedef WCHAR SEC_WCHAR;
+typedef CHAR SEC_CHAR;
 typedef CHAR SEC_CHAR;
 
 #if !defined(UNDER_RTCPAL)
@@ -49,8 +49,8 @@ typedef struct _SecPkgInfoW {
 	unsigned short wVersion;
 	unsigned short wRPCID;
 	unsigned long cbMaxToken;
-	SEC_WCHAR * Name;
-	SEC_WCHAR * Comment;
+	SEC_CHAR * Name;
+	SEC_CHAR * Comment;
 } SecPkgInfoW, * PSecPkgInfoW;
 
 typedef struct _SecPkgInfoA {
@@ -86,11 +86,11 @@ DWORD WINAPI GetSidLengthRequired(
 _Success_(return != FALSE) BOOL
 WINAPI
 LookupAccountSidW(
-    _In_opt_ LPCWSTR lpSystemName,
+    _In_opt_ LPCSTR lpSystemName,
     _In_ PSID Sid,
-    _Out_writes_to_opt_(*cchName, *cchName + 1) LPWSTR Name,
+    _Out_writes_to_opt_(*cchName, *cchName + 1) LPSTR Name,
     _Inout_  LPDWORD cchName,
-    _Out_writes_to_opt_(*cchReferencedDomainName, *cchReferencedDomainName + 1) LPWSTR ReferencedDomainName,
+    _Out_writes_to_opt_(*cchReferencedDomainName, *cchReferencedDomainName + 1) LPSTR ReferencedDomainName,
     _Inout_ LPDWORD cchReferencedDomainName,
     _Out_ PSID_NAME_USE peUse
     );
@@ -111,7 +111,7 @@ BOOL
 WINAPI
 ConvertSidToStringSidW(
     _In_ PSID Sid,
-    _Outptr_ LPWSTR * StringSid
+    _Outptr_ LPSTR * StringSid
     );
 
 #ifdef UNICODE
@@ -130,7 +130,7 @@ ConvertStringSidToSidA(
 BOOL
 WINAPI
 ConvertStringSidToSidW(
-    _In_ LPCWSTR StringSid,
+    _In_ LPCSTR StringSid,
     _Outptr_ PSID * Sid
     );
 
@@ -445,7 +445,7 @@ WINBASEAPI
 HANDLE
 WINAPI
 FindFirstChangeNotificationW(
-    _In_ LPCWSTR lpPathName,
+    _In_ LPCSTR lpPathName,
     _In_ BOOL bWatchSubtree,
     _In_ DWORD dwNotifyFilter
     );
@@ -476,7 +476,7 @@ HANDLE
 WINAPI
 CreateJobObjectW(
     LPSECURITY_ATTRIBUTES lpJobAttributes,
-    LPCWSTR lpName
+    LPCSTR lpName
     );
 
 WINBASEAPI
@@ -489,7 +489,7 @@ CreateThreadpoolWait(
     );
 
 LWSTDAPI_(BOOL)
-PathSearchAndQualifyW(LPCWSTR pszPath, LPWSTR pszBuf, UINT cchBuf);
+PathSearchAndQualifyW(LPCSTR pszPath, LPSTR pszBuf, UINT cchBuf);
 
 #ifdef UNICODE
 #define PathSearchAndQualify PathSearchAndQualifyW
@@ -547,7 +547,7 @@ typedef struct _MOUNTMGR_MOUNT_POINT {
 	USHORT  DeviceNameLength;
 } MOUNTMGR_MOUNT_POINT, *PMOUNTMGR_MOUNT_POINT;
 
-#define MOUNTMGR_DEVICE_NAME                        L"\\Device\\MountPointManager"
+#define MOUNTMGR_DEVICE_NAME                        "\\Device\\MountPointManager"
 
 #define IOCTL_MOUNTMGR_QUERY_POINTS                 CTL_CODE(MOUNTMGRCONTROLTYPE, 2, METHOD_BUFFERED, FILE_ANY_ACCESS)
 
@@ -648,14 +648,14 @@ typedef struct _FILE_DIRECTORY_INFORMATION {
     LARGE_INTEGER AllocationSize;
     ULONG FileAttributes;
     ULONG FileNameLength;
-    WCHAR FileName[1];
+    CHAR FileName[1];
 } FILE_DIRECTORY_INFORMATION, *PFILE_DIRECTORY_INFORMATION;
 
 typedef struct _FILE_LINK_ENTRY_INFORMATION {
     ULONG NextEntryOffset;
     LONGLONG ParentFileId;
     ULONG FileNameLength;
-    WCHAR FileName[1];
+    CHAR FileName[1];
 } FILE_LINK_ENTRY_INFORMATION, *PFILE_LINK_ENTRY_INFORMATION;
 
 typedef struct _FILE_LINKS_INFORMATION {
@@ -666,14 +666,14 @@ typedef struct _FILE_LINKS_INFORMATION {
 
 typedef struct _FILE_NAME_INFORMATION {
     ULONG FileNameLength;
-    WCHAR FileName[1];
+    CHAR FileName[1];
 } FILE_NAME_INFORMATION, *PFILE_NAME_INFORMATION;
 
 typedef struct _FILE_LINK_INFORMATION {
     BOOLEAN ReplaceIfExists;
     HANDLE RootDirectory;
     ULONG FileNameLength;
-    WCHAR FileName[1];
+    CHAR FileName[1];
 } FILE_LINK_INFORMATION, *PFILE_LINK_INFORMATION;
 
 
@@ -1260,7 +1260,7 @@ LSTATUS
 APIENTRY
 RegQueryValueExW(
     _In_ HKEY hKey,
-    _In_opt_ LPCWSTR lpValueName,
+    _In_opt_ LPCSTR lpValueName,
     _Reserved_ LPDWORD lpReserved,
     _Out_opt_ LPDWORD lpType,
      LPBYTE lpData,
@@ -1286,7 +1286,7 @@ LSTATUS
 APIENTRY
 RegDeleteValueW(
     _In_ HKEY hKey,
-    _In_opt_ LPCWSTR lpValueName
+    _In_opt_ LPCSTR lpValueName
     );
 
 #ifdef UNICODE
@@ -1310,7 +1310,7 @@ LSTATUS
 APIENTRY
 RegDeleteKeyExW(
     _In_ HKEY hKey,
-    _In_ LPCWSTR lpSubKey,
+    _In_ LPCSTR lpSubKey,
     _In_ REGSAM samDesired,
     _Reserved_ DWORD Reserved
     );
@@ -1338,7 +1338,7 @@ LSTATUS
 APIENTRY
 RegSetValueExW(
     HKEY hKey,
-    LPCWSTR lpValueName,
+    LPCSTR lpValueName,
     DWORD Reserved,
     DWORD dwType,
     const BYTE *lpData,
@@ -1367,7 +1367,7 @@ LSTATUS
 APIENTRY
 RegOpenKeyExW(
     HKEY hKey,
-    LPCWSTR lpSubKey,
+    LPCSTR lpSubKey,
     DWORD ulOptions,
     REGSAM samDesired,
     PHKEY phkResult
@@ -1399,9 +1399,9 @@ LSTATUS
 APIENTRY
 RegCreateKeyExW(
     HKEY hKey,
-    LPCWSTR lpSubKey,
+    LPCSTR lpSubKey,
     DWORD Reserved,
-    LPWSTR lpClass,
+    LPSTR lpClass,
     DWORD dwOptions,
     REGSAM samDesired,
     const LPSECURITY_ATTRIBUTES lpSecurityAttributes,
@@ -1433,8 +1433,8 @@ LSTATUS
 APIENTRY
 RegGetValueW(
     HKEY hKey,
-    LPCWSTR lpSubKey,
-    LPCWSTR lpValue,
+    LPCSTR lpSubKey,
+    LPCSTR lpValue,
     DWORD dwFlags,
     LPDWORD pdwType,
     PVOID pvData,

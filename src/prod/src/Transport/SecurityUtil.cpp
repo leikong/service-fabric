@@ -13,7 +13,7 @@ static const StringLiteral TraceType("SecurityUtil");
 
 _Use_decl_annotations_ ErrorCode SecurityUtil::GetX509SvrCredThumbprint(
     X509StoreLocation::Enum certStoreLocation,
-    wstring const & certStoreName,
+    string const & certStoreName,
     shared_ptr<Common::X509FindValue> const & findValue,
     Thumbprint const * loadedCredThumbprint,
     Thumbprint & thumbprint)
@@ -43,7 +43,7 @@ _Use_decl_annotations_ ErrorCode SecurityUtil::GetX509SvrCredThumbprint(
 
 _Use_decl_annotations_  ErrorCode SecurityUtil::GetX509SvrCredExpiration(
     X509StoreLocation::Enum certStoreLocation,
-    wstring const & certStoreName,
+    string const & certStoreName,
     shared_ptr<Common::X509FindValue> const & findValue,
     DateTime & expiration)
 {
@@ -67,7 +67,7 @@ _Use_decl_annotations_  ErrorCode SecurityUtil::GetX509SvrCredExpiration(
 
 _Use_decl_annotations_  ErrorCode SecurityUtil::GetX509CltCredAttr(
     X509StoreLocation::Enum certStoreLocation,
-    wstring const & certStoreName,
+    string const & certStoreName,
     shared_ptr<Common::X509FindValue> const & findValue,
     Thumbprint & thumbprint,
     DateTime & expiration)
@@ -94,7 +94,7 @@ _Use_decl_annotations_  ErrorCode SecurityUtil::GetX509CltCredAttr(
 
 _Use_decl_annotations_  ErrorCode SecurityUtil::GetX509SvrCredAttr(
     Common::X509StoreLocation::Enum certStoreLocation,
-    wstring const & certStoreName,
+    string const & certStoreName,
     shared_ptr<Common::X509FindValue> const & findValue,
     Thumbprint & thumbprint,
     DateTime & expiration)
@@ -123,7 +123,7 @@ _Use_decl_annotations_
 ErrorCode SecurityUtil::AllowDefaultClientsIfNeeded(
     SecuritySettings & serverSecuritySettings,
     FabricNodeConfig const & nodeConfig,
-    wstring const& traceId)
+    string const& traceId)
 {
     ErrorCode error;
 
@@ -211,7 +211,7 @@ ErrorCode SecurityUtil::AllowDefaultClientsIfNeeded(
 ErrorCode SecurityUtil::EnableClientRoleIfNeeded(
     SecuritySettings & serverSecuritySettings,
     FabricNodeConfig const & nodeConfig,
-    wstring const& traceId)
+    string const& traceId)
 {
     ErrorCode error;
     SecurityConfig & securityConfig = SecurityConfig::GetConfig();
@@ -295,7 +295,7 @@ ErrorCode SecurityUtil::EnableClientRoleIfNeeded(
 
 _Use_decl_annotations_  ErrorCode SecurityUtil::GetX509CltCredExpiration(
     Common::X509StoreLocation::Enum certStoreLocation,
-    wstring const & certStoreName,
+    string const & certStoreName,
     shared_ptr<Common::X509FindValue> const & findValue,
     DateTime & expiration)
 {
@@ -314,7 +314,7 @@ SECURITY_STATUS SecurityUtil::VerifyCertificate(
     bool shouldIgnoreCrlOffline)
 {
     return SecurityContextSsl::VerifyCertificate(
-        L"",
+        "",
         certContext,
         certChainFlags,
         shouldIgnoreCrlOffline,
@@ -326,7 +326,7 @@ SECURITY_STATUS SecurityUtil::VerifyCertificate(
 
 _Use_decl_annotations_  ErrorCode SecurityUtil::GetX509CltCredExpiration(
     Common::X509StoreLocation::Enum certStoreLocation,
-    wstring const & certStoreName,
+    string const & certStoreName,
     shared_ptr<Common::X509FindValue> const & findValue,
     DateTime & expiration)
 {

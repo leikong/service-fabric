@@ -41,7 +41,7 @@ public: \
 private: \
 	Common::PerformanceCounterSetInstanceSPtr instance_; \
 public: \
-	static inline std::shared_ptr<className> CreateInstance(std::wstring const & instanceName) \
+	static inline std::shared_ptr<className> CreateInstance(std::string const & instanceName) \
 	{ \
 		Common::PerformanceCounterSetInstanceSPtr instance = className::GetCounterSet().CreateCounterSetInstance(instanceName); \
 		return std::make_shared<className>(std::move(instance)); \

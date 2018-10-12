@@ -53,8 +53,8 @@ KHttpNetworkEndpoint::Create(
     // authority/host is present.
     //
     KStringView Scheme = HttpUri.Get(KUri::eScheme);
-    if (Scheme.CompareNoCase(KStringView(L"http")) != 0
-        && Scheme.CompareNoCase(KStringView(L"https")) != 0)
+    if (Scheme.CompareNoCase(KStringView("http")) != 0
+        && Scheme.CompareNoCase(KStringView("https")) != 0)
     {
         return STATUS_OBJECT_PATH_SYNTAX_BAD;
     }
@@ -106,7 +106,7 @@ KRvdTcpNetworkEndpoint::Create(
     // The scheme should eventually be rvd.tcp once we have RDMA in place
     //
     if (!ProposedUri.IsValid() ||
-         ProposedUri.Get(KUriView::eScheme).Compare(KStringView(L"rvd")) != 0)
+         ProposedUri.Get(KUriView::eScheme).Compare(KStringView("rvd")) != 0)
     {
         return STATUS_INVALID_PARAMETER;
     }

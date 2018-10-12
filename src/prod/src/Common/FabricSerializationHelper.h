@@ -4424,7 +4424,7 @@ public:
         return this->stream_->ReadSerializable(&object);
     }
 
-    NTSTATUS Write(std::vector<std::wstring> & field)
+    NTSTATUS Write(std::vector<std::string> & field)
     {
         NTSTATUS _status = this->Write(static_cast<ULONG>(field.size()));
 
@@ -4446,7 +4446,7 @@ public:
         return _status;
     }
 
-    NTSTATUS Read(std::vector<std::wstring> & field)
+    NTSTATUS Read(std::vector<std::string> & field)
     {
         ULONG size = 0;
 
@@ -4470,12 +4470,12 @@ public:
     }
 
 
-    NTSTATUS Write(std::wstring & field)
+    NTSTATUS Write(std::string & field)
     {
-        return this->stream_->WriteString(const_cast<wchar_t*>(field.c_str()), static_cast<ULONG>(field.size()));
+        return this->stream_->WriteString(const_cast<char*>(field.c_str()), static_cast<ULONG>(field.size()));
     }
 
-    NTSTATUS Read(std::wstring & field)
+    NTSTATUS Read(std::string & field)
     {
         ULONG size = 0;
 
@@ -4487,7 +4487,7 @@ public:
         }
         else if (NT_SUCCESS(_status) && K_STATUS_SCOPE_END != _status)
         {
-            field = L"";
+            field = "";
             return STATUS_SUCCESS;
         }
         else
@@ -4495,7 +4495,7 @@ public:
             return _status;
         }
 
-        return this->stream_->ReadString(const_cast<wchar_t*>(field.c_str()), size);
+        return this->stream_->ReadString(const_cast<char*>(field.c_str()), size);
     }
 
     NTSTATUS WriteByteArray(void * field, ULONG size)
@@ -4731,5 +4731,5 @@ struct FabricSerializationTraits<ArrayPair<TKey, TValue> >
 #define DEFINE_ARRAY_PAIR(TKey, TValue)  ArrayPair<TKey, TValue>
 #define DEFINE_USER_MAP_UTILITY(TKey, TValue)   DEFINE_USER_ARRAY_UTILITY(DEFINE_ARRAY_PAIR(TKey, TValue));
 
-DEFINE_USER_MAP_UTILITY(std::wstring, std::wstring);
+DEFINE_USER_MAP_UTILITY(std::string, std::string);
 

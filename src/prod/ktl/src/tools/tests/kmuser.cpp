@@ -71,7 +71,7 @@ namespace KmUser
 #ifndef PLATFORM_UNIX
     KmUserFuncs::
 #endif
-    RunTest(PKU_TEST_ID testId, PVOID testParameters, ULONG& testParametersSize, int argc, WCHAR *args[])
+    RunTest(PKU_TEST_ID testId, PVOID testParameters, ULONG& testParametersSize, int argc, CHAR *args[])
     {
         UNREFERENCED_PARAMETER(testParameters);
         UNREFERENCED_PARAMETER(testParametersSize);

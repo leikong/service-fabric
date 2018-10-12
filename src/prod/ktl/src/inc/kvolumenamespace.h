@@ -39,8 +39,8 @@ public:
     //
     // Helpful definitions for the path separator character as a string or char
     //
-    static const WCHAR* PathSeparator;
-    static const WCHAR  PathSeparatorChar;
+    static const CHAR* PathSeparator;
+    static const CHAR  PathSeparatorChar;
     
     typedef KArray<KWString> NameArray;
     
@@ -251,7 +251,7 @@ public:
     static
     ktl::Awaitable<NTSTATUS>
     CreateDirectoryAsync(
-        __in LPCWSTR FullyQualifiedDirectoryName,
+        __in LPCSTR FullyQualifiedDirectoryName,
         __in KAllocator& Allocator,
         __in_opt KAsyncContextBase* const ParentAsync = NULL
         );
@@ -278,7 +278,7 @@ public:
     static
     ktl::Awaitable<NTSTATUS>
     DeleteFileOrDirectoryAsync(
-        __in LPCWSTR FullyQualifiedDirectoryName,
+        __in LPCSTR FullyQualifiedDirectoryName,
         __in KAllocator& Allocator,
         __in_opt KAsyncContextBase* const ParentAsync = NULL
         );
@@ -307,7 +307,7 @@ public:
     static
     ktl::Awaitable<NTSTATUS>
     QueryDirectoriesAsync(
-        __in LPCWSTR FullyQualifiedDirectoryName,
+        __in LPCSTR FullyQualifiedDirectoryName,
         __out NameArray& DirectoryNameArray,
         __in KAllocator& Allocator,
         __in_opt KAsyncContextBase* const ParentAsync = NULL
@@ -337,7 +337,7 @@ public:
     static
     ktl::Awaitable<NTSTATUS>
     QueryFilesAsync(
-        __in LPCWSTR FullyQualifiedDirectoryName,
+        __in LPCSTR FullyQualifiedDirectoryName,
         __out NameArray& FileNameArray,
         __in KAllocator& Allocator,
         __in_opt KAsyncContextBase* const ParentAsync = NULL
@@ -367,7 +367,7 @@ public:
     static
     ktl::Awaitable<NTSTATUS>
     QueryFullFileAttributesAsync(
-        __in LPCWSTR FullyQualifiedPath,
+        __in LPCSTR FullyQualifiedPath,
         __in KAllocator& Allocator,
         __out FILE_NETWORK_OPEN_INFORMATION& Result,
         __in_opt KAsyncContextBase* const ParentAsync = NULL
@@ -398,8 +398,8 @@ public:
     static
     NTSTATUS
     RenameFile(
-    __in LPCWSTR FromPathName,
-    __in LPCWSTR ToPathName,
+    __in LPCSTR FromPathName,
+    __in LPCSTR ToPathName,
     __in BOOLEAN OverwriteIfExists,
     __in KAllocator& Allocator,
     __in KAsyncContextBase::CompletionCallback Completion,
@@ -409,8 +409,8 @@ public:
     static
     ktl::Awaitable<NTSTATUS>
     RenameFileAsync(
-    __in LPCWSTR FromPathName,
-    __in LPCWSTR ToPathName,
+    __in LPCSTR FromPathName,
+    __in LPCSTR ToPathName,
     __in BOOLEAN OverwriteIfExists,
     __in KAllocator& Allocator,
     __in_opt KAsyncContextBase* const ParentAsync);

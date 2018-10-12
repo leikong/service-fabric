@@ -87,17 +87,17 @@ void Message::SetTraceId(Transport::MessageId const & value)
     headers_.SetTraceId(value);
 }
 
-wstring const & Message::LocalTraceContext() const
+string const & Message::LocalTraceContext() const
 {
     return localTraceContext_;
 }
 
-void Message::SetLocalTraceContext(std::wstring const & context)
+void Message::SetLocalTraceContext(std::string const & context)
 {
     localTraceContext_ = context;
 }
 
-void Message::SetLocalTraceContext(std::wstring && context)
+void Message::SetLocalTraceContext(std::string && context)
 {
     localTraceContext_ = move(context);
 }
@@ -152,9 +152,9 @@ uint Message::SerializedSize()
 
 void Message::WriteTo(Common::TextWriter & w, Common::FormatOptions const &) const
 {
-    w << L"Message{";
+    w << "Message{";
     w.Write(headers_);
-    w << L"}Message";
+    w << "}Message";
 }
 
 void Message::CheckPoint()
@@ -229,7 +229,7 @@ BiqueChunkIterator Message::EndHeaderChunks()
     return headers_.EndChunks();
 }
 
-std::wstring const & Message::get_Action() const
+std::string const & Message::get_Action() const
 {
     return headers_.Action;
 }
@@ -434,9 +434,9 @@ bool Message::GetBodyInternal(Serialization::IFabricSerializable* body)
     return true;
 }
 
-std::wstring Message::ToString() const
+std::string Message::ToString() const
 {
-    wstring result;
+    string result;
     result.reserve(const_cast<Message*>(this)->SerializedHeaderSize() * 2);
     StringWriter(result).Write(*this);
     return result;

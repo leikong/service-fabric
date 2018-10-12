@@ -16,24 +16,24 @@
 using namespace Common;
 using namespace std;
 
-wstring const TestCertCN = L"WinFabricCryptoUtilityTestCertCN";
+string const TestCertCN = "WinFabricCryptoUtilityTestCertCN";
 
 namespace Common
 {
-    #define CryptoUtilityTestTraceType "CryptoUtilityTest"
+#define CryptoUtilityTestTraceType "CryptoUtilityTest"
 
     class CryptoUtilityTest
     {
     protected:
         void InstallTest();
-        wstring GetNewCommonName();
-        bool CreateAndVerfiyCertificateThumbprint(wstring const subjectName, X509FindValue::SPtr findValue);
+        string GetNewCommonName();
+        bool CreateAndVerfiyCertificateThumbprint(string const subjectName, X509FindValue::SPtr findValue);
         bool VerfiyCertificateThumbprint(
             X509FindValue::SPtr const & findValue,
-            wstring const & expectedThumbprintStr,
-            wstring const & x509Path = L"");
+            string const & expectedThumbprintStr,
+            string const & x509Path = "");
 
-        bool VerfiyCertificateThumbprint(CertContext* loadedCert, wstring const expectedThumbprintStr);
+        bool VerfiyCertificateThumbprint(CertContext* loadedCert, string const expectedThumbprintStr);
 
         SecurityTestSetup securityTestSetup_;
     };
@@ -82,11 +82,11 @@ namespace Common
 
         InstallTestCertInScope cert1;
         InstallTestCertInScope cert2(
-            L"",
+            "",
             nullptr,
             InstallTestCertInScope::DefaultCertExpiry(),
             X509Default::StoreName(),
-            L"CryptoSuite.PublicKey.second");
+            "CryptoSuite.PublicKey.second");
 
         X509PubKey key1(cert1.CertContext());
         Trace.WriteInfo(CryptoUtilityTestTraceType, "key1 long format = {0:l}", key1);
@@ -111,8 +111,8 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(LoadCertificateByThumbprint)
     {
-        wstring commonName = GetNewCommonName();
-        wstring subjectName = (L"CN=" + commonName);
+        string commonName = GetNewCommonName();
+        string subjectName = ("CN=" + commonName);
         InstallTestCertInScope testCert(subjectName);
 
         auto thumbprintStr = testCert.Thumbprint()->ToStrings().first;
@@ -124,8 +124,8 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(LoadCertificateBySubjectName)
     {
-        wstring commonName = GetNewCommonName();
-        wstring subjectName = (L"CN=" + commonName);
+        string commonName = GetNewCommonName();
+        string subjectName = ("CN=" + commonName);
 
         X509FindValue::SPtr findValue;
         auto error = X509FindValue::Create(X509FindType::FindBySubjectName, subjectName, findValue);
@@ -135,8 +135,8 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(LoadCertificateByCommonName)
     {
-        wstring commonName = GetNewCommonName();
-        wstring subjectName = (L"CN=" + commonName);
+        string commonName = GetNewCommonName();
+        string subjectName = ("CN=" + commonName);
 
         X509FindValue::SPtr findValue;
         auto error = X509FindValue::Create(X509FindType::FindBySubjectName, commonName, findValue);
@@ -146,8 +146,8 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(MatchCountTest)
     {
-        wstring commonName = L"MatchCountTest." + Guid::NewGuid().ToString();
-        wstring subjectName = (L"CN=" + commonName);
+        string commonName = "MatchCountTest." + Guid::NewGuid().ToString();
+        string subjectName = ("CN=" + commonName);
         InstallTestCertInScope testCert(subjectName);
 
         Trace.WriteInfo(CryptoUtilityTestTraceType, "FindBySubjectName with common name");
@@ -164,7 +164,7 @@ namespace Common
                 findValue,
                 loadedCerts);
 
-            VERIFY_IS_TRUE(error.IsSuccess(), L"GetCertificate call");
+            VERIFY_IS_TRUE(error.IsSuccess(), "GetCertificate call");
             VERIFY_ARE_EQUAL2(loadedCerts.size(), 1);
 
         }
@@ -183,7 +183,7 @@ namespace Common
                 findValue,
                 loadedCerts);
 
-            VERIFY_IS_TRUE(error.IsSuccess(), L"GetCertificate call");
+            VERIFY_IS_TRUE(error.IsSuccess(), "GetCertificate call");
             VERIFY_ARE_EQUAL2(loadedCerts.size(), 1);
         }
 
@@ -201,7 +201,7 @@ namespace Common
                 findValue,
                 loadedCerts);
 
-            VERIFY_IS_TRUE(error.IsSuccess(), L"GetCertificate call");
+            VERIFY_IS_TRUE(error.IsSuccess(), "GetCertificate call");
             VERIFY_ARE_EQUAL2(loadedCerts.size(), 1);
         }
     }
@@ -210,8 +210,8 @@ namespace Common
     {
         InstallTestCertInScope testCert;
 
-        wstring plainText = L"The lazy fox jumped";
-        wstring cipherText;
+        string plainText = "The lazy fox jumped";
+        string cipherText;
         auto error = CryptoUtility::EncryptText(
             plainText,
             testCert.Thumbprint()->ToStrings().first,
@@ -234,13 +234,13 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(LoadCertificateByAltSubjectName)
     {
-        vector<wstring> subjectAltNames;
-        subjectAltNames.push_back(L"TestDns");
-        subjectAltNames.push_back(L"TestDns.TestSubDomain");
-        subjectAltNames.push_back(L"TestDns.TestSubDomain.Microsoft.Com");
-        subjectAltNames.push_back(L"TestDns.TestSubDomain.Microsoft");
+        vector<string> subjectAltNames;
+        subjectAltNames.push_back("TestDns");
+        subjectAltNames.push_back("TestDns.TestSubDomain");
+        subjectAltNames.push_back("TestDns.TestSubDomain.Microsoft.Com");
+        subjectAltNames.push_back("TestDns.TestSubDomain.Microsoft");
 
-        InstallTestCertInScope testCert(L"", &subjectAltNames);
+        InstallTestCertInScope testCert("", &subjectAltNames);
 
         auto thumbprintStr = testCert.Thumbprint()->ToStrings().first;
 
@@ -249,7 +249,7 @@ namespace Common
             // Try searching search string as is, its lower case variant and upper case varient.
             for (int j = 0; j < 3; j++)
             {
-                wstring searchString = subjectAltNames[i];
+                string searchString = subjectAltNames[i];
                 switch (j)
                 {
                 case 1:
@@ -263,7 +263,7 @@ namespace Common
                 }
 
                 X509FindValue::SPtr findValue;
-                wstring findValueString = L"2.5.29.17:3=" + searchString;
+                string findValueString = "2.5.29.17:3=" + searchString;
                 auto error = X509FindValue::Create(X509FindType::FindByExtension, findValueString, findValue);
                 VERIFY_IS_TRUE(error.IsSuccess());
                 VERIFY_IS_TRUE(VerfiyCertificateThumbprint(findValue, thumbprintStr));
@@ -315,7 +315,7 @@ namespace Common
         auto offlineReported = make_shared<AutoResetEvent>(false);
         auto recoveryReported = make_shared<AutoResetEvent>(false);
         auto bothCertsAdded = make_shared<AutoResetEvent>(false);
-        cache.SetHealthReportCallback([=] (size_t cacheSize, wstring const&)
+        cache.SetHealthReportCallback([=] (size_t cacheSize, string const&)
         {
             if (cacheSize == 0)
             {
@@ -802,23 +802,23 @@ namespace Common
         VERIFY_IS_TRUE(bb == bb2);
 
         CryptoBitBlob bb3;
-        VERIFY_IS_TRUE(bb3.Initialize(L"11 22 33").IsSuccess());
+        VERIFY_IS_TRUE(bb3.Initialize("11 22 33").IsSuccess());
         VERIFY_IS_TRUE(bb3.UnusedBits() == 0);
         VERIFY_IS_FALSE(bb3 == bb);
 
         CryptoBitBlob bb4;
-        VERIFY_IS_TRUE(bb4.Initialize(L"112233").IsSuccess());
+        VERIFY_IS_TRUE(bb4.Initialize("112233").IsSuccess());
         VERIFY_IS_TRUE(bb4.UnusedBits() == 0);
         VERIFY_IS_TRUE(bb3 == bb4);
 
         CryptoBitBlob bb5;
-        VERIFY_IS_TRUE(bb5.Initialize(L"2233").IsSuccess());
+        VERIFY_IS_TRUE(bb5.Initialize("2233").IsSuccess());
         VERIFY_IS_TRUE(bb5.UnusedBits() == 0);
         VERIFY_IS_FALSE(bb4 == bb5);
         VERIFY_IS_FALSE(bb5 == bb);
 
         CryptoBitBlob bb6;
-        VERIFY_IS_TRUE(bb6.Initialize(L"112333").IsSuccess());
+        VERIFY_IS_TRUE(bb6.Initialize("112333").IsSuccess());
         VERIFY_IS_TRUE(bb5.UnusedBits() == 0);
         VERIFY_IS_FALSE(bb6 == bb4);
         VERIFY_IS_FALSE(bb6 == bb5);
@@ -836,7 +836,7 @@ namespace Common
 
 #ifndef PLATFORM_UNIX
 
-        InstallTestCertInScope cert1(L"CN=cert1.CryptoBitBlobTest");
+        InstallTestCertInScope cert1("CN=cert1.CryptoBitBlobTest");
         CryptoBitBlob bb7(cert1.CertContext()->pCertInfo->SubjectPublicKeyInfo.PublicKey);
         VERIFY_IS_TRUE(bb7.Data().size() > 0);
         VERIFY_IS_FALSE(bb7 == bb6);
@@ -853,11 +853,11 @@ namespace Common
         VERIFY_IS_TRUE(buffer3 == buffer4);
 
         InstallTestCertInScope cert2(
-            L"CN=cert2.CryptoBitBlobTest",
+            "CN=cert2.CryptoBitBlobTest",
             nullptr,
             TimeSpan::FromMinutes(60),
             X509Default::StoreName(),
-            L"cert2.CryptoBitBlobTest" /*non-default key container to generate a different key pair*/);
+            "cert2.CryptoBitBlobTest" /*non-default key container to generate a different key pair*/);
 
         CryptoBitBlob bb8(cert2.CertContext()->pCertInfo->SubjectPublicKeyInfo.PublicKey);
         VERIFY_IS_TRUE(bb8 != bb7);
@@ -895,14 +895,14 @@ namespace Common
         VERIFY_IS_TRUE(bb11 == bb13);
 
         X509FindValue::SPtr findValue;
-        err = X509FindValue::Create(X509FindType::FindBySubjectName, L"GlobalSign", findValue);
+        err = X509FindValue::Create(X509FindType::FindBySubjectName, "GlobalSign", findValue);
         if (!err.IsSuccess()) return;
 
         // Load cert using given "X509FindValue" findValue
         CertContextUPtr hostCert;
         err = CryptoUtility::GetCertificate(
             X509Default::StoreLocation(),
-            L"Root",
+            "Root",
             findValue,
             hostCert);
 
@@ -919,7 +919,7 @@ namespace Common
 
     BOOST_AUTO_TEST_SUITE_END()
 
-    bool CryptoUtilityTest::CreateAndVerfiyCertificateThumbprint(wstring const subjectName, X509FindValue::SPtr findValue)
+    bool CryptoUtilityTest::CreateAndVerfiyCertificateThumbprint(string const subjectName, X509FindValue::SPtr findValue)
     {
         // create cert with given subjectName
         InstallTestCertInScope testCert(subjectName);
@@ -933,8 +933,8 @@ namespace Common
 
     bool CryptoUtilityTest::VerfiyCertificateThumbprint(
         X509FindValue::SPtr const & findValue,
-        const wstring & expectedThumbprintStr,
-        const wstring & x509Path)
+        const string & expectedThumbprintStr,
+        const string & x509Path)
     {
         // Load cert using given "X509FindValue" findValue
         CertContextUPtr loadedCert;
@@ -944,12 +944,12 @@ namespace Common
             findValue,
             loadedCert);
 
-        VERIFY_IS_TRUE(error.IsSuccess(), L"GetCertificate call");
-        VERIFY_IS_TRUE(loadedCert, L"assert that loaded cert is not null");
+        VERIFY_IS_TRUE(error.IsSuccess(), "GetCertificate call");
+        VERIFY_IS_TRUE(loadedCert, "assert that loaded cert is not null");
         return VerfiyCertificateThumbprint((CertContext*)loadedCert.get(), expectedThumbprintStr);
     }
 
-    bool CryptoUtilityTest::VerfiyCertificateThumbprint(CertContext* loadedCert, const wstring expectedThumbprintStr)
+    bool CryptoUtilityTest::VerfiyCertificateThumbprint(CertContext* loadedCert, const string expectedThumbprintStr)
     {
         Thumbprint loadedThumbprint;
         auto error = loadedThumbprint.Initialize(loadedCert);
@@ -964,15 +964,15 @@ namespace Common
         return true;
     }
 
-    std::wstring CryptoUtilityTest::GetNewCommonName()
+    std::string CryptoUtilityTest::GetNewCommonName()
     {
         SYSTEMTIME st = DateTime::Now().GetSystemTime();
-        std::wstring postfix;
+        std::string postfix;
         Common::StringWriter(postfix).Write("{0:04d}{1:02d}{2:02d}{3:02d}{4:02d}{5:02d}{6:03d}",
             st.wYear, st.wMonth, st.wDay,
             st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
 
-        wstring commonName = TestCertCN + postfix;
+        string commonName = TestCertCN + postfix;
         return commonName;
     }
 
@@ -980,7 +980,7 @@ namespace Common
     void CryptoUtilityTest::InstallTest()
     {
         auto commonName = GetNewCommonName();
-        auto subjectName = (L"CN=" + commonName);
+        auto subjectName = ("CN=" + commonName);
         InstallTestCertInScope testCert(subjectName);
 
         auto thumbprintStr = testCert.Thumbprint()->PrimaryToString();
@@ -998,20 +998,17 @@ namespace Common
         LinuxCryptUtil cryptoUtil;
         auto corePfxPath = thumbprintStr;
         StringUtility::ToUpper(corePfxPath);
-        long buflen = 16384; 
+        long buflen = 16384;
 
-        unique_ptr<char[]> username(new char[buflen]);
-        auto errorCode = getlogin_r(username.get(), buflen);
-        VERIFY_IS_TRUE(errorCode == 0);
-
+        auto uid = geteuid();
         unique_ptr<char[]> buf(new char[buflen]);
         struct passwd pwbuf, *pwbufp;
-        errorCode = getpwnam_r(username.get(), &pwbuf, buf.get(), buflen, &pwbufp);
+        auto errorCode = getpwuid_r(uid, &pwbuf, buf.get(), buflen, &pwbufp);
         VERIFY_IS_TRUE(errorCode == 0);
-        auto homeDirectory = StringUtility::Utf8ToUtf16(pwbufp->pw_dir);
-        auto corePfxPathw = StringUtility::Utf16ToUtf8(Path::Combine(homeDirectory + L"/.dotnet/corefx/cryptography/x509stores/my", corePfxPath + L".pfx"));
+        auto homeDirectory = string(pwbufp->pw_dir);
+        auto corePfxPathw = Path::Combine(homeDirectory + "/.dotnet/corefx/cryptography/x509stores/my", corePfxPath + ".pfx");
         KFinally ([&corePfxPathw] { std::remove(corePfxPathw.c_str()); });
-        error = cryptoUtil.InstallCoreFxCertificate(username.get(), testCert.X509ContextRef());
+        error = cryptoUtil.InstallCoreFxCertificate(pwbufp->pw_name, testCert.X509ContextRef());
         VERIFY_IS_TRUE(error.IsSuccess());
         error = cryptoUtil.ReadPrivateKey(corePfxPathw, privKey);
         VERIFY_IS_TRUE(error.IsSuccess());
@@ -1021,9 +1018,8 @@ namespace Common
         KFinally ([&x509Folder] { SecurityConfig::GetConfig().X509Folder = x509Folder; });
 
         auto const path = testCert.X509ContextRef().FilePath();
-        wstring pathw;
-        StringUtility::Utf8ToUtf16(path, pathw);
-        error = X509FindValue::Create(X509FindType::FindByThumbprint, L"", findValue); //find value to match "anything"
+        string pathw = path;
+        error = X509FindValue::Create(X509FindType::FindByThumbprint, "", findValue); //find value to match "anything"
         VERIFY_ARE_EQUAL2(error.ReadValue(), ErrorCodeValue::Success);
         VERIFY_IS_TRUE(VerfiyCertificateThumbprint(findValue, thumbprintStr, pathw));
 

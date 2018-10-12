@@ -15,7 +15,7 @@ namespace KtlLogger
     {
     public:
         KtlLoggerNode(Common::ComponentRoot const & root, 
-                      std::wstring const & fabricDataRoot,
+                      std::string const & fabricDataRoot,
                       Common::FabricNodeConfigSPtr const & fabricNodeConfig);
 
         ~KtlLoggerNode();
@@ -56,7 +56,7 @@ namespace KtlLogger
         KAllocator & GetAllocator();
         void PostThreadDeactivateKtlLoggerAndSystem(Common::TimeSpan const timeout);
     
-        std::wstring fabricDataRoot_;
+        std::string fabricDataRoot_;
         Common::FabricNodeConfigSPtr fabricNodeConfig_;
         KtlLogger::SharedLogSettingsSPtr applicationSharedLogSettings_;
         KtlLogger::SharedLogSettingsSPtr systemServicesSharedLogSettings_;
@@ -80,7 +80,7 @@ namespace KtlLogger
         public:
             OpenAsyncOperation(
                 KtlLoggerNode & owner,
-                std::wstring const & fabricDataRoot,
+                std::string const & fabricDataRoot,
                 Common::FabricNodeConfigSPtr const & fabricNodeConfig,
                 Common::TimeSpan const timeout,
                 Common::AsyncCallback const & callback,
@@ -122,7 +122,7 @@ namespace KtlLogger
             void FinishInitializeKtlLogger(Common::AsyncOperationSPtr const& operation);
             
             KtlLoggerNode & owner_;
-            std::wstring fabricDataRoot_;
+            std::string fabricDataRoot_;
             Common::FabricNodeConfigSPtr fabricNodeConfig_;         
             Common::TimeoutHelper timeoutHelper_;
             std::unique_ptr<KtlLogManager::SharedLogContainerSettings> applicationSharedLogSettings_;

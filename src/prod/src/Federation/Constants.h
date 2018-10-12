@@ -10,11 +10,11 @@ namespace Federation
     class Constants
     {
     public:
-        static Common::GlobalWString SeedNodeVoteType;
-        static Common::GlobalWString SqlServerVoteType;
-        static Common::GlobalWString WindowsAzureVoteType;
+        static Common::GlobalString SeedNodeVoteType;
+        static Common::GlobalString SqlServerVoteType;
+        static Common::GlobalString WindowsAzureVoteType;
 
-        static Common::GlobalWString GlobalTimestampEpochName;
+        static Common::GlobalString GlobalTimestampEpochName;
 
         static char const* RejectedTokenKey;
         static char const* NeighborHeadersIgnoredKey;

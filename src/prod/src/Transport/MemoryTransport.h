@@ -15,16 +15,16 @@ namespace Transport
     public:
         static size_t TransportCount();
 
-        MemoryTransport(std::wstring const & name, std::wstring const & id);
+        MemoryTransport(std::string const & name, std::string const & id);
         ~MemoryTransport() override;
 
-        std::wstring const & get_IdString() const override;
+        std::string const & get_IdString() const override;
 
         Common::ErrorCode Start(bool completeStart = true) override;
         Common::ErrorCode CompleteStart() override;
         void Stop(Common::TimeSpan timeout = Common::TimeSpan::Zero) override;
 
-        std::wstring const & TraceId() const override; 
+        std::string const & TraceId() const override; 
 
         void SetInstance(uint64 instance) override;
 
@@ -56,7 +56,7 @@ namespace Transport
         Common::ErrorCode SetPerTargetSendQueueLimit(ULONG limitInBytes) override;
         Common::ErrorCode SetOutgoingMessageExpiration(Common::TimeSpan expiration) override;
 
-        std::wstring const & ListenAddress() const override;
+        std::string const & ListenAddress() const override;
 
         void DisableSecureSessionExpiration() override;
 
@@ -100,9 +100,9 @@ namespace Transport
     private:
         // Returns an empty pointer if the remote address does not already exists
         ISendTarget::SPtr Resolve(
-            std::wstring const & address,
-            std::wstring const & targetId,
-            std::wstring const & sspiTarget,
+            std::string const & address,
+            std::string const & targetId,
+            std::string const & sspiTarget,
             uint64 instance) override;
 
         void HandleMessage(MessageUPtr && message, ISendTarget::SPtr const & sender);
@@ -111,10 +111,10 @@ namespace Transport
 
         void PumpIncomingMessages();
 
-        std::wstring const traceId_;
+        std::string const traceId_;
         bool started_;
         bool stopped_;
-        std::wstring name_;
+        std::string name_;
         MessageHandler messageHandler_;
         ConnectionFaultHandler faultHandler_;
         DisconnectEvent disconnectEvent_;
@@ -129,24 +129,24 @@ namespace Transport
         {
             DENY_COPY(MemorySendTarget);
 
-            std::wstring name_;
-            std::wstring const id_;
-            std::wstring const traceId_;
+            std::string name_;
+            std::string const id_;
+            std::string const traceId_;
             std::weak_ptr<MemoryTransport> target_;
 
-            MemorySendTarget(std::wstring const & name, std::wstring const & id)
+            MemorySendTarget(std::string const & name, std::string const & id)
                 : name_(name)
                 , id_(id)
-                , traceId_(id.empty()? Common::wformatString("{0}", TextTraceThis) : Common::wformatString("{0}-{1}", TextTraceThis, id))
+                , traceId_(id.empty()? Common::formatString.L("{0}", TextTraceThis) : Common::formatString.L("{0}-{1}", TextTraceThis, id))
             {
             }
 
-            std::wstring const & Address() const override { return name_; }
+            std::string const & Address() const override { return name_; }
 
-            std::wstring const & LocalAddress() const override { Common::Assert::CodingError("Unsupported API"); }//jc
+            std::string const & LocalAddress() const override { Common::Assert::CodingError("Unsupported API"); }//jc
 
-            std::wstring const & Id() const override { return id_; }
-            std::wstring const & TraceId() const override { return traceId_; }
+            std::string const & Id() const override { return id_; }
+            std::string const & TraceId() const override { return traceId_; }
 
             bool IsAnonymous() const override { return name_.empty(); }
 

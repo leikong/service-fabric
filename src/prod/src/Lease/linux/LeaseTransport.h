@@ -32,16 +32,16 @@ NTSTATUS TransportResolveTarget(__in PLEASE_TRANSPORT const & pTransport, __in P
 NTSTATUS TransportReleaseTarget(__in PTRANSPORT_SENDTARGET & pTarget);
 NTSTATUS TransportBlockConnection(__in PTRANSPORT_SENDTARGET const & Target, __in BOOLEAN isBlocking);
 
-std::wstring const & TransportListenEndpoint(__in PTRANSPORT_SENDTARGET Target);
-std::wstring const & TransportTargetEndpoint(__in PTRANSPORT_SENDTARGET Target);
+std::string const & TransportListenEndpoint(__in PTRANSPORT_SENDTARGET Target);
+std::string const & TransportTargetEndpoint(__in PTRANSPORT_SENDTARGET Target);
 unsigned short TransportTargetSenderListenPort(__in PTRANSPORT_SENDTARGET Target);
-PWCHAR TransportIdentifier(__in PLEASE_TRANSPORT const & Transport);
-PWCHAR TransportIdentifier(__in PTRANSPORT_LISTEN_ENDPOINT endpoint);
-PWCHAR TransportTargetIdentifier(__in PTRANSPORT_SENDTARGET const & Target);
+PCHAR TransportIdentifier(__in PLEASE_TRANSPORT const & Transport);
+PCHAR TransportIdentifier(__in PTRANSPORT_LISTEN_ENDPOINT endpoint);
+PCHAR TransportTargetIdentifier(__in PTRANSPORT_SENDTARGET const & Target);
 
 NTSTATUS ListenEndpointToWString(
     TRANSPORT_LISTEN_ENDPOINT const * endpoint,
-    __out_bcount(sizeInBytes) PWCHAR string,
+    __out_bcount(sizeInBytes) PCHAR string,
     USHORT sizeInBytes);
 
 NTSTATUS TransportSendBuffer(__in PTRANSPORT_SENDTARGET const & pTarget, __in PVOID Buffer, ULONG Size);

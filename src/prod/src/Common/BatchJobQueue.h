@@ -14,7 +14,7 @@ namespace Common
         DENY_COPY(BatchJobQueue);
 
     public:
-        BatchJobQueue(std::wstring const & name, std::function<void(vector<T> &, R &)> const & callback, R & root, bool forceEnqueue = false, int maxThreads = 0, uint64 maxQueueSize = UINT64_MAX)
+        BatchJobQueue(std::string const & name, std::function<void(vector<T> &, R &)> const & callback, R & root, bool forceEnqueue = false, int maxThreads = 0, uint64 maxQueueSize = UINT64_MAX)
             : name_(name),
             processCallBack_(callback),
             root_(root),
@@ -109,7 +109,7 @@ namespace Common
             isClosed_ = true;
             if (activeThreads_ == 0)
             {
-                CompleteClose(L"Close()");
+                CompleteClose("Close()");
             }
             else
             {
@@ -122,8 +122,8 @@ namespace Common
             return Enqueue(item);
         }
 
-        __declspec (property(get = get_Name)) std::wstring const & Name;
-        std::wstring const & get_Name() { return name_; }
+        __declspec (property(get = get_Name)) std::string const & Name;
+        std::string const & get_Name() { return name_; }
 
         __declspec (property(get = get_HighestThreads)) int Test_HighestActiveThreads;
         int get_HighestThreads() { return highestActiveThreads_; }
@@ -209,7 +209,7 @@ namespace Common
 
             if (completeClose)
             {
-                CompleteClose(L"Process()");
+                CompleteClose("Process()");
             }
           
 		}
@@ -224,7 +224,7 @@ namespace Common
         std::deque<T> queue_;
         bool forceEnqueue_;
         bool isClosed_;
-        std::wstring name_;
+        std::string name_;
         uint64 maxQueueSize_;
         RWLOCK(BatchJobQueue, lock_);
 
@@ -255,7 +255,7 @@ namespace Common
             return items;
         }
 
-        void CompleteClose(wstring const & caller)
+        void CompleteClose(string const & caller)
         {
             Trace.WriteInfo("BatchJobQueue", name_, "Root reset during {0}", caller);
 

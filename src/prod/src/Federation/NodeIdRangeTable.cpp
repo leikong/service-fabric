@@ -50,15 +50,15 @@ bool NodeIdRangeTable::get_AreAllRangesReceived() const
 
 void NodeIdRangeTable::WriteTo(Common::TextWriter & w, Common::FormatOptions const &) const
 {
-    w.Write(L"[ ");
+    w.Write("[ ");
 
     for (auto range : this->rangesNotReceived_)
     {
         w.Write(range);
-        w.Write(L" ");
+        w.Write(" ");
     }
 
-    w.Write(L"]");
+    w.Write("]");
 }
 
 void NodeIdRangeTable::InternalAddRange(NodeId const & rangeStart, NodeId const & rangeEnd)

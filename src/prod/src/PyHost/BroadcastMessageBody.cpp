@@ -18,18 +18,18 @@ BroadcastMessageBody::BroadcastMessageBody()
 {
 }
 
-BroadcastMessageBody::BroadcastMessageBody(wstring const & contents)
+BroadcastMessageBody::BroadcastMessageBody(string const & contents)
     : contents_(contents)
 {
 }
 
-MessageUPtr BroadcastMessageBody::CreateMessage(wstring const & contents)
+MessageUPtr BroadcastMessageBody::CreateMessage(string const & contents)
 {
     BroadcastMessageBody body(contents);
 
     auto message = make_unique<Message>(body);
     message->Headers.Add(ActorHeader(Actor::PyHost));
-    message->Headers.Add(ActionHeader(L"Broadcast"));
+    message->Headers.Add(ActionHeader("Broadcast"));
 
     return message;
 }
@@ -41,7 +41,7 @@ BroadcastMessageBody BroadcastMessageBody::DeserializeBody(MessageUPtr & msg)
     return move(body);
 }
 
-wstring const & BroadcastMessageBody::GetContents() const
+string const & BroadcastMessageBody::GetContents() const
 {
     return contents_;
 }

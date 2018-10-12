@@ -11,15 +11,15 @@ namespace TestIPC
             TestIPCController();
             ~TestIPCController();
 
-            static const PWCHAR IPCControllerName;
-            static const PWCHAR IPCControllerOffsetName;
+            static const PCHAR IPCControllerName;
+            static const PCHAR IPCControllerOffsetName;
 
             //
             // Initialize the named memory section using base name and
             // the section is at least SizeInBytes large
             //
             ULONG Initialize(
-                __in PWCHAR BaseName,
+                __in PCHAR BaseName,
                 __in SIZE_T SizeInBytes
             );
 
@@ -27,7 +27,7 @@ namespace TestIPC
             // Retrieves the connection string used by the host to connect
             // to the memory section
             //
-            PWCHAR GetConnectionString(
+            PCHAR GetConnectionString(
             )
             {
                 return(_ConnectionString);
@@ -57,7 +57,7 @@ namespace TestIPC
             HANDLE _FileMapping;
             PVOID _Pointer;
             SIZE_T _SizeInBytes;
-            WCHAR _ConnectionString[MAX_PATH];
+            CHAR _ConnectionString[MAX_PATH];
 
             // CONSIDER: Add a pair of named events that can be used as
             // notifications between controller and host
@@ -74,7 +74,7 @@ namespace TestIPC
             // controller and return the pointer and size
             //
             ULONG Connect(
-                __in LPCWSTR ConnectionString
+                __in LPCSTR ConnectionString
             );
 
             PVOID GetPointer()
@@ -104,7 +104,7 @@ namespace TestIPC
         ULONG CompletionStatus;
         ULONG ErrorLineNumber;
         CHAR ErrorFileName[256];
-        WCHAR ErrorMessage[256];
+        CHAR ErrorMessage[256];
     } TestIPCResult;
 
     VOID TestIPCReturnError(
@@ -112,7 +112,7 @@ namespace TestIPC
         ULONG CompletionStatus,
         PCHAR ErrorFileName,
         ULONG ErrorLineNumber,
-        PWCHAR ErrorMessage
+        PCHAR ErrorMessage
     );
 }
 
@@ -127,8 +127,8 @@ namespace TestIPC
 #define VERIFY_IS_TRUE(__condition, ...) \
     if (! (__condition)) {\
         TestIPC::TestIPCReturnError(ipcResult, ERROR_GEN_FAILURE, __FILE__, __LINE__, (L#__condition));\
-        Log::Comment(String().Format(L"Error: Verify(%d): IsTrue(%ws): at %hs line %d", GetCurrentProcessId(), (L#__condition), __FILE__, __LINE__));\
+        Log::Comment(String().Format("Error: Verify(%d): IsTrue(%ws): at %hs line %d", GetCurrentProcessId(), (L#__condition), __FILE__, __LINE__));\
         ExitProcess(ERROR_GEN_FAILURE);\
     }\
-    Log::Comment(String().Format(L"VERIFY(%d): IsTrue(%ws)", GetCurrentProcessId(), (L#__condition)));
+    Log::Comment(String().Format("VERIFY(%d): IsTrue(%ws)", GetCurrentProcessId(), (L#__condition)));
 #endif

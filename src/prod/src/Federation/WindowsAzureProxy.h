@@ -14,19 +14,19 @@ namespace Federation
         DENY_COPY(WindowsAzureProxy);
 
     public:
-        WindowsAzureProxy(NodeId voteId, std::wstring const & connectionString, std::wstring const & ringName, NodeId proxyId);
+        WindowsAzureProxy(NodeId voteId, std::string const & connectionString, std::string const & ringName, NodeId proxyId);
 
         // This function uses the seed info file to find the address corresponding to the
         // connection string and returns a NodeConfig corresponding to that address.
-        static NodeConfig ResolveAzureEndPoint(NodeId voteId, std::wstring const & connectionString, std::wstring const & ringName, NodeId proxyId);
+        static NodeConfig ResolveAzureEndPoint(NodeId voteId, std::string const & connectionString, std::string const & ringName, NodeId proxyId);
 
 	protected:
         virtual NodeConfig GetConfig();
 
     private:
-        std::wstring connectionString_;
+        std::string connectionString_;
 
-        static Common::GlobalWString SeedMappingSection;
-        static Common::GlobalWString SeedInfoFileName;
+        static Common::GlobalString SeedMappingSection;
+        static Common::GlobalString SeedInfoFileName;
     };
 }

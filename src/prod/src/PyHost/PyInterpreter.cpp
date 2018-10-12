@@ -111,17 +111,17 @@ public:
     //
 
     ErrorCode Execute(
-        wstring const & moduleName,
-        wstring const & funcName,
-        vector<wstring> const & args)
+        string const & moduleName,
+        string const & funcName,
+        vector<string> const & args)
     {
         return ExecuteWrapper(moduleName, funcName, args, true); // strict
     }
 
     ErrorCode ExecuteIfFound(
-        wstring const & moduleName,
-        wstring const & funcName,
-        vector<wstring> const & args)
+        string const & moduleName,
+        string const & funcName,
+        vector<string> const & args)
     {
         return ExecuteWrapper(moduleName, funcName, args, false); // strict=false
     }
@@ -129,9 +129,9 @@ public:
 private:
 
     ErrorCode ExecuteWrapper(
-        wstring const & moduleName,
-        wstring const & funcName,
-        vector<wstring> const & args,
+        string const & moduleName,
+        string const & funcName,
+        vector<string> const & args,
         bool strict)
     {
         try
@@ -144,20 +144,20 @@ private:
         {
             Trace.WriteError(TraceComponent, "Execute failed: {0}", ex.what());
             
-            return ErrorCode(ErrorCodeValue::OperationFailed, StringUtility::Utf8ToUtf16(ex.what()));
+            return ErrorCode(ErrorCodeValue::OperationFailed, ex.what());
         }
     }
 
     void Execute_Throws(
-        wstring const & moduleNameW,
-        wstring const & funcNameW,
-        vector<wstring> const & args,
+        string const & moduleNameW,
+        string const & funcNameW,
+        vector<string> const & args,
         bool strict)
     {
         Trace.WriteInfo(TraceComponent, "Execute({0}, {1}, {2})", moduleNameW, funcNameW, args);
 
-        auto moduleName = StringUtility::Utf16ToUtf8(moduleNameW);
-        auto funcName = StringUtility::Utf16ToUtf8(funcNameW);
+        auto moduleName = (moduleNameW);
+        auto funcName = (funcNameW);
 
         // TODO: Avoid blocking threads
         //
@@ -188,7 +188,7 @@ private:
 
         for (auto ix=0; ix<args.size(); ++ix)
         {
-            auto pValue = ScopedPyObject::CreateFromNew(PyUnicode_FromString(StringUtility::Utf16ToUtf8(args[ix]).c_str()));
+            auto pValue = ScopedPyObject::CreateFromNew(PyUnicode_FromString(args[ix].c_str()));
             if (pValue.Get() == nullptr)
             {
                 PyUtils::ThrowOnFailure(moduleName, funcName, "PyUnicode_FromString");
@@ -225,8 +225,8 @@ public:
 
     DEFINE_PY_CALLBACK_IMPL( SetNodeIdOwnership )
     //{
-        wchar_t * moduleName;
-        wchar_t * nodeId;
+        char * moduleName;
+        char * nodeId;
         if (!PyArg_ParseTuple(args, "uu", &moduleName, &nodeId))
         {
             return NULL;
@@ -245,15 +245,15 @@ public:
         }
         else
         {
-            auto msg = wformatString("{0}: {1}", error.ReadValue(), error.Message);
-            PyErr_SetString(PyExc_RuntimeError, StringUtility::Utf16ToUtf8(msg).c_str());
+            auto msg = formatString("{0}: {1}", error.ReadValue(), error.Message);
+            PyErr_SetString(PyExc_RuntimeError, msg.c_str());
             return NULL;
         }
     }
 
     DEFINE_PY_CALLBACK_IMPL( Broadcast )
     //{
-        wchar_t * message;
+        char * message;
         if (!PyArg_ParseTuple(args, "u", &message))
         {
             return NULL;
@@ -271,15 +271,15 @@ public:
         }
         else
         {
-            auto msg = wformatString("{0}: {1}", error.ReadValue(), error.Message);
-            PyErr_SetString(PyExc_RuntimeError, StringUtility::Utf16ToUtf8(msg).c_str());
+            auto msg = formatString("{0}: {1}", error.ReadValue(), error.Message);
+            PyErr_SetString(PyExc_RuntimeError, msg.c_str());
             return NULL;
         }
     }
 
     DEFINE_PY_CALLBACK_IMPL( Query )
     //{
-        wchar_t * query;
+        char * query;
         if (!PyArg_ParseTuple(args, "u", &query))
         {
             return NULL;
@@ -289,17 +289,17 @@ public:
 
         Trace.WriteInfo(TraceComponent, "Query({0})", parsed_query);
 
-        wstring result;
+        string result;
         auto error = QueryCallback_(parsed_query, result);
 
         if (error.IsSuccess())
         {
-            return PyUnicode_FromWideChar(result.c_str(), result.size());
+            return PyUnicode_FromString(result.c_str());
         }
         else
         {
-            auto msg = wformatString("{0}: {1}", error.ReadValue(), error.Message);
-            PyErr_SetString(PyExc_RuntimeError, StringUtility::Utf16ToUtf8(msg).c_str());
+            auto msg = formatString("{0}: {1}", error.ReadValue(), error.Message);
+            PyErr_SetString(PyExc_RuntimeError, msg.c_str());
             return NULL;
         }
     }
@@ -371,17 +371,17 @@ PyObject * InitializeGlobalModule()
 //
 
 ErrorCode PyInterpreter::Execute(
-    wstring const & moduleName, 
-    wstring const & funcName, 
-    vector<wstring> const & args)
+    string const & moduleName, 
+    string const & funcName, 
+    vector<string> const & args)
 {
     return SingletonImpl::GetInstance().GetImpl()->Execute(moduleName, funcName, args);
 }
 
 ErrorCode PyInterpreter::ExecuteIfFound(
-    wstring const & moduleName, 
-    wstring const & funcName, 
-    vector<wstring> const & args)
+    string const & moduleName, 
+    string const & funcName, 
+    vector<string> const & args)
 {
     return SingletonImpl::GetInstance().GetImpl()->ExecuteIfFound(moduleName, funcName, args);
 }

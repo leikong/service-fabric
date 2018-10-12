@@ -11,17 +11,17 @@
 using namespace std;
 using namespace Common;
 
-// UTF-8 to UTF-16 Conversion. TODO: wchar_t seems still 4-bytes in to_bytes()
-static wstring utf8to16(const char *str)
+// UTF-8 to UTF-16 Conversion. TODO: char seems still 4-bytes in to_bytes()
+static string utf8to16(const char *str)
 {
-    wstring_convert<codecvt_utf8_utf16<char16_t>, char16_t> conv;
+    string_convert<codecvt_utf8_utf16<char16_t>, char16_t> conv;
     u16string u16str = conv.from_bytes(str);
-    return wstring((wchar_t *) u16str.c_str());
+    return string((char *) u16str.c_str());
 }
 
-static string utf16to8(const wchar_t *wstr)
+static string utf16to8(const char *wstr)
 {
-    wstring_convert<codecvt_utf8_utf16<char16_t>, char16_t> conv;
+    string_convert<codecvt_utf8_utf16<char16_t>, char16_t> conv;
     return conv.to_bytes((const char16_t *) wstr);
 }
 
@@ -30,7 +30,7 @@ static HRESULT xmlResultConv(int xmlResult)
     return (xmlResult == 1 ? S_OK : (xmlResult == 0 ? S_FALSE : E_FAIL));
 }
 
-STDAPI CreateXmlReader(_In_ REFIID riid, _In_ LPCWSTR ppwszFileName, _Outptr_ void **ppvObject, _In_opt_ IMalloc *pMalloc)
+STDAPI CreateXmlReader(_In_ REFIID riid, _In_ LPCSTR ppwszFileName, _Outptr_ void **ppvObject, _In_opt_ IMalloc *pMalloc)
 {
     string filename = utf16to8(ppwszFileName);
     xmlTextReaderPtr xmlReader = xmlReaderForFile(filename.c_str(), NULL, 0);
@@ -117,7 +117,7 @@ HRESULT STDMETHODCALLTYPE XmlLiteReader::MoveToNextAttribute(void)
     return xmlResultConv(result);
 }
 
-HRESULT STDMETHODCALLTYPE XmlLiteReader::MoveToAttributeByName(_In_ LPCWSTR pwszLocalName, _In_opt_ LPCWSTR pwszNamespaceUri)
+HRESULT STDMETHODCALLTYPE XmlLiteReader::MoveToAttributeByName(_In_ LPCSTR pwszLocalName, _In_opt_ LPCSTR pwszNamespaceUri)
 {
     int result = 0;
     string localname = utf16to8(pwszLocalName);
@@ -140,12 +140,12 @@ HRESULT STDMETHODCALLTYPE XmlLiteReader::MoveToElement(void)
 }
 
 HRESULT STDMETHODCALLTYPE XmlLiteReader::GetQualifiedName( 
-    _Outptr_result_buffer_maybenull_(*pcwchQualifiedName+1)  LPCWSTR *ppwszQualifiedName,
+    _Outptr_result_buffer_maybenull_(*pcwchQualifiedName+1)  LPCSTR *ppwszQualifiedName,
     _Out_opt_  UINT *pcwchQualifiedName)
 {
     const char *name = (const char*) xmlTextReaderConstName(reader_);
 
-    wstring wstr = (name == NULL ? L"" : utf8to16(name));
+    string wstr = (name == NULL ? "" : utf8to16(name));
     wstrbuf_.push_back(wstr);
     *ppwszQualifiedName = wstrbuf_.back().c_str();
     if(pcwchQualifiedName) *pcwchQualifiedName = wstrbuf_.back().length();
@@ -153,12 +153,12 @@ HRESULT STDMETHODCALLTYPE XmlLiteReader::GetQualifiedName(
 }
 
 HRESULT STDMETHODCALLTYPE XmlLiteReader::GetNamespaceUri( 
-    _Outptr_result_buffer_maybenull_(*pcwchNamespaceUri+1) LPCWSTR *ppwszNamespaceUri,
+    _Outptr_result_buffer_maybenull_(*pcwchNamespaceUri+1) LPCSTR *ppwszNamespaceUri,
     _Out_opt_ UINT *pcwchNamespaceUri)
 {
     const char *ns = (const char*) xmlTextReaderConstNamespaceUri(reader_);
 
-    wstring wstr = (ns == NULL ? L"" : utf8to16(ns));
+    string wstr = (ns == NULL ? "" : utf8to16(ns));
     wstrbuf_.push_back(wstr);
     *ppwszNamespaceUri = wstrbuf_.back().c_str();
     if(pcwchNamespaceUri) *pcwchNamespaceUri = wstrbuf_.back().length();
@@ -166,12 +166,12 @@ HRESULT STDMETHODCALLTYPE XmlLiteReader::GetNamespaceUri(
 }
 
 HRESULT STDMETHODCALLTYPE XmlLiteReader::GetLocalName( 
-    _Outptr_result_buffer_maybenull_(*pcwchLocalName+1) LPCWSTR *ppwszLocalName,
+    _Outptr_result_buffer_maybenull_(*pcwchLocalName+1) LPCSTR *ppwszLocalName,
     _Out_opt_ UINT *pcwchLocalName)
 {
     const char *name = (const char*) xmlTextReaderConstLocalName(reader_);
 
-    wstring wstr = (name == NULL ? L"" : utf8to16(name));
+    string wstr = (name == NULL ? "" : utf8to16(name));
     wstrbuf_.push_back(wstr);
     *ppwszLocalName = wstrbuf_.back().c_str();
     if(pcwchLocalName) *pcwchLocalName = wstrbuf_.back().length();
@@ -179,12 +179,12 @@ HRESULT STDMETHODCALLTYPE XmlLiteReader::GetLocalName(
 }
 
 HRESULT STDMETHODCALLTYPE XmlLiteReader::GetPrefix( 
-    _Outptr_result_buffer_maybenull_(*pcwchPrefix+1) LPCWSTR *ppwszPrefix,
+    _Outptr_result_buffer_maybenull_(*pcwchPrefix+1) LPCSTR *ppwszPrefix,
     _Out_opt_ UINT *pcwchPrefix)
 {
     const char *prefix = (const char*) xmlTextReaderConstPrefix(reader_);
 
-    wstring wstr = (prefix == NULL ? L"" : utf8to16(prefix));
+    string wstr = (prefix == NULL ? "" : utf8to16(prefix));
     wstrbuf_.push_back(wstr);
     *ppwszPrefix = wstrbuf_.back().c_str();
     if(pcwchPrefix) *pcwchPrefix = wstrbuf_.back().length();
@@ -192,12 +192,12 @@ HRESULT STDMETHODCALLTYPE XmlLiteReader::GetPrefix(
 }
 
 HRESULT STDMETHODCALLTYPE XmlLiteReader::GetValue( 
-    _Outptr_result_buffer_maybenull_(*pcwchValue+1) LPCWSTR *ppwszValue,
+    _Outptr_result_buffer_maybenull_(*pcwchValue+1) LPCSTR *ppwszValue,
     _Out_opt_ UINT *pcwchValue)
 {
     const char *value = (const char*) xmlTextReaderConstValue(reader_);
 
-    wstring wstr = (value == NULL ? L"" : utf8to16(value));
+    string wstr = (value == NULL ? "" : utf8to16(value));
     wstrbuf_.push_back(wstr);
     *ppwszValue = wstrbuf_.back().c_str();
     if(pcwchValue) *pcwchValue = wstrbuf_.back().length();
@@ -205,12 +205,12 @@ HRESULT STDMETHODCALLTYPE XmlLiteReader::GetValue(
 }
 
 HRESULT STDMETHODCALLTYPE XmlLiteReader::GetBaseUri(
-    _Outptr_result_buffer_maybenull_(*pcwchBaseUri + 1) LPCWSTR *ppwszBaseUri,
+    _Outptr_result_buffer_maybenull_(*pcwchBaseUri + 1) LPCSTR *ppwszBaseUri,
     _Out_opt_ UINT *pcwchBaseUri)
 {
     const char *uri = (const char*)xmlTextReaderBaseUri(reader_);
 
-    wstring wstr = (uri == NULL ? L"" : utf8to16(uri));
+    string wstr = (uri == NULL ? "" : utf8to16(uri));
     wstrbuf_.push_back(wstr);
     *ppwszBaseUri = wstrbuf_.back().c_str();
     if (pcwchBaseUri) *pcwchBaseUri = wstrbuf_.back().length();
@@ -218,7 +218,7 @@ HRESULT STDMETHODCALLTYPE XmlLiteReader::GetBaseUri(
 }
 
 HRESULT STDMETHODCALLTYPE XmlLiteReader::ReadValueChunk(
-    _Out_writes_to_(cwchChunkSize, *pcwchRead) WCHAR *pwchBuffer,
+    _Out_writes_to_(cwchChunkSize, *pcwchRead) CHAR *pwchBuffer,
     _In_ UINT cwchChunkSize,
     _Inout_ UINT *pcwchRead)
 {
@@ -227,8 +227,8 @@ HRESULT STDMETHODCALLTYPE XmlLiteReader::ReadValueChunk(
     
     if (value != NULL)
     {
-        wstring wstr = utf8to16(value);
-        size_t sz = min((size_t)cwchChunkSize, wstrbuf_.back().length() * sizeof(wchar_t));
+        string wstr = utf8to16(value);
+        size_t sz = min((size_t)cwchChunkSize, wstrbuf_.back().length() * sizeof(char));
         memcpy(pwchBuffer, wstr.c_str(), sz);
         *pcwchRead = sz;
     }

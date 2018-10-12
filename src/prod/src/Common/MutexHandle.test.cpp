@@ -14,7 +14,7 @@ namespace Common
 {
     BOOST_AUTO_TEST_SUITE2(MutexTest)
 
-    void BasicTest(wstring const& mutexName)
+    void BasicTest(string const& mutexName)
     {
         auto mutex = MutexHandle::CreateUPtr(mutexName);
         BOOST_REQUIRE(mutex->WaitOne(TimeSpan::Zero).IsSuccess());
@@ -47,28 +47,28 @@ namespace Common
     BOOST_AUTO_TEST_CASE(Basic)
     {
         ENTER;
-        BasicTest(L"Global\\MutexTestBasic");
+        BasicTest("Global\\MutexTestBasic");
         LEAVE;
     }
 
     BOOST_AUTO_TEST_CASE(Basic2)
     {
         ENTER;
-        BasicTest(L"Global/MutexTestBasic2");
+        BasicTest("Global/MutexTestBasic2");
         LEAVE;
     }
 
     BOOST_AUTO_TEST_CASE(Basic3)
     {
         ENTER;
-        BasicTest(L"/Global/MutexTest/Basic3");
+        BasicTest("/Global/MutexTest/Basic3");
         LEAVE;
     }
 
     BOOST_AUTO_TEST_CASE(Basic4)
     {
         ENTER;
-        BasicTest(L"Local\\Basic4`'~!@#$%^+_)(*&=-/.;[]|}{:>?<");
+        BasicTest("Local\\Basic4`'~!@#$%^+_)(*&=-/.;[]|}{:>?<");
         LEAVE;
     }
 
@@ -78,7 +78,7 @@ namespace Common
     {
         ENTER;
 
-        wstring mutexName(L"MutexMultiProcessTest." + Guid::NewGuid().ToString());
+        string mutexName("MutexMultiProcessTest." + Guid::NewGuid().ToString());
 
         int pipeToChild[2];
         ZeroRetValAssert(pipe(pipeToChild));
@@ -167,7 +167,7 @@ namespace Common
     {
         ENTER;
 
-        wstring mutexName(L"MutexTestKillProcess." + Guid::NewGuid().ToString());
+        string mutexName("MutexTestKillProcess." + Guid::NewGuid().ToString());
 
         int pipeToChild[2];
         ZeroRetValAssert(pipe(pipeToChild));

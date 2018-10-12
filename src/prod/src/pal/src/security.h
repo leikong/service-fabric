@@ -13,7 +13,7 @@ extern "C" {
 
 #ifndef MICROSOFT_KERBEROS_NAME_A
 #define MICROSOFT_KERBEROS_NAME_A   "Kerberos"
-#define MICROSOFT_KERBEROS_NAME_W   L"Kerberos"
+#define MICROSOFT_KERBEROS_NAME_W   "Kerberos"
 #ifdef WIN32_CHICAGO
 #define MICROSOFT_KERBEROS_NAME MICROSOFT_KERBEROS_NAME_A
 #else
@@ -22,7 +22,7 @@ extern "C" {
 #endif  // MICROSOFT_KERBEROS_NAME_A
 
 #ifndef NEGOSSP_NAME
-#define NEGOSSP_NAME_W  L"Negotiate"
+#define NEGOSSP_NAME_W  "Negotiate"
 #define NEGOSSP_NAME_A  "Negotiate"
 
 #ifdef UNICODE

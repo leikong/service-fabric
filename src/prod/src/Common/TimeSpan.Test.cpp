@@ -154,7 +154,7 @@ namespace Common
     BOOST_AUTO_TEST_CASE(TimeSpanIsoStringTest)
     {
         TimeSpan timeSpan1 = TimeSpan::FromMinutes(10);
-        std::wstring str = timeSpan1.ToIsoString();
+        std::string str = timeSpan1.ToIsoString();
         TimeSpan timeSpan2;
         VERIFY_IS_TRUE(TimeSpan::TryFromIsoString(str, timeSpan2));
         VERIFY_ARE_EQUAL(timeSpan1, timeSpan2);

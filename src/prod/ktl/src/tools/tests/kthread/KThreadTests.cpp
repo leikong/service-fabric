@@ -51,7 +51,7 @@ RunThread(
 
 NTSTATUS
 KThreadTestX(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     UNREFERENCED_PARAMETER(argc);
@@ -96,7 +96,7 @@ Finish:
 
 NTSTATUS
 KThreadTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     KTestPrintf("KThreadTest: STARTED\n");

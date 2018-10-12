@@ -435,11 +435,11 @@ typedef SHORT VARIANT_BOOL;
 #define VARIANT_TRUE ((VARIANT_BOOL)-1)
 #define VARIANT_FALSE ((VARIANT_BOOL)0)
 
-typedef WCHAR OLECHAR;
+typedef CHAR OLECHAR;
 typedef OLECHAR* LPOLESTR;
 typedef const OLECHAR* LPCOLESTR;
 
-typedef WCHAR *BSTR;
+typedef CHAR *BSTR;
 
 STDAPI_(BSTR) SysAllocString(const OLECHAR*);
 STDAPI_(BSTR) SysAllocStringLen(const OLECHAR*, UINT);
@@ -827,20 +827,20 @@ enum tagMIMECONTF {
 // note: diff in NULL handing and calling convetion
 #define StrCpyW                 PAL_wcscpy
 #define StrCatW                 PAL_wcscat
-#define StrChrW                 (WCHAR*)PAL_wcschr
-#define StrCmpW                 PAL_wcscmp
-#define StrCmpIW                _wcsicmp
-#define StrCmpNW                PAL_wcsncmp
+#define StrChrW                 (CHAR*)PAL_wcschr
+#define StrCmpW                 PAL_strcmp
+#define StrCmpIW                strcasecmp
+#define StrCmpNW                PAL_strncmp
 #define StrCmpNIW               _wcsnicmp
 
-STDAPI_(LPWSTR) StrNCatW(LPWSTR lpFront, LPCWSTR lpBack, int cchMax);
-STDAPI_(int) StrToIntW(LPCWSTR lpSrc);
-STDAPI_(LPWSTR) StrStrIW(LPCWSTR lpFirst, LPCWSTR lpSrch);
-STDAPI_(LPWSTR) StrRChrW(LPCWSTR lpStart, LPCWSTR lpEnd, WCHAR wMatch);
-STDAPI_(LPWSTR) StrCatBuffW(LPWSTR pszDest, LPCWSTR pszSrc, int cchDestBuffSize);
+STDAPI_(LPSTR) StrNCatW(LPSTR lpFront, LPCSTR lpBack, int cchMax);
+STDAPI_(int) StrToIntW(LPCSTR lpSrc);
+STDAPI_(LPSTR) StrStrIW(LPCSTR lpFirst, LPCSTR lpSrch);
+STDAPI_(LPSTR) StrRChrW(LPCSTR lpStart, LPCSTR lpEnd, CHAR wMatch);
+STDAPI_(LPSTR) StrCatBuffW(LPSTR pszDest, LPCSTR pszSrc, int cchDestBuffSize);
 
-#define lstrcmpW                PAL_wcscmp
-#define lstrcmpiW               _wcsicmp
+#define lstrcmpW                PAL_strcmp
+#define lstrcmpiW               strcasecmp
 
 #ifdef UNICODE
 #define StrCpy                  StrCpyW
@@ -898,12 +898,12 @@ extern "C++" {
 
 #include "rt/safemath.h"
 
-inline errno_t __cdecl _wcslwr_unsafe(WCHAR *str, size_t sz)
+inline errno_t __cdecl _wcslwr_unsafe(CHAR *str, size_t sz)
 {
     size_t fullSize;
-    if(!ClrSafeInt<size_t>::multiply(sz, sizeof(WCHAR), fullSize))
+    if(!ClrSafeInt<size_t>::multiply(sz, sizeof(CHAR), fullSize))
         return 1;
-    WCHAR *copy = (WCHAR *)malloc(fullSize);
+    CHAR *copy = (CHAR *)malloc(fullSize);
     if(copy == nullptr)
         return 1;
 
@@ -961,7 +961,7 @@ inline int __cdecl _vscprintf_unsafe(const char *_Format, va_list _ArgList)
     }
 }
 
-inline errno_t __cdecl _wfopen_unsafe(PAL_FILE * *ff, const WCHAR *fileName, const WCHAR *mode)
+inline errno_t __cdecl _wfopen_unsafe(PAL_FILE * *ff, const CHAR *fileName, const CHAR *mode)
 {
     PAL_FILE *result = _wfopen(fileName, mode);
     if(result == 0) {
@@ -987,24 +987,24 @@ inline errno_t __cdecl _fopen_unsafe(PAL_FILE * *ff, const char *fileName, const
 #endif /* __cplusplus */
 
 
-STDAPI_(BOOL) PathAppendW(LPWSTR pszPath, LPCWSTR pszMore);
-STDAPI_(int) PathCommonPrefixW(LPCWSTR pszFile1, LPCWSTR pszFile2, LPWSTR  pszPath);
-PALIMPORT LPWSTR PALAPI PathFindFileNameW(LPCWSTR pPath);
-STDAPI_(int) PathGetDriveNumberW(LPCWSTR lpsz);
-STDAPI_(BOOL) PathIsRelativeW(LPCWSTR lpszPath);
-STDAPI_(BOOL) PathIsUNCW(LPCWSTR pszPath);
-STDAPI_(LPWSTR) PathAddBackslashW(LPWSTR lpszPath);
-STDAPI_(LPWSTR) PathRemoveBackslashW(LPWSTR lpszPath);
-STDAPI_(void) PathRemoveExtensionW(LPWSTR pszPath);
-STDAPI_(LPWSTR) PathCombineW(LPWSTR lpszDest, LPCWSTR lpszDir, LPCWSTR lpszFile);
-STDAPI_(BOOL) PathCanonicalizeW(LPWSTR lpszDst, LPCWSTR lpszSrc);
-STDAPI_(BOOL) PathRelativePathToW(LPWSTR pszPath, LPCWSTR pszFrom, DWORD dwAttrFrom, LPCWSTR pszTo, DWORD dwAttrTo);
-STDAPI_(BOOL) PathRenameExtensionW(LPWSTR pszPath, LPCWSTR pszExt);
-STDAPI_(BOOL) PathRemoveFileSpecW(LPWSTR pFile);
-STDAPI_(void) PathStripPathW (LPWSTR pszPath);
+STDAPI_(BOOL) PathAppendW(LPSTR pszPath, LPCSTR pszMore);
+STDAPI_(int) PathCommonPrefixW(LPCSTR pszFile1, LPCSTR pszFile2, LPSTR  pszPath);
+PALIMPORT LPSTR PALAPI PathFindFileNameW(LPCSTR pPath);
+STDAPI_(int) PathGetDriveNumberW(LPCSTR lpsz);
+STDAPI_(BOOL) PathIsRelativeW(LPCSTR lpszPath);
+STDAPI_(BOOL) PathIsUNCW(LPCSTR pszPath);
+STDAPI_(LPSTR) PathAddBackslashW(LPSTR lpszPath);
+STDAPI_(LPSTR) PathRemoveBackslashW(LPSTR lpszPath);
+STDAPI_(void) PathRemoveExtensionW(LPSTR pszPath);
+STDAPI_(LPSTR) PathCombineW(LPSTR lpszDest, LPCSTR lpszDir, LPCSTR lpszFile);
+STDAPI_(BOOL) PathCanonicalizeW(LPSTR lpszDst, LPCSTR lpszSrc);
+STDAPI_(BOOL) PathRelativePathToW(LPSTR pszPath, LPCSTR pszFrom, DWORD dwAttrFrom, LPCSTR pszTo, DWORD dwAttrTo);
+STDAPI_(BOOL) PathRenameExtensionW(LPSTR pszPath, LPCSTR pszExt);
+STDAPI_(BOOL) PathRemoveFileSpecW(LPSTR pFile);
+STDAPI_(void) PathStripPathW (LPSTR pszPath);
 
-STDAPI PathCreateFromUrlW(LPCWSTR pszUrl, LPWSTR pszPath, LPDWORD pcchPath, DWORD dwFlags);
-STDAPI_(BOOL) PathIsURLW(LPCWSTR pszPath);
+STDAPI PathCreateFromUrlW(LPCSTR pszUrl, LPSTR pszPath, LPDWORD pcchPath, DWORD dwFlags);
+STDAPI_(BOOL) PathIsURLW(LPCSTR pszPath);
 
 
 #define URL_UNESCAPE                    0x10000000
@@ -1019,12 +1019,12 @@ typedef enum {
     URL_PART_HOSTNAME   = 2,
 } URL_PART;
 
-STDAPI UrlCanonicalizeW(LPCWSTR pszUrl, LPWSTR pszCanonicalized, LPDWORD pcchCanonicalized, DWORD dwFlags);
-STDAPI UrlCombineW(LPCWSTR pszBase, LPCWSTR pszRelative, LPWSTR pszCombined, LPDWORD pcchCombined, DWORD dwFlags);
-STDAPI UrlEscapeW(LPCWSTR pszUrl, LPWSTR pszEscaped, LPDWORD pcchEscaped, DWORD dwFlags);
-STDAPI UrlUnescapeW(LPWSTR pszURL, LPWSTR pszUnescaped, LPDWORD pcchUnescaped, DWORD dwFlags);
-STDAPI_(BOOL) UrlIsW(LPCWSTR pszUrl, URLIS dwUrlIs);
-STDAPI UrlGetPartW(LPCWSTR pszIn, LPWSTR pszOut, LPDWORD pcchOut, DWORD dwPart, DWORD dwFlags);
+STDAPI UrlCanonicalizeW(LPCSTR pszUrl, LPSTR pszCanonicalized, LPDWORD pcchCanonicalized, DWORD dwFlags);
+STDAPI UrlCombineW(LPCSTR pszBase, LPCSTR pszRelative, LPSTR pszCombined, LPDWORD pcchCombined, DWORD dwFlags);
+STDAPI UrlEscapeW(LPCSTR pszUrl, LPSTR pszEscaped, LPDWORD pcchEscaped, DWORD dwFlags);
+STDAPI UrlUnescapeW(LPSTR pszURL, LPSTR pszUnescaped, LPDWORD pcchUnescaped, DWORD dwFlags);
+STDAPI_(BOOL) UrlIsW(LPCSTR pszUrl, URLIS dwUrlIs);
+STDAPI UrlGetPartW(LPCSTR pszIn, LPSTR pszOut, LPDWORD pcchOut, DWORD dwPart, DWORD dwFlags);
 
 #ifdef UNICODE
 #define PathAppend          PathAppendW
@@ -1220,7 +1220,7 @@ typedef JIT_DEBUG_INFO JIT_DEBUG_INFO64, *LPJIT_DEBUG_INFO64;
 
 /******************* resources ***************************************/
 
-#define MAKEINTRESOURCEW(i) ((LPWSTR)((ULONG_PTR)((WORD)(i))))
+#define MAKEINTRESOURCEW(i) ((LPSTR)((ULONG_PTR)((WORD)(i))))
 #define RT_RCDATA           MAKEINTRESOURCE(10)
 #define RT_VERSION          MAKEINTRESOURCE(16)
 
@@ -1556,12 +1556,12 @@ typedef LIST_ENTRY64 *PLIST_ENTRY64;
 
 typedef struct _HSATELLITE *HSATELLITE;
 
-EXTERN_C HSATELLITE PALAPI PAL_LoadSatelliteResourceW(LPCWSTR SatelliteResourceFileName);
+EXTERN_C HSATELLITE PALAPI PAL_LoadSatelliteResourceW(LPCSTR SatelliteResourceFileName);
 EXTERN_C HSATELLITE PALAPI PAL_LoadSatelliteResourceA(LPCSTR SatelliteResourceFileName);
 EXTERN_C BOOL PALAPI PAL_FreeSatelliteResource(HSATELLITE SatelliteResource);
 EXTERN_C UINT PALAPI PAL_LoadSatelliteStringW(HSATELLITE SatelliteResource,
              UINT uID,
-             LPWSTR lpBuffer,
+             LPSTR lpBuffer,
              UINT nBufferMax);
 EXTERN_C UINT PALAPI PAL_LoadSatelliteStringA(HSATELLITE SatelliteResource,
              UINT uID,

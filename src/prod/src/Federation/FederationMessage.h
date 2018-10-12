@@ -10,7 +10,7 @@ namespace Federation
     class FederationMessage
     {
     public:
-        FederationMessage(std::wstring const & action, Transport::Actor::Enum actor = Actor)
+        FederationMessage(std::string const & action, Transport::Actor::Enum actor = Actor)
             : actionHeader_(action), actor_(actor)
         {
         }
@@ -109,8 +109,8 @@ namespace Federation
             return std::move(message);
         }
         
-        __declspec (property(get=getAction)) std::wstring const & Action;
-        std::wstring const & getAction() const { return actionHeader_.Action; } ;
+        __declspec (property(get=getAction)) std::string const & Action;
+        std::string const & getAction() const { return actionHeader_.Action; } ;
 
     private:
         static Common::Global<FederationMessage> LockRequest;

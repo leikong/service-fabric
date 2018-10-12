@@ -36,7 +36,7 @@ Abstract:
 #pragma warning(disable:4840)
 NTSTATUS
 KWStringTestX(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     UNREFERENCED_PARAMETER(argc);
@@ -56,7 +56,7 @@ KWStringTestX(
     // Verify that the default constructor creates a valid string.
     //
 
-    r = string.CompareTo(L"");
+    r = string.CompareTo("");
 
     if (r) {
         KTestPrintf("Invalid initial string\n");
@@ -68,13 +68,13 @@ KWStringTestX(
     // Test the copy-constructor.
     //
 
-    string = L"foo";
+    string = "foo";
 
     {
         KWString testString(string);
-        r = testString.CompareTo(L"foo");
+        r = testString.CompareTo("foo");
         if (r) {
-            KTestPrintf("Copy constructor yields wrong string: %ws\n", (WCHAR*) testString);
+            KTestPrintf("Copy constructor yields wrong string: %ws\n", (CHAR*) testString);
         }
     }
 
@@ -89,11 +89,11 @@ KWStringTestX(
 
     {
         UNICODE_STRING unicodeString1;
-        RtlInitUnicodeString(&unicodeString1, L"foo");
+        RtlInitUnicodeString(&unicodeString1, "foo");
         KWString testString(KtlSystem::GlobalNonPagedAllocator(), unicodeString1);
-        r = testString.CompareTo(L"foo");
+        r = testString.CompareTo("foo");
         if (r) {
-            KTestPrintf("Unicode string constructor yields wrong string: %ws\n", (WCHAR*) testString);
+            KTestPrintf("Unicode string constructor yields wrong string: %ws\n", (CHAR*) testString);
         }
     }
 
@@ -107,10 +107,10 @@ KWStringTestX(
     //
 
     {
-        KWString testString(KtlSystem::GlobalNonPagedAllocator(), L"foo");
-        r = testString.CompareTo(L"foo");
+        KWString testString(KtlSystem::GlobalNonPagedAllocator(), "foo");
+        r = testString.CompareTo("foo");
         if (r) {
-            KTestPrintf("pwsz constructor yields wrong string: %ws\n", (WCHAR*) testString);
+            KTestPrintf("pwsz constructor yields wrong string: %ws\n", (CHAR*) testString);
         }
     }
 
@@ -123,14 +123,14 @@ KWStringTestX(
     // Test GUID constructor.
     //
 
-    string = L"{732D51F2-330C-4e0c-9C89-B567C1A96CC0}";
+    string = "{732D51F2-330C-4e0c-9C89-B567C1A96CC0}";
 
 
     {
         KWString testString(KtlSystem::GlobalNonPagedAllocator(), guid);
         r = testString.CompareTo(string, TRUE);
         if (r) {
-            KTestPrintf("guid constructor yields wrong string: %ws\n", (WCHAR*) testString);
+            KTestPrintf("guid constructor yields wrong string: %ws\n", (CHAR*) testString);
         }
     }
 
@@ -146,7 +146,7 @@ KWStringTestX(
     anotherString = string;
     r = anotherString.CompareTo(string, TRUE);
     if (r) {
-        KTestPrintf("operator= KWString yields wrong string: %ws\n", (WCHAR*) anotherString);
+        KTestPrintf("operator= KWString yields wrong string: %ws\n", (CHAR*) anotherString);
         status = STATUS_INVALID_PARAMETER;
         goto Finish;
     }
@@ -159,19 +159,19 @@ KWStringTestX(
     anotherString = unicodeString;
     r = anotherString.CompareTo(string, TRUE);
     if (r) {
-        KTestPrintf("operator= UNICODE_STRING yields wrong string: %ws\n", (WCHAR*) anotherString);
+        KTestPrintf("operator= UNICODE_STRING yields wrong string: %ws\n", (CHAR*) anotherString);
         status = STATUS_INVALID_PARAMETER;
         goto Finish;
     }
 
     //
-    // Test operation= WCHAR*.
+    // Test operation= CHAR*.
     //
 
-    anotherString = ((WCHAR*) string);
+    anotherString = ((CHAR*) string);
     r = anotherString.CompareTo(string, TRUE);
     if (r) {
-        KTestPrintf("operator= WCHAR* yields wrong string: %ws\n", (WCHAR*) anotherString);
+        KTestPrintf("operator= CHAR* yields wrong string: %ws\n", (CHAR*) anotherString);
         status = STATUS_INVALID_PARAMETER;
         goto Finish;
     }
@@ -183,7 +183,7 @@ KWStringTestX(
     anotherString = guid;
     r = anotherString.CompareTo(string, TRUE);
     if (r) {
-        KTestPrintf("operator= GUID yields wrong string: %ws\n", (WCHAR*) anotherString);
+        KTestPrintf("operator= GUID yields wrong string: %ws\n", (CHAR*) anotherString);
         status = STATUS_INVALID_PARAMETER;
         goto Finish;
     }
@@ -192,11 +192,11 @@ KWStringTestX(
     // Test operation+= KWString.
     //
 
-    string = L"";
+    string = "";
     string += anotherString;
     r = anotherString.CompareTo(string, TRUE);
     if (r) {
-        KTestPrintf("operator+= KWString yields wrong string: %ws\n", (WCHAR*) anotherString);
+        KTestPrintf("operator+= KWString yields wrong string: %ws\n", (CHAR*) anotherString);
         status = STATUS_INVALID_PARAMETER;
         goto Finish;
     }
@@ -206,24 +206,24 @@ KWStringTestX(
     //
 
     RtlInitUnicodeString(&unicodeString, anotherString);
-    string = L"";
+    string = "";
     string += unicodeString;
     r = anotherString.CompareTo(string, TRUE);
     if (r) {
-        KTestPrintf("operator+= UNICODE_STRING yields wrong string: %ws\n", (WCHAR*) anotherString);
+        KTestPrintf("operator+= UNICODE_STRING yields wrong string: %ws\n", (CHAR*) anotherString);
         status = STATUS_INVALID_PARAMETER;
         goto Finish;
     }
 
     //
-    // Test operation+= WCHAR*.
+    // Test operation+= CHAR*.
     //
 
-    string = L"";
-    string += ((WCHAR*) anotherString);
+    string = "";
+    string += ((CHAR*) anotherString);
     r = anotherString.CompareTo(string, TRUE);
     if (r) {
-        KTestPrintf("operator+= WCHAR* yields wrong string: %ws\n", (WCHAR*) anotherString);
+        KTestPrintf("operator+= CHAR* yields wrong string: %ws\n", (CHAR*) anotherString);
         status = STATUS_INVALID_PARAMETER;
         goto Finish;
     }
@@ -232,11 +232,11 @@ KWStringTestX(
     // Test operation+= GUID.
     //
 
-    string = L"";
+    string = "";
     string += guid;
     r = anotherString.CompareTo(string, TRUE);
     if (r) {
-        KTestPrintf("operator+= GUID yields wrong string: %ws\n", (WCHAR*) anotherString);
+        KTestPrintf("operator+= GUID yields wrong string: %ws\n", (CHAR*) anotherString);
         status = STATUS_INVALID_PARAMETER;
         goto Finish;
     }
@@ -257,12 +257,12 @@ KWStringTestX(
     }
 
     //
-    // Test CompareTo WCHAR*
+    // Test CompareTo CHAR*
     //
 
-    r = string.CompareTo((WCHAR*) anotherString);
+    r = string.CompareTo((CHAR*) anotherString);
     if (r) {
-        KTestPrintf("CompareTo WCHAR* does not work.\n");
+        KTestPrintf("CompareTo CHAR* does not work.\n");
         status = STATUS_INVALID_PARAMETER;
         goto Finish;
     }
@@ -286,7 +286,7 @@ KWStringTestX(
 #if !defined(PLATFORM_UNIX)
         KTestPrintf("Extract Guid Suffix returned the wrong guid: %ws\n", KWString(KtlSystem::GlobalNonPagedAllocator(), anotherGuid));
 #else
-        KTestPrintf("Extract Guid Suffix returned the wrong guid: %ws\n", (WCHAR*)KWString(KtlSystem::GlobalNonPagedAllocator(), anotherGuid));
+        KTestPrintf("Extract Guid Suffix returned the wrong guid: %ws\n", (CHAR*)KWString(KtlSystem::GlobalNonPagedAllocator(), anotherGuid));
 #endif
         status = STATUS_INVALID_PARAMETER;
         goto Finish;
@@ -302,11 +302,11 @@ Finish:
 NTSTATUS
 KWStringNewTests()
 {
-    KWString Str1(KtlSystem::GlobalNonPagedAllocator(), L"ABC");
-    KWString Str2(KtlSystem::GlobalNonPagedAllocator(), L"ABC");
-    KWString Str1_b(KtlSystem::GlobalNonPagedAllocator(), L"ABCD");
-    KWString Str3(KtlSystem::GlobalNonPagedAllocator(), L"BCD");
-    KWString Str4(KtlSystem::GlobalNonPagedAllocator(), L"");
+    KWString Str1(KtlSystem::GlobalNonPagedAllocator(), "ABC");
+    KWString Str2(KtlSystem::GlobalNonPagedAllocator(), "ABC");
+    KWString Str1_b(KtlSystem::GlobalNonPagedAllocator(), "ABCD");
+    KWString Str3(KtlSystem::GlobalNonPagedAllocator(), "BCD");
+    KWString Str4(KtlSystem::GlobalNonPagedAllocator(), "");
     UNICODE_STRING StrX;
     KWString StrY(KtlSystem::GlobalNonPagedAllocator());
 
@@ -378,8 +378,8 @@ TestKArray()
 {
     ULONGLONG startingAllocs = KAllocatorSupport::gs_AllocsRemaining;
     {
-        KWString                    testString1(KtlSystem::GlobalNonPagedAllocator(), L"Test String 1");
-        KWString                    testString2(KtlSystem::GlobalNonPagedAllocator(), L"Test String 2");
+        KWString                    testString1(KtlSystem::GlobalNonPagedAllocator(), "Test String 1");
+        KWString                    testString2(KtlSystem::GlobalNonPagedAllocator(), "Test String 2");
         KArray<KWString>            testArray2(KtlSystem::GlobalNonPagedAllocator(), 1);
         KArray<KWString>            testArray1(KtlSystem::GlobalNonPagedAllocator(), 1);
         KArray<KArray<KWString>>    nestedArray1(KtlSystem::GlobalNonPagedAllocator(), 1);
@@ -485,13 +485,13 @@ TestKArray()
 
             KFatal(testArray3.Max() == 5);
             KFatal(testArray3.Count() == 0);
-            KFatal(NT_SUCCESS(testArray3.Append(KWString(KtlSystem::GlobalNonPagedAllocator(), L"Test String 3"))));
+            KFatal(NT_SUCCESS(testArray3.Append(KWString(KtlSystem::GlobalNonPagedAllocator(), "Test String 3"))));
             KFatal(testArray3.Max() == 5);
             KFatal(testArray3.Count() == 1);
-            KFatal(NT_SUCCESS(testArray3.Append(KWString(KtlSystem::GlobalNonPagedAllocator(), L"Test String 4"))));
+            KFatal(NT_SUCCESS(testArray3.Append(KWString(KtlSystem::GlobalNonPagedAllocator(), "Test String 4"))));
             KFatal(testArray3.Max() == 5);
             KFatal(testArray3.Count() == 2);
-            KFatal(NT_SUCCESS(testArray3.Append(KWString(KtlSystem::GlobalNonPagedAllocator(), L"Test String 5"))));
+            KFatal(NT_SUCCESS(testArray3.Append(KWString(KtlSystem::GlobalNonPagedAllocator(), "Test String 5"))));
             KFatal(testArray3.Max() == 5);
             KFatal(testArray3.Count() == 3);
 
@@ -499,9 +499,9 @@ TestKArray()
             KFatal(testArray3.Max() == 50);
             KFatal(testArray3.Count() == 3);
 
-            KFatal(testArray3[0].Compare(KWString(KtlSystem::GlobalNonPagedAllocator(), L"Test String 3")) == 0);
-            KFatal(testArray3[1].Compare(KWString(KtlSystem::GlobalNonPagedAllocator(), L"Test String 4")) == 0);
-            KFatal(testArray3[2].Compare(KWString(KtlSystem::GlobalNonPagedAllocator(), L"Test String 5")) == 0);
+            KFatal(testArray3[0].Compare(KWString(KtlSystem::GlobalNonPagedAllocator(), "Test String 3")) == 0);
+            KFatal(testArray3[1].Compare(KWString(KtlSystem::GlobalNonPagedAllocator(), "Test String 4")) == 0);
+            KFatal(testArray3[2].Compare(KWString(KtlSystem::GlobalNonPagedAllocator(), "Test String 5")) == 0);
         }
         KFatal((KAllocatorSupport::gs_AllocsRemaining - startingAllocs1) == 0);
 
@@ -523,14 +523,14 @@ TestKHashtable()
         // Prove basic add works - NOTE: Compile will break if KHashTable<KWString, ...> is not supported
         ULONG       data = 1;
 #if !defined(PLATFORM_UNIX)
-        KFatal(NT_SUCCESS(testTable1.Put(KWString(KtlSystem::GlobalNonPagedAllocator(), L"TestStr1"), data)));
-        KFatal(NT_SUCCESS(testTable1.Put(KWString(KtlSystem::GlobalNonPagedAllocator(), L"TestStr2"), data)));
-        KFatal(NT_SUCCESS(testTable1.Put(KWString(KtlSystem::GlobalNonPagedAllocator(), L"TestStr3"), data)));
+        KFatal(NT_SUCCESS(testTable1.Put(KWString(KtlSystem::GlobalNonPagedAllocator(), "TestStr1"), data)));
+        KFatal(NT_SUCCESS(testTable1.Put(KWString(KtlSystem::GlobalNonPagedAllocator(), "TestStr2"), data)));
+        KFatal(NT_SUCCESS(testTable1.Put(KWString(KtlSystem::GlobalNonPagedAllocator(), "TestStr3"), data)));
 #else
         {
-            KWString testStr1 = KWString(KtlSystem::GlobalNonPagedAllocator(), L"TestStr1");
-            KWString testStr2 = KWString(KtlSystem::GlobalNonPagedAllocator(), L"TestStr2");
-            KWString testStr3 = KWString(KtlSystem::GlobalNonPagedAllocator(), L"TestStr3");
+            KWString testStr1 = KWString(KtlSystem::GlobalNonPagedAllocator(), "TestStr1");
+            KWString testStr2 = KWString(KtlSystem::GlobalNonPagedAllocator(), "TestStr2");
+            KWString testStr3 = KWString(KtlSystem::GlobalNonPagedAllocator(), "TestStr3");
 
             KFatal(NT_SUCCESS(testTable1.Put(testStr1, data)));
             KFatal(NT_SUCCESS(testTable1.Put(testStr2, data)));
@@ -548,7 +548,7 @@ TestKHashtable()
 
 NTSTATUS
 TestSequence(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     NTSTATUS Result;
@@ -580,7 +580,7 @@ TestSequence(
 
 NTSTATUS
 KWStringTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     KTestPrintf("KWStringTest: STARTED\n");

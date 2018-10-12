@@ -11,19 +11,19 @@ namespace PyHost
     {
     private:
         BroadcastMessageBody();
-        BroadcastMessageBody(std::wstring const &);
+        BroadcastMessageBody(std::string const &);
 
     public:
         BroadcastMessageBody(BroadcastMessageBody &&) = default;
 
-        static Transport::MessageUPtr CreateMessage(std::wstring const &);
+        static Transport::MessageUPtr CreateMessage(std::string const &);
         static BroadcastMessageBody DeserializeBody(Transport::MessageUPtr &);
 
-        std::wstring const & GetContents() const;
+        std::string const & GetContents() const;
 
         FABRIC_FIELDS_01( contents_ )
 
     private:
-        std::wstring contents_;
+        std::string contents_;
     };
 }

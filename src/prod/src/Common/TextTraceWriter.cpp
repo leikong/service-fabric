@@ -11,7 +11,7 @@ namespace Common
 {
 	void TextTraceWriter::operator()(
 		StringLiteral type,
-		std::wstring const & id,
+		std::string const & id,
 		StringLiteral format) const
 	{
 		bool useETW = event_.IsETWSinkEnabled();
@@ -20,14 +20,14 @@ namespace Common
 
 		if (useETW || useFile || useConsole)
 		{
-			std::wstring text = wformatString(format);
+			std::string text = formatString(format);
 			event_.WriteTextEvent(type, id, text, useETW, useFile, useConsole);
 		}
 	}
 
 	void TextTraceWriter::operator()(
 		StringLiteral type,
-		std::wstring const & id,
+		std::string const & id,
 		StringLiteral format,
 		VariableArgument const & a0) const
 	{
@@ -37,14 +37,14 @@ namespace Common
 
 		if (useETW || useFile || useConsole)
 		{
-			std::wstring text = wformatString(format, a0);
+			std::string text = formatString.L(format, a0);
 			event_.WriteTextEvent(type, id, text, useETW, useFile, useConsole);
 		}
 	}
 
 	void TextTraceWriter::operator()(
 		StringLiteral type,
-		std::wstring const & id,
+		std::string const & id,
 		StringLiteral format,
 		VariableArgument const & a0,
 		VariableArgument const & a1) const
@@ -55,7 +55,7 @@ namespace Common
 
 		if (useETW || useFile || useConsole)
 		{
-			std::wstring text = wformatString(format, a0, a1);
+			std::string text = formatString.L(format, a0, a1);
 
 			event_.WriteTextEvent(type, id, text, useETW, useFile, useConsole);
 		}
@@ -63,7 +63,7 @@ namespace Common
 
 	void TextTraceWriter::operator()(
 		StringLiteral type,
-		std::wstring const & id,
+		std::string const & id,
 		StringLiteral format,
 		VariableArgument const & a0,
 		VariableArgument const & a1,
@@ -75,7 +75,7 @@ namespace Common
 
 		if (useETW || useFile || useConsole)
 		{
-			std::wstring text = wformatString(format, a0, a1, a2);
+			std::string text = formatString.L(format, a0, a1, a2);
 
 			event_.WriteTextEvent(type, id, text, useETW, useFile, useConsole);
 		}
@@ -83,7 +83,7 @@ namespace Common
 
 	void TextTraceWriter::operator()(
 		StringLiteral type,
-		std::wstring const & id,
+		std::string const & id,
 		StringLiteral format,
 		VariableArgument const & a0,
 		VariableArgument const & a1,
@@ -96,7 +96,7 @@ namespace Common
 
 		if (useETW || useFile || useConsole)
 		{
-			std::wstring text = wformatString(format, a0, a1, a2, a3);
+			std::string text = formatString.L(format, a0, a1, a2, a3);
 
 			event_.WriteTextEvent(type, id, text, useETW, useFile, useConsole);
 		}
@@ -104,7 +104,7 @@ namespace Common
 
 	void TextTraceWriter::operator()(
 		StringLiteral type,
-		std::wstring const & id,
+		std::string const & id,
 		StringLiteral format,
 		VariableArgument const & a0,
 		VariableArgument const & a1,
@@ -118,7 +118,7 @@ namespace Common
 
 		if (useETW || useFile || useConsole)
 		{
-			std::wstring text = wformatString(format, a0, a1, a2, a3, a4);
+			std::string text = formatString.L(format, a0, a1, a2, a3, a4);
 
 			event_.WriteTextEvent(type, id, text, useETW, useFile, useConsole);
 		}
@@ -126,7 +126,7 @@ namespace Common
 
 	void TextTraceWriter::operator()(
 		StringLiteral type,
-		std::wstring const & id,
+		std::string const & id,
 		StringLiteral format,
 		VariableArgument const & a0,
 		VariableArgument const & a1,
@@ -141,7 +141,7 @@ namespace Common
 
 		if (useETW || useFile || useConsole)
 		{
-			std::wstring text = wformatString(format, a0, a1, a2, a3, a4, a5);
+			std::string text = formatString.L(format, a0, a1, a2, a3, a4, a5);
 
 			event_.WriteTextEvent(type, id, text, useETW, useFile, useConsole);
 		}
@@ -149,7 +149,7 @@ namespace Common
 
 	void TextTraceWriter::operator()(
 		StringLiteral type,
-		std::wstring const & id,
+		std::string const & id,
 		StringLiteral format,
 		VariableArgument const & a0,
 		VariableArgument const & a1,
@@ -165,7 +165,7 @@ namespace Common
 
 		if (useETW || useFile || useConsole)
 		{
-			std::wstring text = wformatString(format, a0, a1, a2, a3, a4, a5, a6);
+			std::string text = formatString.L(format, a0, a1, a2, a3, a4, a5, a6);
 
 			event_.WriteTextEvent(type, id, text, useETW, useFile, useConsole);
 		}
@@ -173,7 +173,7 @@ namespace Common
 
 	void TextTraceWriter::operator()(
 		StringLiteral type,
-		std::wstring const & id,
+		std::string const & id,
 		StringLiteral format,
 		VariableArgument const & a0,
 		VariableArgument const & a1,
@@ -190,7 +190,7 @@ namespace Common
 
 		if (useETW || useFile || useConsole)
 		{
-			std::wstring text = wformatString(format, a0, a1, a2, a3, a4, a5, a6, a7);
+			std::string text = formatString.L(format, a0, a1, a2, a3, a4, a5, a6, a7);
 
 			event_.WriteTextEvent(type, id, text, useETW, useFile, useConsole);
 		}
@@ -198,7 +198,7 @@ namespace Common
 
 	void TextTraceWriter::operator()(
 		StringLiteral type,
-		std::wstring const & id,
+		std::string const & id,
 		StringLiteral format,
 		VariableArgument const & a0,
 		VariableArgument const & a1,
@@ -216,7 +216,7 @@ namespace Common
 
 		if (useETW || useFile || useConsole)
 		{
-			std::wstring text = wformatString(format, a0, a1, a2, a3, a4, a5, a6, a7, a8);
+			std::string text = formatString.L(format, a0, a1, a2, a3, a4, a5, a6, a7, a8);
 
 			event_.WriteTextEvent(type, id, text, useETW, useFile, useConsole);
 		}
@@ -224,7 +224,7 @@ namespace Common
 
 	void TextTraceWriter::operator()(
 		StringLiteral type,
-		std::wstring const & id,
+		std::string const & id,
 		StringLiteral format,
 		VariableArgument const & a0,
 		VariableArgument const & a1,
@@ -243,7 +243,7 @@ namespace Common
 
 		if (useETW || useFile || useConsole)
 		{
-			std::wstring text = wformatString(format, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9);
+			std::string text = formatString.L(format, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9);
 
 			event_.WriteTextEvent(type, id, text, useETW, useFile, useConsole);
 		}
@@ -251,7 +251,7 @@ namespace Common
 
 	void TextTraceWriter::operator()(
 		StringLiteral type,
-		std::wstring const & id,
+		std::string const & id,
 		StringLiteral format,
 		VariableArgument const & a0,
 		VariableArgument const & a1,
@@ -271,7 +271,7 @@ namespace Common
 
 		if (useETW || useFile || useConsole)
 		{
-			std::wstring text = wformatString(format, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
+			std::string text = formatString.L(format, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
 
 			event_.WriteTextEvent(type, id, text, useETW, useFile, useConsole);
 		}
@@ -279,7 +279,7 @@ namespace Common
 
 	void TextTraceWriter::operator()(
 		StringLiteral type,
-		std::wstring const & id,
+		std::string const & id,
 		StringLiteral format,
 		VariableArgument const & a0,
 		VariableArgument const & a1,
@@ -300,7 +300,7 @@ namespace Common
 
 		if (useETW || useFile || useConsole)
 		{
-			std::wstring text = wformatString(format, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11);
+			std::string text = formatString.L(format, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11);
 
 			event_.WriteTextEvent(type, id, text, useETW, useFile, useConsole);
 		}
@@ -308,7 +308,7 @@ namespace Common
 
 	void TextTraceWriter::operator()(
 		StringLiteral type,
-		std::wstring const & id,
+		std::string const & id,
 		StringLiteral format,
 		VariableArgument const & a0,
 		VariableArgument const & a1,
@@ -330,7 +330,7 @@ namespace Common
 
 		if (useETW || useFile || useConsole)
 		{
-			std::wstring text = wformatString(format, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12);
+			std::string text = formatString.L(format, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12);
 
 			event_.WriteTextEvent(type, id, text, useETW, useFile, useConsole);
 		}
@@ -338,7 +338,7 @@ namespace Common
 
 	void TextTraceWriter::operator()(
 		StringLiteral type,
-		std::wstring const & id,
+		std::string const & id,
 		StringLiteral format,
 		VariableArgument const & a0,
 		VariableArgument const & a1,
@@ -361,7 +361,7 @@ namespace Common
 
 		if (useETW || useFile || useConsole)
 		{
-			std::wstring text = wformatString(format, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13);
+			std::string text = formatString.L(format, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13);
 
 			event_.WriteTextEvent(type, id, text, useETW, useFile, useConsole);
 		}
@@ -381,13 +381,13 @@ namespace Common
 		VariableArgument const & a7,
 		VariableArgument const & a8)
 	{
-		TraceProvider::GetSingleton()->GetTextEventWriter(taskId, LogLevel::Error)(type, std::wstring(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8);
+		TraceProvider::GetSingleton()->GetTextEventWriter(taskId, LogLevel::Error)(type, std::string(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8);
 	}
 
 	void TraceError(
 		TraceTaskCodes::Enum taskId,
 		StringLiteral type,
-		std::wstring const & id,
+		std::string const & id,
 		StringLiteral format,
 		VariableArgument const & a0,
 		VariableArgument const & a1,
@@ -416,13 +416,13 @@ namespace Common
 		VariableArgument const & a7,
 		VariableArgument const & a8)
 	{
-		TraceProvider::GetSingleton()->GetTextEventWriter(taskId, LogLevel::Warning)(type, std::wstring(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8);
+		TraceProvider::GetSingleton()->GetTextEventWriter(taskId, LogLevel::Warning)(type, std::string(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8);
 	}
 
 	void TraceWarning(
 		TraceTaskCodes::Enum taskId,
 		StringLiteral type,
-		std::wstring const & id,
+		std::string const & id,
 		StringLiteral format,
 		VariableArgument const & a0,
 		VariableArgument const & a1,
@@ -451,13 +451,13 @@ namespace Common
 		VariableArgument const & a7,
 		VariableArgument const & a8)
 	{
-		TraceProvider::GetSingleton()->GetTextEventWriter(taskId, LogLevel::Info)(type, std::wstring(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8);
+		TraceProvider::GetSingleton()->GetTextEventWriter(taskId, LogLevel::Info)(type, std::string(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8);
 	}
 
 	void TraceInfo(
 		TraceTaskCodes::Enum taskId,
 		StringLiteral type,
-		std::wstring const & id,
+		std::string const & id,
 		StringLiteral format,
 		VariableArgument const & a0,
 		VariableArgument const & a1,
@@ -486,13 +486,13 @@ namespace Common
 		VariableArgument const & a7,
 		VariableArgument const & a8)
 	{
-		TraceProvider::GetSingleton()->GetTextEventWriter(taskId, LogLevel::Noise)(type, std::wstring(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8);
+		TraceProvider::GetSingleton()->GetTextEventWriter(taskId, LogLevel::Noise)(type, std::string(), format, a0, a1, a2, a3, a4, a5, a6, a7, a8);
 	}
 
 	void TraceNoise(
 		TraceTaskCodes::Enum taskId,
 		StringLiteral type,
-		std::wstring const & id,
+		std::string const & id,
 		StringLiteral format,
 		VariableArgument const & a0,
 		VariableArgument const & a1,
@@ -511,14 +511,14 @@ namespace Common
 	// This is a callback that is used by KTL to include its traces
 	// into the Service Fabric trace stream. Use
 	// KtlSystem::RegisterServiceFabricKtlTraceCallback to pass this to
-	// KTL
+	// KT'
 	//
 	VOID ServiceFabricKtlTraceCallback(
-		__in LPCWSTR typeText,
+		__in LPCSTR typeText,
 		__in USHORT level,
 		__in LPCSTR textA)
 	{
-		wstring parsed_typeText;
+		string parsed_typeText;
 		auto parseHResult = StringUtility::LpcwstrToWstring(typeText, false, parsed_typeText);
 		if (FAILED(parseHResult))
 		{
@@ -527,10 +527,10 @@ namespace Common
 
 		// TODO: Is there a better way to convert TextA. Can we pass that
 		// to the Trace apis ?
-		std::wstring textW = Common::StringUtility::ToWString(textA);
-		LPCWSTR text = textW.c_str();
+		std::string textW = Common::StringUtility::ToWString(textA);
+		LPCSTR text = textW.c_str();
 
-		std::wstring parsed_text;
+		std::string parsed_text;
 		{
 			auto parseHResult2 = StringUtility::LpcwstrToWstring(text, false, Common::ParameterValidator::MinStringSize, CommonConfig::GetConfig().MaxLongStringSize, parsed_text); \
 				if (FAILED(parseHResult2))
@@ -540,7 +540,7 @@ namespace Common
 		}
 
 		LogLevel::Enum logLevel = (LogLevel::Enum)(level);
-		std::wstring wsType = parsed_typeText;
+		std::string wsType = parsed_typeText;
 
 		std::string sType(wsType.begin(), wsType.end());
 

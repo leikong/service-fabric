@@ -1843,8 +1843,8 @@ KtlLogStreamKernel::GenerateMetadataFileName(
         return(STATUS_UNSUCCESSFUL);
     }   
         
-    FileName = L"\\GLOBAL??\\Volume";
-    FileName += static_cast<WCHAR*>(*guidString);
+    FileName = "\\GLOBAL??\\Volume";
+    FileName += static_cast<CHAR*>(*guidString);
 
 
     QueryLogStreamId(logStreamId);
@@ -1862,9 +1862,9 @@ KtlLogStreamKernel::GenerateMetadataFileName(
         return(STATUS_UNSUCCESSFUL);
     }   
     
-    FileName += L"\\RvdLog\\Stream";
-    FileName += static_cast<WCHAR*>(*guidString);
-    FileName += L".Metadata";
+    FileName += "\\RvdLog\\Stream";
+    FileName += static_cast<CHAR*>(*guidString);
+    FileName += ".Metadata";
     status = FileName.Status();
     
     return(status);

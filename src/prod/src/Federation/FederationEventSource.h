@@ -12,12 +12,12 @@ namespace Federation
     class SiteNodeEventSource
     {
     public:
-        Common::TraceEventWriter<std::wstring, uint64> LeaseFailed;
-        Common::TraceEventWriter<std::wstring, uint64> NeighborhoodLost;
-        Common::TraceEventWriter<std::wstring> NeighborhoodChanged;
-        Common::TraceEventWriter<std::wstring> RoutingTokenChanged;
-        Common::TraceEventWriter<std::wstring, uint64> GlobalLeaseQuorumLost;
-        Common::TraceEventWriter<std::wstring, uint64> RestartInstance;
+        Common::TraceEventWriter<std::string, uint64> LeaseFailed;
+        Common::TraceEventWriter<std::string, uint64> NeighborhoodLost;
+        Common::TraceEventWriter<std::string> NeighborhoodChanged;
+        Common::TraceEventWriter<std::string> RoutingTokenChanged;
+        Common::TraceEventWriter<std::string, uint64> GlobalLeaseQuorumLost;
+        Common::TraceEventWriter<std::string, uint64> RestartInstance;
 
         SiteNodeEventSource() :
             LeaseFailed(Common::TraceTaskCodes::SiteNode, 4, "LeaseFailed", Common::LogLevel::Error, "{0}:{1} OnLeaseFailed", "id", "instanceId"),
@@ -35,7 +35,7 @@ namespace Federation
     class ArbitrationEventSource
     {
     public:
-        Common::TraceEventWriter<std::wstring, uint64, std::wstring, uint64, std::wstring, int64, int64, std::string> Failure;
+        Common::TraceEventWriter<std::string, uint64, std::string, uint64, std::string, int64, int64, std::string> Failure;
 
         ArbitrationEventSource() :
             Failure(Common::TraceTaskCodes::Arbitration, 4, "_incidents_Failure", Common::LogLevel::Error, Common::TraceChannelType::Debug, Common::TraceKeywords::ForQuery, "{0}:{1} arbitration with {2}:{3} failed, lease instance: {5}/{6}, type={7}", "localLeaseAgentAddress", "localLeaseAgentInstance", "remoteLeaseAgentAddress", "remoteLeaseAgentInstance", "incidentType", "monitorLeaseInstance", "subjectLeaseInstance", "arbitrationType")
@@ -49,11 +49,11 @@ namespace Federation
     {
     public:
         Common::TraceEventWriter<Federation::NodeId, Federation::VoteManager, int64> UpdateGlobalTickets;
-        Common::TraceEventWriter<Federation::NodeId, std::wstring, int, int64> TTL;
-        Common::TraceEventWriter<std::wstring, Common::TimeSpan, int64, Common::TimeSpan, Common::TimeSpan> InvalidLowerTimeRange;
-        Common::TraceEventWriter<std::wstring, Common::TimeSpan, int64, Common::TimeSpan, Common::TimeSpan> InvalidUpperTimeRange;
+        Common::TraceEventWriter<Federation::NodeId, std::string, int, int64> TTL;
+        Common::TraceEventWriter<std::string, Common::TimeSpan, int64, Common::TimeSpan, Common::TimeSpan> InvalidLowerTimeRange;
+        Common::TraceEventWriter<std::string, Common::TimeSpan, int64, Common::TimeSpan, Common::TimeSpan> InvalidUpperTimeRange;
         Common::TraceEventWriter<uint16, Common::StringLiteral, std::vector<Federation::VoteEntryUPtr>> VoteManager;
-        Common::TraceEventWriter<uint16, Federation::NodeId, Federation::NodeId, bool, std::wstring, int64> VoteEntry;
+        Common::TraceEventWriter<uint16, Federation::NodeId, Federation::NodeId, bool, std::string, int64> VoteEntry;
 
         VoteManagerEventSource() :
             VoteManager(Common::TraceTaskCodes::VoteManager, 4, "VoteManager", Common::LogLevel::Info, "{1}\r\n{2}\r\n", "contextSequenceId", "tag", "entries"),
@@ -87,9 +87,9 @@ namespace Federation
     class BroadcastEventSource
     {
     public:
-        Common::TraceEventWriter<std::wstring, Transport::MessageId, Federation::NodeInstance, Federation::NodeInstance> ForwardToSuccessor;
-        Common::TraceEventWriter<std::wstring, Transport::MessageId, Federation::NodeInstance, Federation::NodeInstance> ForwardToPredecessor;
-        Common::TraceEventWriter<std::wstring, Transport::MessageId, Federation::NodeId, std::wstring> ForwardToRange;
+        Common::TraceEventWriter<std::string, Transport::MessageId, Federation::NodeInstance, Federation::NodeInstance> ForwardToSuccessor;
+        Common::TraceEventWriter<std::string, Transport::MessageId, Federation::NodeInstance, Federation::NodeInstance> ForwardToPredecessor;
+        Common::TraceEventWriter<std::string, Transport::MessageId, Federation::NodeId, std::string> ForwardToRange;
 
 
     public:

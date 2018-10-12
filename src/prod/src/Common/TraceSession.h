@@ -44,9 +44,9 @@ namespace Common
         struct DataCollectorSetInfo
         {
             TraceSessionKind::Enum TraceSessionKind;
-            std::wstring SessionName;
-            std::wstring TraceFolderName;
-            std::wstring TraceFileName;
+            std::string SessionName;
+            std::string TraceFolderName;
+            std::string TraceFileName;
             Common::Guid ProviderGuids[ProvidersPerSession];
             UCHAR TraceLevel;
             ULONGLONG Keyword[ProvidersPerSession];
@@ -64,18 +64,18 @@ namespace Common
         HRESULT StopTraceSession(DataCollectorSetInfo const & info);
 
         HRESULT TraceResult(
-            std::wstring const & method,
+            std::string const & method,
             HRESULT exitCode);
 
         HRESULT TraceSession::Prepare(DataCollectorSetInfo const & info, BOOLEAN *runningLatestStatus);
 
         HRESULT TraceSession::GetTraceSessionStatus(DataCollectorSetInfo const & info, BOOLEAN *runningLatestStatus);
 
-        std::wstring GetSessionName(std::wstring const & sessionName);
+        std::string GetSessionName(std::string const & sessionName);
 
-        wstring TraceSession::GetTraceFolder(DataCollectorSetInfo const & info);
+        string TraceSession::GetTraceFolder(DataCollectorSetInfo const & info);
 
-        int TraceSession::TraceSessionFilePathCompare(std::wstring const & a, std::wstring const & b);
+        int TraceSession::TraceSessionFilePathCompare(std::string const & a, std::string const & b);
 
     private:
         static const ULONG DefaultTraceBufferSizeInKB = 128;
@@ -102,31 +102,31 @@ namespace Common
         static Common::Global<Common::Guid> ReliableCollectionGuid;
         static Common::Global<Common::Guid> AzureFilesVolumeDriverGuid;
 
-        static Common::GlobalWString FabricTraceFileName;
-        static Common::GlobalWString SFBDMiniportTraceFileName;
-        static Common::GlobalWString LeaseTraceFileName;
-        static Common::GlobalWString AppInfoTraceFileName;
-        static Common::GlobalWString AppInfoTraceFolderName;
-        static Common::GlobalWString QueryTraceFileName;
-        static Common::GlobalWString QueryTraceFolderName;
-        static Common::GlobalWString OperationalTraceFileName;
-        static Common::GlobalWString OperationalTraceFolderName;
+        static Common::GlobalString FabricTraceFileName;
+        static Common::GlobalString SFBDMiniportTraceFileName;
+        static Common::GlobalString LeaseTraceFileName;
+        static Common::GlobalString AppInfoTraceFileName;
+        static Common::GlobalString AppInfoTraceFolderName;
+        static Common::GlobalString QueryTraceFileName;
+        static Common::GlobalString QueryTraceFolderName;
+        static Common::GlobalString OperationalTraceFileName;
+        static Common::GlobalString OperationalTraceFolderName;
 
-        static Common::GlobalWString FabricTraceSessionName;
-        static Common::GlobalWString LeaseTraceSessionName;
-        static Common::GlobalWString SFBDMiniportTraceSessionName;
-        static Common::GlobalWString AppInfoTraceSessionName;
-        static Common::GlobalWString QueryTraceSessionName;
-        static Common::GlobalWString FabricCountersSessionName;
-        static Common::GlobalWString OperationalTraceSessionName;
+        static Common::GlobalString FabricTraceSessionName;
+        static Common::GlobalString LeaseTraceSessionName;
+        static Common::GlobalString SFBDMiniportTraceSessionName;
+        static Common::GlobalString AppInfoTraceSessionName;
+        static Common::GlobalString QueryTraceSessionName;
+        static Common::GlobalString FabricCountersSessionName;
+        static Common::GlobalString OperationalTraceSessionName;
 
-        static Common::GlobalWString FabricDataRoot;
+        static Common::GlobalString FabricDataRoot;
 
-        static Common::GlobalWString CurrentExeVersion;
+        static Common::GlobalString CurrentExeVersion;
 
         std::vector<DataCollectorSetInfo> dataCollectorSets;
-        std::wstring testKeyword_;
-        std::wstring tracePath_;
+        std::string testKeyword_;
+        std::string tracePath_;
         BOOLEAN enableCircularTraceSession_;
     };
 }

@@ -14,15 +14,15 @@ namespace Common
     public:
         typedef std::shared_ptr<SubjectName> SPtr;
     
-        static ErrorCode Create(std::wstring const & name, _Out_ SPtr & result);
+        static ErrorCode Create(std::string const & name, _Out_ SPtr & result);
 
-        SubjectName(std::wstring const & name);
+        SubjectName(std::string const & name);
 
         ErrorCode Initialize();
 
         X509FindType::Enum Type() const override;
         void const * Value() const override;
-        std::wstring const & Name() const;
+        std::string const & Name() const;
         bool PrimaryValueEqualsTo(SubjectName const & other) const;
 
         void WriteTo(Common::TextWriter & w, Common::FormatOptions const &) const;
@@ -31,7 +31,7 @@ namespace Common
         void OnWriteTo(Common::TextWriter & w, Common::FormatOptions const &) const override;
         bool EqualsTo(X509FindValue const & other) const override;
 
-        std::wstring const name_;
+        std::string const name_;
 #if defined(PLATFORM_UNIX)
         std::map<std::string, std::string> nameBlob_;
 #else

@@ -21,9 +21,9 @@ namespace Common
 
         virtual void Initialize() {}
 
-        void AddEntry(std::wstring const & section, ConfigEntryBase & entry);
+        void AddEntry(std::string const & section, ConfigEntryBase & entry);
 
-        void GetKeyValues(std::wstring const & section, StringMap & entries) const
+        void GetKeyValues(std::string const & section, StringMap & entries) const
         {
             config_.GetKeyValues(section, entries);
         }
@@ -38,10 +38,10 @@ namespace Common
             return config_;
         }
 
-        virtual bool OnUpdate(std::wstring const & section, std::wstring const & key);
-        virtual bool CheckUpdate(std::wstring const & section, std::wstring const & key, std::wstring const & value, bool isEncrypted);
+        virtual bool OnUpdate(std::string const & section, std::string const & key);
+        virtual bool CheckUpdate(std::string const & section, std::string const & key, std::string const & value, bool isEncrypted);
 
-        std::wstring const & GetTraceId() const override
+        std::string const & GetTraceId() const override
         {
             return traceId_;
         }
@@ -54,23 +54,23 @@ namespace Common
         class ComponentConfigSection
         {
         public:
-            ComponentConfigSection(std::wstring const & name)
+            ComponentConfigSection(std::string const & name)
                 : name_(name)
             {
             }
 
-            __declspec(property(get=get_Name)) std::wstring const & Name;
-            std::wstring const & get_Name() const { return name_; }
+            __declspec(property(get=get_Name)) std::string const & Name;
+            std::string const & get_Name() const { return name_; }
 
             void AddEntry(ConfigEntryBase* entry);
 
             void ClearCachedValue();
 
-            bool OnUpdate(std::wstring const & key);
-            bool CheckUpdate(std::wstring const & key, std::wstring const & value, bool isEncrypted);
+            bool OnUpdate(std::string const & key);
+            bool CheckUpdate(std::string const & key, std::string const & value, bool isEncrypted);
 
         private:
-            std::wstring name_;
+            std::string name_;
             std::vector<ConfigEntryBase*> entries_;
         };
 
@@ -79,7 +79,7 @@ namespace Common
     protected:
         mutable RwLock configLock_;
         Config config_;
-        std::wstring traceId_;
+        std::string traceId_;
 
     private:
         StringLiteral name_;
@@ -87,7 +87,7 @@ namespace Common
     };
 
 // Clang doesn't concatenate as MSVC does, 
-// so L#property_name becomes L "PropertyName", not L"PropertyName"
+// so L#property_name becomes L "PropertyName", not "PropertyName"
 #define COMPONENT_STR_CONCAT(x , y) x ## y
 #define PUBLIC_CONFIG_ENTRY(type, section_name, property_name, default_value, upgrade_policy, ...)   \
 public: \
@@ -99,7 +99,7 @@ public: \
             Common::AcquireWriteLock grab(configLock_);   \
             if (property_name##_.HasValue == false) \
             {   \
-                property_name##_.Load(this, section_name, COMPONENT_STR_CONCAT(L, #property_name), default_value, upgrade_policy, ##__VA_ARGS__);    \
+                property_name##_.Load(this, section_name, #property_name, default_value, upgrade_policy, ##__VA_ARGS__);    \
             }   \
         }   \
         return property_name##_;    \
@@ -115,7 +115,7 @@ __pragma(warning(pop))  \
             Common::AcquireWriteLock grab(configLock_);   \
             if (property_name##_.HasValue == false) \
             {   \
-                property_name##_.Load(this, section_name, COMPONENT_STR_CONCAT(L, #property_name), default_value, upgrade_policy, ##__VA_ARGS__);    \
+                property_name##_.Load(this, section_name, #property_name, default_value, upgrade_policy, ##__VA_ARGS__);    \
             }                                                                                               \
             return property_name##_.GetValue(); \
         }   \
@@ -127,7 +127,7 @@ __pragma(warning(pop))  \
     inline void set_##property_name(type const & value) \
     {   \
     Common::AcquireWriteLock grab(configLock_);   \
-    property_name##_.SetValue(this, section_name, COMPONENT_STR_CONCAT(L, #property_name), value, default_value, upgrade_policy, ##__VA_ARGS__); \
+    property_name##_.SetValue(this, section_name, #property_name, value, default_value, upgrade_policy, ##__VA_ARGS__); \
     }   \
 private:    \
     mutable Common::ConfigEntry<type> property_name##_;
@@ -244,7 +244,7 @@ private:    \
     {   \
     PVOID lpContext = NULL; \
     BOOL result = ::InitOnceExecuteOnce(&TConfig::initOnceConfig_, TConfig::InitConfigFunction, NULL, &lpContext);  \
-    ASSERT_IF(!result, "Failed to initialize {0} singleton", L ## #TConfig);    \
+    ASSERT_IF(!result, "Failed to initialize {0} singleton", #TConfig);    \
     return *(TConfig::singletonConfig_);    \
     }   \
     void TConfig::Test_Reset()  \

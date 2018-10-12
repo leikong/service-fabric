@@ -331,7 +331,7 @@ DoBasicKAsyncTest(KAllocator& Allocator)
 }
 
 NTSTATUS
-KAsyncEventTest(__in int argc, __in_ecount(argc) WCHAR* args[])
+KAsyncEventTest(__in int argc, __in_ecount(argc) CHAR* args[])
 {
     UNREFERENCED_PARAMETER(argc);
     UNREFERENCED_PARAMETER(args);

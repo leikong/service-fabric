@@ -60,7 +60,7 @@ namespace Federation
 
         int GetSeedNodes(std::vector<NodeId> & seedNodes) const;
 
-        static bool IsSeedNode(NodeId nodeId, std::wstring const & ringName);
+        static bool IsSeedNode(NodeId nodeId, std::string const & ringName);
 
     private:
         enum GlobalLeaseState

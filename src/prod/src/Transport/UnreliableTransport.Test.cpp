@@ -63,46 +63,46 @@ namespace TransportUnitTest
     {
     protected:
         StringCollection InitializeTransportParams(
-            wstring source = L"", 
-            wstring destination = L"", 
-            wstring action = L"", 
-            wstring priority = L"", 
-            wstring probability = L"", 
-            wstring delay = L"", 
-            wstring delaySpan = L"")
+            string source = "", 
+            string destination = "", 
+            string action = "", 
+            string priority = "", 
+            string probability = "", 
+            string delay = "", 
+            string delaySpan = "")
         {
             StringCollection params;
-            if (source == L"")
+            if (source == "")
             {
                 return params;
             }
             params.push_back(source);
-            if (destination == L"")
+            if (destination == "")
             {
                 return params;
             }
             params.push_back(destination);
-            if (action == L"")
+            if (action == "")
             {
                 return params;
             }
             params.push_back(action);
-            if (priority == L"")
+            if (priority == "")
             {
                 return params;
             }
             params.push_back(priority);
-            if (probability == L"")
+            if (probability == "")
             {
                 return params;
             }
             params.push_back(probability);
-            if (delay == L"")
+            if (delay == "")
             {
                 return params;
             }
             params.push_back(delay);
-            if (source == L"")
+            if (source == "")
             {
                 return params;
             }
@@ -118,13 +118,13 @@ namespace TransportUnitTest
     {
         ENTER;
 
-        wstring one(L"one");
-        wstring two(L"two");
-        wstring three(L"three");
+        string one("one");
+        string two("two");
+        string three("three");
 
         const int TotalMessageCount = 50;
         shared_ptr<TestRoot> root = make_shared<TestRoot>();
-        root->sender = DatagramTransportFactory::CreateUnreliable(*root, DatagramTransportFactory::CreateMem(L"sender"));
+        root->sender = DatagramTransportFactory::CreateUnreliable(*root, DatagramTransportFactory::CreateMem("sender"));
         VERIFY_IS_TRUE(root->sender->Start().IsSuccess());
         
         MessageReceiver receiverOne(DatagramTransportFactory::CreateMem(one));
@@ -134,9 +134,9 @@ namespace TransportUnitTest
         MessageReceiver receiverThree(DatagramTransportFactory::CreateMem(three));
         VERIFY_IS_TRUE(receiverThree.Start().IsSuccess());
 
-        VERIFY_IS_TRUE(UnreliableTransportConfig::GetConfig().AddSpecification(L"Test1", L"sender one * 0.5 10"));
+        VERIFY_IS_TRUE(UnreliableTransportConfig::GetConfig().AddSpecification("Test1", "sender one * 0.5 10"));
         
-        VERIFY_IS_TRUE(UnreliableTransportConfig::GetConfig().AddSpecification(L"Test2", L"sender two * 1.0 20"));
+        VERIFY_IS_TRUE(UnreliableTransportConfig::GetConfig().AddSpecification("Test2", "sender two * 1.0 20"));
 
         ISendTarget::SPtr targetOne = root->sender->ResolveTarget(one);
         ISendTarget::SPtr targetTwo = root->sender->ResolveTarget(two);

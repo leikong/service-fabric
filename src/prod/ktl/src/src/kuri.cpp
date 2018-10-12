@@ -36,10 +36,10 @@
 //
 inline BOOLEAN
 IsAlpha(
-    __in WCHAR c
+    __in CHAR c
     )
 {
-    if ((c >= L'a' && c <= L'z') || (c >= L'A' && c <= L'Z') )
+    if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') )
     {
         return TRUE;
     }
@@ -52,10 +52,10 @@ IsAlpha(
 //
 inline BOOLEAN
 IsDigit(
-    __in WCHAR c
+    __in CHAR c
     )
 {
-    if (c >= L'0' && c <= L'9')
+    if (c >= '0' && c <= '9')
     {
         return TRUE;
     }
@@ -68,12 +68,12 @@ IsDigit(
 //
 inline BOOLEAN
 IsHexDigit(
-    __in WCHAR c
+    __in CHAR c
     )
 {
-    if ((c >= L'0' && c <= L'9') ||
-        (c >= L'a' && c <= L'f') ||
-        (c >= L'A' && c <= L'F'))
+    if ((c >= '0' && c <= '9') ||
+        (c >= 'a' && c <= 'f') ||
+        (c >= 'A' && c <= 'F'))
     {
         return TRUE;
     }
@@ -88,11 +88,11 @@ IsHexDigit(
 //
 inline BOOLEAN
 IsInSet(
-    __in WCHAR c,
-    __in LPCWSTR StrSet
+    __in CHAR c,
+    __in LPCSTR StrSet
     )
 {
-    WCHAR const * p = StrSet;
+    CHAR const * p = StrSet;
     while (*p)
     {
         if (*p++ == c)
@@ -109,10 +109,10 @@ IsInSet(
 //
 inline BOOLEAN
 IsSubdelim(
-    __in WCHAR c
+    __in CHAR c
     )
 {
-    if (IsInSet(c, L"!$&'()*+,;="))
+    if (IsInSet(c, "!$&'()*+,;="))
     {
         return TRUE;
     }
@@ -126,10 +126,10 @@ IsSubdelim(
 //
 inline BOOLEAN
 IsQueryStringDelim(
-    __in WCHAR c
+    __in CHAR c
     )
 {
-    if (c == L'&' || c == L'|' || c == L';' || c == L'+')
+    if (c == '&' || c == '|' || c == ';' || c == '+')
     {
         return TRUE;
     }
@@ -142,10 +142,10 @@ IsQueryStringDelim(
 //
 inline BOOLEAN
 IsUnreserved(
-    __in WCHAR c
+    __in CHAR c
     )
 {
-    if (IsAlpha(c) || IsDigit(c) || IsInSet(c, L"-._~"))
+    if (IsAlpha(c) || IsDigit(c) || IsInSet(c, "-._~"))
     {
         return TRUE;
     }
@@ -157,9 +157,9 @@ IsUnreserved(
 // Parser helper
 //
 inline BOOLEAN
-IsNonFirstSchemeChar(WCHAR c)
+IsNonFirstSchemeChar(CHAR c)
 {
-    if (IsAlpha(c) || IsDigit(c) || IsInSet(c, L"+-."))
+    if (IsAlpha(c) || IsDigit(c) || IsInSet(c, "+-."))
     {
         return TRUE;
     }
@@ -172,7 +172,7 @@ IsNonFirstSchemeChar(WCHAR c)
 //
 inline BOOLEAN
 IsInitialSchemeChar(
-    __in WCHAR c
+    __in CHAR c
     )
 {
     return IsAlpha(c);
@@ -183,9 +183,9 @@ IsInitialSchemeChar(
 // Parser helper
 //
 inline BOOLEAN
-IsPathChar(WCHAR c)
+IsPathChar(CHAR c)
 {
-    if (IsUnreserved(c) || IsSubdelim(c) || IsInSet(c, L":@%{}*<>^"))
+    if (IsUnreserved(c) || IsSubdelim(c) || IsInSet(c, ":@%{}*<>^"))
     {
         return TRUE;
     }
@@ -260,14 +260,14 @@ _Base_Authority_Parser(
         switch (eState)
         {
             case eHost:
-                if (Tracer.PeekFirst() == L'[')
+                if (Tracer.PeekFirst() == '[')
                 {
                     eState = eBracketed;
                     Tracer.ConsumeChar();
                     Host.SetAddress(PWSTR(Tracer)); // Don't include bracket in address
                     continue;
                 }
-                if (Tracer.PeekFirst() == L':')
+                if (Tracer.PeekFirst() == ':')
                 {
                     eState = ePort;
                     Tracer.ConsumeChar();
@@ -280,13 +280,13 @@ _Base_Authority_Parser(
 
 
             case eBracketed:
-                if (IsHexDigit(Tracer.PeekFirst())  || Tracer.PeekFirst() == L':')
+                if (IsHexDigit(Tracer.PeekFirst())  || Tracer.PeekFirst() == ':')
                 {
                     Host.IncLen();
                     Tracer.ConsumeChar();
                     continue;
                 }
-                if (Tracer.PeekFirst() == L']')
+                if (Tracer.PeekFirst() == ']')
                 {
                     eState = ePossiblePort;
                     Tracer.ConsumeChar();
@@ -295,7 +295,7 @@ _Base_Authority_Parser(
                 return FALSE;
 
             case ePossiblePort:
-                if (Tracer.PeekFirst() == L':')
+                if (Tracer.PeekFirst() == ':')
                 {
                     Tracer.ConsumeChar();
                     Port.SetAddress(PWSTR(Tracer));
@@ -383,7 +383,7 @@ _Base_QueryString_Parser(
                     Tracer.ConsumeChar();
                     continue;
                 }
-                if (Tracer.PeekFirst() == L'=')
+                if (Tracer.PeekFirst() == '=')
                 {
                     Tracer.ConsumeChar();
                     eState = eValue;
@@ -492,20 +492,20 @@ _Base_UriParser(
             case eNone:
                 // Check for UNC
                 //
-                if (Tracer.PeekFirst() == L'/' && Tracer.PeekN(1) == L'/')
+                if (Tracer.PeekFirst() == '/' && Tracer.PeekN(1) == '/')
                 {
                     Tracer.ConsumeChar();
                     Tracer.ConsumeChar();
-                    Token.SetAddress(PWCHAR(Tracer));
+                    Token.SetAddress(PCHAR(Tracer));
                     eState = eAuthority;
                     continue;
                 }
                 // Otherwise an initial slash is a rel-path with no scheme
                 //
-                if (Tracer.PeekFirst() == L'/')
+                if (Tracer.PeekFirst() == '/')
                 {
                     Tracer.ConsumeChar();
-                    Token.SetAddress(PWCHAR(Tracer));
+                    Token.SetAddress(PCHAR(Tracer));
                     eState = ePath;
                     continue;
                 }
@@ -513,7 +513,7 @@ _Base_UriParser(
                 //
                 if (IsInitialSchemeChar(Tracer.PeekFirst()))
                 {
-                    Token.SetAddress(PWCHAR(Tracer));
+                    Token.SetAddress(PCHAR(Tracer));
                     Token.IncLen();
                     Tracer.ConsumeChar();
                     eState = eAmbiguous;    // May be a path or may be a scheme; don't know yet.
@@ -524,7 +524,7 @@ _Base_UriParser(
                 //
                 if (IsPathChar(Tracer.PeekFirst()))
                 {
-                    Token.SetAddress(PWCHAR(Tracer));
+                    Token.SetAddress(PCHAR(Tracer));
                     Token.IncLen();
                     Tracer.ConsumeChar();
                     eState = ePath;
@@ -544,7 +544,7 @@ _Base_UriParser(
                     Tracer.ConsumeChar();
                     continue;
                 }
-                if (Tracer.PeekFirst() == L':')
+                if (Tracer.PeekFirst() == ':')
                 {
                     // Everything up to now was a scheme, but we just
                     // found that out.
@@ -568,7 +568,7 @@ _Base_UriParser(
                     eState = ePath;
                     continue;
                 }
-                if (IsInSet(Tracer.PeekFirst(), L"/#?"))
+                if (IsInSet(Tracer.PeekFirst(), "/#?"))
                 {
                     // We have been looking at a segment all this time.
                     // Switch states, no consumption of the char.
@@ -601,7 +601,7 @@ _Base_UriParser(
             // or entry into an authority-less URI (single slash) which leads to ePath.
             //
             case ePostScheme:
-                if (Tracer.PeekFirst() == L'/' && Tracer.PeekN(1) == L'/')
+                if (Tracer.PeekFirst() == '/' && Tracer.PeekN(1) == '/')
                 {
                     eState = eAuthority;
                     // Move past the two slashes
@@ -610,19 +610,19 @@ _Base_UriParser(
                     Token.SetAddress(PWSTR(Tracer));
                     continue;
                 }
-                if (Tracer.PeekFirst() == L'?')
+                if (Tracer.PeekFirst() == '?')
                 {
                     Tracer.ConsumeChar();
                     eState = eQueryString;
                     continue;
                 }
-                if (Tracer.PeekFirst() == L'#')
+                if (Tracer.PeekFirst() == '#')
                 {
                     Tracer.ConsumeChar();
                     eState = eFragment;
                     continue;
                 }
-                if (Tracer.PeekFirst() == L'/')
+                if (Tracer.PeekFirst() == '/')
                 {
                     Tracer.ConsumeChar();
                     Token.SetAddress(PWSTR(Tracer));
@@ -642,7 +642,7 @@ _Base_UriParser(
                 return STATUS_OBJECT_PATH_SYNTAX_BAD;
 
             case eAuthority:
-                if (Tracer.PeekFirst() == L'/')
+                if (Tracer.PeekFirst() == '/')
                 {
                     Tracer.ConsumeChar();
                     if (CBack)
@@ -657,7 +657,7 @@ _Base_UriParser(
                     eState = ePath;
                     continue;
                 }
-                if (Tracer.PeekFirst() == L'?')
+                if (Tracer.PeekFirst() == '?')
                 {
                     if (CBack)
                     {
@@ -672,7 +672,7 @@ _Base_UriParser(
                     eState = eQueryString;
                     continue;
                 }
-                if (Tracer.PeekFirst() == L'#')
+                if (Tracer.PeekFirst() == '#')
                 {
                     if (CBack)
                     {
@@ -720,7 +720,7 @@ _Base_UriParser(
                     Tracer.ConsumeChar();
                     continue;
                 }
-                if (Tracer.PeekFirst() == L'?')
+                if (Tracer.PeekFirst() == '?')
                 {
                     if (CBack)
                     {
@@ -740,7 +740,7 @@ _Base_UriParser(
                     eState = eQueryString;
                     continue;
                 }
-                if (Tracer.PeekFirst() == L'#')
+                if (Tracer.PeekFirst() == '#')
                 {
                     if (CBack)
                     {
@@ -767,7 +767,7 @@ _Base_UriParser(
             case eQueryString:
                 {
                     ULONG Pos;
-                    if (Tracer.Find(L'#', Pos))
+                    if (Tracer.Find('#', Pos))
                     {
                         Token = Tracer.LeftString(Pos);
                         if (CBack)
@@ -1084,8 +1084,8 @@ KUriView::Has(
 BOOLEAN
 KUriView::HostIsWildcard() const
 {
-    if (_Host.Compare(KStringView(L"*")) == 0 ||
-        _Host.Compare(KStringView(L"+")) == 0
+    if (_Host.Compare(KStringView("*")) == 0 ||
+        _Host.Compare(KStringView("+")) == 0
         )
     {
         return TRUE;
@@ -1345,7 +1345,7 @@ KDynUri::GetSuffix(
     {
         if (!First)
         {
-            if (!Tmp.Concat(KStringView(L"/")))
+            if (!Tmp.Concat(KStringView("/")))
             {
                 return STATUS_INSUFFICIENT_RESOURCES;
             }
@@ -1359,7 +1359,7 @@ KDynUri::GetSuffix(
 
     if (Candidate._QueryString.Length())
     {
-        if (!Tmp.Concat(KStringView(L"?")))
+        if (!Tmp.Concat(KStringView("?")))
         {
             return STATUS_INSUFFICIENT_RESOURCES;
         }
@@ -1371,7 +1371,7 @@ KDynUri::GetSuffix(
 
     if (Candidate._Fragment.Length())
     {
-        if (!Tmp.Concat(KStringView(L"#")))
+        if (!Tmp.Concat(KStringView("#")))
         {
             return STATUS_INSUFFICIENT_RESOURCES;
         }
@@ -1586,7 +1586,7 @@ KUri::Create(
         return STATUS_INSUFFICIENT_RESOURCES;
     }
 
-    if (!Buf.Concat(KStringView(L"/")))
+    if (!Buf.Concat(KStringView("/")))
     {
         return STATUS_INSUFFICIENT_RESOURCES;
     }

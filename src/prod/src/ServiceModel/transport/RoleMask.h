@@ -18,8 +18,8 @@ namespace Transport
         };
 
         void WriteToTextWriter(Common::TextWriter & w, Enum const & e);
-        Common::ErrorCode TryParse(std::wstring const & stringInput, _Out_ Enum & roleMask);
+        Common::ErrorCode TryParse(std::string const & stringInput, _Out_ Enum & roleMask);
         Common::ErrorCode TryParse(FABRIC_CLIENT_ROLE clientRole, _Out_ Enum & roleMask);
-        std::wstring EnumToString(Transport::RoleMask::Enum value);
+        std::string EnumToString(Transport::RoleMask::Enum value);
     };
 }

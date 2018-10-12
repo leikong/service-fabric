@@ -29,10 +29,10 @@ namespace LeaseWrapper
         LeasePartner(
             LeaseAgent & agent,
             HANDLE appHandle,
-            std::wstring const & localId,
-            std::wstring const & remoteId,
-            std::wstring const & remoteFaultDomain,
-            std::wstring const & remoteLeaseAgentAddress,
+            std::string const & localId,
+            std::string const & remoteId,
+            std::string const & remoteFaultDomain,
+            std::string const & remoteLeaseAgentAddress,
             int64 remoteLeaseAgentInstance);
 
         Common::AsyncOperationSPtr Establish(
@@ -42,12 +42,12 @@ namespace LeaseWrapper
             Common::AsyncOperationSPtr const & context
             );
 
-        std::wstring const & GetRemoteLeaseAgentAddress() const
+        std::string const & GetRemoteLeaseAgentAddress() const
         {
             return remoteLeaseAgentAddress_;
         }
 
-        std::wstring const & GetRemoteFaultDomain() const
+        std::string const & GetRemoteFaultDomain() const
         {
             return remoteFaultDomain_;
         }
@@ -74,10 +74,10 @@ namespace LeaseWrapper
 
         LeaseAgent & agent_; // The operations related to this lease state.
         HANDLE appHandle_; // The handle returned by the LeaseDriver for the local application.
-        std::wstring localId_; // The id of the local node.
-        std::wstring remoteId_; // The id of the remote node with which the lease is to be established.
-        std::wstring remoteFaultDomain_;
-        std::wstring remoteLeaseAgentAddress_; // The address of the lease agent of the remote node.
+        std::string localId_; // The id of the local node.
+        std::string remoteId_; // The id of the remote node with which the lease is to be established.
+        std::string remoteFaultDomain_;
+        std::string remoteLeaseAgentAddress_; // The address of the lease agent of the remote node.
         int64 remoteLeaseAgentInstanceId_; // Remote lease agent instance.
         LEASE_DURATION_TYPE durationType_;
 

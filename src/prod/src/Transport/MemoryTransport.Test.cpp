@@ -20,7 +20,7 @@ namespace TransportUnitTest
     {
         ENTER;
 
-        shared_ptr<IDatagramTransport> sender = DatagramTransportFactory::CreateMem(L"sender");
+        shared_ptr<IDatagramTransport> sender = DatagramTransportFactory::CreateMem("sender");
         VERIFY_IS_TRUE(sender);
         VERIFY_IS_TRUE(sender->Start().IsSuccess());
 
@@ -32,7 +32,7 @@ namespace TransportUnitTest
             replyReceived.Set();
         });
 
-        shared_ptr<IDatagramTransport> receiver = DatagramTransportFactory::CreateMem(L"receiver");
+        shared_ptr<IDatagramTransport> receiver = DatagramTransportFactory::CreateMem("receiver");
         VERIFY_IS_TRUE(receiver);
         VERIFY_IS_TRUE(receiver->Start().IsSuccess());
 
@@ -49,7 +49,7 @@ namespace TransportUnitTest
         bool receivedReplyOne = replyReceived.WaitOne(TimeSpan::FromSeconds(1));
         VERIFY_IS_FALSE(receivedReplyOne);
 
-        ISendTarget::SPtr target = sender->ResolveTarget(L"receiver");
+        ISendTarget::SPtr target = sender->ResolveTarget("receiver");
         VERIFY_IS_TRUE(target);
 
         sender->SendOneWay(target, make_unique<Message>());
@@ -70,17 +70,17 @@ namespace TransportUnitTest
     {
         ENTER;
 
-        shared_ptr<IDatagramTransport> sender = DatagramTransportFactory::CreateMem(L"invalidTargetTestSender");
+        shared_ptr<IDatagramTransport> sender = DatagramTransportFactory::CreateMem("invalidTargetTestSender");
         VERIFY_IS_TRUE(sender->Start().IsSuccess());
 
-        auto target = sender->ResolveTarget(L"second banana");
+        auto target = sender->ResolveTarget("second banana");
         VERIFY_IS_TRUE(target);
-        shared_ptr<IDatagramTransport> secondBanana = DatagramTransportFactory::CreateMem(L"second banana");
+        shared_ptr<IDatagramTransport> secondBanana = DatagramTransportFactory::CreateMem("second banana");
         VERIFY_IS_TRUE(secondBanana->Start().IsSuccess());
 
         sender->SendOneWay(target, make_unique<Message>());
 
-        shared_ptr<IDatagramTransport> receiver = DatagramTransportFactory::CreateMem(L"invalidTargetTestSender");
+        shared_ptr<IDatagramTransport> receiver = DatagramTransportFactory::CreateMem("invalidTargetTestSender");
         VERIFY_IS_TRUE(receiver);
         VERIFY_IS_FALSE(receiver->Start().IsSuccess());
 
@@ -94,8 +94,8 @@ namespace TransportUnitTest
         const int TotalMessageCount = 100;
         Common::atomic_long messageCount(0);
 
-        shared_ptr<IDatagramTransport> sender = DatagramTransportFactory::CreateMem(L"manyMessagesTestSender");
-        shared_ptr<IDatagramTransport> receiver = DatagramTransportFactory::CreateMem(L"manyMessagesTestReceiver");
+        shared_ptr<IDatagramTransport> sender = DatagramTransportFactory::CreateMem("manyMessagesTestSender");
+        shared_ptr<IDatagramTransport> receiver = DatagramTransportFactory::CreateMem("manyMessagesTestReceiver");
 
         VERIFY_IS_TRUE(sender->Start().IsSuccess());
         VERIFY_IS_TRUE(receiver->Start().IsSuccess());
@@ -113,7 +113,7 @@ namespace TransportUnitTest
             }
         });
 
-        ISendTarget::SPtr target = sender->ResolveTarget(L"manyMessagesTestReceiver");
+        ISendTarget::SPtr target = sender->ResolveTarget("manyMessagesTestReceiver");
         VERIFY_IS_TRUE(target);
 
         for (int i = 0; i < TotalMessageCount; ++i)
@@ -138,7 +138,7 @@ namespace TransportUnitTest
     {
         ENTER;
 
-        shared_ptr<IDatagramTransport> sender = DatagramTransportFactory::CreateMem(L"loopback");
+        shared_ptr<IDatagramTransport> sender = DatagramTransportFactory::CreateMem("loopback");
         VERIFY_IS_TRUE(sender);
         VERIFY_IS_TRUE(sender->Start().IsSuccess());
 
@@ -150,7 +150,7 @@ namespace TransportUnitTest
             messageReceived.Set();
         });
 
-        ISendTarget::SPtr target = sender->ResolveTarget(L"loopback");
+        ISendTarget::SPtr target = sender->ResolveTarget("loopback");
         VERIFY_IS_TRUE(target);
 
         sender->SendOneWay(target, make_unique<Message>());

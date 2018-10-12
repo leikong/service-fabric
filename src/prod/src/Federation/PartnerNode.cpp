@@ -118,10 +118,10 @@ namespace Federation
     PartnerNode::PartnerNode(
         NodeId const& id,
         uint64 instanceId,
-        wstring const& address,
-        wstring const &leaseAgentAddress,
+        string const& address,
+        string const &leaseAgentAddress,
         Uri const & nodeFaultDomainId,
-        wstring const & ringName)
+        string const & ringName)
         :   siteId_(id),
             nodeInstance_(id, instanceId),
             address_(address),

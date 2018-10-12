@@ -22,32 +22,32 @@ namespace LeaseLayerApiTest
         )
     {
         Trace.WriteInfo(TraceType, "Application \"{0}\" has expired\n",
-            context ? static_cast<LPCWSTR>(context) : L"(null)");
+            context ? static_cast<LPCSTR>(context) : "(null)");
     }
 
     VOID WINAPI
     LeasingApplicationLeaseEstablishedCallback(
         __in HANDLE lease,
-        __in LPCWSTR remoteLeasingApplicationIdentifier,
+        __in LPCSTR remoteLeasingApplicationIdentifier,
         __in PVOID context
         )
     {
         Trace.WriteInfo(TraceType, "Lease {0} between application \"{1}\" and remote application \"{2}\" has been established\n",
             lease,
-            context ? static_cast<LPCWSTR>(context) : L"(null)",
+            context ? static_cast<LPCSTR>(context) : "(null)",
             remoteLeasingApplicationIdentifier
             );
     }
 
     VOID WINAPI 
     RemoteLeasingApplicationExpiredCallback(
-        __in LPCWSTR RemoteLeasingApplicationIdentifier,
+        __in LPCSTR RemoteLeasingApplicationIdentifier,
         __in PVOID context
         )
     {
         Trace.WriteInfo(TraceType, "Remote application \"{0}\" has expired for application \"{1}\"\n",
             RemoteLeasingApplicationIdentifier,
-            context ? static_cast<LPCWSTR>(context) : L"(null)"
+            context ? static_cast<LPCSTR>(context) : "(null)"
             );
     }
 
@@ -63,7 +63,7 @@ namespace LeaseLayerApiTest
         __in LONGLONG monitorLeaseInstance,
         __in LONGLONG subjectLeaseInstance,
         __in LONG remoteArbitrationDurationUpperBound,
-        __in LPCWSTR RemoteLeasingApplicationIdentifier,
+        __in LPCSTR RemoteLeasingApplicationIdentifier,
         __in PVOID context
     )
     {
@@ -102,8 +102,8 @@ namespace LeaseLayerApiTest
     VOID WINAPI
     HealthReportCallback(
             __in int reportCode,
-            __in LPCWSTR dynamicProperty,
-            __in LPCWSTR extraDescription,
+            __in LPCSTR dynamicProperty,
+            __in LPCSTR extraDescription,
             __in PVOID context
         )
     {
@@ -152,7 +152,7 @@ namespace LeaseLayerApiTest
         // Helpers to print last error
         HANDLE WINAPI RegisterLeasingApplicationLogErrorOnError(
             __in PTRANSPORT_LISTEN_ENDPOINT SocketAddress,
-            __in LPCWSTR LeasingApplicationIdentifier,
+            __in LPCSTR LeasingApplicationIdentifier,
             __in LONG LeaseTimeToLiveMilliseconds,
             __in LONG LeaseSuspendDurationMilliseconds,
             __in LONG ArbitrationDurationMilliseconds,
@@ -167,7 +167,7 @@ namespace LeaseLayerApiTest
 
         HANDLE WINAPI EstablishLeaseLogErrorOnError(
             __in HANDLE LeasingApplication,
-            __in LPCWSTR RemoteApplicationIdentifier,
+            __in LPCSTR RemoteApplicationIdentifier,
             __in PTRANSPORT_LISTEN_ENDPOINT RemoteSocketAddress
             );
 
@@ -187,13 +187,13 @@ namespace LeaseLayerApiTest
         BOOL WINAPI TestLeaseLayerApi::TerminateLeaseLogErrorOnError(
             __in HANDLE LeasingApplication,
             __in HANDLE Lease,
-            __in LPCWSTR RemoteApplicationIdentifier
+            __in LPCSTR RemoteApplicationIdentifier
             );
 
         BOOL WINAPI TestLeaseLayerApi::UnregisterLeasingApplicationLogErrorOnError(__in HANDLE LeasingApplicationHandle);
 
         template <typename T>
-        T ProcessResult(T result, T errorValue, wstring const & comment)
+        T ProcessResult(T result, T errorValue, string const & comment)
         {
             if (result == errorValue)
             {
@@ -220,7 +220,7 @@ namespace LeaseLayerApiTest
     
     HANDLE WINAPI TestLeaseLayerApi::RegisterLeasingApplicationLogErrorOnError(
         __in PTRANSPORT_LISTEN_ENDPOINT SocketAddress,
-        __in LPCWSTR LeasingApplicationIdentifier,
+        __in LPCSTR LeasingApplicationIdentifier,
         __in LONG LeaseTimeToLiveMilliseconds,
         __in LONG LeaseSuspendDurationMilliseconds,
         __in LONG ArbitrationDurationMilliseconds,
@@ -235,7 +235,7 @@ namespace LeaseLayerApiTest
     {
         BOOL SecurityEnable = FALSE;
         PBYTE CertHash = NULL;
-        wstring CertHashStoreName(L"");
+        string CertHashStoreName("");
         LONG StartOfLeaseRetry = 2;
         HANDLE LeaseAgentHandle = NULL;
         LEASE_CONFIG_DURATIONS leaseDurations;
@@ -274,12 +274,12 @@ namespace LeaseLayerApiTest
             &LeaseAgentHandle
             );
 
-        return ProcessResult<HANDLE>(application, nullptr, L"RegisterLeasingApplication()");
+        return ProcessResult<HANDLE>(application, nullptr, "RegisterLeasingApplication()");
     }
   
     HANDLE WINAPI TestLeaseLayerApi::EstablishLeaseLogErrorOnError(
         __in HANDLE LeasingApplication,
-        __in LPCWSTR RemoteApplicationIdentifier,
+        __in LPCSTR RemoteApplicationIdentifier,
         __in PTRANSPORT_LISTEN_ENDPOINT RemoteSocketAddress
     )
     {
@@ -292,7 +292,7 @@ namespace LeaseLayerApiTest
             LEASE_DURATION,
             &isEstablished);
 
-        return ProcessResult<HANDLE>(lease, nullptr, L"EstablishLease()");
+        return ProcessResult<HANDLE>(lease, nullptr, "EstablishLease()");
     }
 
     BOOL WINAPI 
@@ -309,7 +309,7 @@ namespace LeaseLayerApiTest
             RemainingTimeToLiveMilliseconds,
             KernelCurrentTime);
         
-        return ProcessResult(result, FALSE, L"GetLeasingApplicationExpirationTime()");
+        return ProcessResult(result, FALSE, "GetLeasingApplicationExpirationTime()");
     }
 
     BOOL WINAPI
@@ -326,7 +326,7 @@ namespace LeaseLayerApiTest
             RemainingTimeToLiveMilliseconds,
             KernelCurrentTime);
 
-        return ProcessResult(result, FALSE, L"GetLeasingApplicationExpirationTime()");
+        return ProcessResult(result, FALSE, "GetLeasingApplicationExpirationTime()");
     }
 
     BOOST_FIXTURE_TEST_SUITE(TestLeaseLayerApiSuite,TestLeaseLayerApi)
@@ -442,12 +442,12 @@ namespace LeaseLayerApiTest
         HANDLE leasingApplication2 = nullptr;
         EtcmResult er(passCount_, failCount_);
 #if defined(PLATFORM_UNIX)
-        wstring longString(1025,L'Q');
+        string longString(1025,L'Q');
 #else
-        wstring longString(300,L'Q');
+        string longString(300,L'Q');
 #endif
-        wstring leasingApplicationIdentifier1 = L"RegAppApiApp";
-        wstring leasingApplicationIdentifier2 = L"RegAppApiApp2";
+        string leasingApplicationIdentifier1 = "RegAppApiApp";
+        string leasingApplicationIdentifier2 = "RegAppApiApp2";
         LONG lastError;
    
         //
@@ -493,7 +493,7 @@ namespace LeaseLayerApiTest
             );
 
         lastError = static_cast<LONG>(GetLastError());
-        VERIFY_IS_NULL(leasingApplication1, L"Called RegisterLeasingApplication() with LeasingApplicationIdentifier NULL");
+        VERIFY_IS_NULL(leasingApplication1, "Called RegisterLeasingApplication() with LeasingApplicationIdentifier NULL");
         VERIFY_ARE_EQUAL(ERROR_INVALID_PARAMETER, lastError);
 
         // Test a "too long" string     
@@ -514,17 +514,17 @@ namespace LeaseLayerApiTest
             );  
 
         lastError = static_cast<LONG>(GetLastError());
-        VERIFY_IS_NULL(leasingApplication1, L"Called RegisterLeasingApplication() with LeasingApplicationIdentifier string length too long");
+        VERIFY_IS_NULL(leasingApplication1, "Called RegisterLeasingApplication() with LeasingApplicationIdentifier string length too long");
         VERIFY_ARE_EQUAL(ERROR_INVALID_PARAMETER, lastError);
 
         //
         // Test another long string with no null terminator
         //
-        vector<wchar_t> noNull(2000000,L'E');
+        vector<char> noNull(2000000,L'E');
         Trace.WriteInfo(TraceType, "RegisterLeasingApplication() with LeasingApplicationIdentifier with long string with no null terminator");
         leasingApplication1 = RegisterLeasingApplicationLogErrorOnError(
             &sa1,
-            static_cast<LPCWSTR>(noNull.data()),
+            static_cast<LPCSTR>(noNull.data()),
             5000,
             2000,
             10000,
@@ -538,7 +538,7 @@ namespace LeaseLayerApiTest
             ); 
         
         lastError = static_cast<LONG>(GetLastError());
-        VERIFY_IS_NULL(leasingApplication1, L"Called RegisterLeasingApplication() with LeasingApplicationIdentifier with no null terminator");
+        VERIFY_IS_NULL(leasingApplication1, "Called RegisterLeasingApplication() with LeasingApplicationIdentifier with no null terminator");
         VERIFY_ARE_EQUAL(ERROR_INVALID_PARAMETER, lastError);
 
         // Test 3rd param == NULL
@@ -559,7 +559,7 @@ namespace LeaseLayerApiTest
             );
 
         lastError = static_cast<LONG>(GetLastError());
-        VERIFY_IS_NULL(leasingApplication1, L"Called RegisterLeasingApplication() with LeasingApplicationExpired NULL");
+        VERIFY_IS_NULL(leasingApplication1, "Called RegisterLeasingApplication() with LeasingApplicationExpired NULL");
         VERIFY_ARE_EQUAL(ERROR_INVALID_PARAMETER, lastError);
             
         // Test 4th param == NULL
@@ -579,7 +579,7 @@ namespace LeaseLayerApiTest
             );
         
         lastError = static_cast<LONG>(GetLastError());
-        VERIFY_IS_NULL(leasingApplication1, L"Called RegisterLeasingApplication() with RemoteLeasingApplicationExpired NULL");
+        VERIFY_IS_NULL(leasingApplication1, "Called RegisterLeasingApplication() with RemoteLeasingApplicationExpired NULL");
         VERIFY_ARE_EQUAL(ERROR_INVALID_PARAMETER, lastError);
 
         // Test negative TTL
@@ -599,7 +599,7 @@ namespace LeaseLayerApiTest
             );
 
         lastError = static_cast<LONG>(GetLastError());
-        VERIFY_IS_NULL(leasingApplication1, L"Called RegisterLeasingApplication() with negative lease TTL");
+        VERIFY_IS_NULL(leasingApplication1, "Called RegisterLeasingApplication() with negative lease TTL");
         VERIFY_ARE_EQUAL(ERROR_INVALID_PARAMETER, lastError);
 
         // Test 0 TTL
@@ -619,7 +619,7 @@ namespace LeaseLayerApiTest
             );
 
         lastError = static_cast<LONG>(GetLastError());
-        VERIFY_IS_NULL(leasingApplication1, L"Called RegisterLeasingApplication() with 0 lease TTL");
+        VERIFY_IS_NULL(leasingApplication1, "Called RegisterLeasingApplication() with 0 lease TTL");
         VERIFY_ARE_EQUAL(ERROR_INVALID_PARAMETER, lastError);
 
         // Test MAXLONG TTL
@@ -639,7 +639,7 @@ namespace LeaseLayerApiTest
             );
 
         lastError = static_cast<LONG>(GetLastError());
-        VERIFY_IS_NULL(leasingApplication1, L"Called RegisterLeasingApplication() with MAXLONG lease TTL");
+        VERIFY_IS_NULL(leasingApplication1, "Called RegisterLeasingApplication() with MAXLONG lease TTL");
         VERIFY_ARE_EQUAL(ERROR_INVALID_PARAMETER, lastError);
 
         // Test 5th param == NULL
@@ -658,7 +658,7 @@ namespace LeaseLayerApiTest
             nullptr
             );
 
-        VERIFY_IS_NOT_NULL(leasingApplication1, L"Called RegisterLeasingApplication() with LeasingApplicationArbitrate NULL");
+        VERIFY_IS_NOT_NULL(leasingApplication1, "Called RegisterLeasingApplication() with LeasingApplicationArbitrate NULL");
 
         // Test 6th param == NULL
         leasingApplication2 = RegisterLeasingApplicationLogErrorOnError(
@@ -676,7 +676,7 @@ namespace LeaseLayerApiTest
             nullptr
             );
 
-        VERIFY_IS_NOT_NULL(leasingApplication2, L"Called RegisterLeasingApplication() with LeasingApplicationLeaseEstablished NULL");
+        VERIFY_IS_NOT_NULL(leasingApplication2, "Called RegisterLeasingApplication() with LeasingApplicationLeaseEstablished NULL");
 
         VERIFY_IS_TRUE(UnregisterLeasingApplicationLogErrorOnError(leasingApplication2));
         VERIFY_IS_TRUE(UnregisterLeasingApplicationLogErrorOnError(leasingApplication1));
@@ -690,8 +690,8 @@ namespace LeaseLayerApiTest
         EtcmResult er(passCount_, failCount_);
         HANDLE leasingApplication1 = nullptr;
         HANDLE leasingApplication2 = nullptr;
-        wstring leasingApplicationIdentifier1(L"EstApiApp1");
-        wstring leasingApplicationIdentifier2(L"EstApiApp2");
+        string leasingApplicationIdentifier1("EstApiApp1");
+        string leasingApplicationIdentifier2("EstApiApp2");
         HANDLE lease = nullptr;
         LONG lastError;
             
@@ -757,9 +757,9 @@ namespace LeaseLayerApiTest
         VERIFY_ARE_EQUAL(ERROR_INVALID_PARAMETER, lastError);
         
 #if defined(PLATFORM_UNIX)
-        wstring longString(1025,L'Q');
+        string longString(1025,L'Q');
 #else
-        wstring longString(300,L'Q');
+        string longString(300,L'Q');
 #endif      
         lease = EstablishLeaseLogErrorOnError(
                 leasingApplication1,
@@ -808,8 +808,8 @@ namespace LeaseLayerApiTest
         EtcmResult er(passCount_, failCount_);
         HANDLE leasingApplication1 = nullptr;
         HANDLE leasingApplication2 = nullptr; 
-        wstring leasingApplicationIdentifier1(L"ExpTimeApiApp1");
-        wstring leasingApplicationIdentifier2(L"ExpTimeApiApp2");
+        string leasingApplicationIdentifier1("ExpTimeApiApp1");
+        string leasingApplicationIdentifier2("ExpTimeApiApp2");
         HANDLE lease = nullptr;
         LONG remainingTTL = 0;
         LONGLONG kernelSystemTime = 0;
@@ -898,8 +898,8 @@ namespace LeaseLayerApiTest
         EtcmResult er(passCount_, failCount_);
         HANDLE leasingApplication1 = nullptr;
         HANDLE leasingApplication2 = nullptr;
-        wstring leasingApplicationIdentifier1(L"TermUnregApiApp1");
-        wstring leasingApplicationIdentifier2(L"TermUnregApiApp2");
+        string leasingApplicationIdentifier1("TermUnregApiApp1");
+        string leasingApplicationIdentifier2("TermUnregApiApp2");
         HANDLE lease = nullptr;    
         LONG remainingTTL = 0;
         LONGLONG kernelSystemTime = 0;
@@ -998,14 +998,14 @@ namespace LeaseLayerApiTest
         HANDLE leasingApplication2 = nullptr;
         HANDLE LeaseAgentHandle1 = nullptr;
         HANDLE LeaseAgentHandle2 = nullptr;
-        wstring leasingApplicationIdentifier1(L"EstApiApp1");
-        wstring leasingApplicationIdentifier2(L"EstApiApp2");
+        string leasingApplicationIdentifier1("EstApiApp1");
+        string leasingApplicationIdentifier2("EstApiApp2");
 
         HANDLE lease1 = nullptr;
         HANDLE lease2 = nullptr;
         BOOL SecurityEnable = FALSE;
         PBYTE CertHash = NULL;
-        wstring CertHashStoreName(L"");
+        string CertHashStoreName("");
         LONG StartOfLeaseRetry = 2;
         LONG NumOfLeaseRetry = 3;
         PVOID CallbackContext = nullptr;
@@ -1172,12 +1172,12 @@ namespace LeaseLayerApiTest
     BOOL WINAPI TestLeaseLayerApi::TerminateLeaseLogErrorOnError(
         __in HANDLE LeasingApplication,
         __in HANDLE Lease,
-        __in LPCWSTR RemoteApplicationIdentifier
+        __in LPCSTR RemoteApplicationIdentifier
         )
     {    
         BOOL result = TerminateLease(LeasingApplication, Lease, RemoteApplicationIdentifier);
 
-        return ProcessResult(result, FALSE, L"TerminateLease()");
+        return ProcessResult(result, FALSE, "TerminateLease()");
     }
 
     BOOL WINAPI TestLeaseLayerApi::UnregisterLeasingApplicationLogErrorOnError(
@@ -1187,7 +1187,7 @@ namespace LeaseLayerApiTest
         // 'false' indicates that the unregister/clean-up will not be delayed in kernel
         BOOL result = UnregisterLeasingApplication(LeasingApplicationHandle, false);     
 
-        return ProcessResult(result, FALSE, L"UnregisterLeasingApplication()");
+        return ProcessResult(result, FALSE, "UnregisterLeasingApplication()");
     }
 #pragma prefast(pop)
 } 

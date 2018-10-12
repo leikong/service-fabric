@@ -101,7 +101,7 @@ private:
 private:
     StateMachine const & owner_;
     uint64 const targetStateMask_;
-    wstring waiterId_;
+    string waiterId_;
     friend class StateMachine;
 };
 
@@ -112,7 +112,7 @@ StateMachine::StateMachine(uint64 initialState)
     transitionWaiters_(),
     currentRefCount_(0)
 {
-    traceId_ = wformatString("{0}", static_cast<void*>(this));
+    traceId_ = formatString.L("{0}", static_cast<void*>(this));
     ASSERT_IF(current_ == Aborted, "Initial state cannot be Aborted.");
 }
 
@@ -406,15 +406,15 @@ void StateMachine::CancelTransitionWaiters()
     }
 }
 
-wstring StateMachine::StateToString(uint64 const state) const
+string StateMachine::StateToString(uint64 const state) const
 {
     if (state == Aborted)
     {
-        return L"Aborted";
+        return "Aborted";
     }
     else
     {
-        wstring retval;
+        string retval;
         StringWriter writer(retval);
         writer.Write("Unknown:{0}", state);
         writer.Flush();

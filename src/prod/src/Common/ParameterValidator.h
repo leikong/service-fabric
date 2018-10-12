@@ -20,26 +20,26 @@ namespace Common
         
         // returns error if the string is null or it is not within the specified bounds
         static ErrorCode IsValid(
-            LPCWSTR param, 
+            LPCSTR param, 
             size_t minAllowedLength = MinStringSize, 
             size_t maxAllowedLength = MaxStringSize);
 
         // returns error if the string is null or if it can't be truncated within the specified bounds
         static ErrorCode IsValidTruncated(
-            LPCWSTR param,
+            LPCSTR param,
             size_t minAllowedLength,
             __inout size_t & length);
 
-        static ErrorCode ValidatePercentValue(BYTE percentValue, Common::WStringLiteral const & parameterName);
+        static ErrorCode ValidatePercentValue(BYTE percentValue, Common::StringLiteral const & parameterName);
 
     private:
         static ErrorCode IsValid(
-            LPCWSTR param,
+            LPCSTR param,
             size_t minAllowedLength,
             size_t maxAllowedLength,
             __inout size_t & length);
 
-        static ErrorCode TraceAndCreateError(ErrorCodeValue::Enum, std::wstring && errorMessage);
+        static ErrorCode TraceAndCreateError(ErrorCodeValue::Enum, std::string && errorMessage);
     };
 }
 

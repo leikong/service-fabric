@@ -560,7 +560,7 @@ ktl::Awaitable<NTSTATUS> FileObjectTable::CreateAndRegisterOverlayManagerAsync(
 }
 #endif
 
-#define OVERLAY_MANAGER L"OVERLAY_MANAGER"
+#define OVERLAY_MANAGER "OVERLAY_MANAGER"
 
 NTSTATUS FileObjectTable::CreateAndRegisterOverlayManagerInternal(
     __in KAllocator& Allocator,
@@ -823,7 +823,7 @@ VOID FileObjectTable::LookupOverlayManager(
     )
 {
     KSharedBase::SPtr overlayManager;   
-    WCHAR overlayManagerText[sizeof(OVERLAY_MANAGER) / sizeof(WCHAR)];
+    CHAR overlayManagerText[sizeof(OVERLAY_MANAGER) / sizeof(CHAR)];
 
     KMemCpySafe(overlayManagerText, sizeof(overlayManagerText), OVERLAY_MANAGER, sizeof(OVERLAY_MANAGER));
     

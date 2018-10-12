@@ -17,20 +17,20 @@ namespace
     BOOL CALLBACK InitFunction(PINIT_ONCE, PVOID, PVOID *)
     {
         auto disableList = TransportConfig::GetConfig().PerMessageTraceDisableList;
-        vector<wstring> tokens;
-        StringUtility::Split<wstring>(disableList, tokens, L",");
+        vector<string> tokens;
+        StringUtility::Split<string>(disableList, tokens, ",");
         if (tokens.empty())
         {
             textTrace.WriteInfo(TraceType, "no actor is disabled");
             return TRUE;
         }
 
-        map<wstring, Actor::Enum, IsLessCaseInsensitiveComparer<wstring>> actorMap;
+        map<string, Actor::Enum, IsLessCaseInsensitiveComparer<string>> actorMap;
         for (int actor = Actor::Empty; actor < Actor::EndValidEnum; ++actor)
         {
             perMessageTraceDisabled[actor] = false;
 
-            wstring key;
+            string key;
             StringWriter sw(key);
             Actor::WriteToTextWriter(sw, (Actor::Enum)actor);
             actorMap.emplace(move(key), (Actor::Enum)actor);
@@ -63,7 +63,7 @@ namespace
     BOOL CALLBACK InitEventLoopPool(PINIT_ONCE, PVOID, PVOID*)
     {
         // create a dedicated EventLoopPool for isolation
-        eventLoopPool = new EventLoopPool(L"Transport");
+        eventLoopPool = new EventLoopPool("Transport");
         return TRUE;
     }
 }
@@ -104,17 +104,17 @@ bool IDatagramTransport::IsPerMessageTraceDisabled(Actor::Enum actor)
 }
 
 ISendTarget::SPtr IDatagramTransport::ResolveTarget(
-    std::wstring const & address,
-    std::wstring const & targetId,
+    std::string const & address,
+    std::string const & targetId,
     uint64 instance)
 {
-    return Resolve(address, targetId, L"", instance);
+    return Resolve(address, targetId, "", instance);
 }
 
 ISendTarget::SPtr IDatagramTransport::ResolveTarget(
-    std::wstring const & address,
-    std::wstring const & targetId,
-    std::wstring const & sspiTarget,
+    std::string const & address,
+    std::string const & targetId,
+    std::string const & sspiTarget,
     uint64 instance)
 {
     return Resolve(address, targetId, sspiTarget, instance);
@@ -122,16 +122,16 @@ ISendTarget::SPtr IDatagramTransport::ResolveTarget(
 
 ISendTarget::SPtr IDatagramTransport::ResolveTarget(NamedAddress const & namedAddress)
 {
-    return Resolve(namedAddress.Address, namedAddress.Name, L"", 0);
+    return Resolve(namedAddress.Address, namedAddress.Name, "", 0);
 }
 
-std::wstring IDatagramTransport::TargetAddressToTransportAddress(std::wstring const & targetAddress)
+std::string IDatagramTransport::TargetAddressToTransportAddress(std::string const & targetAddress)
 {
     // Need to parse "targetAddress" since there may be things following transport address, e.g. replication passing something like this:
     // "host.bricks.com:49904/4216d69d-e661-4f48-9f4c-89d7172a57ab-129722966844577360". The guid suffix is for replication demuxing.
     // As long as we want to share ISendTarget for the same TCP transport address, we should get rid of such suffixes.
-    auto spliterPosition = targetAddress.find_first_of(L'/');
-    if (spliterPosition == std::wstring::npos)
+    auto spliterPosition = targetAddress.find_first_of('/');
+    if (spliterPosition == std::string::npos)
     {
         return targetAddress;
     }
@@ -164,7 +164,7 @@ void IDatagramTransport::SetHealthReportingCallback(HealthReportingCallback && c
     *healthCallback = move(callback);
 }
 
-void IDatagramTransport::RerportHealth(SystemHealthReportCode::Enum reportCode, wstring const & dynamicProperty, wstring const & description, TimeSpan ttl)
+void IDatagramTransport::RerportHealth(SystemHealthReportCode::Enum reportCode, string const & dynamicProperty, string const & description, TimeSpan ttl)
 {
     HealthReportingCallback callback;
     {

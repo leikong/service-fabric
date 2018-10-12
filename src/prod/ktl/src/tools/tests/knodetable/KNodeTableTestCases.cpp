@@ -26,5 +26,5 @@ Abstract:
 
 const KU_TEST_ENTRY gs_KuTestCases[] =
 {
-    {   L"KNodeTableTest",              KNodeTableTest,         L"BVT", L"KNodeTable unit test"}
+    {   "KNodeTableTest",              KNodeTableTest,         "BVT", "KNodeTable unit test"}
 };

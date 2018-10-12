@@ -19,22 +19,22 @@ namespace PyHost
         // C++ -> Python
         //
         Common::ErrorCode Execute(
-            std::wstring const & moduleName, 
-            std::wstring const & funcName, 
-            std::vector<std::wstring> const & args);
+            std::string const & moduleName, 
+            std::string const & funcName, 
+            std::vector<std::string> const & args);
 
         Common::ErrorCode ExecuteIfFound(
-            std::wstring const & moduleName, 
-            std::wstring const & funcName, 
-            std::vector<std::wstring> const & args);
+            std::string const & moduleName, 
+            std::string const & funcName, 
+            std::vector<std::string> const & args);
 
     public:
         //
         // Python -> C++
         //
 
-        DECLARE_PY_CALLBACK( SetNodeIdOwnership, std::wstring const &, std::wstring const & )
-        DECLARE_PY_CALLBACK( Broadcast, std::wstring const & )
-        DECLARE_PY_CALLBACK( Query, std::wstring const &, std::wstring & )
+        DECLARE_PY_CALLBACK( SetNodeIdOwnership, std::string const &, std::string const & )
+        DECLARE_PY_CALLBACK( Broadcast, std::string const & )
+        DECLARE_PY_CALLBACK( Query, std::string const &, std::string & )
     };
 }

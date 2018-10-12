@@ -278,9 +278,9 @@ EXTERN_C const IID IID_IKPhysicalLogManager;
             /* [in] */ IFabricAsyncOperationContext *const context) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE BeginCreateLogContainer( 
-            /* [in] */ LPCWSTR fullyQualifiedLogFilePath,
+            /* [in] */ LPCSTR fullyQualifiedLogFilePath,
             /* [in] */ KTL_LOG_ID logId,
-            /* [in] */ LPCWSTR logType,
+            /* [in] */ LPCSTR logType,
             /* [in] */ LONGLONG logSize,
             /* [in] */ ULONG maxAllowedStreams,
             /* [in] */ ULONG maxRecordSize,
@@ -299,7 +299,7 @@ EXTERN_C const IID IID_IKPhysicalLogManager;
             /* [out] */ IFabricAsyncOperationContext **const context) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE BeginOpenLogContainer( 
-            /* [in] */ LPCWSTR fullyQualifiedLogFilePath,
+            /* [in] */ LPCSTR fullyQualifiedLogFilePath,
             /* [in] */ KTL_LOG_ID logId,
             /* [in] */ IFabricAsyncOperationCallback *const callback,
             /* [out] */ IFabricAsyncOperationContext **const context) = 0;
@@ -309,7 +309,7 @@ EXTERN_C const IID IID_IKPhysicalLogManager;
             /* [out] */ IKPhysicalLogContainer **const result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE BeginDeleteLogContainer( 
-            /* [in] */ LPCWSTR fullyQualifiedLogFilePath,
+            /* [in] */ LPCSTR fullyQualifiedLogFilePath,
             /* [in] */ KTL_LOG_ID logId,
             /* [in] */ IFabricAsyncOperationCallback *const callback,
             /* [out] */ IFabricAsyncOperationContext **const context) = 0;
@@ -334,7 +334,7 @@ EXTERN_C const IID IID_IKPhysicalLogManager;
         
 #if !defined(PLATFORM_UNIX)
         virtual HRESULT STDMETHODCALLTYPE BeginGetVolumeIdFromPath( 
-            /* [in] */ LPCWSTR Path,
+            /* [in] */ LPCSTR Path,
             /* [in] */ IFabricAsyncOperationCallback *const callback,
             /* [out] */ IFabricAsyncOperationContext **const context) = 0;
         
@@ -384,9 +384,9 @@ EXTERN_C const IID IID_IKPhysicalLogManager;
         
         HRESULT ( STDMETHODCALLTYPE *BeginCreateLogContainer )( 
             IKPhysicalLogManager * This,
-            /* [in] */ LPCWSTR fullyQualifiedLogFilePath,
+            /* [in] */ LPCSTR fullyQualifiedLogFilePath,
             /* [in] */ KTL_LOG_ID logId,
-            /* [in] */ LPCWSTR logType,
+            /* [in] */ LPCSTR logType,
             /* [in] */ LONGLONG logSize,
             /* [in] */ ULONG maxAllowedStreams,
             /* [in] */ ULONG maxRecordSize,
@@ -408,7 +408,7 @@ EXTERN_C const IID IID_IKPhysicalLogManager;
         
         HRESULT ( STDMETHODCALLTYPE *BeginOpenLogContainer )( 
             IKPhysicalLogManager * This,
-            /* [in] */ LPCWSTR fullyQualifiedLogFilePath,
+            /* [in] */ LPCSTR fullyQualifiedLogFilePath,
             /* [in] */ KTL_LOG_ID logId,
             /* [in] */ IFabricAsyncOperationCallback *const callback,
             /* [out] */ IFabricAsyncOperationContext **const context);
@@ -420,7 +420,7 @@ EXTERN_C const IID IID_IKPhysicalLogManager;
         
         HRESULT ( STDMETHODCALLTYPE *BeginDeleteLogContainer )( 
             IKPhysicalLogManager * This,
-            /* [in] */ LPCWSTR fullyQualifiedLogFilePath,
+            /* [in] */ LPCSTR fullyQualifiedLogFilePath,
             /* [in] */ KTL_LOG_ID logId,
             /* [in] */ IFabricAsyncOperationCallback *const callback,
             /* [out] */ IFabricAsyncOperationContext **const context);
@@ -450,7 +450,7 @@ EXTERN_C const IID IID_IKPhysicalLogManager;
 #if !defined(PLATFORM_UNIX)
         HRESULT ( STDMETHODCALLTYPE *BeginGetVolumeIdFromPath )( 
             IKPhysicalLogManager * This,
-            /* [in] */ LPCWSTR Path,
+            /* [in] */ LPCSTR Path,
             /* [in] */ IFabricAsyncOperationCallback *const callback,
             /* [out] */ IFabricAsyncOperationContext **const context);
         
@@ -564,8 +564,8 @@ EXTERN_C const IID IID_IKPhysicalLogContainer;
         virtual HRESULT STDMETHODCALLTYPE BeginCreateLogStream( 
             /* [in] */ KTL_LOG_STREAM_ID logStreamId,
             /* [in] */ KTL_LOG_STREAM_TYPE_ID logStreamType,
-            /* [in] */ LPCWSTR optionalLogStreamAlias,
-            /* [in] */ LPCWSTR path,
+            /* [in] */ LPCSTR optionalLogStreamAlias,
+            /* [in] */ LPCSTR path,
             /* [in] */ IKBuffer *const optionalSecurityInfo,
             /* [in] */ LONGLONG maximumStreamSize,
             /* [in] */ ULONG maximumBlockSize,
@@ -595,7 +595,7 @@ EXTERN_C const IID IID_IKPhysicalLogContainer;
             /* [out] */ IKPhysicalLogStream **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE BeginAssignAlias( 
-            /* [in] */ LPCWSTR alias,
+            /* [in] */ LPCSTR alias,
             /* [in] */ KTL_LOG_STREAM_ID logStreamId,
             /* [in] */ IFabricAsyncOperationCallback *callback,
             /* [out] */ IFabricAsyncOperationContext **context) = 0;
@@ -604,7 +604,7 @@ EXTERN_C const IID IID_IKPhysicalLogContainer;
             /* [in] */ IFabricAsyncOperationContext *context) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE BeginRemoveAlias( 
-            /* [in] */ LPCWSTR alias,
+            /* [in] */ LPCSTR alias,
             /* [in] */ IFabricAsyncOperationCallback *callback,
             /* [out] */ IFabricAsyncOperationContext **context) = 0;
         
@@ -612,7 +612,7 @@ EXTERN_C const IID IID_IKPhysicalLogContainer;
             /* [in] */ IFabricAsyncOperationContext *context) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE BeginResolveAlias( 
-            /* [in] */ LPCWSTR alias,
+            /* [in] */ LPCSTR alias,
             /* [in] */ IFabricAsyncOperationCallback *callback,
             /* [out] */ IFabricAsyncOperationContext **context) = 0;
         
@@ -655,8 +655,8 @@ EXTERN_C const IID IID_IKPhysicalLogContainer;
             IKPhysicalLogContainer * This,
             /* [in] */ KTL_LOG_STREAM_ID logStreamId,
             /* [in] */ KTL_LOG_STREAM_TYPE_ID logStreamType,
-            /* [in] */ LPCWSTR optionalLogStreamAlias,
-            /* [in] */ LPCWSTR path,
+            /* [in] */ LPCSTR optionalLogStreamAlias,
+            /* [in] */ LPCSTR path,
             /* [in] */ IKBuffer *const optionalSecurityInfo,
             /* [in] */ LONGLONG maximumStreamSize,
             /* [in] */ ULONG maximumBlockSize,
@@ -692,7 +692,7 @@ EXTERN_C const IID IID_IKPhysicalLogContainer;
         
         HRESULT ( STDMETHODCALLTYPE *BeginAssignAlias )( 
             IKPhysicalLogContainer * This,
-            /* [in] */ LPCWSTR alias,
+            /* [in] */ LPCSTR alias,
             /* [in] */ KTL_LOG_STREAM_ID logStreamId,
             /* [in] */ IFabricAsyncOperationCallback *callback,
             /* [out] */ IFabricAsyncOperationContext **context);
@@ -703,7 +703,7 @@ EXTERN_C const IID IID_IKPhysicalLogContainer;
         
         HRESULT ( STDMETHODCALLTYPE *BeginRemoveAlias )( 
             IKPhysicalLogContainer * This,
-            /* [in] */ LPCWSTR alias,
+            /* [in] */ LPCSTR alias,
             /* [in] */ IFabricAsyncOperationCallback *callback,
             /* [out] */ IFabricAsyncOperationContext **context);
         
@@ -713,7 +713,7 @@ EXTERN_C const IID IID_IKPhysicalLogContainer;
         
         HRESULT ( STDMETHODCALLTYPE *BeginResolveAlias )( 
             IKPhysicalLogContainer * This,
-            /* [in] */ LPCWSTR alias,
+            /* [in] */ LPCSTR alias,
             /* [in] */ IFabricAsyncOperationCallback *callback,
             /* [out] */ IFabricAsyncOperationContext **context);
         

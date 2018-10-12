@@ -29,7 +29,7 @@ void PerformanceCounterSet::AddCounter(PerformanceCounterId counterId, Performan
     counterTypes_[counterId] = counterType;
 }
 
-HRESULT PerformanceCounterSet::CreateCounterSetInstance(std::wstring const & instanceName, bool allocateCounterMemory, bool avoidAssert, PerformanceCounterSetInstance* &counterSetInstance)
+HRESULT PerformanceCounterSet::CreateCounterSetInstance(std::string const & instanceName, bool allocateCounterMemory, bool avoidAssert, PerformanceCounterSetInstance* &counterSetInstance)
 {
     HRESULT hresult;
     counterSetInstance = nullptr;
@@ -40,7 +40,7 @@ HRESULT PerformanceCounterSet::CreateCounterSetInstance(std::wstring const & ins
     return hresult;
 }
 
-std::shared_ptr<PerformanceCounterSetInstance> PerformanceCounterSet::CreateCounterSetInstance(std::wstring const & instanceName)
+std::shared_ptr<PerformanceCounterSetInstance> PerformanceCounterSet::CreateCounterSetInstance(std::string const & instanceName)
 {
     PerformanceCounterSetInstance *perfcounterSetInstance; 
     CreateCounterSetInstance(instanceName, true, false, perfcounterSetInstance);

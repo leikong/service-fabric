@@ -16,7 +16,7 @@ namespace Transport
         IListenSocket(
             Common::Endpoint const & endpoint,
             AcceptCompleteCallback && acceptCompleteCallback,
-            std::wstring const & traceId);
+            std::string const & traceId);
 
         virtual ~IListenSocket() = default; 
 
@@ -35,7 +35,7 @@ namespace Transport
 
         Common::Endpoint listenEndpoint_;
         const AcceptCompleteCallback acceptCompleteCallback_;
-        const std::wstring traceId_;
+        const std::string traceId_;
         Common::Socket listenSocket_;
         Common::Socket acceptedSocket_;
         Common::Endpoint acceptedRemoteEndpoint_;

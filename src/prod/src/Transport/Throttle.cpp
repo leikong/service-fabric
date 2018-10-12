@@ -6,8 +6,8 @@
 #include "stdafx.h"
 #include "Common/FabricGlobals.h"
 
-#define PERF_COUNTER_OBJECT_PROCESS L"Process"
-#define PERF_COUNTER_THREAD_COUNT L"Thread Count"
+#define PERF_COUNTER_OBJECT_PROCESS "Process"
+#define PERF_COUNTER_THREAD_COUNT "Thread Count"
 
 using namespace Transport;
 using namespace Common;
@@ -149,7 +149,7 @@ void Throttle::EnableInternal()
         return;
     }
 
-    perfCounters_ = PerfCounters::CreateInstance(wformatString("{0}", ::GetCurrentProcessId()));
+    perfCounters_ = PerfCounters::CreateInstance(formatString.L("{0}", ::GetCurrentProcessId()));
 
     monitorTimer_ = Timer::Create(
         MonitorTimerTag,

@@ -54,34 +54,34 @@ namespace Common
         {
             switch (e)
             {
-            case FindByThumbprint: w << L"FindByThumbprint"; return;
+            case FindByThumbprint: w << "FindByThumbprint"; return;
 
-            case FindBySubjectName: w << L"FindBySubjectName"; return;
+            case FindBySubjectName: w << "FindBySubjectName"; return;
 
-            case FindByExtension: w << L"FindByExtension"; return;
+            case FindByExtension: w << "FindByExtension"; return;
 
-            case FindByCommonName: w << L"FindByCommonName"; return;
+            case FindByCommonName: w << "FindByCommonName"; return;
 
             default:
                 w << "X509FindType(" << static_cast<int>(e) << ')';
             }
         }
 
-        Common::ErrorCode Parse(std::wstring const & inputString, __out Enum & result)
+        Common::ErrorCode Parse(std::string const & inputString, __out Enum & result)
         {
-            if (Common::StringUtility::AreEqualCaseInsensitive(inputString, L"FindByThumbprint"))
+            if (Common::StringUtility::AreEqualCaseInsensitive(inputString, "FindByThumbprint"))
             {
                 result = Enum::FindByThumbprint;
                 return Common::ErrorCode::Success();
             }
 
-            if (Common::StringUtility::AreEqualCaseInsensitive(inputString, L"FindBySubjectName"))
+            if (Common::StringUtility::AreEqualCaseInsensitive(inputString, "FindBySubjectName"))
             {
                 result = Enum::FindBySubjectName;
                 return Common::ErrorCode::Success();
             }
 
-            if (StringUtility::AreEqualCaseInsensitive(inputString, L"FindByExtension"))
+            if (StringUtility::AreEqualCaseInsensitive(inputString, "FindByExtension"))
             {
                 result = Enum::FindByExtension;
                 return ErrorCode::Success();
@@ -89,16 +89,16 @@ namespace Common
 
             return Common::ErrorCodeValue::InvalidX509FindType;
         }
-		std::wstring EnumToString(Enum value)
+		std::string EnumToString(Enum value)
 		{
 			switch (value)
 			{
 			case FindBySubjectName:
-				return L"FindBySubjectName";
+				return "FindBySubjectName";
 			case FindByCommonName:
-				return L"FindByCommonName";
+				return "FindByCommonName";
 			default:
-				return L"FindByThumbprint";
+				return "FindByThumbprint";
 			}
 		}
     }

@@ -55,7 +55,7 @@ namespace Common
     public:
         virtual ~AsyncOperation(void);
 
-        __declspec(property(get=get_AsyncOperationTraceId)) std::wstring const & AsyncOperationTraceId;
+        __declspec(property(get=get_AsyncOperationTraceId)) std::string const & AsyncOperationTraceId;
 
         // returns the ErrorCode from the result of AsyncOperation
         __declspec(property(get=get_Error)) ErrorCode const & Error;
@@ -68,7 +68,7 @@ namespace Common
         __declspec(property(get=get_IsCancelRequested)) bool IsCancelRequested;
         __declspec(property(get=get_FailedSynchronously)) bool FailedSynchronously;
 
-        inline std::wstring const & AsyncOperation::get_AsyncOperationTraceId() const
+        inline std::string const & AsyncOperation::get_AsyncOperationTraceId() const
         {
             return traceId_;
         }
@@ -234,7 +234,7 @@ namespace Common
         
         void Cleanup(AsyncOperationSPtr const & thisSPtr);
 
-        std::wstring traceId_;
+        std::string traceId_;
         bool skipCompleteOnCancel_;
         AsyncOperationState state_;
         AsyncCallback callback_;

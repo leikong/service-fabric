@@ -12,71 +12,71 @@ namespace Common
         DENY_COPY(AsyncWorkJobQueuePerfCounters)
     public:
         BEGIN_COUNTER_SET_DEFINITION(
-            L"9FB94052-4270-460A-BB68-73C37D90BC73",
-            L"AsyncJobQueue",
-            L"Counters for AsyncJobQueue used by Service Fabric Components",
+            "9FB94052-4270-460A-BB68-73C37D90BC73",
+            "AsyncJobQueue",
+            "Counters for AsyncJobQueue used by Service Fabric Components",
             PerformanceCounterSetInstanceType::Multiple)
             COUNTER_DEFINITION(
                 1,
                 PerformanceCounterType::RateOfCountPerSecond64,
-                L"# Items in the job queue",
-                L"Number of items in the job queue")
+                "# Items in the job queue",
+                "Number of items in the job queue")
             COUNTER_DEFINITION(
                 2,
                 PerformanceCounterType::RateOfCountPerSecond64,
-                L"# Items/Second failed to be inserted into the job queue",
-                L"Number of items failed to be inserted into the job queue per second, because the job queue was full")
+                "# Items/Second failed to be inserted into the job queue",
+                "Number of items failed to be inserted into the job queue per second, because the job queue was full")
             COUNTER_DEFINITION(
                 3,
                 PerformanceCounterType::AverageBase,
-                L"Avg. time in ms an item spends in the queue/Operation Base",
-                L"Base counter for measuring the average time each job queue item spends in the queue",
+                "Avg. time in ms an item spends in the queue/Operation Base",
+                "Base counter for measuring the average time each job queue item spends in the queue",
                 noDisplay)
             COUNTER_DEFINITION_WITH_BASE(
                 4,
                 3,
                 PerformanceCounterType::AverageCount64,
-                L"Avg. time (ms) an item spends in the job queue until completed/Operation",
-                L"The average time each job queue item spends in the job queue until completed (ms)")
+                "Avg. time (ms) an item spends in the job queue until completed/Operation",
+                "The average time each job queue item spends in the job queue until completed (ms)")
             COUNTER_DEFINITION(
                 5,
                 PerformanceCounterType::RateOfCountPerSecond64,
-                L"# Items/Second inserted into the job queue",
-                L"Number of items inserted into the job queue per second")
+                "# Items/Second inserted into the job queue",
+                "Number of items inserted into the job queue per second")
             COUNTER_DEFINITION(
                 6,
                 PerformanceCounterType::RateOfCountPerSecond64,
-                L"# Items completed synchronously",
-                L"Number of items that completed work synchronously")
+                "# Items completed synchronously",
+                "Number of items that completed work synchronously")
             COUNTER_DEFINITION(
                 7,
                 PerformanceCounterType::RateOfCountPerSecond64,
-                L"# Items completed asynchronously",
-                L"Number of items that completed work asynchronously")
+                "# Items completed asynchronously",
+                "Number of items that completed work asynchronously")
             COUNTER_DEFINITION(
                 8,
                 PerformanceCounterType::AverageBase,
-                L"Avg. time (ms) an item spends in the queue until work is started/Operation Base",
-                L"Base counter for measuring the average time each job queue item spends in the queue before work is started",
+                "Avg. time (ms) an item spends in the queue until work is started/Operation Base",
+                "Base counter for measuring the average time each job queue item spends in the queue before work is started",
                 noDisplay)
             COUNTER_DEFINITION_WITH_BASE(
                 9,
                 8,
                 PerformanceCounterType::AverageCount64,
-                L"Avg. time (ms) an item spends in the queue before work is started/Operation",
-                L"The average time each job queue item spends in the queue before work is started (ms)")
+                "Avg. time (ms) an item spends in the queue before work is started/Operation",
+                "The average time each job queue item spends in the queue before work is started (ms)")
             COUNTER_DEFINITION(
                 10,
                 PerformanceCounterType::AverageBase,
-                L"Avg. time (ms) an item spends in the queue before async work is ready to complete/Operation Base",
-                L"Base counter for measuring the average time each job queue item spends in the queue before async work is ready to complete",
+                "Avg. time (ms) an item spends in the queue before async work is ready to complete/Operation Base",
+                "Base counter for measuring the average time each job queue item spends in the queue before async work is ready to complete",
                 noDisplay)
             COUNTER_DEFINITION_WITH_BASE(
                 11,
                 10,
                 PerformanceCounterType::AverageCount64,
-                L"Avg. time (ms) an item spends in the queue before async work is ready to complete/Operation",
-                L"The average time each job queue item spends in the queue before async work is ready to complete (ms)")
+                "Avg. time (ms) an item spends in the queue before async work is ready to complete/Operation",
+                "The average time each job queue item spends in the queue before async work is ready to complete (ms)")
         END_COUNTER_SET_DEFINITION()
 
         DECLARE_COUNTER_INSTANCE(NumberOfItems)
@@ -106,8 +106,8 @@ namespace Common
         END_COUNTER_SET_INSTANCE()
 
         static std::shared_ptr<AsyncWorkJobQueuePerfCounters> CreateInstance(
-            std::wstring const & ownerName,
-            std::wstring const & ownerInstance);
+            std::string const & ownerName,
+            std::string const & ownerInstance);
 
     public:
         void OnItemAdded();

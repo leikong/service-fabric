@@ -8,5 +8,5 @@
 NTSTATUS
 KStreamTest(
     __in int argc, 
-    __in_ecount(argc) WCHAR* args[]
+    __in_ecount(argc) CHAR* args[]
     );

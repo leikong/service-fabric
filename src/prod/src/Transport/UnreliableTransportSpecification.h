@@ -13,10 +13,10 @@ namespace Transport
 
     public:
         UnreliableTransportSpecification(
-            std::wstring const & name,
-            std::wstring const & source,
-            std::wstring const & destination, 
-            std::wstring const & actionFilter, 
+            std::string const & name,
+            std::string const & source,
+            std::string const & destination, 
+            std::string const & actionFilter, 
             double probabilityToApply, 
             Common::TimeSpan delay, 
             Common::TimeSpan delaySpan,
@@ -24,9 +24,9 @@ namespace Transport
             int applyCount = -1,
             Common::StringMap const & filters = Common::StringMap());
 
-        bool Match(std::wstring const & source, std::wstring const & destination, std::wstring const & action);
+        bool Match(std::string const & source, std::string const & destination, std::string const & action);
         
-        bool Match(std::wstring const & source, std::wstring const & destination, Transport::Message const & message);
+        bool Match(std::string const & source, std::string const & destination, Transport::Message const & message);
 
         Common::TimeSpan GetDelay();
 
@@ -34,15 +34,15 @@ namespace Transport
 
         void WriteTo(Common::TextWriter & w, Common::FormatOptions const &) const;
 
-        std::wstring const & GetName() const { return name_; }
+        std::string const & GetName() const { return name_; }
 
-        static Common::WStringLiteral const MatchAll;
+        static Common::StringLiteral const MatchAll;
 
     private:
-        std::wstring name_;
-        std::wstring source_;
-        std::wstring destination_;
-        std::wstring action_;
+        std::string name_;
+        std::string source_;
+        std::string destination_;
+        std::string action_;
         double probabilityToApply_;
         Common::TimeSpan delay_;
         double delaySpan_;

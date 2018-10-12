@@ -168,9 +168,9 @@ WriteAndCount(
 {
     NTSTATUS LocalStatus = STATUS_SUCCESS;
 #if !defined(PLATFORM_UNIX)
-    PCWCHAR Path = L"\\SystemRoot\\temp\\KTextTest.txt";
+    PCCHAR Path = "\\SystemRoot\\temp\\KTextTest.txt";
 #else
-    PCWCHAR Path = L"/tmp/KTextTest.txt";
+    PCCHAR Path = "/tmp/KTextTest.txt";
 #endif
 
     CharCount = 0;
@@ -256,7 +256,7 @@ WriteAndCount(
                 return(LocalStatus);
             }
 
-            CharCount += Line.Length()/sizeof(WCHAR);
+            CharCount += Line.Length()/sizeof(CHAR);
         }
 
         if (TmpCharCount && TmpCharCount != CharCount)
@@ -279,7 +279,7 @@ WriteAndCount(
 NTSTATUS
 KtlTextTest(
     __in int argc,
-    __in_ecount(argc) WCHAR* args[]
+    __in_ecount(argc) CHAR* args[]
     )
 
 {
@@ -298,7 +298,7 @@ KtlTextTest(
 
     CmdLineParser Parser(KtlSystem::GlobalNonPagedAllocator());
     Parameter *Param;
-    PCWCHAR Path = nullptr;
+    PCCHAR Path = nullptr;
     BOOLEAN DefaultTest = TRUE;
     ULONG i;
     ULONG CharCount;
@@ -309,7 +309,7 @@ KtlTextTest(
         {
             Param = Parser.GetParam( i );
 
-            if ( _wcsicmp(Param->_Name, L"Path") == 0 )
+            if ( strcasecmp(Param->_Name, "Path") == 0 )
             {
 
 
@@ -420,7 +420,7 @@ KtlTextTest(
             return(LocalStatus);
         }
 
-        PWCHAR CharPtr = (PWCHAR) Buffer->GetBuffer();
+        PCHAR CharPtr = (PCHAR) Buffer->GetBuffer();
 
         //
         // Set the first character to the byte order mark.
@@ -436,7 +436,7 @@ KtlTextTest(
 
         LocalStatus = RtlMultiByteToUnicodeN(
             CharPtr,
-            i - sizeof(WCHAR),
+            i - sizeof(CHAR),
             nullptr,
             TestData,
             sizeof(TestData) -1
@@ -462,7 +462,7 @@ KtlTextTest(
         // Set the buffer to a unicode file with no characters.  This should succeed.
         //
 
-        Buffer->SetSize(sizeof(WCHAR));
+        Buffer->SetSize(sizeof(CHAR));
 
         LocalStatus = WriteAndCount( Buffer, i, CharCount);
 
@@ -476,9 +476,9 @@ KtlTextTest(
 
 
 #if !defined(PLATFORM_UNIX)
-        PCWCHAR Path1 = L"\\SystemRoot\\temp\\KTextTest.txt";
+        PCCHAR Path1 = "\\SystemRoot\\temp\\KTextTest.txt";
 #else
-        PCWCHAR Path1 = L"/tmp/KTextTest.txt";
+        PCCHAR Path1 = "/tmp/KTextTest.txt";
 #endif
 
         LocalStatus = KNt::DeleteFile(Path1);
@@ -562,7 +562,7 @@ KtlTextTest(
                 }
 
                 i++;
-                CharCount += Line.Length()/sizeof(WCHAR);
+                CharCount += Line.Length()/sizeof(CHAR);
             }
 
             KTestPrintf("File has %d lines and %d characters\n", i, CharCount);

@@ -23,12 +23,12 @@ namespace Transport
                 Common::TimeSpan expiration,
                 TransportPriority::Enum priority = TransportPriority::Normal);
 
-        virtual std::wstring const & Address() const = 0;
+        virtual std::string const & Address() const = 0;
 
-        virtual std::wstring const & LocalAddress() const = 0;
+        virtual std::string const & LocalAddress() const = 0;
 
-        virtual std::wstring const & Id() const = 0;
-        virtual std::wstring const & TraceId() const = 0; 
+        virtual std::string const & Id() const = 0;
+        virtual std::string const & TraceId() const = 0; 
 
         virtual bool IsAnonymous() const = 0;
 

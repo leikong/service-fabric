@@ -12,12 +12,12 @@ namespace Common
         DEFAULT_COPY_CONSTRUCTOR(SecureString)
 
     public:
-        static GlobalWString TracePlaceholder;
+        static GlobalString TracePlaceholder;
 
     public:
         SecureString();
-        explicit SecureString(std::wstring const & secureValue);
-        explicit SecureString(std::wstring && secureValue);
+        explicit SecureString(std::string const & secureValue);
+        explicit SecureString(std::string && secureValue);
         ~SecureString();
 
         bool operator == (SecureString const & other) const;
@@ -26,19 +26,19 @@ namespace Common
         SecureString const & operator = (SecureString const & other);
         SecureString const & operator = (SecureString && other);
 
-        std::wstring const & GetPlaintext() const;  
+        std::string const & GetPlaintext() const;  
 
         bool IsEmpty() const;
-        void Append(std::wstring const &);
+        void Append(std::string const &);
         void Append(SecureString const &);
-        void TrimTrailing(std::wstring const & trimChars);
-        void Replace(std::wstring const & stringToReplace, std::wstring const & stringToInsert);
+        void TrimTrailing(std::string const & trimChars);
+        void Replace(std::string const & stringToReplace, std::string const & stringToInsert);
 
         void WriteTo(Common::TextWriter& w, Common::FormatOptions const &) const;
 
     private:
         void Clear() const;
 
-        std::wstring value_;
+        std::string value_;
     };
 }

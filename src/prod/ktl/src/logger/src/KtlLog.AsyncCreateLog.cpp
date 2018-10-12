@@ -161,7 +161,7 @@ RvdLogManagerImp::RvdOnDiskLog::AsyncCreateLog::GateAcquireComplete(
 #if !defined(PLATFORM_UNIX)
     status = KVolumeNamespace::CreateFullyQualifiedRootDirectoryName(_Owner->_DiskId, fullyQualifiedDirName);
 #else
-    fullyQualifiedDirName = L"";
+    fullyQualifiedDirName = "";
     status = fullyQualifiedDirName.Status();
 #endif
     if (!NT_SUCCESS(status))
@@ -368,7 +368,7 @@ RvdLogManagerImp::RvdOnDiskLog::AsyncCreateLog::LogFileCreateComplete(
         KMemCpySafe(
             &masterBlk->CreationDirectory[0], 
             sizeof(masterBlk->CreationDirectory), 
-            (WCHAR*)_Owner->_FullyQualifiedLogName, 
+            (CHAR*)_Owner->_FullyQualifiedLogName, 
             _Owner->_FullyQualifiedLogName.Length());
     }
     
@@ -381,7 +381,7 @@ RvdLogManagerImp::RvdOnDiskLog::AsyncCreateLog::LogFileCreateComplete(
 
     // Write LogType into master block
     ULONG lenSrc = _LogType->Length();
-    ULONG lenDest = (RvdLogManager::AsyncCreateLog::MaxLogTypeLength) * sizeof(WCHAR);
+    ULONG lenDest = (RvdLogManager::AsyncCreateLog::MaxLogTypeLength) * sizeof(CHAR);
     if (lenSrc > lenDest)
     {
         lenSrc = lenDest;
@@ -392,13 +392,13 @@ RvdLogManagerImp::RvdOnDiskLog::AsyncCreateLog::LogFileCreateComplete(
         lenDest,
         _LogType->Buffer(),
         lenSrc);
-    masterBlk->LogType[(lenDest-1)/sizeof(WCHAR)] = 0;
+    masterBlk->LogType[(lenDest-1)/sizeof(CHAR)] = 0;
 
     KMemCpySafe(
         &_Owner->_LogType[0], 
         sizeof(_Owner->_LogType), 
         &masterBlk->LogType[0], 
-        RvdLogManager::AsyncCreateLog::MaxLogTypeLength * sizeof(WCHAR));
+        RvdLogManager::AsyncCreateLog::MaxLogTypeLength * sizeof(CHAR));
 
     ULONG seed = (ULONG)KNt::GetTickCount64();
     for (int i = 0; i < RvdDiskLogConstants::SignatureULongs; i++) 

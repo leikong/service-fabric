@@ -55,12 +55,12 @@ namespace Common
         static void LoadConfiguration(Config & config);        
         static void Test_ReloadConfiguration(Config & config);
 
-        static void GenerateManifest(std::wstring const & path, std::wstring const & targetFile);
+        static void GenerateManifest(std::string const & path, std::string const & targetFile);
 
-        virtual bool OnUpdate(std::wstring const & section, std::wstring const & key);
-        virtual bool CheckUpdate(std::wstring const & section, std::wstring const & key, std::wstring const & value, bool isEncrypted);
+        virtual bool OnUpdate(std::string const & section, std::string const & key);
+        virtual bool CheckUpdate(std::string const & section, std::string const & key, std::string const & value, bool isEncrypted);
 
-        std::wstring const & GetTraceId() const
+        std::string const & GetTraceId() const
         {
             return traceId_;
         }
@@ -75,7 +75,7 @@ namespace Common
         
         void AddBitMapValue(StringLiteral mapName, uint key, std::string const & value);
 
-        bool AddFilter(TraceSinkType::Enum sinkType, std::wstring const & filter);
+        bool AddFilter(TraceSinkType::Enum sinkType, std::string const & filter);
 
         void WriteManifest(TraceManifestGenerator & manifest) const;
 
@@ -101,7 +101,7 @@ namespace Common
         void SetLinuxStructuredTraceEnabled(bool linuxStructuredTraceEnabled);
 #endif
 
-        void LoadConfiguration(Config & config, std::wstring const & section, bool isUpdate);
+        void LoadConfiguration(Config & config, std::string const & section, bool isUpdate);
 
         void Initialize();
 
@@ -122,7 +122,7 @@ namespace Common
 
         void InternalSetDefaultSamplingRatio(TraceSinkType::Enum sinkType, double samplingRatio);
 
-        bool InternalAddFilter(TraceSinkType::Enum TraceSinkType, std::wstring const & filter);
+        bool InternalAddFilter(TraceSinkType::Enum TraceSinkType, std::string const & filter);
 
         bool InternalAddFilter(TraceSinkType::Enum sinkType, std::string const & taskName, std::string const & eventName, LogLevel::Enum level, int samplingRatio);
 
@@ -134,7 +134,7 @@ namespace Common
         static TraceProvider* Singleton;
 
         std::string name_;
-        std::wstring traceId_;
+        std::string traceId_;
         std::string message_;
         std::string symbol_;
         Guid guid_;

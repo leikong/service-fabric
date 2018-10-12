@@ -37,8 +37,8 @@ namespace Common
 
         void WriteTo(TextWriter&, FormatOptions const &) const;
 
-        std::wstring ToString() const;
-        static ErrorCode FromString(std::wstring const & fabricVersionInstanceString, __out FabricVersionInstance & fabricVersionInstance);
+        std::string ToString() const;
+        static ErrorCode FromString(std::string const & fabricVersionInstanceString, __out FabricVersionInstance & fabricVersionInstance);
 
         static std::string AddField(TraceEvent & traceEvent, std::string const & name);
         void FillEventData(TraceEventContext & context) const;        
@@ -46,7 +46,7 @@ namespace Common
         FABRIC_FIELDS_02(version_, instanceId_);
 
     public:
-        static GlobalWString Delimiter;
+        static GlobalString Delimiter;
 
     private:
         FabricVersion version_;

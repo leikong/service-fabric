@@ -5,7 +5,7 @@
 
 #include "winuser.h"
 
-const WCHAR wine_casemap_lower[3807] =
+const CHAR wine_casemap_lower[3807] =
 {
         /* index */
         0x01bf, 0x02bf, 0x03bf, 0x044f, 0x054f, 0x064f, 0x0100, 0x0100,
@@ -2654,15 +2654,15 @@ const unsigned short wine_wctype_table[17152] =
         0x0000, 0xb220, 0xb220, 0xb220, 0xb200, 0xb200, 0x0000, 0x0000
 };
 
-static unsigned short get_char_typeW( WCHAR ch )
+static unsigned short get_char_typeW( CHAR ch )
 {
     extern const unsigned short wine_wctype_table[];
     return wine_wctype_table[wine_wctype_table[ch >> 8] + (ch & 0xff)];
 }
 
-static WCHAR tolowerW( WCHAR ch )
+static CHAR tolowerW( CHAR ch )
 {
-    extern const WCHAR wine_casemap_lower[];
+    extern const CHAR wine_casemap_lower[];
     return ch + wine_casemap_lower[wine_casemap_lower[ch >> 8] + (ch & 0xff)];
 }
 
@@ -2674,15 +2674,15 @@ CharLowerBuffA(
     __in DWORD len)
 {
     DWORD lenW;
-    WCHAR buffer[32];
-    WCHAR *strW = buffer;
+    CHAR buffer[32];
+    CHAR *strW = buffer;
 
     if (!str) return 0; /* YES */
 
     lenW = MultiByteToWideChar(CP_ACP, 0, str, len, NULL, 0);
-    if (lenW > sizeof(buffer)/sizeof(WCHAR))
+    if (lenW > sizeof(buffer)/sizeof(CHAR))
     {
-        strW = (WCHAR *) HeapAlloc(GetProcessHeap(), 0, lenW * sizeof(WCHAR));
+        strW = (CHAR *) HeapAlloc(GetProcessHeap(), 0, lenW * sizeof(CHAR));
         if (!strW) return 0;
     }
     MultiByteToWideChar(CP_ACP, 0, str, len, strW, lenW);
@@ -2696,7 +2696,7 @@ WINUSERAPI
 DWORD
 WINAPI
 CharLowerBuffW(
-    __inout_ecount(cchLength) LPWSTR str,
+    __inout_ecount(cchLength) LPSTR str,
     __in DWORD len)
 {
     DWORD ret = len;
@@ -2711,7 +2711,7 @@ WINAPI
 IsCharAlphaA(
     __in CHAR ch)
 {
-    WCHAR wch;
+    CHAR wch;
     MultiByteToWideChar(CP_ACP, 0, &ch, 1, &wch, 1);
     return IsCharAlphaW(wch);
 }
@@ -2720,7 +2720,7 @@ WINUSERAPI
 BOOL
 WINAPI
 IsCharAlphaW(
-    __in WCHAR ch)
+    __in CHAR ch)
 {
     return (get_char_typeW(ch) & C1_ALPHA) != 0;
 }

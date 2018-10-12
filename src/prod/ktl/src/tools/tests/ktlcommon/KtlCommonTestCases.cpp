@@ -26,10 +26,10 @@ Abstract:
 
 const KU_TEST_ENTRY gs_KuTestCases[] =
 {
-    {   L"KtlCommonTest",            KtlCommonTest,         L"BVT", L"A few common KTL tests"},
+    {   "KtlCommonTest",            KtlCommonTest,         "BVT", "A few common KTL tests"},
 #if !defined(PLATFORM_UNIX)
-    {   L"KtlTextTest",              KtlTextTest,           L"BVT", L"KTextFile object tests\n\t Optional: -Path [Full path name]"},
-    {   L"KNtMemoryMapTest",         KNtMemoryMapTest,      L"BVT", L"Tests for memory mapped file relevant functions in KNt"}
+    {   "KtlTextTest",              KtlTextTest,           "BVT", "KTextFile object tests\n\t Optional: -Path [Full path name]"},
+    {   "KNtMemoryMapTest",         KNtMemoryMapTest,      "BVT", "Tests for memory mapped file relevant functions in KNt"}
 #endif
 };
 

@@ -21,14 +21,14 @@ namespace Common
     BOOST_AUTO_TEST_CASE(TestEscapedCombinePath)
     {
 #if !defined(PLATFORM_UNIX)
-        std::wstring path1 = L"c:\\Some directory location here\\logDir";
-        std::wstring path2 = L"MyFileName.pid";
+        std::string path1 = "c:\\Some directory location here\\logDir";
+        std::string path2 = "MyFileName.pid";
 
-        std::wstring combinedPath = Path::Combine(path1, path2, true /*escapePath*/);
-        VERIFY_IS_TRUE(combinedPath == L"\"c:\\Some directory location here\\logDir\\MyFileName.pid\"");
+        std::string combinedPath = Path::Combine(path1, path2, true /*escapePath*/);
+        VERIFY_IS_TRUE(combinedPath == "\"c:\\Some directory location here\\logDir\\MyFileName.pid\"");
 
         combinedPath = Path::Combine(path1, path2, false /*escapePath*/);
-        VERIFY_IS_TRUE(combinedPath == L"c:\\Some directory location here\\logDir\\MyFileName.pid");
+        VERIFY_IS_TRUE(combinedPath == "c:\\Some directory location here\\logDir\\MyFileName.pid");
 
         std::string path1MultiByte = "c:\\Some directory location here\\logDir";
         std::string path2MultiByte = "MyFileName.pid";
@@ -39,30 +39,30 @@ namespace Common
         combinedPathMultiByte = Path::Combine(path1MultiByte, path2MultiByte, false /*escapePath*/);
         VERIFY_IS_TRUE(combinedPathMultiByte == "c:\\Some directory location here\\logDir\\MyFileName.pid");
 
-        path1 = L"";
-        path2 = L"c:\\Some directory location here\\logDir";
+        path1 = "";
+        path2 = "c:\\Some directory location here\\logDir";
         combinedPath = Path::Combine(path1, path2, true /*escapePath*/);
-        VERIFY_IS_TRUE(combinedPath == L"\"c:\\Some directory location here\\logDir\"");
+        VERIFY_IS_TRUE(combinedPath == "\"c:\\Some directory location here\\logDir\"");
 
-        path1 = L"c:\\Some directory location here\\logDir";
-        path2 = L"";
+        path1 = "c:\\Some directory location here\\logDir";
+        path2 = "";
         combinedPath = Path::Combine(path1, path2, true /*escapePath*/);
-        VERIFY_IS_TRUE(combinedPath == L"\"c:\\Some directory location here\\logDir\"");
+        VERIFY_IS_TRUE(combinedPath == "\"c:\\Some directory location here\\logDir\"");
 
-        path1 = L"";
-        path2 = L"";
+        path1 = "";
+        path2 = "";
         combinedPath = Path::Combine(path1, path2, true /*escapePath*/);
-        VERIFY_IS_TRUE(combinedPath == L"");
+        VERIFY_IS_TRUE(combinedPath == "");
 #else
 
-        std::wstring path1 = L"//Some_directory_location_here//logDir";
-        std::wstring path2 = L"MyFileName.pid";
+        std::string path1 = "//Some_directory_location_here//logDir";
+        std::string path2 = "MyFileName.pid";
 
-        std::wstring combinedPath = Path::Combine(path1, path2, true /*escapePath*/);
-        VERIFY_IS_TRUE(combinedPath == L"\"//Some_directory_location_here//logDir/MyFileName.pid\"");
+        std::string combinedPath = Path::Combine(path1, path2, true /*escapePath*/);
+        VERIFY_IS_TRUE(combinedPath == "\"//Some_directory_location_here//logDir/MyFileName.pid\"");
 
         combinedPath = Path::Combine(path1, path2, false /*escapePath*/);
-        VERIFY_IS_TRUE(combinedPath == L"//Some_directory_location_here//logDir/MyFileName.pid");
+        VERIFY_IS_TRUE(combinedPath == "//Some_directory_location_here//logDir/MyFileName.pid");
 
         std::string path1MultiByte = "//Some_directory_location_here//logDir";
         std::string path2MultiByte = "MyFileName.pid";
@@ -73,120 +73,120 @@ namespace Common
         combinedPathMultiByte = Path::Combine(path1MultiByte, path2MultiByte, false /*escapePath*/);
         VERIFY_IS_TRUE(combinedPathMultiByte == "//Some_directory_location_here//logDir/MyFileName.pid");
 
-        path1 = L"";
-        path2 = L"//Some_directory_location_here//logDir";
+        path1 = "";
+        path2 = "//Some_directory_location_here//logDir";
         combinedPath = Path::Combine(path1, path2, true /*escapePath*/);
-        VERIFY_IS_TRUE(combinedPath == L"\"//Some_directory_location_here//logDir\"");
+        VERIFY_IS_TRUE(combinedPath == "\"//Some_directory_location_here//logDir\"");
 
-        path1 = L"//Some_directory_location_here//logDir";
-        path2 = L"";
+        path1 = "//Some_directory_location_here//logDir";
+        path2 = "";
         combinedPath = Path::Combine(path1, path2, true /*escapePath*/);
-        VERIFY_IS_TRUE(combinedPath == L"\"//Some_directory_location_here//logDir\"");
+        VERIFY_IS_TRUE(combinedPath == "\"//Some_directory_location_here//logDir\"");
 
-        path1 = L"";
-        path2 = L"";
+        path1 = "";
+        path2 = "";
         combinedPath = Path::Combine(path1, path2, true /*escapePath*/);
-        VERIFY_IS_TRUE(combinedPath == L"");
+        VERIFY_IS_TRUE(combinedPath == "");
 
 #endif
     }
 
     BOOST_AUTO_TEST_CASE(ChangeExtensionTest)
     {
-        std::wstring path;
+        std::string path;
 
-        path = L"c:\\asdfsd\\pr.exe";
-        Path::ChangeExtension(path, L".com");
-        VERIFY_IS_TRUE(path == L"c:\\asdfsd\\pr.com");
+        path = "c:\\asdfsd\\pr.exe";
+        Path::ChangeExtension(path, ".com");
+        VERIFY_IS_TRUE(path == "c:\\asdfsd\\pr.com");
 
-        path = L"c:\\asdfsd\\pr.exe";
-        Path::ChangeExtension(path, L"com");
-        VERIFY_IS_TRUE(path == L"c:\\asdfsd\\pr.com");
+        path = "c:\\asdfsd\\pr.exe";
+        Path::ChangeExtension(path, "com");
+        VERIFY_IS_TRUE(path == "c:\\asdfsd\\pr.com");
     }
 
     BOOST_AUTO_TEST_CASE(GetDirectoryName)
     {
 #if !defined(PLATFORM_UNIX)
-        VERIFY_IS_TRUE(Path::GetDirectoryName(L"c:\\asdfs\\pr.exe") == L"c:\\asdfs");
-        VERIFY_IS_TRUE(Path::GetDirectoryName(L"\\\\asdfs\\share\\pr.exe") == L"\\\\asdfs\\share");
+        VERIFY_IS_TRUE(Path::GetDirectoryName("c:\\asdfs\\pr.exe") == "c:\\asdfs");
+        VERIFY_IS_TRUE(Path::GetDirectoryName("\\\\asdfs\\share\\pr.exe") == "\\\\asdfs\\share");
 #else
-        VERIFY_IS_TRUE(Path::GetDirectoryName(L"/asdfs/pr.exe") == L"/asdfs");
-        VERIFY_IS_TRUE(Path::GetDirectoryName(L"//asdfs/share/pr.exe") == L"//asdfs/share");
+        VERIFY_IS_TRUE(Path::GetDirectoryName("/asdfs/pr.exe") == "/asdfs");
+        VERIFY_IS_TRUE(Path::GetDirectoryName("//asdfs/share/pr.exe") == "//asdfs/share");
 #endif
     }
 
     BOOST_AUTO_TEST_CASE(GetFileName)
     {
 #if !defined(PLATFORM_UNIX)
-        VERIFY_IS_TRUE(Path::GetFileName(L"c:\\asdfs\\pr.exe") == L"pr.exe");
-        VERIFY_IS_TRUE(Path::GetFileName(L"\\\\asdfs\\share\\pr.exe") == L"pr.exe");
+        VERIFY_IS_TRUE(Path::GetFileName("c:\\asdfs\\pr.exe") == "pr.exe");
+        VERIFY_IS_TRUE(Path::GetFileName("\\\\asdfs\\share\\pr.exe") == "pr.exe");
 
-        VERIFY_IS_TRUE(Path::GetFileNameWithoutExtension(L"c:\\asdfs\\pr.exe") == L"pr");
-        VERIFY_IS_TRUE(Path::GetFileNameWithoutExtension(L"\\\\asdfs\\share\\pr.exe") == L"pr");
+        VERIFY_IS_TRUE(Path::GetFileNameWithoutExtension("c:\\asdfs\\pr.exe") == "pr");
+        VERIFY_IS_TRUE(Path::GetFileNameWithoutExtension("\\\\asdfs\\share\\pr.exe") == "pr");
 #else
-        VERIFY_IS_TRUE(Path::GetFileName(L"/asdfs/pr.exe") == L"pr.exe");
-        VERIFY_IS_TRUE(Path::GetFileName(L"//asdfs/share/pr.exe") == L"pr.exe");
+        VERIFY_IS_TRUE(Path::GetFileName("/asdfs/pr.exe") == "pr.exe");
+        VERIFY_IS_TRUE(Path::GetFileName("//asdfs/share/pr.exe") == "pr.exe");
 
-        VERIFY_IS_TRUE(Path::GetFileNameWithoutExtension(L"/asdfs/pr.exe") == L"pr");
-        VERIFY_IS_TRUE(Path::GetFileNameWithoutExtension(L"//asdfs/share/pr.exe") == L"pr");
+        VERIFY_IS_TRUE(Path::GetFileNameWithoutExtension("/asdfs/pr.exe") == "pr");
+        VERIFY_IS_TRUE(Path::GetFileNameWithoutExtension("//asdfs/share/pr.exe") == "pr");
 #endif
     }
 
     BOOST_AUTO_TEST_CASE(GetModuleFileName)
     {
-        std::wstring path = Path::GetModuleLocation(NULL);
+        std::string path = Path::GetModuleLocation(NULL);
 
-        WCHAR buffer[1024];
+        char buffer[1024];
         VERIFY_IS_TRUE(::GetModuleFileName(NULL, buffer, ARRAYSIZE(buffer)) != 0);
         VERIFY_IS_TRUE(path == buffer);
     }
 
     BOOST_AUTO_TEST_CASE(GetFilePathInModuleLocation)
     {
-        const std::wstring filename = L"hello.txt";
-        std::wstring path = Path::GetModuleLocation(NULL);
+        const std::string filename = "hello.txt";
+        std::string path = Path::GetModuleLocation(NULL);
 
-        WCHAR buffer[1024];
+        char buffer[1024];
         VERIFY_IS_TRUE(::GetModuleFileName(NULL, buffer, ARRAYSIZE(buffer)) != 0);
         ::PathRemoveFileSpec(buffer);
 
-        WCHAR bufferCombined[1024];
+        char bufferCombined[1024];
         ::PathCombine(bufferCombined, buffer, filename.c_str());
 
-        std::wstring pathInModuleLocation = Path::GetFilePathInModuleLocation(NULL, filename);
+        std::string pathInModuleLocation = Path::GetFilePathInModuleLocation(NULL, filename);
         VERIFY_IS_TRUE(pathInModuleLocation == bufferCombined);
     }
 
     BOOST_AUTO_TEST_CASE(ConvertToNtPathTest)
     {
 #if !defined(PLATFORM_UNIX)
-        VERIFY_IS_TRUE(Path::ConvertToNtPath(L"D:\\path") == L"\\\\?\\D:\\path");
-        VERIFY_IS_TRUE(Path::ConvertToNtPath(L"\\\\server\\share") == L"\\\\?\\UNC\\server\\share");
-        VERIFY_IS_TRUE(Path::ConvertToNtPath(L"D:\\path\\\\abc") == L"\\\\?\\D:\\path\\abc");
-        VERIFY_IS_TRUE(Path::ConvertToNtPath(L"\\\\?\\D:\\path") == L"\\\\?\\D:\\path");
-        VERIFY_IS_TRUE(Path::ConvertToNtPath(L"path") == L"path");
-        VERIFY_IS_TRUE(Path::ConvertToNtPath(L"D:\\path\\..\\abc") == L"D:\\path\\..\\abc");
+        VERIFY_IS_TRUE(Path::ConvertToNtPath("D:\\path") == "\\\\?\\D:\\path");
+        VERIFY_IS_TRUE(Path::ConvertToNtPath("\\\\server\\share") == "\\\\?\\UNC\\server\\share");
+        VERIFY_IS_TRUE(Path::ConvertToNtPath("D:\\path\\\\abc") == "\\\\?\\D:\\path\\abc");
+        VERIFY_IS_TRUE(Path::ConvertToNtPath("\\\\?\\D:\\path") == "\\\\?\\D:\\path");
+        VERIFY_IS_TRUE(Path::ConvertToNtPath("path") == "path");
+        VERIFY_IS_TRUE(Path::ConvertToNtPath("D:\\path\\..\\abc") == "D:\\path\\..\\abc");
 #else
-        VERIFY_IS_TRUE(Path::ConvertToNtPath(L"//server/share") == L"//server/share");
-        VERIFY_IS_TRUE(Path::ConvertToNtPath(L"/path/abc") == L"/path/abc");
-        VERIFY_IS_TRUE(Path::ConvertToNtPath(L"path/abc") == L"path/abc");
-        VERIFY_IS_TRUE(Path::ConvertToNtPath(L"path") == L"path");
+        VERIFY_IS_TRUE(Path::ConvertToNtPath("//server/share") == "//server/share");
+        VERIFY_IS_TRUE(Path::ConvertToNtPath("/path/abc") == "/path/abc");
+        VERIFY_IS_TRUE(Path::ConvertToNtPath("path/abc") == "path/abc");
+        VERIFY_IS_TRUE(Path::ConvertToNtPath("path") == "path");
 #endif
     }
 
     BOOST_AUTO_TEST_CASE(GetFullPathTest)
     {
-        std::wstring workingDirectory = L"test";
-        std::wstring fullPath = Path::Combine(Directory::GetCurrentDirectory(), workingDirectory);
+        std::string workingDirectory = "test";
+        std::string fullPath = Path::Combine(Directory::GetCurrentDirectory(), workingDirectory);
         VERIFY_IS_TRUE(Path::GetFullPath(workingDirectory) == fullPath);
 
 #if !defined(PLATFORM_UNIX)
-        VERIFY_IS_TRUE(Path::GetFullPath(L"c:\\test\\") == L"c:\\test");
-        VERIFY_IS_TRUE(Path::GetFullPath(L"c:\\test\\\\") == L"c:\\test");
+        VERIFY_IS_TRUE(Path::GetFullPath("c:\\test\\") == "c:\\test");
+        VERIFY_IS_TRUE(Path::GetFullPath("c:\\test\\\\") == "c:\\test");
 #else
-        VERIFY_IS_TRUE(Path::GetFullPath(L"./test") == fullPath);
-        VERIFY_IS_TRUE(Path::GetFullPath(L"test") == fullPath);
-        VERIFY_IS_TRUE(Path::GetFullPath(L"/home/test") == L"/home/test");
+        VERIFY_IS_TRUE(Path::GetFullPath("./test") == fullPath);
+        VERIFY_IS_TRUE(Path::GetFullPath("test") == fullPath);
+        VERIFY_IS_TRUE(Path::GetFullPath("/home/test") == "/home/test");
 #endif
     }
 
@@ -194,20 +194,20 @@ namespace Common
 #if !defined(PLATFORM_UNIX)
     BOOST_AUTO_TEST_CASE(GetPathRootTest)
     {
-        VERIFY_IS_TRUE(Path::GetPathRoot(L"c:") == L"c:");
-        VERIFY_IS_TRUE(Path::GetPathRoot(L"d:\\") == L"d:");
-        VERIFY_IS_TRUE(Path::GetPathRoot(L"e:\\test") == L"e:");
-        VERIFY_IS_TRUE(Path::GetPathRoot(L"F:\\test\\") == L"F:");
+        VERIFY_IS_TRUE(Path::GetPathRoot("c:") == "c:");
+        VERIFY_IS_TRUE(Path::GetPathRoot("d:\\") == "d:");
+        VERIFY_IS_TRUE(Path::GetPathRoot("e:\\test") == "e:");
+        VERIFY_IS_TRUE(Path::GetPathRoot("F:\\test\\") == "F:");
     }
 
     BOOST_AUTO_TEST_CASE(GetDriveLetterTest)
     {
-        VERIFY_IS_TRUE(Path::GetDriveLetter(L"c:") == L'c');
-        VERIFY_IS_TRUE(Path::GetDriveLetter(L"d:\\") == L'd');
-        VERIFY_IS_TRUE(Path::GetDriveLetter(L"e:\\test") == L'e');
-        VERIFY_IS_TRUE(Path::GetDriveLetter(L"F:\\test\\") == L'F');
-        VERIFY_IS_TRUE(Path::GetDriveLetter(L"\\") == NULL);
-        VERIFY_IS_TRUE(Path::GetDriveLetter(L"") == NULL);
+        VERIFY_IS_TRUE(Path::GetDriveLetter("c:") == 'c');
+        VERIFY_IS_TRUE(Path::GetDriveLetter("d:\\") == 'd');
+        VERIFY_IS_TRUE(Path::GetDriveLetter("e:\\test") == 'e');
+        VERIFY_IS_TRUE(Path::GetDriveLetter("F:\\test\\") == 'F');
+        VERIFY_IS_TRUE(Path::GetDriveLetter("\\") == NULL);
+        VERIFY_IS_TRUE(Path::GetDriveLetter("") == NULL);
     }
 #endif
 

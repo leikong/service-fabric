@@ -13,36 +13,36 @@ namespace ServiceModel
         Claim();
             
         Claim(
-            std::wstring const& claimType,
-            std::wstring const& issuer,
-            std::wstring const& originalIssuer,
-            std::wstring const& subject,
-            std::wstring const& value,
-            std::wstring const& valueType);
+            std::string const& claimType,
+            std::string const& issuer,
+            std::string const& originalIssuer,
+            std::string const& subject,
+            std::string const& value,
+            std::string const& valueType);
 
-        __declspec(property(get=get_ClaimType, put=set_ClaimType)) std::wstring const & ClaimType;
-        std::wstring const & get_ClaimType() const { return claimType_; }
-        void set_ClaimType(std::wstring const & value) { claimType_ = value; }
+        __declspec(property(get=get_ClaimType, put=set_ClaimType)) std::string const & ClaimType;
+        std::string const & get_ClaimType() const { return claimType_; }
+        void set_ClaimType(std::string const & value) { claimType_ = value; }
 
-        __declspec(property(get=get_Issuer, put=set_Issuer)) std::wstring const & Issuer;
-        std::wstring const & get_Issuer() const { return issuer_; }
-        void set_Issuer(std::wstring const & value) { issuer_ = value; }
+        __declspec(property(get=get_Issuer, put=set_Issuer)) std::string const & Issuer;
+        std::string const & get_Issuer() const { return issuer_; }
+        void set_Issuer(std::string const & value) { issuer_ = value; }
 
-        __declspec(property(get=get_OriginalIssuer, put=set_OriginalIssuer)) std::wstring const & OriginalIssuer;
-        std::wstring const & get_OriginalIssuer() const { return originalIssuer_; }
-        void set_OriginalIssuer(std::wstring const & value) { originalIssuer_ = value; }
+        __declspec(property(get=get_OriginalIssuer, put=set_OriginalIssuer)) std::string const & OriginalIssuer;
+        std::string const & get_OriginalIssuer() const { return originalIssuer_; }
+        void set_OriginalIssuer(std::string const & value) { originalIssuer_ = value; }
 
-        __declspec(property(get=get_Subject, put=set_Subject)) std::wstring const & Subject;
-        std::wstring const & get_Subject() const { return subject_; }
-        void set_Subject(std::wstring const & value) { claimType_ = value; }
+        __declspec(property(get=get_Subject, put=set_Subject)) std::string const & Subject;
+        std::string const & get_Subject() const { return subject_; }
+        void set_Subject(std::string const & value) { claimType_ = value; }
 
-        __declspec(property(get=get_Value, put=set_Value)) std::wstring const & Value;
-        std::wstring const & get_Value() const { return value_; }
-        void set_Value(std::wstring const & value) { value_ = value; }
+        __declspec(property(get=get_Value, put=set_Value)) std::string const & Value;
+        std::string const & get_Value() const { return value_; }
+        void set_Value(std::string const & value) { value_ = value; }
 
-        __declspec(property(get=get_ValueType, put=set_ValueType)) std::wstring const & ValueType;
-        std::wstring const & get_ValueType() const { return valueType_; }
-        void set_ValueType(std::wstring const & value) { valueType_ = value; }
+        __declspec(property(get=get_ValueType, put=set_ValueType)) std::string const & ValueType;
+        std::string const & get_ValueType() const { return valueType_; }
+        void set_ValueType(std::string const & value) { valueType_ = value; }
 
         void WriteTo(Common::TextWriter & w, Common::FormatOptions const &) const;
 
@@ -50,12 +50,12 @@ namespace ServiceModel
 
     private:
 
-        std::wstring claimType_;
-        std::wstring issuer_;
-        std::wstring originalIssuer_;
-        std::wstring subject_;
-        std::wstring value_;
-        std::wstring valueType_;
+        std::string claimType_;
+        std::string issuer_;
+        std::string originalIssuer_;
+        std::string subject_;
+        std::string value_;
+        std::string valueType_;
     };
 }
 

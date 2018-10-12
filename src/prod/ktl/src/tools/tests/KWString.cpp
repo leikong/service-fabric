@@ -1,1 +1,1 @@
-#include "../kwstring/KWStringTests.cpp"
+#include "../kstring/KWStringTests.cpp"

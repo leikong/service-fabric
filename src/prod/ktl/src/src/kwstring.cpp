@@ -2,7 +2,7 @@
 
 Module Name:
 
-    kwstring.cpp
+    kstring.cpp
 
 Abstract:
 
@@ -24,7 +24,7 @@ Revision History:
 
 #include <ktl.h>
 
-static WCHAR gs_Null = 0;
+static CHAR gs_Null = 0;
 
 
 KWString::~KWString(
@@ -87,7 +87,7 @@ KWString::KWString(
 
 KWString::KWString(
     __in KAllocator& Allocator,
-    __in_z const WCHAR* Source
+    __in_z const CHAR* Source
     )
     :   _Allocator(&Allocator)
 {
@@ -175,7 +175,7 @@ KWString::operator=(
     KFatal(Src.Length() * 2 < 0x10000);
     KFatal(Src.BufferSizeInChars() * 2 < 0x10000);
 
-    Tmp.Buffer = PWCHAR(Src);
+    Tmp.Buffer = PCHAR(Src);
     Tmp.Length = (USHORT) Src.Length() * 2;
     Tmp.MaximumLength = (USHORT) Src.BufferSizeInChars() * 2;
 
@@ -185,7 +185,7 @@ KWString::operator=(
 
 KWString&
 KWString::operator=(
-    __in_z const WCHAR* Source
+    __in_z const CHAR* Source
     )
 {
     UNICODE_STRING string;
@@ -223,7 +223,7 @@ KWString::operator+=(
 
 KWString&
 KWString::operator +=(
-    __in const WCHAR c
+    __in const CHAR c
     )
 {
     if (_String.Length + 2 < _String.MaximumLength)
@@ -237,7 +237,7 @@ KWString::operator +=(
         // We have to expand the current string in this
         // case as there is not enough room for one more wchar.
 
-        WCHAR Buf[2];
+        CHAR Buf[2];
         Buf[0] = c;
         Buf[1] = 0;
         *this += Buf;
@@ -298,10 +298,10 @@ Return Value:
     HRESULT hr;
     hr = UShortAdd(_String.Length, Addend.Length, &newString.MaximumLength);
     KInvariant(SUCCEEDED(hr));
-    hr = UShortAdd(newString.MaximumLength, sizeof(WCHAR), &newString.MaximumLength);
+    hr = UShortAdd(newString.MaximumLength, sizeof(CHAR), &newString.MaximumLength);
     KInvariant(SUCCEEDED(hr));
 
-    newString.Buffer = _newArray<WCHAR>(KTL_TAG_WSTRING, *_Allocator, newString.MaximumLength/sizeof(WCHAR));
+    newString.Buffer = _newArray<CHAR>(KTL_TAG_WSTRING, *_Allocator, newString.MaximumLength/sizeof(CHAR));
 
     if (!newString.Buffer) {
         SetConstructorStatus(STATUS_INSUFFICIENT_RESOURCES);
@@ -321,7 +321,7 @@ Return Value:
 
 KWString&
 KWString::operator+=(
-    __in_z const WCHAR* Addend
+    __in_z const CHAR* Addend
     )
 {
     UNICODE_STRING string;
@@ -350,7 +350,7 @@ KWString::operator UNICODE_STRING&(
     return _String;
 }
 
-KWString::operator WCHAR*(
+KWString::operator CHAR*(
     ) const
 {
     return _String.Buffer;
@@ -376,7 +376,7 @@ KWString::CompareTo(
 
 LONG
 KWString::CompareTo(
-    __in_z const WCHAR* Comparand,
+    __in_z const CHAR* Comparand,
     __in BOOLEAN CaseInsensitive
     ) const
 {
@@ -411,12 +411,12 @@ Return Value:
     UNICODE_STRING suffixString;
     NTSTATUS status;
 
-    suffixString.Length = GuidLength*sizeof(WCHAR);
+    suffixString.Length = GuidLength*sizeof(CHAR);
     if (suffixString.Length > _String.Length) {
         suffixString.Length = _String.Length;
     }
-    suffixString.Buffer = (WCHAR*) (((UCHAR*) _String.Buffer) + (_String.Length - suffixString.Length));
-    suffixString.MaximumLength = suffixString.Length + sizeof(WCHAR);
+    suffixString.Buffer = (CHAR*) (((UCHAR*) _String.Buffer) + (_String.Length - suffixString.Length));
+    suffixString.MaximumLength = suffixString.Length + sizeof(CHAR);
 
     status = RtlGUIDFromString(&suffixString, &Guid);
 
@@ -429,7 +429,7 @@ KWString::Zero(
 {
     _String.Buffer = &gs_Null;
     _String.Length = 0;
-    _String.MaximumLength = sizeof(WCHAR);
+    _String.MaximumLength = sizeof(CHAR);
 }
 
 VOID
@@ -467,9 +467,9 @@ Return Value:
     Cleanup();
 
     HRESULT hr;
-    hr = UShortAdd(Source.Length, sizeof(WCHAR), &_String.MaximumLength);
+    hr = UShortAdd(Source.Length, sizeof(CHAR), &_String.MaximumLength);
     KInvariant(SUCCEEDED(hr));
-    _String.Buffer = _newArray<WCHAR>(KTL_TAG_WSTRING, *_Allocator, _String.MaximumLength/sizeof(WCHAR));
+    _String.Buffer = _newArray<CHAR>(KTL_TAG_WSTRING, *_Allocator, _String.MaximumLength/sizeof(CHAR));
 
     if (!_String.Buffer) {
         Cleanup();
@@ -545,10 +545,10 @@ Return Value:
 --*/
 
 {
-    _String.MaximumLength = 65 * sizeof(WCHAR); // for max 64-bit binary string.
+    _String.MaximumLength = 65 * sizeof(CHAR); // for max 64-bit binary string.
     _String.Length = 0;
 
-    _String.Buffer = _newArray<WCHAR>(KTL_TAG_WSTRING, *_Allocator, _String.MaximumLength/sizeof(WCHAR));
+    _String.Buffer = _newArray<CHAR>(KTL_TAG_WSTRING, *_Allocator, _String.MaximumLength/sizeof(CHAR));
     if (!_String.Buffer) {
         Cleanup();
         return STATUS_INSUFFICIENT_RESOURCES;

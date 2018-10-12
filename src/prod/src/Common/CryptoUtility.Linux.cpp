@@ -140,7 +140,7 @@ namespace
 
         auto thumbprintStr = thumbprint.PrimaryToString();
         StringUtility::ToUpper(thumbprintStr);
-        return StringUtility::Utf16ToUtf8(thumbprintStr);
+        return thumbprintStr;
     }
 
     string GetPrivKeyLoadPathWithThumbprintFileNameInCertFileFolder(X509Context const & x509)
@@ -318,11 +318,6 @@ ErrorCode LinuxCryptUtil::GetKeyValPairsFromSubjectName(std::string const& sn, s
     return ErrorCode::Success();
 }
 
-ErrorCode LinuxCryptUtil::GetKeyValPairsFromSubjectName(std::wstring const& wsn, std::map<std::string, std::string>& snKV)
-{
-    return GetKeyValPairsFromSubjectName(StringUtility::Utf16ToUtf8(wsn), snKV);
-}
-
 string LinuxCryptUtil::X509NameToString(X509_NAME* xn)
 {
     if (xn == NULL)
@@ -435,11 +430,11 @@ X509Context LinuxCryptUtil::LoadCertificate(std::string const& filepath) const
     return x;
 }
 
-ErrorCode LinuxCryptUtil::InstallCertificate(X509Context & x509, std::wstring const & x509Folder) const
+ErrorCode LinuxCryptUtil::InstallCertificate(X509Context & x509, std::string const & x509Folder) const
 {
     if (x509.FilePath().empty())
     {
-        auto x509InstallPath = GetX509InstallPath(x509, StringUtility::Utf16ToUtf8(x509Folder));
+        auto x509InstallPath = GetX509InstallPath(x509, x509Folder);
         x509.SetFilePath(x509InstallPath);
         WriteInfo(TraceType, "InstallCertificate: installing to '{0}'", x509.FilePath());
     }
@@ -615,11 +610,10 @@ ErrorCode LinuxCryptUtil::WriteX509ToFile(X509Context const & x509) const
     return ErrorCode::Success();
 }
 
-std::vector<std::string> LinuxCryptUtil::GetCertFiles(std::wstring const& x509PathW) const
+std::vector<std::string> LinuxCryptUtil::GetCertFiles(std::string const& x509Path) const
 {
     vector<string> files;
 
-    auto x509Path = StringUtility::Utf16ToUtf8(x509PathW);
     if (!x509Path.empty())
     {
         if (Path::IsRegularFile(x509Path))
@@ -630,7 +624,7 @@ std::vector<std::string> LinuxCryptUtil::GetCertFiles(std::wstring const& x509Pa
         }
     }
 
-    WriteNoise(TraceType, "GetCertFiles: treat '{0}' as a folder", x509PathW);
+    WriteNoise(TraceType, "GetCertFiles: treat '{0}' as a folder", x509Path);
     auto certFolder = GetX509Folder(x509Path); 
 
     auto certFileExt = "*" + SecurityConfig::GetConfig().CertFileExtension;
@@ -776,7 +770,7 @@ PrivKeyContext LinuxCryptUtil::CreatePrivateKey(int keySizeInBits, int exponent)
     return privKeyResult;
 }
 
-ErrorCode LinuxCryptUtil::SetSubjectName(X509_NAME * name, std::wstring const & subjectName)
+ErrorCode LinuxCryptUtil::SetSubjectName(X509_NAME * name, std::string const & subjectName)
 {
     if (name == NULL) { return ErrorCodeValue::ArgumentNull; }
 
@@ -809,7 +803,7 @@ ErrorCode LinuxCryptUtil::SetSubjectName(X509_NAME * name, std::wstring const & 
 }
 
 /// Assuming X509 is self-signed certificate
-ErrorCode LinuxCryptUtil::SetSubjectName(X509 * x, std::wstring const & subjectName)
+ErrorCode LinuxCryptUtil::SetSubjectName(X509 * x, std::string const & subjectName)
 {
     if (x == NULL) { return ErrorCodeValue::ArgumentNull; }
 
@@ -831,7 +825,7 @@ ErrorCode LinuxCryptUtil::SetSubjectName(X509 * x, std::wstring const & subjectN
     return ErrorCode::Success();
 }
 
-ErrorCode LinuxCryptUtil::SetAltSubjectName(X509 * x, const std::vector<std::wstring> *subjectAltNames)
+ErrorCode LinuxCryptUtil::SetAltSubjectName(X509 * x, const std::vector<std::string> *subjectAltNames)
 {
     if (x == NULL || subjectAltNames == NULL) { return ErrorCodeValue::ArgumentNull; }
 
@@ -847,7 +841,7 @@ ErrorCode LinuxCryptUtil::SetAltSubjectName(X509 * x, const std::vector<std::wst
     }
 
     for (int i = 0; i < subjectAltNames->size(); ++i) {
-        const wstring& wname = (*subjectAltNames)[i];
+        const string& name = (*subjectAltNames)[i];
 
         gname = GENERAL_NAME_new();
         if (gname == NULL) {
@@ -861,7 +855,6 @@ ErrorCode LinuxCryptUtil::SetAltSubjectName(X509 * x, const std::vector<std::wst
             goto cleanup;
         }
 
-        string name = StringUtility::Utf16ToUtf8(wname);
         if (!ASN1_STRING_set(asn, name.c_str(), -1)) {
             ret = LogError(__FUNCTION__, "calling ASN1_STRING_set failed", ErrorCode::FromErrno());
             goto cleanup;
@@ -941,10 +934,10 @@ ErrorCode LinuxCryptUtil::SetCertificateDates(X509* x, Common::DateTime const& e
 }
 
 ErrorCode LinuxCryptUtil::CreateSelfSignedCertificate(
-    std::wstring const & subjectName,
-    const std::vector<std::wstring> *subjectAltNames,
+    std::string const & subjectName,
+    const std::vector<std::string> *subjectAltNames,
     Common::DateTime const& expiration,
-    std::wstring const&,
+    std::string const&,
     Common::X509Context & certContext) const
 {
     certContext.reset();
@@ -1056,7 +1049,7 @@ ErrorCode LinuxCryptUtil::WritePrivateKey(string const& privKeyFilePath, EVP_PKE
     return ErrorCode::Success();
 }
 
-ErrorCode LinuxCryptUtil::SerializePkcs(PKCS7* p7, wstring & out)
+ErrorCode LinuxCryptUtil::SerializePkcs(PKCS7* p7, string & out)
 {
     BioUPtr memBioUPtr(BIO_new(BIO_s_mem()));
     //LINUXTODO consider using BIO_f_base64
@@ -1073,7 +1066,7 @@ ErrorCode LinuxCryptUtil::SerializePkcs(PKCS7* p7, wstring & out)
     return ErrorCodeValue::Success;
 }
 
-ErrorCode LinuxCryptUtil::Pkcs7Encrypt(ByteBuffer const & in, STACK_OF(X509) *recips, wstring & out) const
+ErrorCode LinuxCryptUtil::Pkcs7Encrypt(ByteBuffer const & in, STACK_OF(X509) *recips, string & out) const
 {
     BioUPtr memBioUPtr = ByteBufferToBioMem(in);
 
@@ -1222,7 +1215,7 @@ ErrorCode LinuxCryptUtil::GetOpensslErr(uint64 err) const
 
     char errStr[256];
     ERR_error_string_n(err, errStr, sizeof(errStr));
-    return ErrorCode(ErrorCodeValue::OperationFailed, wformatString("openssl:{0}", errStr));
+    return ErrorCode(ErrorCodeValue::OperationFailed, formatString.L("openssl:{0}", errStr));
 }
 
 ErrorCode LinuxCryptUtil::Pkcs7Sign(X509Context const & cert, BYTE const* input, size_t inputLen, ByteBuffer & output) const
@@ -1253,7 +1246,7 @@ ErrorCode LinuxCryptUtil::Pkcs7Sign(X509Context const & cert, BYTE const* input,
     return error;
 }
 
-ErrorCode LinuxCryptUtil::Pkcs7Encrypt(std::vector<PCCertContext> const& recipientCertificates, ByteBuffer const& plainTextBuffer, wstring & cipherTextBase64) const
+ErrorCode LinuxCryptUtil::Pkcs7Encrypt(std::vector<PCCertContext> const& recipientCertificates, ByteBuffer const& plainTextBuffer, string & cipherTextBase64) const
 {
     STACK_OF(X509) *recips = sk_X509_new_null();
     for (auto & nextCert : recipientCertificates)
@@ -1438,7 +1431,7 @@ ErrorCode LinuxCryptUtil::ReadPrivateKey(string const & privateKeyFilePath, Priv
     return ErrorCodeValue::InvalidArgument;
 }
 
-PKCS7_UPtr LinuxCryptUtil::DeserializePkcs7(wstring const & cipherTextBase64)
+PKCS7_UPtr LinuxCryptUtil::DeserializePkcs7(string const & cipherTextBase64)
 {
     //LINUXTODO consider using BIO_f_base64
     ByteBuffer encryptedBuf;
@@ -1555,7 +1548,7 @@ ErrorCode LinuxCryptUtil::LoadIssuerChain(PCCertContext certContext, std::vector
     return ErrorCodeValue::OperationFailed;
 }
 
-ErrorCode LinuxCryptUtil::LoadDecryptionCertificate(PKCS7* p7, wstring const & certPath, X509Context & cert) const
+ErrorCode LinuxCryptUtil::LoadDecryptionCertificate(PKCS7* p7, string const & certPath, X509Context & cert) const
 {
     Invariant(p7);
     cert.reset();
@@ -1598,7 +1591,7 @@ ErrorCode LinuxCryptUtil::LoadDecryptionCertificate(PKCS7* p7, wstring const & c
     return ErrorCodeValue::NotFound;
 }
 
-ErrorCode LinuxCryptUtil::Pkcs7Decrypt(wstring const & cipherTextBase64, wstring const & certPath, ByteBuffer& decryptedBuffer) const
+ErrorCode LinuxCryptUtil::Pkcs7Decrypt(string const & cipherTextBase64, string const & certPath, ByteBuffer& decryptedBuffer) const
 {
     PKCS7_UPtr p7UPtr = DeserializePkcs7(cipherTextBase64);
 
@@ -1639,7 +1632,7 @@ void LinuxCryptUtil::LogInfo(std::string const& functionName, std::string const&
         message);
 }
 
-int LinuxCryptUtil::CertCheckEnhancedKeyUsage(wstring const & id, X509 *cert, LPCSTR usageIdentifier) const
+int LinuxCryptUtil::CertCheckEnhancedKeyUsage(string const & id, X509 *cert, LPCSTR usageIdentifier) const
 {
     int authType = 0;
     char* clientIdentifier[] = {szOID_PKIX_KP_CLIENT_AUTH, "clientAuth", "TLS Web Client Authentication"};
@@ -1680,7 +1673,7 @@ int LinuxCryptUtil::CertCheckEnhancedKeyUsage(wstring const & id, X509 *cert, LP
 }
 
 ErrorCode LinuxCryptUtil::VerifyCertificate(
-    wstring const & id,
+    string const & id,
     X509_STORE_CTX *storeContext,
     uint x509CertChainFlags,
     bool shouldIgnoreCrlOffline,
@@ -1688,7 +1681,7 @@ ErrorCode LinuxCryptUtil::VerifyCertificate(
     ThumbprintSet const & certThumbprintsToMatch,
     SecurityConfig::X509NameMap const & x509NamesToMatch,
     bool traceCert,
-    wstring * nameMatched,
+    string * nameMatched,
     CertChainErrors const * certChainErrors) const
 {
     return LinuxCryptUtil::VerifyCertificate(
@@ -1705,7 +1698,7 @@ ErrorCode LinuxCryptUtil::VerifyCertificate(
 }
 
 ErrorCode LinuxCryptUtil::VerifyCertificate(
-    wstring const & id, 
+    string const & id, 
     STACK_OF(X509)* chain,
     uint inputCertChainFlags,
     bool shouldIgnoreCrlOffline,
@@ -1713,7 +1706,7 @@ ErrorCode LinuxCryptUtil::VerifyCertificate(
     ThumbprintSet const & certThumbprintsToMatch,
     SecurityConfig::X509NameMap const & x509NamesToMatch,
     bool traceCert,
-    wstring * nameMatched,
+    string * nameMatched,
     CertChainErrors const * certChainErrors) const
 {
     X509 *cert = sk_X509_value(chain, 0);
@@ -1730,8 +1723,8 @@ ErrorCode LinuxCryptUtil::VerifyCertificate(
         TraceType, id,
         "VerifyCertificate: remoteAuthenticatedAsPeer = {0}, certThumbprintsToMatch='{1}', x509NamesToMatch='{2}', certChainFlags=0x{3:x}, maskedFlags=0x{4:x} shouldIgnoreCrlOffline={5}",
         remoteAuthenticatedAsPeer,
-        (certThumbprintsToMatch.Value().size() < 100) ? certThumbprintsToMatch.ToString() : L"...",
-        (x509NamesToMatch.Size() < 100) ? wformatString(x509NamesToMatch) : L"...",
+        (certThumbprintsToMatch.Value().size() < 100) ? certThumbprintsToMatch.ToString() : "...",
+        (x509NamesToMatch.Size() < 100) ? formatString(x509NamesToMatch) : "...",
         inputCertChainFlags,
         certChainFlags,
         shouldIgnoreCrlOffline);
@@ -1919,10 +1912,8 @@ ErrorCode LinuxCryptUtil::VerifyCertificate(
             return ErrorCodeValue::CertificateNotFound;
         }
 
-        auto certCn = StringUtility::Utf8ToUtf16(certCnA);
-
         SecurityConfig::X509NameMapBase::const_iterator matched;
-        if (x509NamesToMatch.Match(certCn, issuerCertThumbprint, matched))
+        if (x509NamesToMatch.Match(certCnA, issuerCertThumbprint, matched))
         {
             if (matched->second.IsEmpty())
             {
@@ -1953,7 +1944,7 @@ ErrorCode LinuxCryptUtil::VerifyCertificate(
             if (!SecurityConfig::X509NameMap::MatchIssuer(issuerCertThumbprint, matchTarget))
                 continue;
 
-            auto matchedName = StringUtility::Utf16ToUtf8(matchTarget->first);
+            auto const & matchedName = matchTarget->first;
             auto retval = X509_check_host(cert, matchedName.c_str(), matchedName.size(), 0, nullptr);
             if (retval == 1)
             {

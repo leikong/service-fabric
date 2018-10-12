@@ -163,7 +163,7 @@ public:
 
     virtual SerializableWithActivation* CreateNew()
     {
-        return new VoterStoreWStringEntry(L"");
+        return new VoterStoreWStringEntry("");
     }
 
 private:
@@ -307,7 +307,7 @@ struct SyncEntry : public Serialization::FabricSerializable
 public:
     SyncEntry() {}
 
-    SyncEntry(wstring const & key, int64 sequence, SerializedVoterStoreEntryUPtr && value)
+    SyncEntry(string const & key, int64 sequence, SerializedVoterStoreEntryUPtr && value)
         : Key(key), Sequence(sequence), Value(move(value))
     {
     }
@@ -331,7 +331,7 @@ public:
 
     FABRIC_FIELDS_03(Key, Sequence, Value);
 
-    wstring Key;
+    string Key;
     int64 Sequence;
     SerializedVoterStoreEntryUPtr Value;
 };
@@ -445,7 +445,7 @@ public:
     {
     }
 
-    VoterStoreReadRequestBody(wstring const & key)
+    VoterStoreReadRequestBody(string const & key)
         : Key(key)
     {
     }
@@ -462,7 +462,7 @@ public:
 
     FABRIC_FIELDS_01(Key);
 
-    wstring Key;
+    string Key;
 };
 
 struct VoterStoreReadReplyBody : public Serialization::FabricSerializable
@@ -509,7 +509,7 @@ public:
     {
     }
     
-    VoterStoreWriteRequestBody(wstring const & key, int64 checkSequence, SerializedVoterStoreEntryUPtr && value)
+    VoterStoreWriteRequestBody(string const & key, int64 checkSequence, SerializedVoterStoreEntryUPtr && value)
         : Key(key), CheckSequence(checkSequence), Value(move(value))
     {
     }
@@ -528,7 +528,7 @@ public:
 
     FABRIC_FIELDS_03(Key, Value, CheckSequence);
 
-    wstring Key;
+    string Key;
     int64 CheckSequence;
     SerializedVoterStoreEntryUPtr Value;
 };
@@ -629,7 +629,7 @@ class VoterStoreReadAsyncOperation : public VoterStoreRequestAsyncOperation
 public:
     VoterStoreReadAsyncOperation(
         SiteNode & site,
-        std::wstring const & key,
+        std::string const & key,
         Common::TimeSpan timeout,
         Common::AsyncCallback const & callback,
         Common::AsyncOperationSPtr const & parent)
@@ -686,7 +686,7 @@ public:
     }
 
 private:
-    wstring key_;
+    string key_;
     int64 sequence_;
     int64 generation_;
     SerializedVoterStoreEntryUPtr result_;
@@ -699,7 +699,7 @@ class VoterStoreWriteAsyncOperation : public VoterStoreRequestAsyncOperation
 public:
     VoterStoreWriteAsyncOperation(
         SiteNode & site,
-        std::wstring const & key,
+        std::string const & key,
         int64 checkSequence,
         SerializedVoterStoreEntryUPtr && value,
         bool isIdempotent,
@@ -757,7 +757,7 @@ public:
     }
 
 private:
-    wstring key_;
+    string key_;
     int64 checkSequence_;
     SerializedVoterStoreEntryUPtr value_;
     bool isIdempotent_;
@@ -767,7 +767,7 @@ private:
 
 VoterStoreReadWriteAsyncOperation::VoterStoreReadWriteAsyncOperation(
     SiteNode & site,
-    wstring const & key,
+    string const & key,
     TimeSpan timeout,
     AsyncCallback const & callback,
     AsyncOperationSPtr const & parent)
@@ -923,9 +923,9 @@ public:
         siteNode.GetVoterStore().SendMessage(move(message_), target_, isRequest_);
     }
 
-    wstring ToString()
+    string ToString()
     {
-        return wformatString("{0}:{1}", message_ ? message_->Action : FederationMessage::GetEmptyRequest().Action, target_);
+        return formatString.L("{0}:{1}", message_ ? message_->Action : FederationMessage::GetEmptyRequest().Action, target_);
     }
 
 private:
@@ -949,9 +949,9 @@ public:
         requestContext_->Reply(move(reply_));
     }
 
-    wstring ToString()
+    string ToString()
     {
-        return wformatString("{0}:{1}", reply_->Action, requestContext_->FromInstance);
+        return formatString.L("{0}:{1}", reply_->Action, requestContext_->FromInstance);
     }
 
 private:
@@ -977,9 +977,9 @@ public:
         }
     }
 
-    wstring ToString()
+    string ToString()
     {
-        return wformatString("{0} requests to {1}", requests_.size(), primary_);
+        return formatString.L("{0} requests to {1}", requests_.size(), primary_);
     }
 
 private:
@@ -1661,7 +1661,7 @@ void VoterStore::GetConfiguration(ReplicaSetConfiguration & config) const
     replicaSet_.GetConfiguration(config);
 }
 
-SerializedVoterStoreEntryUPtr VoterStore::GetEntry(wstring const & key) const
+SerializedVoterStoreEntryUPtr VoterStore::GetEntry(string const & key) const
 {
     AcquireReadLock grab(lock_);
 
@@ -1675,7 +1675,7 @@ SerializedVoterStoreEntryUPtr VoterStore::GetEntry(wstring const & key) const
 }
 
 AsyncOperationSPtr VoterStore::BeginRead(
-    wstring const & key,
+    string const & key,
     TimeSpan timeout,
     AsyncCallback const & callback,
     AsyncOperationSPtr const & parent)
@@ -1693,7 +1693,7 @@ ErrorCode VoterStore::EndRead(AsyncOperationSPtr const & operation, __out Serial
 }
 
 AsyncOperationSPtr VoterStore::BeginWrite(
-    wstring const & key,
+    string const & key,
     int64 checkSequence,
     SerializedVoterStoreEntryUPtr && value,
     bool isIdempotent,
@@ -1993,7 +1993,7 @@ MessageUPtr VoterStore::ProcessWriteRequest(Message & request, RequestReceiverCo
 	return FederationMessage::GetVoterStoreWriteReply().CreateMessage(reply);
 }
 
-MessageUPtr VoterStore::ProcessWriteRequest(wstring const & key, int64 checkSequence, SerializedVoterStoreEntryUPtr && entry, RequestReceiverContextUPtr & requestReceiverContext)
+MessageUPtr VoterStore::ProcessWriteRequest(string const & key, int64 checkSequence, SerializedVoterStoreEntryUPtr && entry, RequestReceiverContextUPtr & requestReceiverContext)
 {
     VoterStoreWriteReplyBody reply;
     reply.Error = Write(key, highestSequence_ + 1, checkSequence, *entry);
@@ -2026,7 +2026,7 @@ MessageUPtr VoterStore::ProcessWriteRequest(wstring const & key, int64 checkSequ
     return FederationMessage::GetVoterStoreWriteReply().CreateMessage(reply);
 }
 
-ErrorCode VoterStore::Write(wstring const & key, int64 sequence, int64 checkSequence, SerializedVoterStoreEntry const & value)
+ErrorCode VoterStore::Write(string const & key, int64 sequence, int64 checkSequence, SerializedVoterStoreEntry const & value)
 {
     ErrorCode error;
 
@@ -2480,7 +2480,7 @@ void VoterStore::RunStateMachine()
         }
     }
 
-    wstring stateString = wformatString(*this);
+    string stateString = formatString(*this);
     if (!actions.IsEmpty() || lastTracedState_ != stateString || lastTraceTime_ + TimeSpan::FromMinutes(10) < DateTime::Now())
     {
         VoteManager::WriteInfo(TraceStore, site_.IdString, "{0}\r\nActions: {1}", stateString, actions);

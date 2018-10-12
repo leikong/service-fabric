@@ -31,11 +31,11 @@ Revision History:
 #include <HLPalFunctions.h>
 
 #if !defined(PLATFORM_UNIX)
-const WCHAR* KVolumeNamespace::PathSeparator = L"\\";
-const WCHAR  KVolumeNamespace::PathSeparatorChar = L'\\';
+const CHAR* KVolumeNamespace::PathSeparator = "\\";
+const CHAR  KVolumeNamespace::PathSeparatorChar = '\\';
 #else
-const WCHAR* KVolumeNamespace::PathSeparator =  L"/";
-const WCHAR  KVolumeNamespace::PathSeparatorChar = L'/';
+const CHAR* KVolumeNamespace::PathSeparator =  "/";
+const CHAR  KVolumeNamespace::PathSeparatorChar = '/';
 #endif
 
 class KVolumeNamespaceStandard : public KVolumeNamespace
@@ -509,7 +509,7 @@ Return Value:
 --*/
 
 {
-    FullyQualifiedRootDirectoryName = L"\\GLOBAL??\\Volume";
+    FullyQualifiedRootDirectoryName = "\\GLOBAL??\\Volume";
     FullyQualifiedRootDirectoryName += VolumeId;
 
     return FullyQualifiedRootDirectoryName.Status();
@@ -554,7 +554,7 @@ Return Value:
     //
     // Check for root directory / special case
     // TODO: Add unit test
-    if (FullyQualifiedDirectoryName.CompareTo(L"/") != 0)
+    if (FullyQualifiedDirectoryName.CompareTo("/") != 0)
     {
         FullyQualifiedName += KVolumeNamespace::PathSeparatorChar;        
     }
@@ -573,7 +573,7 @@ Return Value:
 //
 //  Parameters (Linux):
 //      FullyQualifiedObjectPath - FQN or rooted (e.g. "/fred/joe/bar"
-//      FullyQualifiedObjectRoot - since there is no volume, L""
+//      FullyQualifiedObjectRoot - since there is no volume, ""
 //      RootRelativePath - Remainder of FullyQualifiedObjectPath after FullyQualifiedObjectRoot
 //      
 //  Returns:
@@ -602,19 +602,19 @@ KVolumeNamespace::SplitAndNormalizeObjectPath(
     if ((FullyQualifiedObjectPath.Length() > 0) && (FullyQualifiedObjectPath.PeekFirst() == KVolumeNamespace::PathSeparatorChar))
     {
         // Possible FQN for object - must be one of the following to be valid
-        static WCHAR const *   validFqnPreambles[] =
+        static CHAR const *   validFqnPreambles[] =
         {
 #if !defined(PLATFORM_UNIX)
-            L"\\global??\\",
-            L"\\??\\",
-            L"\\device\\",
+            "\\global??\\",
+            "\\??\\",
+            "\\device\\",
 #else
-            L"/",
+            "/",
 #endif
             nullptr
         };
 
-        WCHAR const **     validFqnPreamblePtrPtr = &validFqnPreambles[0];
+        CHAR const **     validFqnPreamblePtrPtr = &validFqnPreambles[0];
 
         while ((*validFqnPreamblePtrPtr) != nullptr)
         {
@@ -641,9 +641,9 @@ KVolumeNamespace::SplitAndNormalizeObjectPath(
     if (NT_SUCCESS(status))
     {
 #if !defined(PLATFORM_UNIX)
-        KWString        globalRoot(FullyQualifiedObjectRoot.GetAllocator(), L"\\global??\\");
+        KWString        globalRoot(FullyQualifiedObjectRoot.GetAllocator(), "\\global??\\");
 #else
-        KWString        globalRoot(FullyQualifiedObjectRoot.GetAllocator(), L"/");
+        KWString        globalRoot(FullyQualifiedObjectRoot.GetAllocator(), "/");
 #endif
         KStringView     rootName;
         KStringView     rootRelPath;
@@ -664,7 +664,7 @@ KVolumeNamespace::SplitAndNormalizeObjectPath(
                 status = STATUS_INVALID_PARAMETER;
             }
 #else
-            rootName = L"";
+            rootName = "";
             rootRelPath = FullyQualifiedObjectPath;
 #endif
         }
@@ -761,7 +761,7 @@ KVolumeNamespace::SplitObjectPathInPathAndFilename(
 
     if (! NT_SUCCESS(status))
     {
-        rootPathString = L"";
+        rootPathString = "";
         relativePathString = FullyQualifiedObjectPath;
     }
 
@@ -897,7 +897,7 @@ KVolumeNamespace::CreateDirectoryAsync(
 
 ktl::Awaitable<NTSTATUS>
 KVolumeNamespace::CreateDirectoryAsync(
-    __in LPCWSTR FullyQualifiedDirectoryName,
+    __in LPCSTR FullyQualifiedDirectoryName,
     __in KAllocator& Allocator,
     __in_opt KAsyncContextBase* const ParentAsync
     )
@@ -997,7 +997,7 @@ KVolumeNamespace::DeleteFileOrDirectoryAsync(
 
 ktl::Awaitable<NTSTATUS>
 KVolumeNamespace::DeleteFileOrDirectoryAsync(
-    __in LPCWSTR FullyQualifiedDirectoryName,
+    __in LPCSTR FullyQualifiedDirectoryName,
     __in KAllocator& Allocator,
     __in_opt KAsyncContextBase* const ParentAsync
     )
@@ -1103,7 +1103,7 @@ KVolumeNamespace::QueryDirectoriesAsync(
 
 ktl::Awaitable<NTSTATUS>
 KVolumeNamespace::QueryDirectoriesAsync(
-    __in LPCWSTR FullyQualifiedDirectoryName,
+    __in LPCSTR FullyQualifiedDirectoryName,
     __out NameArray& DirectoryNameArray,
     __in KAllocator& Allocator,
     __in_opt KAsyncContextBase* const ParentAsync
@@ -1211,7 +1211,7 @@ KVolumeNamespace::QueryFilesAsync(
 
 ktl::Awaitable<NTSTATUS>
 KVolumeNamespace::QueryFilesAsync(
-    __in LPCWSTR FullyQualifiedDirectoryName,
+    __in LPCSTR FullyQualifiedDirectoryName,
     __out NameArray& FileNameArray,
     __in KAllocator& Allocator,
     __in_opt KAsyncContextBase* const ParentAsync
@@ -1339,7 +1339,7 @@ Return Value:
         status = terminatedVolumeName.Status();
         if (NT_SUCCESS(status))
         {
-            terminatedVolumeName += L"\\";
+            terminatedVolumeName += "\\";
             status = terminatedVolumeName.Status();
             if (NT_SUCCESS(status))
             {
@@ -1358,7 +1358,7 @@ Return Value:
     KStringView         objPath((UNICODE_STRING)rootPath);
     KStringView         dirName;
 
-    if (!objPath.RightString(objPath.Length() - 1).MatchUntil(KStringView(L"\\"), dirName))
+    if (!objPath.RightString(objPath.Length() - 1).MatchUntil(KStringView("\\"), dirName))
     {
         return STATUS_INVALID_PARAMETER;
     }
@@ -1407,7 +1407,7 @@ Return Value:
     }
 
     // Retrieve the device name (MUST BE "\Device\HarddiskVolume...")
-    ucs.Buffer = (WCHAR*)subjectDeviceNameBuffer->GetBuffer();
+    ucs.Buffer = (CHAR*)subjectDeviceNameBuffer->GetBuffer();
     ucs.Length = ucs.MaximumLength = (USHORT)subjectDeviceNameBuffer->QuerySize();
     status = KNt::QuerySymbolicLinkObject(linkHandle, ucs, nullptr);
     if (!NT_SUCCESS(status))
@@ -1419,12 +1419,12 @@ Return Value:
     linkHandle = 0;
 
     KStringView         subjectDeviceName(ucs);
-    KStringView         constVolumePreamble(L"\\Device\\HarddiskVolume");
+    KStringView         constVolumePreamble("\\Device\\HarddiskVolume");
     KInvariant(subjectDeviceName.Length() > constVolumePreamble.Length());
     KInvariant(subjectDeviceName.LeftString(constVolumePreamble.Length()).CompareNoCase(constVolumePreamble) == 0);
 
     //* Retreive all of the "\GLOBAL??" object directory - to scan for volume symbolic links
-    ucs = KStringView(L"\\GLOBAL??").ToUNICODE_STRING();
+    ucs = KStringView("\\GLOBAL??").ToUNICODE_STRING();
     InitializeObjectAttributes(&oa, &ucs, OBJ_CASE_INSENSITIVE, NULL, NULL);
     status = KNt::OpenDirectoryObject(dirHandle, DIRECTORY_QUERY, oa);
     if (!NT_SUCCESS(status))
@@ -1474,8 +1474,8 @@ Return Value:
     };
 
     // Scan the retreived global obj dir for matching subjectDeviceName volume guid name - that will be the subject guid
-    KStringView                     constVolumeObjPreamble(L"Volume{");
-    KStringView                     constSymbolicLinkType(L"SymbolicLink");
+    KStringView                     constVolumeObjPreamble("Volume{");
+    KStringView                     constSymbolicLinkType("SymbolicLink");
     KDynString                      objName(Allocator);
     KDynString                      objType(Allocator);
     KBuffer::SPtr                   currentEntryBuffer;
@@ -1514,7 +1514,7 @@ Return Value:
 
             // Get Symbolic link info for current entry
             {
-                ucs.Buffer = (WCHAR*)currentEntryBuffer->GetBuffer();
+                ucs.Buffer = (CHAR*)currentEntryBuffer->GetBuffer();
                 ucs.Length = ucs.MaximumLength = (USHORT)currentEntryBuffer->QuerySize();
                 ULONG       sizeRequired = 0;
 
@@ -1528,7 +1528,7 @@ Return Value:
                     }
 
                     KInvariant(currentEntryBuffer->QuerySize() <= MAXUSHORT);
-                    ucs.Buffer = (WCHAR*)currentEntryBuffer->GetBuffer();
+                    ucs.Buffer = (CHAR*)currentEntryBuffer->GetBuffer();
                     ucs.Length = ucs.MaximumLength = (USHORT)currentEntryBuffer->QuerySize();
                     ULONG       sizeRequired1 = 0;
 
@@ -1862,9 +1862,9 @@ Return Value:
         //
 
         deviceName.Length = deviceName.MaximumLength = mountPoints->MountPoints[i].DeviceNameLength;
-        deviceName.Buffer = (WCHAR*) ((UCHAR*) mountPoints + mountPoints->MountPoints[i].DeviceNameOffset);
+        deviceName.Buffer = (CHAR*) ((UCHAR*) mountPoints + mountPoints->MountPoints[i].DeviceNameOffset);
         symbolicLinkName.Length = symbolicLinkName.MaximumLength = mountPoints->MountPoints[i].SymbolicLinkNameLength;
-        symbolicLinkName.Buffer = (WCHAR*) ((UCHAR*) mountPoints + mountPoints->MountPoints[i].SymbolicLinkNameOffset);
+        symbolicLinkName.Buffer = (CHAR*) ((UCHAR*) mountPoints + mountPoints->MountPoints[i].SymbolicLinkNameOffset);
 
         //
         // Allocate a node to insert into the table.
@@ -2388,12 +2388,12 @@ Return Value:
         // Add this string to the array, unless it is "." or "..".
         //
 
-        r = fileNameString.CompareTo(L".");
+        r = fileNameString.CompareTo(".");
         if (!r) {
             continue;
         }
 
-        r = fileNameString.CompareTo(L"..");
+        r = fileNameString.CompareTo("..");
         if (!r) {
             continue;
         }
@@ -2706,7 +2706,7 @@ private:
             return;
         }
 
-        KStringView         rawVolumeRelPath((WCHAR*)volumeRelPath);
+        KStringView         rawVolumeRelPath((CHAR*)volumeRelPath);
 
         status = KVolumeNamespaceStandard::QueryVolumeGuid(GetThisAllocator(), volumeName, volumeGuid);
         if (!NT_SUCCESS(status))
@@ -2869,12 +2869,12 @@ private:
                 return;
             }
 
-            WCHAR* p = fniVolRelativePath;
-            ULONG lastChar = fniVolRelativePath.Length() / sizeof(WCHAR);
+            CHAR* p = fniVolRelativePath;
+            ULONG lastChar = fniVolRelativePath.Length() / sizeof(CHAR);
 
-            if ((lastChar == 0) || (p[lastChar-1] != L'\\'))
+            if ((lastChar == 0) || (p[lastChar-1] != '\\'))
             {
-                fniVolRelativePath += L"\\";
+                fniVolRelativePath += "\\";
                 status = fniVolRelativePath.Status();
                 if (!NT_SUCCESS(status))
                 {
@@ -3141,7 +3141,7 @@ private:
         newLinkInfo->ReplaceIfExists = FALSE;
         newLinkInfo->RootDirectory = NULL;
         newLinkInfo->FileNameLength = _FullyQualifiedNewLinkName.Length();
-        KMemCpySafe(newLinkInfo->FileName, newLinkInfo->FileNameLength, (WCHAR*)_FullyQualifiedNewLinkName, newLinkInfo->FileNameLength);
+        KMemCpySafe(newLinkInfo->FileName, newLinkInfo->FileNameLength, (CHAR*)_FullyQualifiedNewLinkName, newLinkInfo->FileNameLength);
 
         status = KNt::SetInformationFile(
             linkHandle,
@@ -3668,7 +3668,7 @@ KVolumeNamespace::QueryFullFileAttributesAsync(
 
 ktl::Awaitable<NTSTATUS>
 KVolumeNamespace::QueryFullFileAttributesAsync(
-    __in LPCWSTR FullyQualifiedPath,
+    __in LPCSTR FullyQualifiedPath,
     __in KAllocator& Allocator,
     __out FILE_NETWORK_OPEN_INFORMATION& Result,
     __in_opt KAsyncContextBase* const ParentAsync)
@@ -3696,7 +3696,7 @@ private:
 
 public:
     RenameFileOp(__in KWString const & FromPathName, __in KWString const & ToPathName, __in BOOLEAN OverwriteIfExists);
-    RenameFileOp(__in LPCWSTR FromPathName, __in LPCWSTR ToPathName, __in BOOLEAN OverwriteIfExists);
+    RenameFileOp(__in LPCSTR FromPathName, __in LPCSTR ToPathName, __in BOOLEAN OverwriteIfExists);
 
 private:
     void
@@ -3712,8 +3712,8 @@ private:
     Execute() override
     {
         NTSTATUS status;
-        status = HLPalFunctions::RenameFile((WCHAR*)_FromPathName,
-                                            (WCHAR*)_ToPathName,
+        status = HLPalFunctions::RenameFile((CHAR*)_FromPathName,
+                                            (CHAR*)_ToPathName,
                                             _ToPathName.Length(),
                                             _OverwriteIfExists,
                                             GetThisAllocator());
@@ -3753,8 +3753,8 @@ public:
     static
     NTSTATUS
     StartRename(
-        __in LPCWSTR FromPathName,
-        __in LPCWSTR ToPathName,
+        __in LPCSTR FromPathName,
+        __in LPCSTR ToPathName,
         __in BOOLEAN OverwriteIfExists,
         __in KAllocator& Allocator,
         __in KAsyncContextBase::CompletionCallback Completion,
@@ -3792,7 +3792,7 @@ KVolumeNamespaceStandard::RenameFileOp::RenameFileOp(
 {
     NTSTATUS status;
 
-    _FromPathName += L"\0";
+    _FromPathName += "\0";
     status = _FromPathName.Status();
     if (! NT_SUCCESS(status))
     {
@@ -3800,7 +3800,7 @@ KVolumeNamespaceStandard::RenameFileOp::RenameFileOp(
         return;
     }
 
-    _ToPathName += L"\0";
+    _ToPathName += "\0";
     status = _ToPathName.Status();
     if (! NT_SUCCESS(status))
     {
@@ -3810,8 +3810,8 @@ KVolumeNamespaceStandard::RenameFileOp::RenameFileOp(
 }
 
 KVolumeNamespaceStandard::RenameFileOp::RenameFileOp(
-    __in LPCWSTR FromPathName,
-    __in LPCWSTR ToPathName,
+    __in LPCSTR FromPathName,
+    __in LPCSTR ToPathName,
     __in BOOLEAN OverwriteIfExists)                                                                  
     :   _FromPathName(GetThisAllocator(), FromPathName),
         _ToPathName(GetThisAllocator(), ToPathName),
@@ -3819,7 +3819,7 @@ KVolumeNamespaceStandard::RenameFileOp::RenameFileOp(
 {
     NTSTATUS status;
 
-    _FromPathName += L"\0";
+    _FromPathName += "\0";
     status = _FromPathName.Status();
     if (! NT_SUCCESS(status))
     {
@@ -3827,7 +3827,7 @@ KVolumeNamespaceStandard::RenameFileOp::RenameFileOp(
         return;
     }
 
-    _ToPathName += L"\0";
+    _ToPathName += "\0";
     status = _ToPathName.Status();
     if (! NT_SUCCESS(status))
     {
@@ -3894,8 +3894,8 @@ KVolumeNamespace::RenameFileAsync(
 
 NTSTATUS
 KVolumeNamespace::RenameFile(
-    __in LPCWSTR FromPathName,
-    __in LPCWSTR ToPathName,
+    __in LPCSTR FromPathName,
+    __in LPCSTR ToPathName,
     __in BOOLEAN OverwriteIfExists,
     __in KAllocator& Allocator,
     __in KAsyncContextBase::CompletionCallback Completion,
@@ -3913,8 +3913,8 @@ KVolumeNamespace::RenameFile(
 #if defined(K_UseResumable)
 ktl::Awaitable<NTSTATUS>
 KVolumeNamespace::RenameFileAsync(
-    __in LPCWSTR FromPathName,
-    __in LPCWSTR ToPathName,
+    __in LPCSTR FromPathName,
+    __in LPCSTR ToPathName,
     __in BOOLEAN OverwriteIfExists,
     __in KAllocator& Allocator,
     __in_opt KAsyncContextBase* const ParentAsync)

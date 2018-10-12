@@ -74,7 +74,7 @@ public:
 
     // Test open-delayed API
     NTSTATUS
-    StartTestApi(WCHAR* InputTestString, WCHAR*& OutputTestString, KAsyncContextBase::CompletionCallback Callback);
+    StartTestApi(CHAR* InputTestString, CHAR*& OutputTestString, KAsyncContextBase::CompletionCallback Callback);
 
 private:
     VOID OnServiceOpen() override;
@@ -392,7 +392,7 @@ DoBasicServiceTest(KAllocator& Allocator)
 
 
 NTSTATUS
-KAsyncServiceTest(__in int argc, __in_ecount(argc) WCHAR* args[])
+KAsyncServiceTest(__in int argc, __in_ecount(argc) CHAR* args[])
 {
     UNREFERENCED_PARAMETER(argc);
     UNREFERENCED_PARAMETER(args);

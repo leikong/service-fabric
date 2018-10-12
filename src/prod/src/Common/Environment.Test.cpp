@@ -30,25 +30,25 @@ namespace Common
 #if defined(PLATFORM_UNIX)
         VERIFY_ARE_EQUAL(setenv("_TestEnvVariable1_", "_TestEnvValue1", 1), 0);
 #else
-        VERIFY_ARE_NOT_EQUAL(::SetEnvironmentVariableW(L"_TestEnvVariable1_", L"_TestEnvValue1"), 0);
+        VERIFY_ARE_NOT_EQUAL(::SetEnvironmentVariableW("_TestEnvVariable1_", "_TestEnvValue1"), 0);
 #endif
 
         EnvironmentMap envMap;
-        VERIFY_IS_TRUE(Environment::GetEnvironmentMap(envMap), L"GetEnvironmentMap");
-        VERIFY_ARE_EQUAL2(envMap[L"_TestEnvVariable1_"], L"_TestEnvValue1");
+        VERIFY_IS_TRUE(Environment::GetEnvironmentMap(envMap), "GetEnvironmentMap");
+        VERIFY_ARE_EQUAL2(envMap[L"_TestEnvVariable1_"], "_TestEnvValue1");
     }
     
     BOOST_AUTO_TEST_CASE(CopyAssignmentEnvironmentTest)
     {
-        EnvironmentVariable ev(L"TestKey1", L"TestVal1");
-        ev = L"TestVal2";
+        EnvironmentVariable ev("TestKey1", "TestVal1");
+        ev = "TestVal2";
         EnvironmentMap envMap1;
-        VERIFY_IS_TRUE(Environment::GetEnvironmentMap(envMap1), L"GetEnvironmentMap");
-        VERIFY_ARE_EQUAL2(envMap1[L"TestKey1"], L"TestVal2");
-        ev = L"TestVal1";
+        VERIFY_IS_TRUE(Environment::GetEnvironmentMap(envMap1), "GetEnvironmentMap");
+        VERIFY_ARE_EQUAL2(envMap1[L"TestKey1"], "TestVal2");
+        ev = "TestVal1";
         EnvironmentMap envMap2;
-        VERIFY_IS_TRUE(Environment::GetEnvironmentMap(envMap2), L"GetEnvironmentMap");
-        VERIFY_ARE_EQUAL2(envMap2[L"TestKey1"], L"TestVal1");
+        VERIFY_IS_TRUE(Environment::GetEnvironmentMap(envMap2), "GetEnvironmentMap");
+        VERIFY_ARE_EQUAL2(envMap2[L"TestKey1"], "TestVal1");
     }
 
 #if defined(PLATFORM_UNIX)
@@ -69,24 +69,24 @@ namespace Common
     BOOST_AUTO_TEST_CASE(ToEnvironmentBlockTest)
     {
         EnvironmentMap envMap;
-        VERIFY_IS_TRUE(Environment::GetEnvironmentMap(envMap), L"GetEnvironmentMap");
+        VERIFY_IS_TRUE(Environment::GetEnvironmentMap(envMap), "GetEnvironmentMap");
 
-        envMap[L"_TestEnvVariable2_"] = L"_TestEnvValue2";
+        envMap[L"_TestEnvVariable2_"] = "_TestEnvValue2";
 
-        vector<wchar_t> envBlock;
+        vector<char> envBlock;
         Environment::ToEnvironmentBlock(envMap, envBlock);
         
         VERIFY_ARE_NOT_EQUAL(::SetEnvironmentStringsW(&(envBlock.front())), 0);
 
-        vector<wchar_t> buffer;
+        vector<char> buffer;
         buffer.resize(36);
 
-        DWORD result = ::GetEnvironmentVariableW(L"_TestEnvVariable2_", &buffer.front(), 36);
+        DWORD result = ::GetEnvironmentVariableW("_TestEnvVariable2_", &buffer.front(), 36);
         VERIFY_ARE_NOT_EQUAL(result, (DWORD)0);
 
-        wstring testEnvValue2(&buffer.front());
+        string testEnvValue2(&buffer.front());
 
-        VERIFY_ARE_EQUAL2(testEnvValue2, L"_TestEnvValue2");
+        VERIFY_ARE_EQUAL2(testEnvValue2, "_TestEnvValue2");
     }
 
      BOOST_AUTO_TEST_CASE(LastRebootTimeTest)
@@ -96,10 +96,10 @@ namespace Common
          DateTime lastRebootTime = Environment::GetLastRebootTime();
          VERIFY_IS_TRUE(nowTime > lastRebootTime);
 
-         wstring pathToOldFile;
+         string pathToOldFile;
          DateTime oldFileWriteTime;
-         Environment::GetEnvironmentVariableW(L"SystemRoot", pathToOldFile);
-         Path::CombineInPlace(pathToOldFile, L"System32\\rundll32.exe");
+         Environment::GetEnvironmentVariableW("SystemRoot", pathToOldFile);
+         Path::CombineInPlace(pathToOldFile, "System32\\rundll32.exe");
          error = File::GetLastWriteTime(pathToOldFile, oldFileWriteTime);
          VERIFY_IS_TRUE(error.IsSuccess());
          VERIFY_IS_TRUE(oldFileWriteTime < lastRebootTime);

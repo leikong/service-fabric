@@ -16,7 +16,7 @@ string ApiNameDescription::AddField(Common::TraceEvent & traceEvent, string cons
 
     traceEvent.AddEventField<InterfaceName::Trace>(format, name + ".interface", index);
     traceEvent.AddEventField<ApiName::Trace>(format, name + ".api", index);
-    traceEvent.AddEventField<std::wstring>(format, name + ".metadata", index);
+    traceEvent.AddEventField<std::string>(format, name + ".metadata", index);
 
     return format;
 }
@@ -33,9 +33,9 @@ void ApiNameDescription::WriteTo(TextWriter & writer, FormatOptions const &) con
     writer.Write("{0}.{1}({2})", interfaceName_, apiName_, metadata_);
 }
 
-wstring ApiNameDescription::ToString() const
+string ApiNameDescription::ToString() const
 {
-    wstring result;
+    string result;
     StringWriter(result).Write("{0}.{1}({2})", interfaceName_, apiName_, metadata_);
     return result;
 }

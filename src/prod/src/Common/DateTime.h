@@ -13,7 +13,7 @@ namespace Common
     {
     public:
         DateTime() : ticks_ (0) {} 
-        explicit DateTime (std::wstring const & str) : ticks_ (Parse(str).ticks_) {}
+        explicit DateTime (std::string const & str) : ticks_ (Parse(str).ticks_) {}
         explicit DateTime(int64 ticks) : ticks_(ticks) {}
         explicit DateTime(FILETIME filetime);
         explicit DateTime(LARGE_INTEGER largeIntTime);
@@ -35,9 +35,9 @@ namespace Common
         DateTime SubtractWithMaxValueCheck (TimeSpan rhs) const;
         TimeSpan SubtractWithMaxValueCheck (DateTime const & rhs) const;
         SYSTEMTIME GetSystemTime() const;
-        std::wstring ToString(bool utc = true) const;
+        std::string ToString(bool utc = true) const;
         void WriteTo(TextWriter& w, FormatOptions const &) const;
-        std::wstring ToIsoString();
+        std::string ToIsoString();
 
         FILETIME get_AsFileTime() const;
         LARGE_INTEGER get_AsLargeInteger() const;
@@ -65,8 +65,8 @@ namespace Common
 
         static DateTime Now() { return get_Now() ; }
         static DateTime get_Now();
-        static DateTime Parse (std::wstring const & str);
-        static bool TryParse (std::wstring const & str, __out DateTime & result);
+        static DateTime Parse (std::string const & str);
+        static bool TryParse (std::string const & str, __out DateTime & result);
 
 #if defined(PLATFORM_UNIX)
         static BOOL FileTimeToSystemTime(CONST FILETIME * lpFileTime, LPSYSTEMTIME lpSystemTime);

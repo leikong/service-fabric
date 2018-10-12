@@ -35,7 +35,7 @@ Abstract:
 
 NTSTATUS
 KIoBufferTestX(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     UNREFERENCED_PARAMETER(argc);
@@ -785,7 +785,7 @@ IoBufferStreamTests()
 
 NTSTATUS
 KIoBufferTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     KTestPrintf("KIoBufferTest: STARTED\n");

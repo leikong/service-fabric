@@ -57,7 +57,7 @@ typedef KNodeTable<Node> NumberTable;
 
 NTSTATUS
 KNodeTableTestX(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     UNREFERENCED_PARAMETER(argc);
@@ -308,7 +308,7 @@ Finish:
 
 NTSTATUS
 KNodeTableTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     KTestPrintf("KNodeTableTest: STARTED\n");

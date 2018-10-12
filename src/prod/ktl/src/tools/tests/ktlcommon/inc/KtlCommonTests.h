@@ -28,20 +28,20 @@ Abstract:
 NTSTATUS
 KtlCommonTest(
     __in int argc,
-    __in_ecount(argc) WCHAR* args[]
+    __in_ecount(argc) CHAR* args[]
     );
 
 NTSTATUS
 KtlTextTest(
     __in int argc,
-    __in_ecount(argc) WCHAR* args[]
+    __in_ecount(argc) CHAR* args[]
     );
 
 #if !defined(PLATFORM_UNIX)
 NTSTATUS
 KNtMemoryMapTest(
     __in int argc,
-    __in_ecount(argc) WCHAR* args[]
+    __in_ecount(argc) CHAR* args[]
     );
 #endif
 

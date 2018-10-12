@@ -17,12 +17,6 @@
 #include "ktl.h"
 #include "string.h"
 
-extern "C" _Check_return_ _CRTIMP int __cdecl _wtoi(_In_z_ const wchar_t *_Str);
-
-#if defined(PLATFORM_UNIX)
-#define _wtoi(str) wcstod(str, nullptr);
-#endif
-
 //** KTimer Implementation
 //
 // Theory of operation:
@@ -617,7 +611,7 @@ KAdaptiveTimerRoot::Parameters::InitializeParameters()
 VOID
 KAdaptiveTimerRoot::Parameters::ModifyParameters(
     __in ULONG Count,
-    __in_ecount(Count) LPCWSTR ModifyStrings[]
+    __in_ecount(Count) LPCSTR ModifyStrings[]
     )
 /*++
  *
@@ -662,9 +656,9 @@ KAdaptiveTimerRoot::Parameters::ModifyParameters(
 
     for (i = 0; i < Count - 1; i += 2)
     {
-        if (_wcsicmp( ModifyStrings[i], L"MaximumTimeout" ) == 0)
+        if (strcasecmp( ModifyStrings[i], "MaximumTimeout" ) == 0)
         {
-            TempParameter = _wtoi( ModifyStrings[i+1] );
+            TempParameter = atoi( ModifyStrings[i+1] );
             if (TempParameter != 0)
             {
                 _MaximumTimeout = TempParameter;
@@ -673,9 +667,9 @@ KAdaptiveTimerRoot::Parameters::ModifyParameters(
             continue;
         }
 
-        if (_wcsicmp( ModifyStrings[i], L"MinimumTimeout" ) == 0)
+        if (strcasecmp( ModifyStrings[i], "MinimumTimeout" ) == 0)
         {
-            TempParameter = _wtoi( ModifyStrings[i+1] );
+            TempParameter = atoi( ModifyStrings[i+1] );
             if (TempParameter != 0)
             {
                 _MinimumTimeout = TempParameter;
@@ -683,9 +677,9 @@ KAdaptiveTimerRoot::Parameters::ModifyParameters(
 
             continue;
         }
-        if (_wcsicmp( ModifyStrings[i], L"InitialTimeInterval" ) == 0)
+        if (strcasecmp( ModifyStrings[i], "InitialTimeInterval" ) == 0)
         {
-            TempParameter = _wtoi( ModifyStrings[i+1] );
+            TempParameter = atoi( ModifyStrings[i+1] );
             if (TempParameter != 0)
             {
                 _InitialTimeInterval = TempParameter;
@@ -693,9 +687,9 @@ KAdaptiveTimerRoot::Parameters::ModifyParameters(
 
             continue;
         }
-        if (_wcsicmp( ModifyStrings[i], L"WeightOfExistingTime" ) == 0)
+        if (strcasecmp( ModifyStrings[i], "WeightOfExistingTime" ) == 0)
         {
-            TempParameter = _wtoi( ModifyStrings[i+1] );
+            TempParameter = atoi( ModifyStrings[i+1] );
             if (TempParameter != 0)
             {
                 _WeightOfExistingTime = TempParameter;
@@ -703,9 +697,9 @@ KAdaptiveTimerRoot::Parameters::ModifyParameters(
 
             continue;
         }
-        if (_wcsicmp( ModifyStrings[i], L"TimeToTimeoutMultipler" ) == 0)
+        if (strcasecmp( ModifyStrings[i], "TimeToTimeoutMultipler" ) == 0)
         {
-            TempParameter = _wtoi( ModifyStrings[i+1] );
+            TempParameter = atoi( ModifyStrings[i+1] );
             if (TempParameter != 0)
             {
                 _TimeToTimeoutMultipler = TempParameter;
@@ -713,9 +707,9 @@ KAdaptiveTimerRoot::Parameters::ModifyParameters(
 
             continue;
         }
-        if (_wcsicmp( ModifyStrings[i], L"BackoffMultipler" ) == 0)
+        if (strcasecmp( ModifyStrings[i], "BackoffMultipler" ) == 0)
         {
-            TempParameter = _wtoi( ModifyStrings[i+1] );
+            TempParameter = atoi( ModifyStrings[i+1] );
             if (TempParameter != 0)
             {
                 _BackoffMultipler = TempParameter;
@@ -744,6 +738,3 @@ KAdaptiveTimerRoot::Parameters::ModifyParameters(
     }
 }
 
-#if defined(PLATFORM_UNIX)
-#undef _wtoi
-#endif

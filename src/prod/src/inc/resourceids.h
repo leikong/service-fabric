@@ -39,7 +39,7 @@
 #define IDS_COMMON_String_Too_Long                          IDS_COMMON( 4 ) // String value exceeds maximum allowed length (string, length, max):
 #define IDS_COMMON_ENTRY_TOO_LARGE                          IDS_COMMON( 5 ) // Entry is too large. Estimated size and maximum allowed size are:
 #define IDS_COMMON_Invalid_Null_Pointer                     IDS_COMMON( 6 ) // Invalid NULL pointer:
-#define IDS_COMMON_Invalid_LPCWSTR_Length                   IDS_COMMON( 7 ) // Input string doesn't respect parameter size limits. Parameter name, min and max characters length:
+#define IDS_COMMON_Invalid_LPCSTR_Length                   IDS_COMMON( 7 ) // Input string doesn't respect parameter size limits. Parameter name, min and max characters length:
 #define IDS_COMMON_Null_Items                               IDS_COMMON( 8 ) // Items is NULL, but Count is
 #define IDS_COMMON_Invalid_Continuation_Token               IDS_COMMON( 9 ) // The continuation token '{0}' is not valid. Please pass in the continuation token returned by a previous query.
 #define IDS_COMMON_String_Too_Long2                         IDS_COMMON( 10 ) // The string '{0}...' is longer than the maximum allowed length of {1} characters.

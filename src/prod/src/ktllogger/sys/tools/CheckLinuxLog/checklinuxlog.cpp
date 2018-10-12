@@ -41,13 +41,13 @@ typedef enum
 #define VERIFY_IS_TRUE(cond, msg) if (! (cond)) { printf("Failure %s in %s at line %d\n",  msg, __FILE__, __LINE__); ExitProcess(static_cast<UINT>(-1)); }
 
 #define CONVERT_TO_ARGS(argc, cargs) \
-    std::vector<WCHAR*> args_vec(argc);\
-    WCHAR** args = (WCHAR**)args_vec.data();\
-    std::vector<std::wstring> wargs(argc);\
+    std::vector<CHAR*> args_vec(argc);\
+    CHAR** args = (CHAR**)args_vec.data();\
+    std::vector<std::string> wargs(argc);\
     for (int iter = 0; iter < argc; iter++)\
     {\
         wargs[iter] = Utf8To16(cargs[iter]);\
-        args[iter] = (WCHAR*)(wargs[iter].data());\
+        args[iter] = (CHAR*)(wargs[iter].data());\
     }\
 
 KAllocator* g_Allocator;
@@ -100,7 +100,7 @@ VOID CleanupRawCoreLoggerTests(
 }
 
 NTSTATUS CheckFile(
-    __in PWCHAR LogFileName
+    __in PCHAR LogFileName
     )
 {
     NTSTATUS status;
@@ -121,7 +121,7 @@ NTSTATUS CheckFile(
 }
 
 NTSTATUS FixFile(
-    __in LPCWSTR LogFile,
+    __in LPCSTR LogFile,
     __in ACLMODE AclMode
     )
 {
@@ -146,9 +146,9 @@ NTSTATUS FixFile(
 
     inFileName = LogFile;
     outFileName = LogFile;
-    outFileName += L".Copied";
+    outFileName += ".Copied";
     backupFileName = LogFile;
-    backupFileName += L".Backup";
+    backupFileName += ".Backup";
 
     //
     // In file is opened in the mode specified by AclMode and writes
@@ -395,61 +395,61 @@ void Usage()
 
 typedef struct
 {
-    PWCHAR LogFileName;
+    PCHAR LogFileName;
     ACLMODE AclMode;
     BOOLEAN Recondition;
 } COMMAND_OPTIONS, *PCOMMAND_OPTIONS;
 
-ULONG ParseCommandLine(__in int argc, __in wchar_t** args, __out PCOMMAND_OPTIONS Options)
+ULONG ParseCommandLine(__in int argc, __in char** args, __out PCOMMAND_OPTIONS Options)
 {
     Options->LogFileName = NULL;
     Options->AclMode = ACLMODE::Unknown;
     Options->Recondition = FALSE;
 
-    WCHAR flag;
+    CHAR flag;
     size_t len;
-    PWCHAR arg;
+    PCHAR arg;
 
     for (int i = 1; i < argc; i++)
     {
         arg = args[i];
 
-        len = wcslen(arg);
+        len = strlen(arg);
         if (len < 3)
         {
             Usage();
             return(ERROR_INVALID_PARAMETER);
         }
 
-        if ((arg[0] != L'-') || (arg[2] != L':'))
+        if ((arg[0] != '-') || (arg[2] != ':'))
         {
             Usage();
             return(ERROR_INVALID_PARAMETER);
         }
 
-        flag = (WCHAR)tolower(arg[1]);
+        flag = (CHAR)tolower(arg[1]);
 
         switch (flag)
         {
-            case L'l':
+            case 'l':
             {
                 Options->LogFileName = arg + 3;
                 break;
             }
 
-            case L'f':
+            case 'f':
             {
                 Options->AclMode = ACLMODE::FS;
                 break;
             }
 
-            case L'b':
+            case 'b':
             {
                 Options->AclMode = ACLMODE::BLK;
                 break;
             }
 
-            case L'r':
+            case 'r':
             {
                 Options->Recondition = TRUE;
                 break;
@@ -467,7 +467,7 @@ ULONG ParseCommandLine(__in int argc, __in wchar_t** args, __out PCOMMAND_OPTION
 }
 
 int
-TheMain(__in int argc, __in wchar_t** args)
+TheMain(__in int argc, __in char** args)
 {
     NTSTATUS status = STATUS_UNSUCCESSFUL;
     ULONG error;
@@ -500,8 +500,8 @@ TheMain(__in int argc, __in wchar_t** args)
         return(ERROR_INVALID_PARAMETER);
     }
 
-    std::wstring traceFileName = options.LogFileName;
-    traceFileName += L"-CheckLinuxLog.trace";
+    std::string traceFileName = options.LogFileName;
+    traceFileName += "-CheckLinuxLog.trace";
     Common::TraceTextFileSink::SetPath(traceFileName);
 
     //
@@ -587,7 +587,7 @@ TheMain(__in int argc, __in wchar_t** args)
 
 #if !defined(PLATFORM_UNIX)
 int
-wmain(int argc, WCHAR* args[])
+wmain(int argc, CHAR* args[])
 {
     return TheMain(argc, args);
 }

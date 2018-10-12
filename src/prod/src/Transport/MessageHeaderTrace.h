@@ -52,11 +52,11 @@ namespace Transport
                             headerReference.TryDeserialize<TMessageHeader>(header);
                             if (headerReference.IsValid)
                             {
-                                w << L'(' << headerReference.Id() << L':' << headerReference.SerializedHeaderObjectSize() << L':' << header << L')';
+                                w << '(' << headerReference.Id() << ':' << headerReference.SerializedHeaderObjectSize() << ':' << header << ')';
                             }
                             else
                             {
-                                w << L"(FailedToDeserialize: " << headerReference.Status << L')';
+                                w << "(FailedToDeserialize: " << headerReference.Status << ')';
                             }
                         }));
             }

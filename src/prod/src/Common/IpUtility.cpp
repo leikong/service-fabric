@@ -14,7 +14,7 @@ using namespace std;
 using namespace Common;
 
 ErrorCode IpUtility::GetDnsServers(
-    __out std::vector<std::wstring> & list
+    __out std::vector<std::string> & list
     )
 {
 #if !defined(PLATFORM_UNIX)
@@ -40,8 +40,8 @@ ErrorCode IpUtility::GetDnsServers(
     while (pIPAddr != nullptr)
     {
         std::string address(pIPAddr->IpAddress.String);
-        std::wstring addressW;
-        StringUtility::Utf8ToUtf16(address, addressW);
+        std::string addressW;
+        Utf8ToUtf16NotNeeded2(address, addressW);
 
         list.push_back(addressW);
 
@@ -62,8 +62,8 @@ ErrorCode IpUtility::GetDnsServers(
         char address[INET_ADDRSTRLEN];
         Invariant(inet_ntop(AF_INET, &addr.sin_addr, address, sizeof(address)));
 
-        std::wstring addressW;
-        StringUtility::Utf8ToUtf16(address, addressW);
+        std::string addressW;
+        Utf8ToUtf16NotNeeded2(address, addressW);
 
         list.push_back(addressW);
     }
@@ -73,7 +73,7 @@ ErrorCode IpUtility::GetDnsServers(
 }
 
 ErrorCode IpUtility::GetDnsServersPerAdapter(
-    __out std::map<std::wstring, std::vector<std::wstring>> & map
+    __out std::map<std::string, std::vector<std::string>> & map
     )
 {
 #if !defined(PLATFORM_UNIX)
@@ -96,15 +96,15 @@ ErrorCode IpUtility::GetDnsServersPerAdapter(
     IP_ADAPTER_ADDRESSES* pCurrAddresses = reinterpret_cast<IP_ADAPTER_ADDRESSES*>(buffer.data());
     while (pCurrAddresses != NULL)
     {
-        std::wstring adapterName = StringUtility::Utf8ToUtf16(pCurrAddresses->AdapterName);
-        std::vector<std::wstring> addresses;
+        std::string adapterName = Utf8ToUtf16NotNeeded(pCurrAddresses->AdapterName);
+        std::vector<std::string> addresses;
 
         IP_ADAPTER_DNS_SERVER_ADDRESS* pDnsServer = pCurrAddresses->FirstDnsServerAddress;
         while (pDnsServer != NULL)
         {
             SOCKADDR_IN& dns = (SOCKADDR_IN&)*pDnsServer->Address.lpSockaddr;
 
-            WCHAR address[INET_ADDRSTRLEN];
+            CHAR address[INET_ADDRSTRLEN];
             InetNtop(AF_INET, &dns.sin_addr, address, ARRAYSIZE(address));
             addresses.push_back(address);
 
@@ -123,7 +123,7 @@ ErrorCode IpUtility::GetDnsServersPerAdapter(
 }
 
 ErrorCode IpUtility::GetIpAddressesPerAdapter(
-    __out std::map<std::wstring, std::vector<Common::IPPrefix>> & map
+    __out std::map<std::string, std::vector<Common::IPPrefix>> & map
     )
 {
 #if !defined(PLATFORM_UNIX)
@@ -146,7 +146,7 @@ ErrorCode IpUtility::GetIpAddressesPerAdapter(
     IP_ADAPTER_ADDRESSES* pCurrAddresses = reinterpret_cast<IP_ADAPTER_ADDRESSES*>(buffer.data());
     while (pCurrAddresses != NULL)
     {
-        std::wstring adapterName = StringUtility::Utf8ToUtf16(pCurrAddresses->AdapterName);
+        std::string adapterName = Utf8ToUtf16NotNeeded(pCurrAddresses->AdapterName);
         std::vector<IPPrefix> addresses;
 
         IP_ADAPTER_UNICAST_ADDRESS* pUnicast = pCurrAddresses->FirstUnicastAddress;
@@ -198,7 +198,7 @@ ErrorCode IpUtility::GetIpAddressesPerAdapter(
             IPPrefix ipPrefix(ep, prefix);
             addresses.push_back(ipPrefix);
 
-            std::wstring adapterName = StringUtility::Utf8ToUtf16(ifa->ifa_name);
+            std::string adapterName = Utf8ToUtf16NotNeeded(ifa->ifa_name);
 
             if (!addresses.empty())
             {
@@ -215,8 +215,8 @@ ErrorCode IpUtility::GetIpAddressesPerAdapter(
 }
 
 ErrorCode IpUtility::GetAdapterAddressOnTheSameNetwork(
-    __in std::wstring input,
-    __out std::wstring& output
+    __in std::string input,
+    __out std::string& output
     )
 {
     Common::Endpoint inputEp;
@@ -226,7 +226,7 @@ ErrorCode IpUtility::GetAdapterAddressOnTheSameNetwork(
         return error;
     }
 
-    typedef std::map<std::wstring, std::vector<IPPrefix>> IpMap;
+    typedef std::map<std::string, std::vector<IPPrefix>> IpMap;
 
     IpMap map;
     error = GetIpAddressesPerAdapter(map);
@@ -254,7 +254,7 @@ ErrorCode IpUtility::GetAdapterAddressOnTheSameNetwork(
 }
 
 ErrorCode IpUtility::GetGatewaysPerAdapter(
-    __out map<wstring, vector<wstring>> &map
+    __out map<string, vector<string>> &map
     )
 {
 #if !defined(PLATFORM_UNIX)
@@ -277,14 +277,14 @@ ErrorCode IpUtility::GetGatewaysPerAdapter(
     IP_ADAPTER_ADDRESSES* pCurrAddress = reinterpret_cast<IP_ADAPTER_ADDRESSES*>(buffer.data());
     while (pCurrAddress)
     {
-        std::wstring adapterName = StringUtility::Utf8ToUtf16(pCurrAddress->AdapterName);
-        std::vector<std::wstring> addresses;
+        std::string adapterName = Utf8ToUtf16NotNeeded(pCurrAddress->AdapterName);
+        std::vector<std::string> addresses;
 
         PIP_ADAPTER_GATEWAY_ADDRESS_LH gatewayAddress = pCurrAddress->FirstGatewayAddress;
         while (gatewayAddress)
         {
             SOCKADDR_IN& sockAddr = (SOCKADDR_IN&)*gatewayAddress->Address.lpSockaddr;
-            WCHAR ip[16];
+            CHAR ip[16];
             InetNtop(AF_INET, &sockAddr.sin_addr, ip, ARRAYSIZE(ip));
             addresses.push_back(ip);
 
@@ -309,13 +309,13 @@ ErrorCode IpUtility::GetGatewaysPerAdapter(
 }
 
 ErrorCode IpUtility::GetFirstNonLoopbackAddress(
-    std::map<std::wstring, std::vector<Common::IPPrefix>> addressesPerAdapter,
-    __out wstring & nonLoopbackIp)
+    std::map<std::string, std::vector<Common::IPPrefix>> addressesPerAdapter,
+    __out string & nonLoopbackIp)
 {
-    std::wregex loopbackaddrIPv4(L"(127.0.0.)(.*)", std::regex::ECMAScript);
-    std::wregex loopbackaddrIPv6(L"(0000:0000:0000:0000:0000:0000:0000)(.*)", std::regex::ECMAScript);
+    std::regex loopbackaddrIPv4("(127.0.0.)(.*)", std::regex::ECMAScript);
+    std::regex loopbackaddrIPv6("(0000:0000:0000:0000:0000:0000:0000)(.*)", std::regex::ECMAScript);
 
-    for (map<wstring, vector<Common::IPPrefix>>::const_iterator it = addressesPerAdapter.begin(); it != addressesPerAdapter.end(); ++it)
+    for (map<string, vector<Common::IPPrefix>>::const_iterator it = addressesPerAdapter.begin(); it != addressesPerAdapter.end(); ++it)
     {
         for (vector<Common::IPPrefix>::const_iterator iit = it->second.begin(); iit != it->second.end(); ++iit)
         {

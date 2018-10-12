@@ -12,16 +12,16 @@ namespace Common
     {
         DENY_COPY(Zip)
     public:
-        static int TryZipDirectory(wchar_t const * srcDirectoryPath, wchar_t const * destZipFileName, wchar_t * errorMessageBuffer, int errorMessageBufferSize);
-        static int TryUnzipDirectory(wchar_t const * srcFileName, wchar_t const * destDirectoryPath, wchar_t * errorMessageBuffer, int errorMessageBufferSize);
+        static int TryZipDirectory(char const * srcDirectoryPath, char const * destZipFileName, char * errorMessageBuffer, int errorMessageBufferSize);
+        static int TryUnzipDirectory(char const * srcFileName, char const * destDirectoryPath, char * errorMessageBuffer, int errorMessageBufferSize);
         
     private:
         static bool IsLargeFile(std::istream & inputStream);
-        static int ArchiveEntry(zipFile const & zipFile, std::string const & filename, std::string const & filenameFullPath, wchar_t * errorMessageBuffer, int const errorMessageBufferSize);
-        static int ExtractCurrentEntry(unzFile const & zipFile, wchar_t const * destDirectoryPath, wchar_t * errorMessageBuffer, int const errorMessageBufferSize);
+        static int ArchiveEntry(zipFile const & zipFile, std::string const & filename, std::string const & filenameFullPath, char * errorMessageBuffer, int const errorMessageBufferSize);
+        static int ExtractCurrentEntry(unzFile const & zipFile, char const * destDirectoryPath, char * errorMessageBuffer, int const errorMessageBufferSize);
         static void GetFileDate(std::string filename, tm_zip & tmzip);
         static void ChangeFileDate(char const * filename, tm_unz tmuDate);
-        static void CopyFromString(std::wstring const & str, wchar_t * out, int outSize);
+        static void CopyFromString(std::string const & str, char * out, int outSize);
     };
 }
 #endif

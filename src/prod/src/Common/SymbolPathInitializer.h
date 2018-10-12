@@ -15,12 +15,12 @@ namespace Common
             std::string symPathOut;
 
 #ifndef PLATFORM_UNIX
-            wstring symPath;
-            Environment::GetEnvironmentVariable(L"_NT_SYMBOL_PATH", symPath, NOTHROW());
-            wstring symPathAlt;
-            Environment::GetEnvironmentVariable(L"_NT_ALTERNATE_SYMBOL_PATH", symPathAlt, NOTHROW());
-            auto symPathsW = wformatString("{0};{1};{2};{3}", Environment::GetExecutablePath(), Directory::GetCurrentDirectory(), symPath, symPathAlt);
-            StringUtility::Utf16ToUtf8(symPathsW, symPathOut);
+            string symPath;
+            Environment::GetEnvironmentVariable("_NT_SYMBOL_PATH", symPath, NOTHROW());
+            string symPathAlt;
+            Environment::GetEnvironmentVariable("_NT_ALTERNATE_SYMBOL_PATH", symPathAlt, NOTHROW());
+            auto symPathsW = formatString.L("{0};{1};{2};{3}", Environment::GetExecutablePath(), Directory::GetCurrentDirectory(), symPath, symPathAlt);
+            Utf16ToUtf8NotNeeded2(symPathsW, symPathOut);
 
             SymInitialize(GetCurrentProcess(), symPathOut.c_str(), TRUE);
 #endif

@@ -12,8 +12,8 @@ extern "C" {
 #endif
 
 // 426
-typedef CONST WCHAR *LPCWCHAR, *PCWCHAR;
-typedef CONST WCHAR UNALIGNED *LPCUWCHAR, *PCUWCHAR;
+typedef CONST char *LPCCHAR;
+typedef CONST char UNALIGNED *LPCUCHAR;
 
 // 592
 typedef CONST UCHAR *PCUCHAR;

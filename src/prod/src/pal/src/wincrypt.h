@@ -127,12 +127,12 @@ typedef struct _CERT_ALT_NAME_ENTRY {
     DWORD   dwAltNameChoice;
     union {                                             // certenrolls_skip
         PCERT_OTHER_NAME            pOtherName;         // 1
-        LPWSTR                      pwszRfc822Name;     // 2  (encoded IA5)
-        LPWSTR                      pwszDNSName;        // 3  (encoded IA5)
+        LPSTR                      pwszRfc822Name;     // 2  (encoded IA5)
+        LPSTR                      pwszDNSName;        // 3  (encoded IA5)
         // Not implemented          x400Address;        // 4
         CERT_NAME_BLOB              DirectoryName;      // 5
         // Not implemented          pEdiPartyName;      // 6
-        LPWSTR                      pwszURL;            // 7  (encoded IA5)
+        LPSTR                      pwszURL;            // 7  (encoded IA5)
         CRYPT_DATA_BLOB             IPAddress;          // 8  (Octet String)
         LPSTR                       pszRegisteredID;    // 9  (Object Identifer)
     };                                                  // certenrolls_skip

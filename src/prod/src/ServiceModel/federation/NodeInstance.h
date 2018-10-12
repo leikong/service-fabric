@@ -86,11 +86,11 @@ namespace Federation
         }
 
         void WriteTo(Common::TextWriter& w, Common::FormatOptions const&) const;
-        std::wstring ToString() const;
+        std::string ToString() const;
         static std::string AddField(Common::TraceEvent & traceEvent, std::string const & name);
         void FillEventData(Common::TraceEventContext & context) const;
 
-        static bool TryParse(std::wstring const & data, __out NodeInstance & nodeInstance);
+        static bool TryParse(std::string const & data, __out NodeInstance & nodeInstance);
 
     private:
         // The node id of the node which this instance is of.

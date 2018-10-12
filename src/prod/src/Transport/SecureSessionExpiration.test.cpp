@@ -64,7 +64,7 @@ namespace Transport
             TransportConfig::GetConfig().CloseDrainTimeout = saved3;
         });
 
-        auto client = DatagramTransportFactory::CreateTcpClient(L"client");
+        auto client = DatagramTransportFactory::CreateTcpClient("client");
         auto disconnected = make_shared<AutoResetEvent>(false);
         auto disconnectCount = make_shared<atomic_uint64>(0);
         auto cde = client->RegisterDisconnectEvent(
@@ -78,18 +78,18 @@ namespace Transport
         InstallTestCertInScope testCert;
         SecuritySettings securitySettings = TTestUtil::CreateX509SettingsTp(
             testCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             testCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         VERIFY_IS_TRUE(client->SetSecurity(securitySettings).IsSuccess());
         VERIFY_IS_TRUE(client->Start().IsSuccess());
 
-        auto server = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), L"", L"server");
+        auto server = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), "", "server");
         VERIFY_IS_TRUE(server->SetSecurity(securitySettings).IsSuccess());
 
         AutoResetEvent messageReceived;
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         TTestUtil::SetMessageHandler(
             server,
             testAction,
@@ -185,7 +185,7 @@ namespace Transport
             SecurityConfig::GetConfig().SessionRefreshTimeout = saved2;
         });
 
-        auto client = DatagramTransportFactory::CreateTcpClient(L"client");
+        auto client = DatagramTransportFactory::CreateTcpClient("client");
         auto disconnected = make_shared<AutoResetEvent>(false);
         auto disconnectCount = make_shared<atomic_uint64>(0);
         auto cde = client->RegisterDisconnectEvent([disconnected, disconnectCount](const IDatagramTransport::DisconnectEventArgs& e)
@@ -198,28 +198,28 @@ namespace Transport
         InstallTestCertInScope testCert;
         SecuritySettings clientSecuritySettings = TTestUtil::CreateX509SettingsTp(
             testCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             testCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         VERIFY_IS_TRUE(client->SetSecurity(clientSecuritySettings).IsSuccess());
         Trace.WriteInfo(TraceType, "disable session expiration on client to simulate a misbehaving client");
         client->DisableSecureSessionExpiration();
         VERIFY_IS_TRUE(client->Start().IsSuccess());
 
-        auto server = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), L"", L"server");
+        auto server = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), "", "server");
         SecuritySettings serverSecuritySettings = TTestUtil::CreateX509SettingsTp(
             testCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             testCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         serverSecuritySettings.SetSessionDurationCallback([] { return TimeSpan::FromSeconds(3); });
 
         VERIFY_IS_TRUE(server->SetSecurity(serverSecuritySettings).IsSuccess());
 
         AutoResetEvent messageReceived;
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         TTestUtil::SetMessageHandler(server, testAction, [&server, &client, &messageReceived](MessageUPtr &, ISendTarget::SPtr const & st) -> void
         {
             Trace.WriteInfo(TraceType, "receiver got a message from {0}", st->Address());
@@ -297,7 +297,7 @@ namespace Transport
             securityConfig.SessionExpirationCloseDelay = savedDefaultCloseDelay;
         });
 
-        auto node1 = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), L"", L"node1");
+        auto node1 = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), "", "node1");
         auto disconnected1 = make_shared<AutoResetEvent>(false);
         auto disconnectCount1 = make_shared<atomic_uint64>(0);
         auto de1 = node1->RegisterDisconnectEvent([disconnected1, disconnectCount1](const IDatagramTransport::DisconnectEventArgs& e)
@@ -310,16 +310,16 @@ namespace Transport
         InstallTestCertInScope testCert;
         SecuritySettings securitySettings = TTestUtil::CreateX509SettingsTp(
             testCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             testCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         securitySettings.EnablePeerToPeerMode();
 
         VERIFY_IS_TRUE(node1->SetSecurity(securitySettings).IsSuccess());
         VERIFY_IS_TRUE(node1->Start().IsSuccess());
 
-        auto node2 = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), L"", L"node2");
+        auto node2 = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), "", "node2");
         auto disconnected2 = make_shared<AutoResetEvent>(false);
         auto disconnectCount2 = make_shared<atomic_uint64>(0);
         auto de2 = node2->RegisterDisconnectEvent([disconnected2, disconnectCount2](const IDatagramTransport::DisconnectEventArgs& e)
@@ -333,7 +333,7 @@ namespace Transport
         VERIFY_IS_TRUE(node2->SetSecurity(securitySettings).IsSuccess());
 
         AutoResetEvent messageReceived;
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         TTestUtil::SetMessageHandler(
             node2,
             testAction,
@@ -437,11 +437,11 @@ namespace Transport
         InstallTestCertInScope testCert;
         SecuritySettings securitySettings = TTestUtil::CreateX509SettingsTp(
             testCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             testCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
-        auto client = DatagramTransportFactory::CreateTcpClient(L"client");
+        auto client = DatagramTransportFactory::CreateTcpClient("client");
         auto disconnected = make_shared<AutoResetEvent>(false);
         auto disconnectCount = make_shared<atomic_uint64>(0);
         auto cde = client->RegisterDisconnectEvent([disconnected, disconnectCount](const IDatagramTransport::DisconnectEventArgs& e)
@@ -454,7 +454,7 @@ namespace Transport
         VERIFY_IS_TRUE(client->SetSecurity(securitySettings).IsSuccess());
         VERIFY_IS_TRUE(client->Start().IsSuccess());
 
-        auto server = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), L"", L"server");
+        auto server = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), "", "server");
         VERIFY_IS_TRUE(server->SetSecurity(securitySettings).IsSuccess());
 
         AutoResetEvent messageReceived;
@@ -563,11 +563,11 @@ namespace Transport
         InstallTestCertInScope testCert;
         SecuritySettings securitySettings = TTestUtil::CreateX509SettingsTp(
             testCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             testCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
-        auto client = DatagramTransportFactory::CreateTcpClient(L"client");
+        auto client = DatagramTransportFactory::CreateTcpClient("client");
         auto clientConnectionFaults = make_shared<vector<ErrorCode>>();
         auto clientLock = make_shared<RwLock>();
         auto cde = client->RegisterDisconnectEvent([clientConnectionFaults, clientLock](const IDatagramTransport::DisconnectEventArgs& e)
@@ -615,9 +615,9 @@ namespace Transport
         // server will reject new session from client and cause message sending to fail
         SecuritySettings noOneIsAllowedSecuritySettings = TTestUtil::CreateX509SettingsTp(
             testCert.Thumbprint()->PrimaryToString(),
-            L"",
-            L"0000000000000000000000000000000000000000", //Assuming this will match any certificate thumbprints
-            L"");
+            "",
+            "0000000000000000000000000000000000000000", //Assuming this will match any certificate thumbprints
+            "");
 
         VERIFY_IS_TRUE(server->SetSecurity(noOneIsAllowedSecuritySettings).IsSuccess());
 
@@ -695,11 +695,11 @@ namespace Transport
         InstallTestCertInScope testCert;
         SecuritySettings securitySettings = TTestUtil::CreateX509SettingsTp(
             testCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             testCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
-        auto client = DatagramTransportFactory::CreateTcpClient(L"client");
+        auto client = DatagramTransportFactory::CreateTcpClient("client");
         auto disconnected = make_shared<AutoResetEvent>(false);
         auto disconnectCount = make_shared<atomic_uint64>(0);
         auto cde = client->RegisterDisconnectEvent([disconnected, disconnectCount](const IDatagramTransport::DisconnectEventArgs& e)
@@ -712,7 +712,7 @@ namespace Transport
         VERIFY_IS_TRUE(client->SetSecurity(securitySettings).IsSuccess());
         VERIFY_IS_TRUE(client->Start().IsSuccess());
 
-        auto server = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), L"", L"server");
+        auto server = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), "", "server");
         VERIFY_IS_TRUE(server->SetSecurity(securitySettings).IsSuccess());
 
         AutoResetEvent messageReceived;
@@ -805,9 +805,9 @@ namespace Transport
         InstallTestCertInScope testCert;
         SecuritySettings securitySettings = TTestUtil::CreateX509SettingsTp(
             testCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             testCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         RequestReplyAtSessionExpiration(securitySettings);
 
@@ -821,9 +821,9 @@ namespace Transport
         InstallTestCertInScope testCert;
         SecuritySettings securitySettings = TTestUtil::CreateX509SettingsTp(
             testCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             testCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         securitySettings.SetReadyNewSessionBeforeExpirationCallback([] { return false; });
         RequestReplyAtSessionExpiration(securitySettings);
@@ -838,9 +838,9 @@ namespace Transport
         InstallTestCertInScope testCert;
         SecuritySettings securitySettings = TTestUtil::CreateX509SettingsTp(
             testCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             testCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         securitySettings.EnablePeerToPeerMode();
         ReliabilityTest_NodeToNode(securitySettings);
@@ -855,9 +855,9 @@ namespace Transport
         InstallTestCertInScope testCert;
         SecuritySettings securitySettings = TTestUtil::CreateX509SettingsTp(
             testCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             testCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         ReliabilityTest_ClientServer(securitySettings);
 
@@ -871,9 +871,9 @@ namespace Transport
         InstallTestCertInScope testCert;
         SecuritySettings securitySettings = TTestUtil::CreateX509SettingsTp(
             testCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             testCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         ConnectionSurvivesRefreshFailure(securitySettings);
 
@@ -887,9 +887,9 @@ namespace Transport
         InstallTestCertInScope testCert;
         SecuritySettings securitySettings = TTestUtil::CreateX509SettingsTp(
             testCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             testCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         securitySettings.EnablePeerToPeerMode();
         ConnectionSurvivesRefreshFailure(securitySettings);
@@ -906,9 +906,9 @@ namespace Transport
         InstallTestCertInScope testCert;
         SecuritySettings securitySettings = TTestUtil::CreateX509SettingsTp(
             testCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             testCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         securitySettings.EnablePeerToPeerMode();
         ReliabilityTest_NodeToNode(securitySettings, true);
@@ -923,9 +923,9 @@ namespace Transport
         InstallTestCertInScope testCert;
         SecuritySettings securitySettings = TTestUtil::CreateX509SettingsTp(
             testCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             testCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         ReliabilityTest_NodeToNode(securitySettings);
 
@@ -1018,7 +1018,7 @@ namespace Transport
             securityConfig.SessionExpirationCloseDelay = saved2;
         });
 
-        auto client = DatagramTransportFactory::CreateTcpClient(L"client");
+        auto client = DatagramTransportFactory::CreateTcpClient("client");
         auto disconnected = make_shared<AutoResetEvent>(false);
         auto disconnectCount = make_shared<atomic_uint64>(0);
         auto cde = client->RegisterDisconnectEvent(
@@ -1036,19 +1036,19 @@ namespace Transport
         InstallTestCertInScope testCert;
         SecuritySettings securitySettings = TTestUtil::CreateX509SettingsTp(
             testCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             testCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         securitySettings.SetReadyNewSessionBeforeExpirationCallback([] { return false; });
         VERIFY_IS_TRUE(client->SetSecurity(securitySettings).IsSuccess());
         VERIFY_IS_TRUE(client->Start().IsSuccess());
 
-        auto server = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), L"", L"server");
+        auto server = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), "", "server");
         VERIFY_IS_TRUE(server->SetSecurity(securitySettings).IsSuccess());
 
         AutoResetEvent messageReceived;
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         TTestUtil::SetMessageHandler(
             server,
             testAction,
@@ -1155,7 +1155,7 @@ namespace Transport
             securityConfig.SessionExpirationCloseDelay = saved3;
         });
 
-        auto client = DatagramTransportFactory::CreateTcpClient(L"client");
+        auto client = DatagramTransportFactory::CreateTcpClient("client");
         auto disconnected = make_shared<AutoResetEvent>(false);
         auto disconnectCount = make_shared<atomic_uint64>(0);
         auto cde = client->RegisterDisconnectEvent(
@@ -1173,18 +1173,18 @@ namespace Transport
         InstallTestCertInScope testCert;
         SecuritySettings securitySettings = TTestUtil::CreateX509SettingsTp(
             testCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             testCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         VERIFY_IS_TRUE(client->SetSecurity(securitySettings).IsSuccess());
         VERIFY_IS_TRUE(client->Start().IsSuccess());
 
-        auto server = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), L"", L"server");
+        auto server = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), "", "server");
         VERIFY_IS_TRUE(server->SetSecurity(securitySettings).IsSuccess());
 
         AutoResetEvent messageReceived;
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         TTestUtil::SetMessageHandler(
             server,
             testAction,
@@ -1291,7 +1291,7 @@ namespace Transport
             TransportConfig::GetConfig().CloseDrainTimeout = saved3;
         });
 
-        auto client = DatagramTransportFactory::CreateTcpClient(L"client");
+        auto client = DatagramTransportFactory::CreateTcpClient("client");
         auto disconnected = make_shared<AutoResetEvent>(false);
         auto disconnectCount = make_shared<atomic_uint64>(0);
         auto cde = client->RegisterDisconnectEvent([disconnected, disconnectCount](const IDatagramTransport::DisconnectEventArgs& e)
@@ -1305,15 +1305,15 @@ namespace Transport
         InstallTestCertInScope testCert;
         SecuritySettings securitySettings = TTestUtil::CreateX509SettingsTp(
             testCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             testCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         securitySettings.SetReadyNewSessionBeforeExpirationCallback([] { return false; });
         VERIFY_IS_TRUE(client->SetSecurity(securitySettings).IsSuccess());
 
         AutoResetEvent replyReceived;
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         TTestUtil::SetMessageHandler(
             client,
             testAction,
@@ -1321,7 +1321,7 @@ namespace Transport
 
         VERIFY_IS_TRUE(client->Start().IsSuccess());
 
-        auto server = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), L"", L"server");
+        auto server = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), "", "server");
         VERIFY_IS_TRUE(server->SetSecurity(securitySettings).IsSuccess());
 
         TTestUtil::SetMessageHandler(
@@ -1403,7 +1403,7 @@ namespace Transport
             TransportConfig::GetConfig().CloseDrainTimeout = saved3;
         });
 
-        auto client = DatagramTransportFactory::CreateTcpClient(L"client");
+        auto client = DatagramTransportFactory::CreateTcpClient("client");
         auto disconnected = make_shared<AutoResetEvent>(false);
         auto disconnectCount = make_shared<atomic_uint64>(0);
         auto cde = client->RegisterDisconnectEvent([disconnected, disconnectCount](const IDatagramTransport::DisconnectEventArgs& e)
@@ -1417,15 +1417,15 @@ namespace Transport
         InstallTestCertInScope testCert;
         SecuritySettings securitySettings = TTestUtil::CreateX509SettingsTp(
             testCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             testCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         securitySettings.SetReadyNewSessionBeforeExpirationCallback([] { return false; });
         VERIFY_IS_TRUE(client->SetSecurity(securitySettings).IsSuccess());
 
         AutoResetEvent replyReceived;
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         TTestUtil::SetMessageHandler(
             client,
             testAction,
@@ -1433,7 +1433,7 @@ namespace Transport
 
         VERIFY_IS_TRUE(client->Start().IsSuccess());
 
-        auto server = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), L"", L"server");
+        auto server = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), "", "server");
         VERIFY_IS_TRUE(server->SetSecurity(securitySettings).IsSuccess());
         Trace.WriteInfo(TraceType, "server side session expiration: {0}", securitySettings.SessionDuration());
 
@@ -1513,7 +1513,7 @@ namespace Transport
     {
         ENTER;
 
-        auto client = DatagramTransportFactory::CreateTcpClient(L"client");
+        auto client = DatagramTransportFactory::CreateTcpClient("client");
         auto disconnected = make_shared<AutoResetEvent>(false);
         auto cde = client->RegisterDisconnectEvent(
             [disconnected](const IDatagramTransport::DisconnectEventArgs& e)
@@ -1525,9 +1525,9 @@ namespace Transport
         InstallTestCertInScope testCert;
         SecuritySettings cltSecuritySettings = TTestUtil::CreateX509SettingsTp(
             testCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             testCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         auto svrSecuritySettings = cltSecuritySettings;
 
@@ -1536,11 +1536,11 @@ namespace Transport
         VERIFY_IS_TRUE(client->Start().IsSuccess());
 
         svrSecuritySettings.SetSessionDurationCallback([] { return TimeSpan::Zero; });
-        auto server = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), L"", L"server");
+        auto server = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), "", "server");
         VERIFY_IS_TRUE(server->SetSecurity(svrSecuritySettings).IsSuccess());
 
         AutoResetEvent messageReceived;
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         TTestUtil::SetMessageHandler(
             server,
             testAction,
@@ -1626,7 +1626,7 @@ namespace Transport
         // connection is "removed" for sending after the new connection is ready. We want the reply to be sent
         // out after client side has "removed" the connection.
         auto replyDelay = SecurityConfig::GetConfig().SessionExpiration + TimeSpan::FromSeconds(2);
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         TTestUtil::SetMessageHandler(
             server,
             testAction,
@@ -1650,8 +1650,8 @@ namespace Transport
 
         ISendTarget::SPtr serverTarget = client->ResolveTarget(
             server->ListenAddress(),
-            L"",
-            (securitySettings.SecurityProvider() == SecurityProvider::Negotiate) ? TransportSecurity().LocalWindowsIdentity() : L"");
+            "",
+            (securitySettings.SecurityProvider() == SecurityProvider::Negotiate) ? TransportSecurity().LocalWindowsIdentity() : "");
 
         VERIFY_IS_TRUE(serverTarget);
 
@@ -1717,10 +1717,10 @@ namespace Transport
         auto& tconfig = TransportConfig::GetConfig();
         VERIFY_IS_TRUE(sendDuration > (sconfig.SessionExpiration + sconfig.SessionExpirationCloseDelay + tconfig.CloseDrainTimeout));
 
-        auto client = DatagramTransportFactory::CreateTcpClient(TTestUtil::GetListenAddress(), L"client");
+        auto client = DatagramTransportFactory::CreateTcpClient(TTestUtil::GetListenAddress(), "client");
         VERIFY_IS_TRUE(client->SetSecurity(securitySettings).IsSuccess());
         Common::atomic_long clientReceiveCount(0);
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         TTestUtil::SetMessageHandler(
             client,
             testAction,
@@ -1728,7 +1728,7 @@ namespace Transport
 
         VERIFY_IS_TRUE(client->Start().IsSuccess());
 
-        auto server = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), L"", L"server");
+        auto server = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), "", "server");
         server->SetPerTargetSendQueueLimit(0); // disable send queue limit
         VERIFY_IS_TRUE(server->SetSecurity(securitySettings).IsSuccess());
 
@@ -1751,7 +1751,7 @@ namespace Transport
 
         VERIFY_IS_TRUE(server->Start().IsSuccess());
 
-        ISendTarget::SPtr receiverTarget = client->ResolveTarget(server->ListenAddress(), L"", TransportSecurity().LocalWindowsIdentity());
+        ISendTarget::SPtr receiverTarget = client->ResolveTarget(server->ListenAddress(), "", TransportSecurity().LocalWindowsIdentity());
         VERIFY_IS_TRUE(receiverTarget);
 
         LONG sentCount = 0;
@@ -1823,7 +1823,7 @@ namespace Transport
         auto& tconfig = TransportConfig::GetConfig();
         VERIFY_IS_TRUE(sendDuration > (sconfig.SessionExpiration + sconfig.SessionExpirationCloseDelay + tconfig.CloseDrainTimeout));
 
-        auto node1 = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), L"", L"node1");
+        auto node1 = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), "", "node1");
         VERIFY_IS_TRUE(node1->SetSecurity(securitySettings).IsSuccess());
         Common::atomic_long node1ReceiveCount(0);
         node1->SetMessageHandler([&node1ReceiveCount](MessageUPtr & msg, ISendTarget::SPtr const &) -> void
@@ -1874,7 +1874,7 @@ namespace Transport
 
         VERIFY_IS_TRUE(node1->Start().IsSuccess());
 
-        auto node2 = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), L"", L"node2");
+        auto node2 = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), "", "node2");
         node2->SetPerTargetSendQueueLimit(0); // disable send queue limit
         VERIFY_IS_TRUE(node2->SetSecurity(securitySettings).IsSuccess());
 
@@ -1927,8 +1927,8 @@ namespace Transport
 
         VERIFY_IS_TRUE(node2->Start().IsSuccess());
 
-        auto target1 = node2->ResolveTarget(node1->ListenAddress(), L"", TransportSecurity().LocalWindowsIdentity());
-        auto target2 = node1->ResolveTarget(node2->ListenAddress(), L"", TransportSecurity().LocalWindowsIdentity());
+        auto target1 = node2->ResolveTarget(node1->ListenAddress(), "", TransportSecurity().LocalWindowsIdentity());
+        auto target2 = node1->ResolveTarget(node2->ListenAddress(), "", TransportSecurity().LocalWindowsIdentity());
 
         int sentCount1 = 0;
         int sentCount2 = 0;
@@ -2017,7 +2017,7 @@ namespace Transport
             securityConfig.SessionRefreshTimeout = saved3;
         });
 
-        auto node1 = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), L"", L"node1");
+        auto node1 = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), "", "node1");
         IConnection const * firstConnection = nullptr;
         auto de1 = node1->RegisterDisconnectEvent([&firstConnection](const IDatagramTransport::DisconnectEventArgs& e)
         {
@@ -2032,11 +2032,11 @@ namespace Transport
         VERIFY_IS_TRUE(node1->SetSecurity(securitySettings).IsSuccess());
         VERIFY_IS_TRUE(node1->Start().IsSuccess());
 
-        auto node2 = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), L"", L"node2");
+        auto node2 = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), "", "node2");
         VERIFY_IS_TRUE(node2->SetSecurity(securitySettings).IsSuccess());
 
         AutoResetEvent messageReceived;
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         TTestUtil::SetMessageHandler(
             node2,
             testAction,

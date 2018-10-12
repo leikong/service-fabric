@@ -11,10 +11,10 @@ namespace Common
     struct ConfigSection
     {
     public:
-        typedef std::map<std::wstring, ConfigParameter, Common::IsLessCaseInsensitiveComparer<std::wstring>> ParametersMapType;
+        typedef std::map<std::string, ConfigParameter, Common::IsLessCaseInsensitiveComparer<std::string>> ParametersMapType;
 
         ConfigSection();
-        ConfigSection(std::wstring && name, ParametersMapType && parameters);
+        ConfigSection(std::string && name, ParametersMapType && parameters);
         ConfigSection(ConfigSection const & other);
         ConfigSection(ConfigSection && other);
 
@@ -33,7 +33,7 @@ namespace Common
 
         void clear();
     public:
-        std::wstring Name;
+        std::string Name;
         ParametersMapType Parameters;
 
     private:

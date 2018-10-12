@@ -59,7 +59,7 @@ _Use_decl_annotations_ ErrorCode TcpConnection::Create(
     Socket* acceptedSocket,
     IDatagramTransport::MessageHandlerWPtr const & msgHandlerWPtr,
     TransportSecuritySPtr const & transportSecurity,
-    wstring const & sspiTarget,
+    string const & sspiTarget,
     TransportPriority::Enum priority,
     TransportFlags const & flags,
     Common::TimeSpan openTimeout,
@@ -118,13 +118,13 @@ _Use_decl_annotations_ TcpConnection::TcpConnection(
     , priority_(priority)
     , flags_(flags)
     , openTimeout_(openTimeout)
-    , traceId_(wformatString("{0:x}", TextTracePtrAs(this, IConnection)))
+    , traceId_(formatString.L("{0:x}", TextTracePtrAs(this, IConnection)))
     , instance_(target->Instance())
     , inbound_(acceptedSocket != nullptr)
     , socket_((acceptedSocket == nullptr) ? Socket() : move(*acceptedSocket))
     , state_(TcpConnectionState::Created)
     , listenSideNonce_((acceptedSocket == nullptr) ? Guid() : Guid::NewGuid())
-    , localAddress_(target->LocalAddress().empty() ? L"client" : target->LocalAddress())
+    , localAddress_(target->LocalAddress().empty() ? "client" : target->LocalAddress())
     , targetAddress_(target->Address())
 #ifndef PLATFORM_UNIX
     , connectOverlapped_(*this)
@@ -185,7 +185,7 @@ bool TcpConnection::Initialize(
     TcpDatagramTransportSPtr const & transport,
     TcpConnectionSPtr const &,
     TransportSecuritySPtr const & transportSecurity,
-    std::wstring const & sspiTarget)
+    std::string const & sspiTarget)
 {
 #ifdef PLATFORM_UNIX
     transport->EventLoops()->AssignPair(&evtLoopIn_, &evtLoopOut_);
@@ -808,7 +808,7 @@ void TcpConnection::CheckReceiveMissing_CallerHoldingLock(StopwatchTime now)
         return;
     }
 
-    wstring lastDispatchedMessages = wformatString(
+    string lastDispatchedMessages = formatString(
         "({0}, Actor = {1}) ({2}, Actor = {3})",
         lastReceivedMessages_[0].Id,
         lastReceivedMessages_[0].Actor,
@@ -901,9 +901,9 @@ void TcpConnection::UpdateInstance(ListenInstance const & remoteListenInstance)
     trace.ConnectionInstanceConfirmed(traceId_, currentInstance, remoteListenInstance);
 }
 
-wstring TcpConnection::ToStringChl() const
+string TcpConnection::ToStringChl() const
 {
-    wstring result;
+    string result;
     StringWriter(result).Write(
         "{0}: ({1}-{2}, Passive={3}, Instance={4}, Confirmed={5}, Nonce={6})",
         traceId_, 
@@ -917,7 +917,7 @@ wstring TcpConnection::ToStringChl() const
     return result;
 }
 
-wstring TcpConnection::ToString() const
+string TcpConnection::ToString() const
 {
     AcquireReadLock lockInScope(lock_);
     return ToStringChl();
@@ -985,7 +985,7 @@ void TcpConnection::CloseInternal(bool abort, ErrorCode const & fault)
     Close_CallerHoldingLock(abort, fault);
 }
 
-wstring const & TcpConnection::TraceId() const
+string const & TcpConnection::TraceId() const
 {
     return traceId_;
 }
@@ -1401,7 +1401,7 @@ void TcpConnection::EnqueueClaimsMessageIfNeeded()
     sendBuffer_->EnqueueMessage(move(claimsMessage), TimeSpan::MaxValue, true);
 }
 
-std::unique_ptr<Message> TcpConnection::CreateClaimsMessage(std::wstring const & claimsToken)
+std::unique_ptr<Message> TcpConnection::CreateClaimsMessage(std::string const & claimsToken)
 {
     ClaimsMessage claimsMessageBody(claimsToken);
     auto claimsMessage = make_unique<Message>(claimsMessageBody);
@@ -1450,7 +1450,7 @@ void TcpConnection::ReleaseMessagesOnSecuredConnection()
         else
         {
             TRACE_AND_TESTASSERT(WriteWarning, TraceType, traceId_, "invalid claims retrieval metadata: {0}", *metadata);
-            securityContext_->CompleteClaimsRetrieval(ErrorCodeValue::InvalidCredentials, L"");
+            securityContext_->CompleteClaimsRetrieval(ErrorCodeValue::InvalidCredentials, "");
         }
     }
 
@@ -1460,7 +1460,7 @@ void TcpConnection::ReleaseMessagesOnSecuredConnection()
     }
 }
 
-void TcpConnection::CompleteClaimsRetrieval(ErrorCode const & error, std::wstring const & claimsToken)
+void TcpConnection::CompleteClaimsRetrieval(ErrorCode const & error, std::string const & claimsToken)
 {
     if (!error.IsSuccess())
     {
@@ -1511,7 +1511,7 @@ void TcpConnection::ReceiveComplete(ErrorCode const & error, ULONG_PTR bytesTran
         AcquireWriteLock grab(lock_);
 
         receiveDrained_ = true;
-        trace.ConnectionState(traceId_, localAddress_, targetAddress_, state_, L"receive drained", sendBuffer_->Empty(), receiveDrained_);
+        trace.ConnectionState(traceId_, localAddress_, targetAddress_, state_, "receive drained", sendBuffer_->Empty(), receiveDrained_);
         Close_CallerHoldingLock(false, (state_ == TcpConnectionState::Connected)? ErrorCodeValue::ConnectionClosedByRemoteEnd : ErrorCodeValue::Success);
         return;
     }
@@ -1596,7 +1596,7 @@ void TcpConnection::ConnectComplete(ErrorCode const & error)
         return;
     }
 
-    wstring targetTcpAddress = IDatagramTransport::TargetAddressToTransportAddress(targetAddress_);
+    string targetTcpAddress = IDatagramTransport::TargetAddressToTransportAddress(targetAddress_);
     auto failureCount = ++connectFailureCount_;
     trace.FailedToConnect(
         traceId_,
@@ -1605,7 +1605,7 @@ void TcpConnection::ConnectComplete(ErrorCode const & error)
         connectToAddress_,
         error,
         failureCount,
-        wformatString("(type~Transport.St && ~\"(?i){0}\")", targetTcpAddress));
+        formatString.L("(type~Transport.St && ~\"(?i){0}\")", targetTcpAddress));
 
     if (triedAllAddresses)
     {
@@ -1781,7 +1781,7 @@ void TcpConnection::SendComplete(ErrorCode const & error, ULONG_PTR bytesTransfe
         {
             if (CompletedAllSending_CallerHoldingLock())
             {
-                trace.ConnectionState(traceId_, localAddress_, targetAddress_, state_, L"send drained", sendBuffer_->Empty(), receiveDrained_);
+                trace.ConnectionState(traceId_, localAddress_, targetAddress_, state_, "send drained", sendBuffer_->Empty(), receiveDrained_);
                 auto innerError = ShutdownSocketSend_CallerHoldingLock();
                 if (innerError.IsSuccess() && !receiveDrained_) return;
 
@@ -1939,7 +1939,7 @@ void TcpConnection::ScheduleSessionExpiration(Common::TimeSpan newExpiration, bo
     securityContext_->ScheduleSessionExpiration(newExpiration);
 }
 
-void TcpConnection::SetSecurityContext(TransportSecuritySPtr const & transportSecurity, wstring const & sspiTarget)
+void TcpConnection::SetSecurityContext(TransportSecuritySPtr const & transportSecurity, string const & sspiTarget)
 {
     Invariant(!securityContext_);
     securityContext_ = SecurityContext::Create(

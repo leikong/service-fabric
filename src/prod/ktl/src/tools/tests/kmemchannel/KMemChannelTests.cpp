@@ -890,7 +890,7 @@ NTSTATUS TestSequence()
 
 NTSTATUS
 KMemChannelTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     UNREFERENCED_PARAMETER(argc);
@@ -916,7 +916,7 @@ KMemChannelTest(
 #if CONSOLE_TEST
 int
 #if !defined(PLATFORM_UNIX)
-main(int argc, WCHAR* args[])
+main(int argc, CHAR* args[])
 {
 #else
 main(int argc, char* cargs[])

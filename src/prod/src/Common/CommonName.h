@@ -14,9 +14,9 @@ namespace Common
     public:
         typedef std::shared_ptr<CommonName> SPtr;
 
-        static ErrorCode Create(std::wstring const & name, _Out_ SPtr & result);
+        static ErrorCode Create(std::string const & name, _Out_ SPtr & result);
 
-        CommonName(std::wstring const & name);
+        CommonName(std::string const & name);
 
         X509FindType::Enum Type() const override;
         void const * Value() const override;
@@ -30,7 +30,7 @@ namespace Common
         void OnWriteTo(Common::TextWriter & w, Common::FormatOptions const &) const override;
         bool EqualsTo(X509FindValue const & other) const override;
 
-        std::wstring const name_;
+        std::string const name_;
         CERT_RDN_ATTR certRdnAttr_;
         CERT_RDN certRdn_;
     };

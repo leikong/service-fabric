@@ -13,26 +13,26 @@ namespace Common
     TimeSpan const TimeSpan::MaxValue = TimeSpan(std::numeric_limits<int64>::max());
     TimeSpan const TimeSpan::MinValue = TimeSpan(std::numeric_limits<int64>::min());
 
-    std::wstring TimeSpan::ToString() const
+    std::string TimeSpan::ToString() const
     {
-        std::wstring result;
+        std::string result;
         Common::StringWriter(result).Write(*this);
         return result;
     }
 
     // ISO 8601 duration format PnYnMnDTnHnMnS
-    std::wstring TimeSpan::ToIsoString() const
+    std::string TimeSpan::ToIsoString() const
     {
         if (ticks_ < 0)
         {
             // int64 min is -9,223,372,036,854,775,808, max is 9,223,372,036,854,775,807
             if (ticks_ == std::numeric_limits<int64>::min())
             {
-                return L"-P10675199DT2H48M5.4775808S";
+                return "-P10675199DT2H48M5.4775808S";
             }
 
-            std::wstring result;
-            result.append(L"-");
+            std::string result;
+            result.append("-");
             result.append(TimeSpan(-ticks_).ToIsoString());
             return result;
         }
@@ -40,39 +40,39 @@ namespace Common
         if (ticks_ == std::numeric_limits<int64>::max())
         {
             // std::fmod has roundoff's preventing timespan.maxval from getting the correct microsecond value
-            return L"P10675199DT2H48M5.4775807S";
+            return "P10675199DT2H48M5.4775807S";
         }
 
-        std::wstringstream ss;
-        ss << L"P";
+        std::stringstream ss;
+        ss << "P";
 
         if (ticks_ >= TicksPerDay)
         {
             ss << Days;
-            ss << L"D";
+            ss << "D";
         }
-        ss << L"T";
+        ss << "T";
         ss << Hours;
-        ss << L"H";
+        ss << "H";
         ss << Minutes;
-        ss << L"M";
+        ss << "M";
         ss << get_SecondsWithFraction();
-        ss << L"S";
+        ss << "S";
 
         return ss.str();
     }
 
-    bool TimeSpan::TryFromIsoString(std::wstring & str, __out TimeSpan & timeSpan)
+    bool TimeSpan::TryFromIsoString(std::string & str, __out TimeSpan & timeSpan)
     {
         std::string temp;
-        StringUtility::Utf16ToUtf8(str, temp);
+        Utf16ToUtf8NotNeeded2(str, temp);
         std::regex regex("^(-)?P([0-9]*([.][0-9]+)?Y)?([0-9]*([.][0-9]+)?M)?([0-9]*([.][0-9]+)?D)?T([0-9]*([.][0-9]+)?H)?([0-9]*([.][0-9]+)?M)?([0-9]*([.][0-9]+)?S)?$");
         if (!std::regex_match(temp, regex))
         {
             return false;
         }
 
-        if (str == L"-P10675199DT2H48M5.4775808S" || str == L"-P10675199DT02H48M05.4775808S")
+        if (str == "-P10675199DT2H48M5.4775808S" || str == "-P10675199DT02H48M05.4775808S")
         {
             timeSpan = TimeSpan::MinValue;
             return true;

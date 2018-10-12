@@ -17,18 +17,18 @@ namespace Common
             __out Common::HandleUPtr & processHandle);
 
         static Common::ErrorCode CreateProcess(
-            std::wstring const & commandLine,
-            std::wstring const & workingDirectory,
-            std::vector<wchar_t> & environmentBlock,
+            std::string const & commandLine,
+            std::string const & workingDirectory,
+            std::vector<char> & environmentBlock,
             DWORD dwCreationFlags,
             __out Common::HandleUPtr & processHandle,
             __out Common::HandleUPtr & threadHandle,
             pid_t & processId);
 
         static Common::ErrorCode CreateProcess(
-            std::wstring const & commandLine,
-            std::wstring const & workingDirectory,
-            std::vector<wchar_t> & environmentBlock,
+            std::string const & commandLine,
+            std::string const & workingDirectory,
+            std::vector<char> & environmentBlock,
             DWORD dwCreationFlags,
             __out Common::HandleUPtr & processHandle,
             __out Common::HandleUPtr & threadHandle);
@@ -39,9 +39,9 @@ namespace Common
         static Common::ErrorCode GetStatusOutput(std::string const & cmdline, std::string & output);
         static Common::ErrorCode GetStatusOutput(std::string const & cmdline, std::vector<std::string> & outputLines);
 #else
-        static Common::ErrorCode GetProcessImageName(DWORD processId, _Out_ std::wstring & imageName);
+        static Common::ErrorCode GetProcessImageName(DWORD processId, _Out_ std::string & imageName);
 
-        static Common::ErrorCode ExecuteCommandLine(std::wstring const & commandLine, DWORD timeoutInMilliseconds = INFINITE);
+        static Common::ErrorCode ExecuteCommandLine(std::string const & commandLine, DWORD timeoutInMilliseconds = INFINITE);
 
         static Common::ErrorCode CreateAnnonymousJob(
             bool allowBreakaway,
@@ -64,8 +64,8 @@ namespace Common
         static DWORD CreationFlags_SuspendedProcessWithJobBreakaway;
         static DWORD CreationFlags_SuspendedProcessWithJobBreakawayNoWindow;
 
-        static Common::ErrorCode ParseCommandLine(std::wstring const & commandLine, std::wstring & exePath, std::wstring & arguments);
-        static std::wstring GetCommandLine(std::wstring const & exePath, std::wstring const & arguments);
+        static Common::ErrorCode ParseCommandLine(std::string const & commandLine, std::string & exePath, std::string & arguments);
+        static std::string GetCommandLine(std::string const & exePath, std::string const & arguments);
 
 #if !defined(PLATFORM_UNIX)
         static Common::ErrorCode GetProcessExitCode(
@@ -78,14 +78,14 @@ namespace Common
         // enables synchronize access on the specified process to the specified well known user
         static Common::ErrorCode EnableSynchronizeAccess(ProcessHandle const & processHandle, WELL_KNOWN_SID_TYPE wellKnownSidType);
 
-        static Common::ErrorCode GetProcessSidString(__out std::wstring & stringSid);
+        static Common::ErrorCode GetProcessSidString(__out std::string & stringSid);
 
-        static Common::ErrorCode GetProcessSidString(ProcessHandle const & processHandle, __out std::wstring & stringSid);
+        static Common::ErrorCode GetProcessSidString(ProcessHandle const & processHandle, __out std::string & stringSid);
 #endif
 
         // creates default environment block that can be used by FabricNode to fork child processes
         // the environment block contains information about the default configuration store loaded by FabricNode
-        static Common::ErrorCode CreateDefaultEnvironmentBlock(__out std::vector<wchar_t> & envBlock);
+        static Common::ErrorCode CreateDefaultEnvironmentBlock(__out std::vector<char> & envBlock);
 
     private:
 

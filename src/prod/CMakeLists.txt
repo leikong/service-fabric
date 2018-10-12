@@ -118,6 +118,10 @@ add_definitions(-DPAL_STDCPP_COMPAT=1)
 # KTL
 add_definitions(-DKTL_USER_MODE=1)
 
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_definitions(-DDBG=1)
+endif()
+
 # TODO: Can these custom functions be moved into another file?
 find_program(AWK awk)
 if (AWK STREQUAL "AWK-NOTFOUND")

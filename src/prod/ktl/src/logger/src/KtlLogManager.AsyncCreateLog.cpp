@@ -295,7 +295,7 @@ RvdLogManagerImp::AsyncCreateLogImp::StartCreateLog(
     _StartStatus = _FilePath.Status();
     if (NT_SUCCESS(_StartStatus))
     {
-        _FilePath += WCHAR(0);
+        _FilePath += CHAR(0);
         _StartStatus = _FilePath.Status();
     }
 
@@ -346,7 +346,7 @@ RvdLogManagerImp::AsyncCreateLogImp::StartCreateLog(
     _StartStatus = _FilePath.Status();
     if (NT_SUCCESS(_StartStatus))
     {
-        _FilePath += WCHAR(0);
+        _FilePath += CHAR(0);
         _StartStatus = _FilePath.Status();
     }
 

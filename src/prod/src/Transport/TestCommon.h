@@ -27,14 +27,14 @@ namespace Transport
     {
     public:
         // Use Common::TestPortHelper to get static listen address
-        static std::wstring GetListenAddress(ListenAddressType::Enum listenAddressType = ListenAddressType::LoopbackIpv4);
-        static std::wstring GetListenAddress(std::wstring const & addressWithoutPort);
+        static std::string GetListenAddress(ListenAddressType::Enum listenAddressType = ListenAddressType::LoopbackIpv4);
+        static std::string GetListenAddress(std::string const & addressWithoutPort);
 
         // Use GUID action to further prevent crosstalk between different tests
-        static std::wstring GetGuidAction();
+        static std::string GetGuidAction();
         static void SetMessageHandler(
             IDatagramTransportSPtr transport,
-            std::wstring const & action,
+            std::string const & action,
             IDatagramTransport::MessageHandler const & handler);
 
         static SecuritySettings CreateTestSecuritySettings(
@@ -42,81 +42,81 @@ namespace Transport
             ProtectionLevel::Enum protectionLevel = ProtectionLevel::EncryptAndSign);
 
         static SecuritySettings CreateX509Settings(
-            std::wstring const & subjectNameFindValue,
-            std::wstring const & remoteCommonNames = L"",
-            std::wstring const & certIssuerThumbprints = L"");
+            std::string const & subjectNameFindValue,
+            std::string const & remoteCommonNames = "",
+            std::string const & certIssuerThumbprints = "");
 
         static SecuritySettings CreateX509Settings(
-            std::wstring const & subjectNameFindValue,
-            std::wstring const & remoteCommonNames,
+            std::string const & subjectNameFindValue,
+            std::string const & remoteCommonNames,
             Common::SecurityConfig::IssuerStoreKeyValueMap const & certIssuerStores);
 
         static SecuritySettings CreateX509Settings(
-            std::wstring const & subjectNameFindValue,
+            std::string const & subjectNameFindValue,
             Common::SecurityConfig::X509NameMap const & remoteX509Names);
 
         static SecuritySettings CreateX509Settings(
-            std::wstring const & subjectNameFindValue,
+            std::string const & subjectNameFindValue,
             Common::SecurityConfig::X509NameMap const & remoteX509Names,
             Common::SecurityConfig::IssuerStoreKeyValueMap const & issuerStores);
 
         static SecuritySettings CreateSvrX509Settings_ClaimsTest(
-            std::wstring const & svrCertThumbprint,
-            std::wstring const & clientCertThumbprints = L"");
+            std::string const & svrCertThumbprint,
+            std::string const & clientCertThumbprints = "");
 
         static SecuritySettings CreateX509Settings(
-            std::wstring const & subjectNameFindValue,
-            std::wstring const & subjectNameFindValueSecondary,
-            std::wstring const & remoteCommonNames,
-            std::wstring const & certIssuerThumbprints);
+            std::string const & subjectNameFindValue,
+            std::string const & subjectNameFindValueSecondary,
+            std::string const & remoteCommonNames,
+            std::string const & certIssuerThumbprints);
 
         static SecuritySettings CreateX509Settings2(
-            std::wstring const & thumbprintFindValue,
-            std::wstring const & remoteCommonNames = L"",
-            std::wstring const & certIssuerThumbprints = L"");
+            std::string const & thumbprintFindValue,
+            std::string const & remoteCommonNames = "",
+            std::string const & certIssuerThumbprints = "");
 
         static SecuritySettings CreateX509Settings2(
-            std::wstring const & thumbprintFindValue,
+            std::string const & thumbprintFindValue,
             Common::SecurityConfig::X509NameMap const & remoteX509Names);
 
         static SecuritySettings CreateX509Settings2(
-            std::wstring const & thumbprintFindValue,
-            std::wstring const & thumbprintFindValueSecondary,
-            std::wstring const & remoteCommonNames,
-            std::wstring const & certIssuerThumbprints);
+            std::string const & thumbprintFindValue,
+            std::string const & thumbprintFindValueSecondary,
+            std::string const & remoteCommonNames,
+            std::string const & certIssuerThumbprints);
 
         static SecuritySettings CreateX509Settings3(
-            std::wstring const & findBySubjectAltName,
-            std::wstring const & remoteCommonNames,
-            std::wstring const & certIssuerThumbprints);
+            std::string const & findBySubjectAltName,
+            std::string const & remoteCommonNames,
+            std::string const & certIssuerThumbprints);
 
         static SecuritySettings CreateX509Settings_LoadByName_AuthByThumbprint(
-            std::wstring const & localCertCommonName,
-            std::wstring const & remoteCertThumbprint);
+            std::string const & localCertCommonName,
+            std::string const & remoteCertThumbprint);
 
         static SecuritySettings CreateX509Settings_CertRefresh_IssuerStore(
-            wstring const & localCertCommonName,
+            string const & localCertCommonName,
             Common::SecurityConfig::X509NameMap remoteNames,
             Common::SecurityConfig::IssuerStoreKeyValueMap issuerStores);
 
         static SecuritySettings CreateX509SettingsBySan(
-            std::wstring const & storeName,
-            std::wstring const & localDnsNameInSan,
-            std::wstring const & remoteDnsNameInSan);
+            std::string const & storeName,
+            std::string const & localDnsNameInSan,
+            std::string const & remoteDnsNameInSan);
 
         static SecuritySettings CreateX509SettingsForRoundTripTest(
-            std::wstring const & certIssuerThumbprints,
-            std::wstring const & remoteCertThumbprints,
-            std::wstring const & findValueSecondary,
+            std::string const & certIssuerThumbprints,
+            std::string const & remoteCertThumbprints,
+            std::string const & findValueSecondary,
             Common::X509FindType::Enum findType);
 
         static SecuritySettings CreateX509SettingsTp(
-            std::wstring const & localCertThumbprint,
-            std::wstring const & localCertThumbprint2,
-            std::wstring const & remoteCertThumbprint,
-            std::wstring const & remoteCertThumbprint2);
+            std::string const & localCertThumbprint,
+            std::string const & localCertThumbprint2,
+            std::string const & remoteCertThumbprint,
+            std::string const & remoteCertThumbprint2);
 
-        static SecuritySettings CreateX509SettingsExpired(std::wstring const & remoteCommonNames = L"");
+        static SecuritySettings CreateX509SettingsExpired(std::string const & remoteCommonNames = "");
 
         static SecuritySettings CreateKerbSettings();
 
@@ -128,19 +128,19 @@ namespace Transport
         static void EnterTest(char const * testName);
         static void LeaveTest(char const * testName);
 
-        static void CopyFile(std::wstring const & file, std::wstring const & srcDir, std::wstring & destDir);
-        static void CopyFiles(std::vector<std::wstring> const & files, std::wstring const & srcDir, std::wstring & destDir);
+        static void CopyFile(std::string const & file, std::string const & srcDir, std::string & destDir);
+        static void CopyFiles(std::vector<std::string> const & files, std::string const & srcDir, std::string & destDir);
 
         static void CreateRemoteProcess(
-            std::wstring const & computer,
-            std::wstring const & cmdline,
-            std::wstring const & workDir,
+            std::string const & computer,
+            std::string const & cmdline,
+            std::string const & workDir,
             DWORD flags = 0);
 
         static void CreateRemoteProcessWithPsExec(
-            std::wstring const & computer,
-            std::wstring const & cmdline,
-            std::wstring const & workDir,
+            std::string const & computer,
+            std::string const & cmdline,
+            std::string const & workDir,
             DWORD flags = 0);
 
         static void ReduceTracingInFreBuild();
@@ -155,14 +155,14 @@ namespace Transport
         {
         }
 
-        TcpTestMessage(std::wstring const & message)
+        TcpTestMessage(std::string const & message)
             : message_(message)
         {
         }
 
         FABRIC_FIELDS_01(message_);
 
-        std::wstring message_;
+        std::string message_;
     };
 
     struct TestMessageBody : public Serialization::FabricSerializable

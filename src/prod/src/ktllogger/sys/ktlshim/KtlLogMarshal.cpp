@@ -28,7 +28,7 @@ extern "C"
 
 #include "KtlLogMarshal.h"
 
-const PWCHAR RequestMarshaller::KTLLOGGER_DEVICE_NAME = DEVICEFILE_NAME_STRING;
+const PCHAR RequestMarshaller::KTLLOGGER_DEVICE_NAME = DEVICEFILE_NAME_STRING;
 
 //
 // Use device type outside the range of Windows
@@ -324,7 +324,7 @@ RequestMarshaller::WriteString(
 
         status = WriteBytes((PUCHAR)((PVOID)(*String)),
                             String->LengthInBytes(),
-                            sizeof(WCHAR));
+                            sizeof(CHAR));
 
         if (! NT_SUCCESS(status))
         {
@@ -705,8 +705,8 @@ RequestMarshaller::ReadString(
 
 
         status = ReadBytes((PUCHAR)((PVOID)*String),
-                           length * sizeof(WCHAR),
-                           sizeof(WCHAR));
+                           length * sizeof(CHAR),
+                           sizeof(CHAR));
         if (! NT_SUCCESS(status))
         {
             String = nullptr;

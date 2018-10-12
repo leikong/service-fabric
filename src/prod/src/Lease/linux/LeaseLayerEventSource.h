@@ -21,18 +21,18 @@ public:
     Common::TraceEventWriter<LONGLONG, int> ChangeRefCountNotFound;
     Common::TraceEventWriter<LONGLONG, int> ChangeRefCountOverlappedMismatch;
     //Security traces
-    Common::TraceEventWriter<std::wstring, BOOLEAN, std::wstring> RegisterLeasingApplicationInvalidPara;
-    Common::TraceEventWriter<std::wstring, BOOLEAN, std::wstring> CreateLeaseAgentForSecurity;
+    Common::TraceEventWriter<std::string, BOOLEAN, std::string> RegisterLeasingApplicationInvalidPara;
+    Common::TraceEventWriter<std::string, BOOLEAN, std::string> CreateLeaseAgentForSecurity;
     Common::TraceEventWriter<LONGLONG, int> SendCertVerifyResultToKernel;
     Common::TraceEventWriter<LONGLONG> RemoteCertEventFromKernel;
     Common::TraceEventWriter<LONGLONG, int> LeasingApplicationChangeRefEventType;
     Common::TraceEventWriter<int, int> UserKernelVersionMismatch;
     //V2
-    Common::TraceEventWriter<std::wstring, uint32, std::wstring, uint32, BOOLEAN> BlockLeaseConnection;
+    Common::TraceEventWriter<std::string, uint32, std::string, uint32, BOOLEAN> BlockLeaseConnection;
     Common::TraceEventWriter<int> InvalidSID;
     Common::TraceEventWriter<int, int> CopySidFaild;
     Common::TraceEventWriter<LONGLONG, int, int> UpdateLeaseDuration;
-    Common::TraceEventWriter<std::wstring, uint32, std::wstring, uint32, int> QueryLeaseDuration;
+    Common::TraceEventWriter<std::string, uint32, std::string, uint32, int> QueryLeaseDuration;
 
     Common::TraceEventWriter<LONGLONG, int> GetContainerLeasingTTL;
 
@@ -68,4 +68,30 @@ public:
 };
 
 // Text trace class
-class LeaseTrace : public Common::TextTraceComponent<Common::TraceTaskCodes::Lease> {};
+class LeaseTrace : public Common::TextTraceComponent<Common::TraceTaskCodes::Lease>
+{
+public:
+    template <typename... Args>
+    static void TraceNoise(Common::StringLiteral type, Common::StringLiteral format, Args... args)
+    {
+        WriteNoise(type, format, args...);
+    }
+
+    template <typename... Args>
+    static void TraceInfo(Common::StringLiteral type, Common::StringLiteral format, Args... args)
+    {
+        WriteInfo(type, format, args...);
+    }
+
+    template <typename... Args>
+    static void TraceWarning(Common::StringLiteral type, Common::StringLiteral format, Args... args)
+    {
+        WriteWarning(type, format, args...);
+    }
+
+    template <typename... Args>
+    static void TraceError(Common::StringLiteral type, Common::StringLiteral format, Args... args)
+    {
+        WriteError(type, format, args...);
+    }
+};

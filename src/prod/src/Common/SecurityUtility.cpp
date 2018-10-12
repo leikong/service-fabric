@@ -13,8 +13,8 @@ using namespace Common;
 
 StringLiteral TraceType_SecurityUtility = "SecurityUtility";
 
-wstring const SecurityUtility::DaclLockFileName(L"daclupdate.lock");
-wstring const SecurityUtility::DaclStampFileName(L"daclupdate.aclstamp");
+string const SecurityUtility::DaclLockFileName("daclupdate.lock");
+string const SecurityUtility::DaclStampFileName("daclupdate.aclstamp");
 
 #if defined(PLATFORM_UNIX)
 
@@ -44,13 +44,13 @@ int SecurityUtility::GetGrByGid(gid_t gid, group & grp)
     return getgrgid_r(gid, &grp, grBuf, grBufSize, &match);
 }
 
-ErrorCode SecurityUtility::EnsurePrivilege(std::wstring const & privilege)
+ErrorCode SecurityUtility::EnsurePrivilege(std::string const & privilege)
 {
     return ErrorCode::Success();
 }
 ErrorCode SecurityUtility::UpdateFileAcl(
     vector<SidSPtr> const & sids,
-    wstring const & fileName, 
+    string const & fileName, 
     DWORD const accessMask,
     TimeSpan const timeout)
 {
@@ -58,7 +58,7 @@ ErrorCode SecurityUtility::UpdateFileAcl(
 }
 ErrorCode SecurityUtility::UpdateFolderAcl(
     Common::SidSPtr const & sid,
-    std::wstring const & folderName,
+    std::string const & folderName,
     DWORD const accessMask,
     Common::TimeSpan const timeout)
 {
@@ -66,13 +66,13 @@ ErrorCode SecurityUtility::UpdateFolderAcl(
 }
 ErrorCode SecurityUtility::UpdateFolderAcl(
     vector<SidSPtr> const & sids,
-    wstring const & folderName,
+    string const & folderName,
     DWORD const accessMask,
     TimeSpan const timeout,
     bool removeInvalidSids)
 {
     string cmd, dirname;
-    StringUtility::Utf16ToUtf8(folderName, dirname);
+    Utf16ToUtf8NotNeeded2(folderName, dirname);
     std::replace(dirname.begin(), dirname.end(), '\\', '/');
 
 #if defined(LINUX_ACL_ENABLED)
@@ -120,7 +120,7 @@ ErrorCode SecurityUtility::UpdateFolderAcl(
         ULONG id = psid->SubAuthority[1];
         bool isGroup = (psid->SubAuthority[0] == SECURITY_LINUX_DOMAIN_GROUP_RID);
         TraceInfo(TraceTaskCodes::Common, TraceType_SecurityUtility,
-                     "UpdateFolderAcl: {0} {1}: {2}, Folder {3}",
+                     StringLiteral("UpdateFolderAcl: {0} {1}: {2}, Folder {3}"),
                      isGroup? "GID" : "UID",
                      id,
                      access,
@@ -161,7 +161,7 @@ ErrorCode SecurityUtility::IsCurrentUserAdmin(bool & isAdminUser)
 }
 
 ErrorCode SecurityUtility::OverwriteFolderACL(
-    wstring const & folderName,
+    string const & folderName,
     vector<pair<SidSPtr, DWORD>> const & principalPermissions,
     bool disableInheritence,
     bool ignoreInheritenceFlag,
@@ -195,7 +195,7 @@ ErrorCode SecurityUtility::OverwriteFolderACL(
 
 ErrorCode SecurityUtility::OverwriteFileAcl(
     vector<SidSPtr> const & sids,
-    wstring const & fileName,
+    string const & fileName,
     DWORD const accessMask,
     TimeSpan const timeout)
 {
@@ -222,9 +222,9 @@ ErrorCode SecurityUtility::OverwriteFileAcl(
 }
 
 ErrorCode SecurityUtility::InstallCoreFxCertificate(
-    wstring const & userName,
-    wstring const & x509FindValue,
-    wstring const & x509StoreName,
+    string const & userName,
+    string const & x509FindValue,
+    string const & x509StoreName,
     X509FindType::Enum findType)
 {
     CertContexts certContexts;
@@ -244,17 +244,17 @@ ErrorCode SecurityUtility::InstallCoreFxCertificate(
     TraceInfo(
         TraceTaskCodes::Common,
         TraceType_SecurityUtility,
-        "InstallCoreFxCertificate: {0} certificates found for [{1}].",
+        StringLiteral("InstallCoreFxCertificate: {0} certificates found for [{1}]."),
         certContexts.size(),
         x509FindValue);
 
     bool errorsFound = false;
     for (auto certContextIter = certContexts.begin(); certContextIter != certContexts.end(); ++certContextIter)
     {
-        ErrorCode installCoreFxCertErr = LinuxCryptUtil().InstallCoreFxCertificate(StringUtility::Utf16ToUtf8(userName), *certContextIter);
+        ErrorCode installCoreFxCertErr = LinuxCryptUtil().InstallCoreFxCertificate(Utf16ToUtf8NotNeeded(userName), *certContextIter);
         if (!installCoreFxCertErr.IsSuccess())
         {
-            wstring thumbprintStr;
+            string thumbprintStr;
             Thumbprint thumbprint;
             auto error2 = thumbprint.Initialize(certContextIter->get());
             if (!error2.IsSuccess())
@@ -289,8 +289,8 @@ ErrorCode SecurityUtility::InstallCoreFxCertificate(
 }
 
 ErrorCode SecurityUtility::SetCertificateAcls(
-    wstring const & x509FindValue,
-    wstring const & x509StoreName,
+    string const & x509FindValue,
+    string const & x509StoreName,
     X509FindType::Enum findType,
     vector<SidSPtr> const & sids,
     DWORD accessMask,
@@ -301,8 +301,8 @@ ErrorCode SecurityUtility::SetCertificateAcls(
 }
 
 Common::ErrorCode SecurityUtility::SetCertificateAcls(
-    wstring const & x509FindValue,
-    wstring const & x509StoreName,
+    string const & x509FindValue,
+    string const & x509StoreName,
     X509FindType::Enum findType,
     vector<string> const & userNames,
     vector<SidSPtr> const & sids,
@@ -464,12 +464,12 @@ ErrorCode SecurityUtility::SetCertificateAcls(
 }
 
 ErrorCode SecurityUtility::GetCertificatePrivateKeyFile(
-    wstring const & x509FindValue,
-    wstring const & x509StoreName,
+    string const & x509FindValue,
+    string const & x509StoreName,
     X509FindType::Enum findType,
-    wstring & privateKeyFileName)
+    string & privateKeyFileName)
 {
-    vector<wstring> privateKeyFileNames;
+    vector<string> privateKeyFileNames;
     auto error = GetCertificatePrivateKeyFile(x509FindValue, x509StoreName, findType, privateKeyFileNames);
     if (!error.IsSuccess())
     {
@@ -485,10 +485,10 @@ ErrorCode SecurityUtility::GetCertificatePrivateKeyFile(
 }
 
 ErrorCode SecurityUtility::GetCertificatePrivateKeyFile(
-    wstring const & x509FindValue,
-    wstring const & x509StoreName,
+    string const & x509FindValue,
+    string const & x509StoreName,
     X509FindType::Enum findType,
-    vector<wstring> & privateKeyFileNames)
+    vector<string> & privateKeyFileNames)
 {
     CertContexts certContexts;
     ErrorCode error = CryptoUtility::GetCertificate(X509StoreLocation::LocalMachine, x509StoreName, X509FindType::EnumToString(findType), x509FindValue, certContexts);
@@ -521,7 +521,7 @@ ErrorCode SecurityUtility::GetCertificatePrivateKeyFile(
 
     for (auto fileIter = files.begin(); fileIter != files.end(); ++fileIter)
     {
-        privateKeyFileNames.push_back(StringUtility::Utf8ToUtf16(*fileIter));
+        privateKeyFileNames.push_back(Utf8ToUtf16NotNeeded(*fileIter));
     }
 
     return error;
@@ -531,7 +531,7 @@ ErrorCode SecurityUtility::GetCertificatePrivateKeyFile(
 
 ErrorCode SecurityUtility::UpdateFileAcl(
     vector<SidSPtr> const & sids,
-    wstring const & fileName, 
+    string const & fileName, 
     DWORD const accessMask,
     TimeSpan const timeout)
 {
@@ -556,7 +556,7 @@ ErrorCode SecurityUtility::UpdateFileAcl(
 
 ErrorCode SecurityUtility::UpdateFolderAcl(
     Common::SidSPtr const & sid,
-    std::wstring const & folderName,
+    std::string const & folderName,
     DWORD const accessMask,
     Common::TimeSpan const timeout)
 {
@@ -567,7 +567,7 @@ ErrorCode SecurityUtility::UpdateFolderAcl(
 
 ErrorCode SecurityUtility::UpdateFolderAcl(
     vector<SidSPtr> const & sids,
-    wstring const & folderName,
+    string const & folderName,
     DWORD const accessMask,
     TimeSpan const timeout,
     bool removeInvalidSids)
@@ -582,7 +582,7 @@ ErrorCode SecurityUtility::UpdateFolderAcl(
 }
 
 ErrorCode SecurityUtility::UpdateFolderAclWithStampFile(
-    wstring const & folderName,
+    string const & folderName,
     vector<pair<SidSPtr, DWORD>> const & principalPermissions,
     bool removeInvalidSids,
     TimeSpan const timeout)
@@ -600,7 +600,7 @@ ErrorCode SecurityUtility::UpdateFolderAclWithStampFile(
     ErrorCode error(ErrorCodeValue::Success);
     TimeoutHelper timeoutHelper(timeout);
     // create lock file so that we are the only one updating the ACL
-    wstring lockFile = Path::Combine(folderName, DaclLockFileName);
+    string lockFile = Path::Combine(folderName, DaclLockFileName);
     TraceNoise(
         TraceTaskCodes::Common,
         TraceType_SecurityUtility,
@@ -637,14 +637,14 @@ ErrorCode SecurityUtility::UpdateFolderAclWithStampFile(
             return error;
         }
 
-        wstring aclstampFile = Path::Combine(folderName, SecurityUtility::DaclStampFileName);
+        string aclstampFile = Path::Combine(folderName, SecurityUtility::DaclStampFileName);
 
         if (!File::Exists(aclstampFile) ||
             !nonExistentPrincipalPermissions.empty())
         {
  
             File::Delete2(aclstampFile).ReadValue();
-            error = SecurityUtility::UpdateAcl(SE_FILE_OBJECT, folderName, nonExistentPrincipalPermissions, timeoutHelper.GetRemainingTime(), true, L"", removeInvalidSids);
+            error = SecurityUtility::UpdateAcl(SE_FILE_OBJECT, folderName, nonExistentPrincipalPermissions, timeoutHelper.GetRemainingTime(), true, "", removeInvalidSids);
 
             if (!error.IsSuccess())
             {
@@ -664,17 +664,17 @@ ErrorCode SecurityUtility::UpdateFolderAclWithStampFile(
 
 ErrorCode SecurityUtility::UpdateRegistryKeyAcl(
     Common::SidSPtr const & sid,
-    std::wstring const & registryKeyName,
+    std::string const & registryKeyName,
     DWORD const accessMask,
     Common::TimeSpan const timeout)
 {
     vector<pair<SidSPtr, DWORD>> principalPermissions;
     principalPermissions.push_back(make_pair(sid, accessMask));
-    wstring lockFileName = wformatString("{0}.lock", Path::GetFileName(registryKeyName));
+    string lockFileName = formatString.L("{0}.lock", Path::GetFileName(registryKeyName));
     TraceInfo(TraceTaskCodes::Common, TraceType_SecurityUtility, "lockFileName:{0}", lockFileName);
     return SecurityUtility::UpdateAcl(SE_REGISTRY_KEY, registryKeyName, principalPermissions, timeout, false, lockFileName);
 }
-Common::ErrorCode SecurityUtility::GetRegistryKeyAcl( Common::SidSPtr const & sid, std::wstring const & registryKeyName,
+Common::ErrorCode SecurityUtility::GetRegistryKeyAcl( Common::SidSPtr const & sid, std::string const & registryKeyName,
 	DWORD & accessMask)
 {
 	ErrorCode error(ErrorCodeValue::NotFound);
@@ -742,7 +742,7 @@ Common::ErrorCode SecurityUtility::GetRegistryKeyAcl( Common::SidSPtr const & si
 
 ErrorCode SecurityUtility::UpdateServiceAcl(
     Common::SidSPtr const & sid,
-    std::wstring const & serviceName,
+    std::string const & serviceName,
     DWORD const accessMask,
     Common::TimeSpan const timeout)
 {
@@ -754,11 +754,11 @@ ErrorCode SecurityUtility::UpdateServiceAcl(
 
 ErrorCode SecurityUtility::UpdateAcl(
     SE_OBJECT_TYPE const objectType, 
-    wstring const & objectName, 
+    string const & objectName, 
     vector<pair<SidSPtr, DWORD>> const & principalPermissions,
     TimeSpan const timeout, 
     bool callerHoldsLock,
-    wstring const & lockFile,
+    string const & lockFile,
     bool removeInvalidSids,
     bool overwriteAcl)
 {
@@ -785,10 +785,10 @@ ErrorCode SecurityUtility::UpdateAcl(
     if (!callerHoldsLock)
     {
         // create lock file so that we are the only one updating the ACL  
-        wstring lockFileTemp = lockFile;
+        string lockFileTemp = lockFile;
         if (lockFileTemp.empty())
         {
-            lockFileTemp = wformatString("{0}.lock", objectName);
+            lockFileTemp = formatString.L("{0}.lock", objectName);
         }
 
         TraceNoise(
@@ -840,7 +840,7 @@ ErrorCode SecurityUtility::UpdateAcl(
 
 ErrorCode SecurityUtility::UpdateAcl(
     SE_OBJECT_TYPE const objectType,
-    wstring const & objectName,
+    string const & objectName,
     vector<Dacl::ACEInfo> additionalACEs,
     bool removeInvalidSids)
 {
@@ -878,7 +878,7 @@ ErrorCode SecurityUtility::UpdateAcl(
     }
 
     win32Error = ::SetNamedSecurityInfo(
-        const_cast<PWCHAR>(&objectName[0]),
+        const_cast<PCHAR>(&objectName[0]),
         objectType,
         DACL_SECURITY_INFORMATION | PROTECTED_DACL_SECURITY_INFORMATION, 
         NULL, 
@@ -899,7 +899,7 @@ ErrorCode SecurityUtility::UpdateAcl(
 
 ErrorCode SecurityUtility::OverwriteAcl(
     SE_OBJECT_TYPE const objectType,
-    wstring const & objectName,
+    string const & objectName,
     vector<Dacl::ACEInfo> additionalACEs)
 {
     DaclSPtr updatedDacl;
@@ -915,7 +915,7 @@ ErrorCode SecurityUtility::OverwriteAcl(
     }
 
     DWORD win32Error = ::SetNamedSecurityInfo(
-        const_cast<PWCHAR>(&objectName[0]),
+        const_cast<PCHAR>(&objectName[0]),
         objectType,
         DACL_SECURITY_INFORMATION | PROTECTED_DACL_SECURITY_INFORMATION,
         NULL,
@@ -934,7 +934,7 @@ ErrorCode SecurityUtility::OverwriteAcl(
     return ErrorCode(ErrorCodeValue::Success);
 }
 
-ErrorCode SecurityUtility::RemoveAcl(wstring const & resourceName, vector<SidSPtr> const & removeACLsOn, bool const disableInheritence)
+ErrorCode SecurityUtility::RemoveAcl(string const & resourceName, vector<SidSPtr> const & removeACLsOn, bool const disableInheritence)
 {
     // get current DACL
     PACL pAcl = NULL;
@@ -979,7 +979,7 @@ ErrorCode SecurityUtility::RemoveAcl(wstring const & resourceName, vector<SidSPt
     }
 
     win32Error = ::SetNamedSecurityInfo(
-        const_cast<PWCHAR>(&resourceName[0]),
+        const_cast<PCHAR>(&resourceName[0]),
         SE_FILE_OBJECT, 
         secInfo,
         NULL, 
@@ -1000,7 +1000,7 @@ ErrorCode SecurityUtility::RemoveAcl(wstring const & resourceName, vector<SidSPt
 
 ErrorCode SecurityUtility::RemoveFolderAcl(
     Common::SidSPtr const & sid,
-    std::wstring const & folderName, 
+    std::string const & folderName, 
     bool const disableInheritence,    
     Common::TimeSpan const timeout)
 {
@@ -1015,7 +1015,7 @@ ErrorCode SecurityUtility::RemoveFolderAcl(
     }
 
     // create lock file so that we are the only one updating the ACL
-    wstring lockFile = wformatString("{0}.lock", folderName);
+    string lockFile = formatString.L("{0}.lock", folderName);
     TraceNoise(
         TraceTaskCodes::Common,
         TraceType_SecurityUtility,
@@ -1049,7 +1049,7 @@ ErrorCode SecurityUtility::RemoveFolderAcl(
 
 ErrorCode SecurityUtility::RemoveFileAcl(
     Common::SidSPtr const & sid,
-    std::wstring const & fileName,
+    std::string const & fileName,
     bool const disableInheritence,
     Common::TimeSpan const timeout)
 {
@@ -1064,7 +1064,7 @@ ErrorCode SecurityUtility::RemoveFileAcl(
     }
 
     // create lock file so that we are the only one updating the ACL
-    wstring lockFile = wformatString("{0}.lock", fileName);
+    string lockFile = formatString.L("{0}.lock", fileName);
     TraceNoise(
         TraceTaskCodes::Common,
         TraceType_SecurityUtility,
@@ -1096,7 +1096,7 @@ ErrorCode SecurityUtility::RemoveFileAcl(
     return error;
 }
 
-ErrorCode SecurityUtility::RemoveInvalidFileAcls(wstring const & fileName, TimeSpan const timeout)
+ErrorCode SecurityUtility::RemoveInvalidFileAcls(string const & fileName, TimeSpan const timeout)
 {
     if (!File::Exists(fileName))
     {
@@ -1109,7 +1109,7 @@ ErrorCode SecurityUtility::RemoveInvalidFileAcls(wstring const & fileName, TimeS
     }
 
     // create lock file so that we are the only one updating the ACL
-    wstring lockFile = wformatString("{0}.lock", fileName);
+    string lockFile = formatString.L("{0}.lock", fileName);
     TraceNoise(
         TraceTaskCodes::Common,
         TraceType_SecurityUtility,
@@ -1141,7 +1141,7 @@ ErrorCode SecurityUtility::RemoveInvalidFileAcls(wstring const & fileName, TimeS
 }
 
 
-ErrorCode SecurityUtility::RemoveInvalidFolderAcls(wstring const & folderName, TimeSpan const timeout)
+ErrorCode SecurityUtility::RemoveInvalidFolderAcls(string const & folderName, TimeSpan const timeout)
 {
     if (!Directory::Exists(folderName))
     {
@@ -1154,7 +1154,7 @@ ErrorCode SecurityUtility::RemoveInvalidFolderAcls(wstring const & folderName, T
     }
     
     // create lock file so that we are the only one updating the ACL
-    wstring lockFile = Path::Combine(folderName, DaclLockFileName);
+    string lockFile = Path::Combine(folderName, DaclLockFileName);
     TraceNoise(
         TraceTaskCodes::Common,
         TraceType_SecurityUtility,
@@ -1185,7 +1185,7 @@ ErrorCode SecurityUtility::RemoveInvalidFolderAcls(wstring const & folderName, T
     return error;
 }
 
-ErrorCode SecurityUtility::RemoveInvalidAcl(wstring const & resourceName)
+ErrorCode SecurityUtility::RemoveInvalidAcl(string const & resourceName)
 {
     // get current DACL
     PACL pAcl = NULL;
@@ -1222,7 +1222,7 @@ ErrorCode SecurityUtility::RemoveInvalidAcl(wstring const & resourceName)
     }
 
     win32Error = ::SetNamedSecurityInfo(
-        const_cast<PWCHAR>(&resourceName[0]),
+        const_cast<PCHAR>(&resourceName[0]),
         SE_FILE_OBJECT, 
         DACL_SECURITY_INFORMATION | PROTECTED_DACL_SECURITY_INFORMATION, 
         NULL, 
@@ -1313,7 +1313,7 @@ Common::ErrorCode SecurityUtility::UpdateProcessAcl(
 	return ErrorCode(ErrorCodeValue::Success);
 }
 
-ErrorCode SecurityUtility::EnsurePrivilege(std::wstring const & privilege)
+ErrorCode SecurityUtility::EnsurePrivilege(std::string const & privilege)
 {
     TraceNoise(
         TraceTaskCodes::Common,
@@ -1357,12 +1357,12 @@ ErrorCode SecurityUtility::EnsurePrivilege(std::wstring const & privilege)
 }
 
 ErrorCode SecurityUtility::GetCertificatePrivateKeyFile(
-    wstring const & x509FindValue,
-    wstring const & x509StoreName,
+    string const & x509FindValue,
+    string const & x509StoreName,
     X509FindType::Enum findType,
-    wstring & privateKeyFileName)
+    string & privateKeyFileName)
 {
-    vector<wstring> privateKeyFileNames;
+    vector<string> privateKeyFileNames;
     auto error = GetCertificatePrivateKeyFile(x509FindValue, x509StoreName, findType, privateKeyFileNames);
     if (!error.IsSuccess())
     {
@@ -1378,10 +1378,10 @@ ErrorCode SecurityUtility::GetCertificatePrivateKeyFile(
 }
 
 ErrorCode SecurityUtility::GetCertificatePrivateKeyFile(
-    wstring const & x509FindValue,
-    wstring const & x509StoreName,
+    string const & x509FindValue,
+    string const & x509StoreName,
     X509FindType::Enum findType,
-    vector<wstring> & privateKeyFileNames)
+    vector<string> & privateKeyFileNames)
 {
     if (x509FindValue.empty())
     {
@@ -1425,8 +1425,8 @@ ErrorCode SecurityUtility::GetCertificatePrivateKeyFile(
 }
 
 ErrorCode SecurityUtility::SetCertificateAcls(
-    wstring const & x509FindValue,
-    wstring const & x509StoreName,
+    string const & x509FindValue,
+    string const & x509StoreName,
     X509FindType::Enum findType,
     vector<SidSPtr> const & sids,
     DWORD accessMask,
@@ -1440,7 +1440,7 @@ ErrorCode SecurityUtility::SetCertificateAcls(
         x509StoreName,
         findType);
 
-    vector<wstring> privateKeyFiles;
+    vector<string> privateKeyFiles;
     auto error = SecurityUtility::GetCertificatePrivateKeyFile(x509FindValue, x509StoreName, findType, privateKeyFiles);
     if (!error.IsSuccess())
     {
@@ -1486,7 +1486,7 @@ ErrorCode SecurityUtility::SetCertificateAcls(
 }
 
 ErrorCode SecurityUtility::SetPrivateKeyFileAcls(
-    wstring const & privateKeyFile,
+    string const & privateKeyFile,
     vector<SidSPtr> const & sids,
     DWORD accessMask,
     TimeSpan const & timeout)
@@ -1551,7 +1551,7 @@ ErrorCode SecurityUtility::SetPrivateKeyFileAcls(
 }
 
 ErrorCode SecurityUtility::OverwriteFolderACL(
-    wstring const & folderName,
+    string const & folderName,
     vector<pair<SidSPtr, DWORD>> const & principalPermissions,
     bool disableInheritence,
     bool ignoreInheritenceFlag,
@@ -1586,7 +1586,7 @@ ErrorCode SecurityUtility::OverwriteFolderACL(
 
     ErrorCode error(ErrorCodeValue::Success);
     // create lock file so that we are the only one updating the ACL
-    wstring lockFile = Path::Combine(folderName, DaclLockFileName);
+    string lockFile = Path::Combine(folderName, DaclLockFileName);
     TraceNoise(
         TraceTaskCodes::Common,
         TraceType_SecurityUtility,
@@ -1640,7 +1640,7 @@ ErrorCode SecurityUtility::OverwriteFolderACL(
         secInfo |= UNPROTECTED_DACL_SECURITY_INFORMATION;
     }
     DWORD win32Error = ::SetNamedSecurityInfo(
-        const_cast<PWCHAR>(&folderName[0]),
+        const_cast<PCHAR>(&folderName[0]),
         SE_FILE_OBJECT,
         secInfo,
         NULL,
@@ -1667,7 +1667,7 @@ ErrorCode SecurityUtility::OverwriteFolderACL(
 
 ErrorCode SecurityUtility::OverwriteFileAcl(
     vector<SidSPtr> const & sids,
-    wstring const & fileName,
+    string const & fileName,
     DWORD const accessMask,
     TimeSpan const timeout)
 {
@@ -1687,10 +1687,10 @@ ErrorCode SecurityUtility::OverwriteFileAcl(
         principalPermissions.push_back(make_pair(*it, accessMask));
     }
 
-    return SecurityUtility::UpdateAcl(SE_FILE_OBJECT, fileName, principalPermissions, timeout, false, L"", false, true);
+    return SecurityUtility::UpdateAcl(SE_FILE_OBJECT, fileName, principalPermissions, timeout, false, "", false, true);
 }
 
-Common::ErrorCode SecurityUtility::IsDACLProtected(wstring const & resourceName, bool & isProtected)
+Common::ErrorCode SecurityUtility::IsDACLProtected(string const & resourceName, bool & isProtected)
 {
     PACL pAcl;
     PSECURITY_DESCRIPTOR pSecurityDescriptor = NULL;
@@ -1732,7 +1732,7 @@ Common::ErrorCode SecurityUtility::IsDACLProtected(wstring const & resourceName,
         "IsDACLProtected:GetSecurityDescriptorControl");
 }
 
-ErrorCode SecurityUtility::ContainsACE(wstring const & folderName, SidSPtr const & sid, DWORD accessMask, bool & containsAce)
+ErrorCode SecurityUtility::ContainsACE(string const & folderName, SidSPtr const & sid, DWORD accessMask, bool & containsAce)
 {
     vector<pair<SidSPtr, DWORD>> principalPermissions;
     vector<pair<SidSPtr, DWORD>> nonExistentPrincipalPermissions;
@@ -1748,7 +1748,7 @@ ErrorCode SecurityUtility::ContainsACE(wstring const & folderName, SidSPtr const
     return error;
 }
 
-ErrorCode  SecurityUtility::CheckACE(wstring const & folderName,
+ErrorCode  SecurityUtility::CheckACE(string const & folderName,
     vector<pair<SidSPtr, DWORD>> const & principalPermissions,
     vector<pair<SidSPtr, DWORD>> & nonExistentPrincipalPermissions)
 {
@@ -1785,7 +1785,7 @@ ErrorCode  SecurityUtility::CheckACE(wstring const & folderName,
     }
 
     PVOID pTempAce;
-    wstring targetSid;
+    string targetSid;
     nonExistentPrincipalPermissions.clear();
     for (auto it = principalPermissions.begin(); it != principalPermissions.end(); ++it)
     {
@@ -1816,7 +1816,7 @@ ErrorCode  SecurityUtility::CheckACE(wstring const & folderName,
             if ((aceType == ACCESS_ALLOWED_ACE_TYPE))
             {
                 pTempSid = (PSID)&((PACCESS_ALLOWED_ACE)pTempAce)->SidStart;
-                wstring sidString;
+                string sidString;
                 if (Sid::ToString(pTempSid, sidString).IsSuccess() &&
                     StringUtility::AreEqualCaseInsensitive(sidString, targetSid) &&
                     ((PACCESS_ALLOWED_ACE)pTempAce)->Mask == it->second)
@@ -1836,7 +1836,7 @@ ErrorCode  SecurityUtility::CheckACE(wstring const & folderName,
     return ErrorCodeValue::Success;
 }
 
-ErrorCode SecurityUtility::WriteACLStampFile(wstring const & filelocation)
+ErrorCode SecurityUtility::WriteACLStampFile(string const & filelocation)
 {
     try
     {
@@ -1853,8 +1853,8 @@ ErrorCode SecurityUtility::WriteACLStampFile(wstring const & filelocation)
             return error;
         }
 
-        wstring text;
-        text.append(L"ACL success");
+        string text;
+        text.append("ACL success");
         std::string result;
         StringUtility::UnicodeToAnsi(text, result);
         fileWriter << result;

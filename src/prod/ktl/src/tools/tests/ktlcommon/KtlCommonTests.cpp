@@ -1818,13 +1818,13 @@ namespace KtlTraceTests
 #define SOME_TEXT "The quick brown fox jumped over the lazy dog"
 
     VOID KtlTraceTestCallback(
-        __in LPCWSTR TypeText,
+        __in LPCSTR TypeText,
         __in USHORT Level,
         __in LPCSTR Text
     )
     {
         KInvariant(Level == levelInfo);
-        KInvariant(wcsncmp(TypeText, typeINFORMATIONAL, 512) == 0);
+        KInvariant(strncmp(TypeText, typeINFORMATIONAL, 512) == 0);
         KInvariant(strncmp(Text, SOME_TEXT, 512) == 0);
     }
 
@@ -2571,13 +2571,13 @@ namespace KArrayBasicUnitTests
         NTSTATUS status;
         KAllocator& allocator = ktlSystem.PagedAllocator();
 
-        KWString kWStringA(allocator, L"TestStringA");
+        KWString kWStringA(allocator, "TestStringA");
         KInvariant(NT_SUCCESS(kWStringA.Status()));
-        KWString kWStringB(allocator, L"BTestString");
+        KWString kWStringB(allocator, "BTestString");
         KInvariant(NT_SUCCESS(kWStringB.Status()));
         KWString kWStringC(allocator);
         KInvariant(NT_SUCCESS(kWStringC.Status()));
-        KWString kWStringD(allocator, L"zzzzzzzzzzzzzzzzzzzzzzzzzzzz");
+        KWString kWStringD(allocator, "zzzzzzzzzzzzzzzzzzzzzzzzzzzz");
         KInvariant(NT_SUCCESS(kWStringD.Status()));
 
         KString::SPtr kStringA;
@@ -2599,8 +2599,8 @@ namespace KArrayBasicUnitTests
         Execute<ULONG>(ktlSystem, 1, 2, 0, ULONG_MAX, ULONG());                                         // Simple type
         KTestPrintf("KArray unit tests (ULONGLONG)\n");
         Execute<ULONGLONG>(ktlSystem, 1, 2, 0, ULONGLONG_MAX, ULONGLONG());                             // Simple type
-        KTestPrintf("KArray unit tests (WCHAR)\n");
-        Execute<WCHAR>(ktlSystem, 1, 2, 0, WCHAR_MAX, WCHAR());                                         // Simple type
+        KTestPrintf("KArray unit tests (CHAR)\n");
+        Execute<CHAR>(ktlSystem, 1, 2, 0, CHAR_MAX, CHAR());                                         // Simple type
         KTestPrintf("KArray unit tests (KWString)\n");
         Execute<KWString>(ktlSystem, kWStringA, kWStringB, kWStringC, kWStringD, KWString(allocator));  // KAllocatorRequired
         KTestPrintf("KArray unit tests (KString::SPtr)\n");
@@ -3913,7 +3913,7 @@ namespace KAllocatorPerfTest
 NTSTATUS
 KtlCommonTest(
     __in int argc,
-    __in_ecount(argc) WCHAR* args[]
+    __in_ecount(argc) CHAR* args[]
     )
 {
     UNREFERENCED_PARAMETER(argc);
@@ -3973,7 +3973,7 @@ int __cdecl
 #if !defined(PLATFORM_UNIX)
 wmain(
     __in int argc,
-    __in_ecount(argc) WCHAR* args[]
+    __in_ecount(argc) CHAR* args[]
 )
 {
 #else

@@ -22,7 +22,7 @@ ComProxyXmlLiteWriter::~ComProxyXmlLiteWriter()
 }
 
 ErrorCode ComProxyXmlLiteWriter::Create(
-    __in std::wstring const & outputName,
+    __in std::string const & outputName,
     __out ComProxyXmlLiteWriterUPtr & xmlLiteWriter, 
     bool writeByteOrderMark, 
     bool indent)
@@ -46,7 +46,7 @@ ErrorCode ComProxyXmlLiteWriter::Create(
         outputName.c_str(),
         writer.VoidInitializationAddress(),
         NULL);
-    auto error = ToErrorCode(hr, L"CreateXmlWriter", L"", true, false);
+    auto error = ToErrorCode(hr, "CreateXmlWriter", "", true, false);
     if (!error.IsSuccess()) { return error; }
 
     xmlLiteWriter = move(make_unique<ComProxyXmlLiteWriter>(writer));
@@ -76,36 +76,36 @@ ErrorCode ComProxyXmlLiteWriter::Create(
         NULL);
 #endif
 
-    auto error = ToErrorCode(hr, L"CreateXmlWriter", L"", true, false);
+    auto error = ToErrorCode(hr, "CreateXmlWriter", "", true, false);
     if (!error.IsSuccess()) { return error; }
 
     if (writeByteOrderMark == false)
     {
         hr = writer->SetProperty(XmlWriterProperty_ByteOrderMark, FALSE);
-        error = ToErrorCode(hr, L"SetProperty", L"", true, false);
+        error = ToErrorCode(hr, "SetProperty", "", true, false);
         if (!error.IsSuccess()) { return error; }
     }
     if (indent)
     {
         hr = writer->SetProperty(XmlWriterProperty_Indent, TRUE);
-        error = ToErrorCode(hr, L"SetProperty", L"", true, false);
+        error = ToErrorCode(hr, "SetProperty", "", true, false);
         if (!error.IsSuccess()) { return error; }
     }
 
     xmlLiteWriter = move(make_unique<ComProxyXmlLiteWriter>(writer));
 
 #if !defined(PLATFORM_UNIX)
-    error = xmlLiteWriter->SetOutput(L"CustomOutput", output);
+    error = xmlLiteWriter->SetOutput("CustomOutput", output);
     if (!error.IsSuccess()) { return error; }
 #endif
 
     return ErrorCode(ErrorCodeValue::Success);
 }
 
-ErrorCode ComProxyXmlLiteWriter::SetOutput(wstring const & outputName, ComPointer<IUnknown> const & output)
+ErrorCode ComProxyXmlLiteWriter::SetOutput(string const & outputName, ComPointer<IUnknown> const & output)
 {
     auto hr = writer_->SetOutput(output.GetRawPointer());
-    auto error = ToErrorCode(hr, L"SetOutput", outputName, true, false);
+    auto error = ToErrorCode(hr, "SetOutput", outputName, true, false);
     if (error.IsSuccess()) 
     { 
         outputName_ = outputName;
@@ -121,62 +121,62 @@ ErrorCode ComProxyXmlLiteWriter::WriteNode(ComPointer<IXmlReader> const& reader,
     // The ToErrorCode method below has an option to accept S_FALSE as a success HRESULT value. This parameter must be set to true, or else
     // this method returns an error.
     // While XMLWriter normally returns S_OK as a success value, WriteNode does not.
-    return ToErrorCode(hr, L"WriteNode", true, true);
+    return ToErrorCode(hr, "WriteNode", true, true);
 }
 
 ErrorCode ComProxyXmlLiteWriter::Flush()
 {
     HRESULT hr = writer_->Flush();
-    return ToErrorCode(hr, L"Flush", true, false);
+    return ToErrorCode(hr, "Flush", true, false);
 }
 
 ErrorCode ComProxyXmlLiteWriter::WriteStartDocument(XmlStandalone value) 
 {
     HRESULT hr = writer_->WriteStartDocument(value);
-    return ToErrorCode(hr, L"StartDocument", true, false);
+    return ToErrorCode(hr, "StartDocument", true, false);
 }
 
-ErrorCode ComProxyXmlLiteWriter::WriteAttribute(std::wstring const & attrName, std::wstring const & value,
-    std::wstring const & prefix, std::wstring const & nameSpace) 
+ErrorCode ComProxyXmlLiteWriter::WriteAttribute(std::string const & attrName, std::string const & value,
+    std::string const & prefix, std::string const & nameSpace) 
 {
     HRESULT hr = writer_->WriteAttributeString(prefix.c_str(), attrName.c_str(), nameSpace.c_str(), value.c_str());
-    return ToErrorCode(hr, L"WriteAttribute", true, false);
+    return ToErrorCode(hr, "WriteAttribute", true, false);
 }
 
-ErrorCode ComProxyXmlLiteWriter::WriteComment(std::wstring const & comment)
+ErrorCode ComProxyXmlLiteWriter::WriteComment(std::string const & comment)
 {
     HRESULT hr = writer_->WriteComment(comment.c_str());
-    return ToErrorCode(hr, L"WriteComment", true, false);
+    return ToErrorCode(hr, "WriteComment", true, false);
 }
 
-ErrorCode ComProxyXmlLiteWriter::WriteDocType(std::wstring const & name, std::wstring const & pubId, std::wstring const & sysid,
-    std::wstring const & subset)
+ErrorCode ComProxyXmlLiteWriter::WriteDocType(std::string const & name, std::string const & pubId, std::string const & sysid,
+    std::string const & subset)
 {
     HRESULT hr = writer_->WriteDocType(name.c_str(), pubId.c_str(), sysid.c_str(), subset.c_str());
-    return ToErrorCode(hr, L"WriteDocType", true, false);
+    return ToErrorCode(hr, "WriteDocType", true, false);
 }
 
-ErrorCode ComProxyXmlLiteWriter::WriteChars(wchar_t const* charPtr)
+ErrorCode ComProxyXmlLiteWriter::WriteChars(char const* charPtr)
 {
     HRESULT hr = writer_->WriteString(charPtr);
-    return ToErrorCode(hr, L"WriteChars", true, false);
+    return ToErrorCode(hr, "WriteChars", true, false);
 }
 
-ErrorCode ComProxyXmlLiteWriter::WriteString(std::wstring const & content)
+ErrorCode ComProxyXmlLiteWriter::WriteString(std::string const & content)
 {
     HRESULT hr = writer_->WriteString(content.c_str());
-    return ToErrorCode(hr, L"WriteChars", true, false);
+    return ToErrorCode(hr, "WriteChars", true, false);
 }
 
-ErrorCode ComProxyXmlLiteWriter::WriteStartElement(std::wstring const & name, std::wstring const & prefix,
-    std::wstring const & nameSpace)
+ErrorCode ComProxyXmlLiteWriter::WriteStartElement(std::string const & name, std::string const & prefix,
+    std::string const & nameSpace)
 {
     HRESULT hr = writer_->WriteStartElement(prefix.c_str(), name.c_str(), nameSpace.c_str());
-    return ToErrorCode(hr, L"WriteStartElement", true, false);
+    return ToErrorCode(hr, "WriteStartElement", true, false);
 }
 
-ErrorCode ComProxyXmlLiteWriter::WriteElementWithContent(std::wstring const & name, std::wstring const content,
-    std::wstring const & prefix, std::wstring const & nameSpace)
+ErrorCode ComProxyXmlLiteWriter::WriteElementWithContent(std::string const & name, std::string const content,
+    std::string const & prefix, std::string const & nameSpace)
 {
     ErrorCode error = WriteStartElement(name, prefix, nameSpace);
     if (!error.IsSuccess())
@@ -194,13 +194,13 @@ ErrorCode ComProxyXmlLiteWriter::WriteElementWithContent(std::wstring const & na
 ErrorCode ComProxyXmlLiteWriter::WriteEndDocument()
 {
     HRESULT hr = writer_->WriteEndDocument();
-    return ToErrorCode(hr, L"WriteEndDocument", true, false);
+    return ToErrorCode(hr, "WriteEndDocument", true, false);
 }
 
 ErrorCode ComProxyXmlLiteWriter::WriteEndElement()
 {
     HRESULT hr = writer_->WriteEndElement();
-    return ToErrorCode(hr, L"WriteEndElement", true, false);
+    return ToErrorCode(hr, "WriteEndElement", true, false);
 }
 
 ErrorCode ComProxyXmlLiteWriter::Close()
@@ -212,7 +212,7 @@ ErrorCode ComProxyXmlLiteWriter::Close()
 
 ErrorCode ComProxyXmlLiteWriter::ToErrorCode(
     HRESULT hr, 
-    wstring const & operationName,
+    string const & operationName,
     bool sOkIsSuccess,
     bool sFalseIsSuccess)
 {
@@ -221,8 +221,8 @@ ErrorCode ComProxyXmlLiteWriter::ToErrorCode(
 
 ErrorCode ComProxyXmlLiteWriter::ToErrorCode(
     HRESULT hr, 
-    wstring const & operationName,
-    wstring const & outputName,
+    string const & operationName,
+    string const & outputName,
     bool sOkIsSuccess,
     bool sFalseIsSuccess)
 {

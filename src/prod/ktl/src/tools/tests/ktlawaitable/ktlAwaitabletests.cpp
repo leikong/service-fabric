@@ -2989,7 +2989,7 @@ BasicAwaitableTests(KtlSystem& UnderlyingSystem)
 NTSTATUS
 KtlAwaitableTest(
     __in int argc,
-    __in_ecount(argc) WCHAR* args[]
+    __in_ecount(argc) CHAR* args[]
     )
 {
     UNREFERENCED_PARAMETER(argc);
@@ -3030,7 +3030,7 @@ int __cdecl
 #if !defined(PLATFORM_UNIX)
 wmain(
     __in int argc,
-    __in_ecount(argc) WCHAR* args[]
+    __in_ecount(argc) CHAR* args[]
 )
 {
 #else
@@ -3048,7 +3048,7 @@ main(int argc, char* args[])
         args++;
     }
 
-    status = KtlAwaitableTest(argc, (WCHAR**)args);
+    status = KtlAwaitableTest(argc, (CHAR**)args);
 
     if (!NT_SUCCESS(status)) 
    {

@@ -222,9 +222,9 @@ namespace Ktl
 
         
             HRESULT STDMETHODCALLTYPE BeginCreateLogContainer( 
-                __in LPCWSTR FullyQualifiedLogFilePath,
+                __in LPCSTR FullyQualifiedLogFilePath,
                 __in KTL_LOG_ID LogId,
-                __in LPCWSTR LogType,
+                __in LPCSTR LogType,
                 __in LONGLONG LogSize,
                 __in ULONG MaxAllowedStreams,
                 __in ULONG MaxRecordSize,
@@ -244,7 +244,7 @@ namespace Ktl
                 __out IFabricAsyncOperationContext **const Context) override;
         
             HRESULT STDMETHODCALLTYPE BeginOpenLogContainer( 
-                __in LPCWSTR FullyQualifiedLogFilePath,
+                __in LPCSTR FullyQualifiedLogFilePath,
                 __in KTL_LOG_ID LogId,
                 __in IFabricAsyncOperationCallback *const Callback,
                 __out IFabricAsyncOperationContext **const Context) override;
@@ -255,7 +255,7 @@ namespace Ktl
         
 
             HRESULT STDMETHODCALLTYPE BeginDeleteLogContainer( 
-                __in LPCWSTR FullyQualifiedLogFilePath,
+                __in LPCSTR FullyQualifiedLogFilePath,
                 __in KTL_LOG_ID LogId,
                 __in IFabricAsyncOperationCallback *const Callback,
                 __out IFabricAsyncOperationContext **const Context) override;
@@ -281,7 +281,7 @@ namespace Ktl
 
 #if !defined(PLATFORM_UNIX)
             HRESULT STDMETHODCALLTYPE BeginGetVolumeIdFromPath(
-                __in LPCWSTR Path,
+                __in LPCSTR Path,
                 __in IFabricAsyncOperationCallback* const Callback,     
                 __out IFabricAsyncOperationContext** const Context) override;
 
@@ -317,8 +317,8 @@ namespace Ktl
             HRESULT STDMETHODCALLTYPE BeginCreateLogStream(
                 __in KTL_LOG_STREAM_ID LogStreamId,
                 __in KTL_LOG_STREAM_TYPE_ID LogStreamTypeId,
-                __in_opt LPCWSTR OptionalLogStreamAlias,
-                __in LPCWSTR Path,
+                __in_opt LPCSTR OptionalLogStreamAlias,
+                __in LPCSTR Path,
                 __in_opt IKBuffer *const OptionalSecurityInfo,
                 __in LONGLONG MaximumSize,
                 __in ULONG MaximumBlockSize,
@@ -351,7 +351,7 @@ namespace Ktl
 
 
             HRESULT STDMETHODCALLTYPE BeginAssignAlias(
-                __in LPCWSTR Alias,
+                __in LPCSTR Alias,
                 __in KTL_LOG_STREAM_ID LogStreamId,
                 __in IFabricAsyncOperationCallback* Callback,       
                 __out IFabricAsyncOperationContext** Context) override;
@@ -361,7 +361,7 @@ namespace Ktl
 
 
             HRESULT STDMETHODCALLTYPE BeginRemoveAlias(
-                __in LPCWSTR Alias,
+                __in LPCSTR Alias,
                 __in IFabricAsyncOperationCallback* Callback,       
                 __out IFabricAsyncOperationContext** Context) override;
 
@@ -370,7 +370,7 @@ namespace Ktl
 
 
             HRESULT STDMETHODCALLTYPE BeginResolveAlias(
-                __in LPCWSTR Alias,
+                __in LPCSTR Alias,
                 __in IFabricAsyncOperationCallback* Callback,       
                 __out IFabricAsyncOperationContext** Context) override;
 
