@@ -66,31 +66,33 @@ public:
             Trace.WriteInfo(TraceComponent, "No Python modules to initialize");
             return ErrorCodeValue::Success;
         }
-        else
+
+        vector<wstring> tokens;
+        StringUtility::Split<wstring>(moduleNames, tokens, L",");
+
+        for (auto const & moduleName : tokens)
         {
-            vector<wstring> tokens;
-            StringUtility::Split<wstring>(moduleNames, tokens, L",");
+            if (moduleName.empty()) { continue; }
 
-            for (auto const & moduleName : tokens)
+            Trace.WriteInfo(TraceComponent, "Initializing Python module '{0}' on node {1} ...", moduleName, fs->Id);
+
+            vector<wstring> args;
+            args.push_back(fs->IdString);
+            auto error = pyInterpreter_.Execute(moduleName, PyCallback_OnInitialize, args);
+            if (!error.IsSuccess()) { return error; } 
+            
+            AcquireWriteLock lock(lock_);
+
+            auto findIter = modules_.find(moduleName);
+            if (findIter == modules_.end())
             {
-                Trace.WriteInfo(TraceComponent, "Initializing Python module '{0}' on node {1} ...", moduleName, fs->Id);
+                Trace.WriteWarning(TraceComponent, "Python module '{0}' added to node {1} ...", moduleName, fs->Id);
 
-                vector<wstring> args;
-                args.push_back(fs->IdString);
-                auto error = pyInterpreter_.Execute(moduleName, PyCallback_OnInitialize, args);
-                if (!error.IsSuccess()) { return error; } 
-                
-                AcquireWriteLock lock(lock_);
-
-                auto findIter = modules_.find(moduleName);
-                if (findIter == modules_.end())
-                {
-                    Trace.WriteWarning(TraceComponent, "Python module '{0}' added to node {1} ...", moduleName, fs->Id);
-
-                    modules_.insert(make_pair(moduleName, nullptr));
-                }
+                modules_.insert(make_pair(moduleName, nullptr));
             }
         }
+
+        return ErrorCodeValue::Success;
     }
 
     ErrorCode OnRoutingTokenChanged()
