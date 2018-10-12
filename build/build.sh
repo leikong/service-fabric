@@ -3,6 +3,7 @@
 SourceDirectory="../src/prod"
 ClangVersion=6.0
 CMakeGenerator="-G Ninja"
+BuildType="Debug"
 OutputFile="cmake.out"
 CUR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -12,6 +13,7 @@ CXX=/usr/lib/llvm-${ClangVersion}/bin/clang++
 cmake $CMakeGenerator \
     -DCMAKE_C_COMPILER=$CC \
     -DCMAKE_CXX_COMPILER=$CXX \
+    -DCMAKE_BUILD_TYPE=${BuildType} \
     $SourceDirectory 2>&1 | tee $OutputFile
 
 if [[ $? -ne 0 ]]; then
