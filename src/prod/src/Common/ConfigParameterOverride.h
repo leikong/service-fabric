@@ -15,10 +15,10 @@ namespace Common
         ConfigParameterOverride();
         
         ConfigParameterOverride(
-            std::wstring && name,
-            std::wstring && value,
+            std::string && name,
+            std::string && value,
             bool isEncrypted,
-            std::wstring && type);
+            std::string && type);
         
         ConfigParameterOverride(ConfigParameterOverride const & other);
         ConfigParameterOverride(ConfigParameterOverride && other);
@@ -32,9 +32,9 @@ namespace Common
         void WriteTo(Common::TextWriter & w, Common::FormatOptions const &) const;
 
     public:
-        std::wstring Name;
-        std::wstring Value;
+        std::string Name;
+        std::string Value;
         bool IsEncrypted;
-		std::wstring Type;
+		std::string Type;
     };
 }

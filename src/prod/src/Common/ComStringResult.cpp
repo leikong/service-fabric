@@ -10,7 +10,7 @@ namespace Common
     using namespace std;
     
     /******************** ComStringResult implementation ****************************/
-    ComStringResult::ComStringResult(wstring const & value)
+    ComStringResult::ComStringResult(string const & value)
         : value_(value)
     {
     }
@@ -19,12 +19,12 @@ namespace Common
     {
     }
 
-    LPCWSTR STDMETHODCALLTYPE ComStringResult::get_String(void)
+    LPCSTR STDMETHODCALLTYPE ComStringResult::get_String(void)
     {
         return this->value_.c_str();
     }
 
-    HRESULT ComStringResult::ReturnStringResult(std::wstring const & result, IFabricStringResult ** value)
+    HRESULT ComStringResult::ReturnStringResult(std::string const & result, IFabricStringResult ** value)
     {
         if (value == NULL)
         {
@@ -46,7 +46,7 @@ namespace Common
     {
     }
 
-    LPCWSTR STDMETHODCALLTYPE ComSecureStringResult::get_String(void)
+    LPCSTR STDMETHODCALLTYPE ComSecureStringResult::get_String(void)
     {
         return this->value_.GetPlaintext().c_str();
     }
@@ -72,7 +72,7 @@ namespace Common
         auto count = collection.size();
         if (count > 0)
         {
-            stringCollection_ = heap_.AddArray<LPCWSTR>(count);
+            stringCollection_ = heap_.AddArray<LPCSTR>(count);
             for (size_t i = 0; i < count; ++i)
             {
                 stringCollection_[i] = heap_.AddString(collection[i]);
@@ -86,7 +86,7 @@ namespace Common
 
     HRESULT STDMETHODCALLTYPE ComStringCollectionResult::GetStrings( 
         /* [out] */ ULONG *itemCount,
-        /* [retval][out] */ const LPCWSTR **bufferedItems)
+        /* [retval][out] */ const LPCSTR **bufferedItems)
     {
         if ((itemCount == NULL) || (bufferedItems == NULL))
         {

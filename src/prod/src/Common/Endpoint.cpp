@@ -12,7 +12,7 @@
 typedef void* LPWSAPROTOCOL_INFOW;
 
 static INT WSAAPI WSAStringToAddressW(
-    LPWSTR	AddressString,
+    LPSTR	AddressString,
     INT		AddressFamily,
     LPWSAPROTOCOL_INFOW lpProtocolInfo,
     LPSOCKADDR 	lpAddress,
@@ -21,7 +21,7 @@ static INT WSAAPI WSAStringToAddressW(
 {
     memset(lpAddress, *lpAddressLength, 0);
     std::string addrStr;
-    Common::StringUtility::Utf16ToUtf8(AddressString, addrStr);
+    Utf16ToUtf8NotNeeded2(AddressString, addrStr);
 
     void * ipPtr = nullptr;
     int outputSize = *lpAddressLength;
@@ -112,7 +112,7 @@ namespace Common
         return result;
     }
 
-    ErrorCode Endpoint::TryParse(std::wstring const & str, Endpoint & ep)
+    ErrorCode Endpoint::TryParse(std::string const & str, Endpoint & ep)
     {
         ::ZeroMemory(&ep.address, sizeof(ep.address));
 
@@ -121,7 +121,7 @@ namespace Common
         //
         // Try to first convert to an IPv4 address
         //
-        int wsaError = ::WSAStringToAddressW( const_cast<LPWSTR>(str.c_str()),
+        int wsaError = ::WSAStringToAddressW( const_cast<LPSTR>(str.c_str()),
             AF_INET, 
             nullptr, 
             ep.as_sockaddr(),
@@ -133,7 +133,7 @@ namespace Common
             // If that fails, try to convert to an IPv6 address
             //
             wsaError = ::WSAStringToAddressW(
-                const_cast<LPWSTR>(str.c_str()), 
+                const_cast<LPSTR>(str.c_str()), 
                 AF_INET6,
                 nullptr,
                 ep.as_sockaddr(),
@@ -156,7 +156,7 @@ namespace Common
     //
     //////////////////////////////////////////////////////////////////////
     Endpoint::Endpoint (
-        std::wstring const & str,
+        std::string const & str,
         int             port
         )
     {
@@ -265,12 +265,12 @@ namespace Common
         return ScopeLevelGlobal;
     }
 
-    _Use_decl_annotations_ void Endpoint::GetIpString(WCHAR * ipString, socklen_t size) const
+    _Use_decl_annotations_ void Endpoint::GetIpString(CHAR * ipString, socklen_t size) const
     {
 #ifdef PLATFORM_UNIX
-        wstring buffer;
+        string buffer;
         GetIpString(buffer);
-        memcpy(ipString, buffer.c_str(), (buffer.size() + 1) * sizeof(WCHAR));
+        memcpy(ipString, buffer.c_str(), (buffer.size() + 1) * sizeof(CHAR));
 #else
         if (IsIPv4())
         {
@@ -285,7 +285,7 @@ namespace Common
 #endif
     }
 
-    _Use_decl_annotations_ void Endpoint::GetIpString(std::wstring & ipString) const
+    _Use_decl_annotations_ void Endpoint::GetIpString(std::string & ipString) const
     {
 #ifdef PLATFORM_UNIX
         char buffer[INET6_ADDRSTRLEN];
@@ -299,22 +299,22 @@ namespace Common
             Invariant(inet_ntop(AF_INET6, &as_sockaddr_in6()->sin6_addr, buffer, sizeof(buffer)));
         }
 
-        StringUtility::Utf8ToUtf16(string(buffer), ipString);
+        Utf8ToUtf16NotNeeded2(string(buffer), ipString);
 #else 
-        WCHAR buffer[INET6_ADDRSTRLEN];
+        CHAR buffer[INET6_ADDRSTRLEN];
         GetIpString(buffer);
-        ipString = std::wstring(buffer);
+        ipString = std::string(buffer);
 #endif
     }
 
-    std::wstring Endpoint::GetIpString() const
+    std::string Endpoint::GetIpString() const
     {
-        std::wstring ipString;
+        std::string ipString;
         GetIpString(ipString);
         return ipString;
     }
 
-    std::wstring Endpoint::GetIpString2() const
+    std::string Endpoint::GetIpString2() const
     {
         if (IsIPv4())
         {
@@ -322,24 +322,24 @@ namespace Common
         }
 
         Invariant(IsIPv6());
-        return wformatString("[{0}]", GetIpString());
+        return formatString.L("[{0}]", GetIpString());
     }
 
-    std::wstring Endpoint::ToString() const
+    std::string Endpoint::ToString() const
     {
-        std::wstring buffer;
+        std::string buffer;
         this->ToString(buffer);
         return buffer;
     }
 
-    void Endpoint::ToString(std::wstring& result) const
+    void Endpoint::ToString(std::string& result) const
     {
-        result = wformatString("{0}:{1}", GetIpString2(), Port);
+        result = formatString.L("{0}:{1}", GetIpString2(), Port);
     }
 
-    std::wstring Endpoint::AsSmbServerName() const
+    std::string Endpoint::AsSmbServerName() const
     {
-        return wformatString("\\\\{0}", GetIpString2());
+        return formatString.L("\\\\{0}", GetIpString2());
     }
 
     // Note: Code in clussvc that compares endpoints relies on the current EqualAddress
@@ -534,19 +534,19 @@ namespace Common
     }
 
 #if 0
-    void SerializerTrait<Endpoint>::ReadFrom(SerializeReader & r, Endpoint & value, std::wstring const & name)
+    void SerializerTrait<Endpoint>::ReadFrom(SerializeReader & r, Endpoint & value, std::string const & name)
     {
-        std::wstring temp;
+        std::string temp;
         r.Read(temp, name);
-        std::wstring address, port;
+        std::string address, port;
 
         Split(temp, ' ', address, port);
         value = Endpoint(address, Int32_Parse(port));
     }
 
-    void SerializerTrait<Endpoint>::WriteTo(SerializeWriter & w, Endpoint const & value, std::wstring const & name)
+    void SerializerTrait<Endpoint>::WriteTo(SerializeWriter & w, Endpoint const & value, std::string const & name)
     {
-        std::wstring temp;
+        std::string temp;
         value.ToString(temp);
         temp.push_back(' ');
         temp.append( Int32_ToString(value.Port) );

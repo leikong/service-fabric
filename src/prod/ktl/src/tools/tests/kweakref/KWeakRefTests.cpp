@@ -368,7 +368,7 @@ DestructorRaceTest()
 }
 
 NTSTATUS
-MultiCoreWeakRefTest(int argc, WCHAR* args[])
+MultiCoreWeakRefTest(int argc, CHAR* args[])
 {
     UNREFERENCED_PARAMETER(argc);
     UNREFERENCED_PARAMETER(args);
@@ -390,7 +390,7 @@ MultiCoreWeakRefTest(int argc, WCHAR* args[])
 }
 
 NTSTATUS
-BasicWeakRefTest(int argc, WCHAR* args[])
+BasicWeakRefTest(int argc, CHAR* args[])
 {
     UNREFERENCED_PARAMETER(argc);
     UNREFERENCED_PARAMETER(args);
@@ -689,7 +689,7 @@ SharedInterfaceWeakRefTest()
 
 
 NTSTATUS
-KWeakRefTest(int argc, WCHAR* args[])
+KWeakRefTest(int argc, CHAR* args[])
 {
     KTestPrintf("KWeakRefTest: STARTED\n");
 
@@ -721,7 +721,7 @@ KWeakRefTest(int argc, WCHAR* args[])
 #if CONSOLE_TEST
 int
 #if !defined(PLATFORM_UNIX)
-main(int argc, WCHAR* args[])
+main(int argc, CHAR* args[])
 {
 #else
 main(int argc, char* cargs[])

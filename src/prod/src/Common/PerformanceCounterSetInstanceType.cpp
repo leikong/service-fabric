@@ -14,12 +14,12 @@ namespace Common
         {
             switch (e)
             {
-            case Single : w << L"Single"; return;
-            case Multiple : w << L"Multiple"; return;
-            case GlobalAggregate : w << L"GlobalAggregate"; return;
-            case GlobalAggregateWithHistory : w << L"GlobalAggregateWithHistory"; return;
-            case MultipleAggregate : w << L"MultipleAggregate"; return;
-            case InstanceAggregate : w << L"InstanceAggregate"; return;
+            case Single : w << "Single"; return;
+            case Multiple : w << "Multiple"; return;
+            case GlobalAggregate : w << "GlobalAggregate"; return;
+            case GlobalAggregateWithHistory : w << "GlobalAggregateWithHistory"; return;
+            case MultipleAggregate : w << "MultipleAggregate"; return;
+            case InstanceAggregate : w << "InstanceAggregate"; return;
             }
 
             w << "PerformanceCounterSetInstanceType(" << static_cast<int>(e) << ')';

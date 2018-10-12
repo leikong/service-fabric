@@ -76,7 +76,7 @@ namespace KtlPhysicalLogTest
     class KtlPhysicalLogTest
     {
     public:
-        WCHAR _driveLetter[2];
+        CHAR _driveLetter[2];
 
     public:
         KtlPhysicalLogTest()
@@ -91,10 +91,10 @@ namespace KtlPhysicalLogTest
 
         bool Setup()
         {
-            WCHAR systemDrive[32];
-            ULONG result = ExpandEnvironmentStringsW(L"%SYSTEMDRIVE%", (LPWSTR)systemDrive, 32);
-            VERIFY_ARE_NOT_EQUAL((ULONG)0, result, L"Failed to get systemdrive");
-            VERIFY_IS_TRUE(result <= 32, L"Failed to get systemdrive");
+            CHAR systemDrive[32];
+            ULONG result = ExpandEnvironmentStringsW("%SYSTEMDRIVE%", (LPSTR)systemDrive, 32);
+            VERIFY_ARE_NOT_EQUAL((ULONG)0, result, "Failed to get systemdrive");
+            VERIFY_IS_TRUE(result <= 32, "Failed to get systemdrive");
 
             _driveLetter[0] = systemDrive[0];
             _driveLetter[1] = 0;
@@ -113,25 +113,25 @@ namespace KtlPhysicalLogTest
     BOOST_AUTO_TEST_CASE(BasicDiskLoggerTest)
     {
         NTSTATUS status;
-        PWCHAR driveLetter = _driveLetter;
+        PCHAR driveLetter = _driveLetter;
 
         status = ::BasicDiskLoggerTest(1, &driveLetter);
-        VERIFY_IS_TRUE(NT_SUCCESS(status), L"KTL Logger Testing must be run at elevated privs");
+        VERIFY_IS_TRUE(NT_SUCCESS(status), "KTL Logger Testing must be run at elevated privs");
     }
 
     BOOST_AUTO_TEST_CASE(AliasTest)
     {
         NTSTATUS status;
-        PWCHAR driveLetter = _driveLetter;
+        PCHAR driveLetter = _driveLetter;
 
         status = ::RvdLoggerAliasTests(1, &driveLetter);
-        VERIFY_IS_TRUE(NT_SUCCESS(status), L"KTL Logger Testing must be run at elevated privs");
+        VERIFY_IS_TRUE(NT_SUCCESS(status), "KTL Logger Testing must be run at elevated privs");
     }
 
     BOOST_AUTO_TEST_CASE(StreamTest)
     {
         NTSTATUS status;
-        PWCHAR driveLetter = _driveLetter;
+        PCHAR driveLetter = _driveLetter;
 
         status = ::LogStreamAsyncIoTests(1, &driveLetter);
         VERIFY_IS_TRUE(NT_SUCCESS(status));
@@ -148,7 +148,7 @@ namespace KtlPhysicalLogTest
     BOOST_AUTO_TEST_CASE(RecoveryTest)
     {
         NTSTATUS status;
-        PWCHAR driveLetter = _driveLetter;
+        PCHAR driveLetter = _driveLetter;
 
         status = ::RvdLoggerRecoveryTests(1, &driveLetter);
         VERIFY_IS_TRUE(NT_SUCCESS(status));
@@ -157,7 +157,7 @@ namespace KtlPhysicalLogTest
     BOOST_AUTO_TEST_CASE(StructVerify)
     {
         NTSTATUS status;
-        PWCHAR driveLetter = _driveLetter;
+        PCHAR driveLetter = _driveLetter;
 
         status = ::DiskLoggerStructureVerifyTests(1, &driveLetter);
         VERIFY_IS_TRUE(NT_SUCCESS(status));
@@ -174,7 +174,7 @@ namespace KtlPhysicalLogTest
     BOOST_AUTO_TEST_CASE(ReservationsTest)
     {
         NTSTATUS status;
-        PWCHAR driveLetter = _driveLetter;
+        PCHAR driveLetter = _driveLetter;
 
         status = ::RvdLoggerReservationTests(1, &driveLetter);
         VERIFY_IS_TRUE(NT_SUCCESS(status));

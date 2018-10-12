@@ -45,7 +45,7 @@ namespace Transport
         activityId_.WriteTo(w, f);
     }
 
-    wstring FabricActivityHeader::ToString() const
+    string FabricActivityHeader::ToString() const
     {
         return activityId_.ToString();
     }

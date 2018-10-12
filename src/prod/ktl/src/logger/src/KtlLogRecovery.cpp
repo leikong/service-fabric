@@ -127,7 +127,7 @@ RvdLogRecovery::SnapLogState(__out LogState::SPtr& Result)
             &result->_LogType[0], 
             sizeof(result->_LogType), 
             &_LogType[0], 
-            RvdLogManager::AsyncCreateLog::MaxLogTypeLength*sizeof(WCHAR));
+            RvdLogManager::AsyncCreateLog::MaxLogTypeLength*sizeof(CHAR));
 
         status = result->_StreamDescs.Reserve(_Config.GetMaxNumberOfStreams());
         if (! NT_SUCCESS(status))
@@ -234,7 +234,7 @@ RvdLogRecovery::FirstMasterBlockReadComplete(__in_opt KAsyncContextBase* const P
             &masterBlk->CreationDirectory[0], 
             RvdLogMasterBlock::CreationDirectoryMaxSize);
 
-        KMemCpySafe(&_LogType[0], sizeof(_LogType), &masterBlk->LogType[0], RvdLogManager::AsyncCreateLog::MaxLogTypeLength*sizeof(WCHAR));
+        KMemCpySafe(&_LogType[0], sizeof(_LogType), &masterBlk->LogType[0], RvdLogManager::AsyncCreateLog::MaxLogTypeLength*sizeof(CHAR));
     }
 
     // Read and validate trailing master block

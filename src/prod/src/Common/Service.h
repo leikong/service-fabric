@@ -45,7 +45,7 @@ namespace Common
             Initialize();
         }
 
-        explicit ServiceBase( std::wstring const & name ) 
+        explicit ServiceBase( std::string const & name ) 
             : serviceName_( name )
         {
             Initialize();
@@ -92,14 +92,14 @@ namespace Common
         //
         // -- rdoshi
         // 
-        static void WINAPI ServiceMain( DWORD argc, __in_ecount(argc) ::LPWSTR* argv);
+        static void WINAPI ServiceMain( DWORD argc, __in_ecount(argc) ::LPSTR* argv);
         
         // Invoked by SCM. Accept the control code but don't do any work.
         static DWORD WINAPI ServiceHandler( DWORD, DWORD, ::LPVOID, ::LPVOID );
 
         static ServiceBase* storedService;
 
-        std::wstring            serviceName_;
+        std::string            serviceName_;
         DWORD                   checkPoint_;
         ::SERVICE_STATUS_HANDLE handle_;
         DWORD                   currentState_; 
@@ -151,21 +151,21 @@ namespace Common
     public:
         explicit ServiceController() {}
 
-        explicit ServiceController( std::wstring const & name ) : 
+        explicit ServiceController( std::string const & name ) : 
             serviceName_( name )
         {
         }
 
-        void SetService( std::wstring const & name )
+        void SetService( std::string const & name )
         {
             serviceName_.assign( name );
         }
 
-        ErrorCode Install( const std::wstring& displayName, const std::wstring& path );
+        ErrorCode Install( const std::string& displayName, const std::string& path );
 
-        ErrorCode InstallAuto( const std::wstring& displayName, const std::wstring& path );
+        ErrorCode InstallAuto( const std::string& displayName, const std::string& path );
 
-        ErrorCode InstallKernelDriver(const std::wstring& displayName, const std::wstring& path);
+        ErrorCode InstallKernelDriver(const std::string& displayName, const std::string& path);
 
         ErrorCode Uninstall();
         
@@ -185,9 +185,9 @@ namespace Common
 
         ErrorCode GetState(DWORD & state);
 
-        ErrorCode SetServiceAccount( std::wstring const & accountName, Common::SecureString const & password );
+        ErrorCode SetServiceAccount( std::string const & accountName, Common::SecureString const & password );
 
-        ErrorCode SetServiceDescription(std::wstring const & description);
+        ErrorCode SetServiceDescription(std::string const & description);
 
         ErrorCode SetServiceFailureActionsForRestart(DWORD const & delayInSeconds, DWORD const & resetPeriodInDays);
         
@@ -199,19 +199,19 @@ namespace Common
 
         bool IsServiceRunning();
 
-        static ErrorCode StartServiceByName(std::wstring const & serviceName, bool waitForServiceStart = false, TimeSpan const & timeout = TimeSpan::MaxValue);
+        static ErrorCode StartServiceByName(std::string const & serviceName, bool waitForServiceStart = false, TimeSpan const & timeout = TimeSpan::MaxValue);
 
-        static ErrorCode StopServiceByName(std::wstring const & serviceName, bool waitForServiceStart = false, TimeSpan const & timeout = TimeSpan::MaxValue);
+        static ErrorCode StopServiceByName(std::string const & serviceName, bool waitForServiceStart = false, TimeSpan const & timeout = TimeSpan::MaxValue);
 
-        __declspec(property(get = get_ServiceName)) std::wstring const & ServiceName;
-        std::wstring const & get_ServiceName() const { return serviceName_; }
+        __declspec(property(get = get_ServiceName)) std::string const & ServiceName;
+        std::string const & get_ServiceName() const { return serviceName_; }
 
     protected:
 
         //
         // Members
         //
-        std::wstring serviceName_;
+        std::string serviceName_;
     };
 #endif
 };

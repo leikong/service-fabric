@@ -33,12 +33,12 @@ namespace Common
     template <typename Enum>
     struct StringEnumPair
     {
-        wchar_t const* string;
+        char const* string;
         Enum value;
     };
 
     template <typename Enum>
-    inline Common::ErrorCode EnumToWStringHelper(Enum val, __out std::wstring &strVal, const StringEnumPair<Enum>* pairs)
+    inline Common::ErrorCode EnumToWStringHelper(Enum val, __out std::string &strVal, const StringEnumPair<Enum>* pairs)
     {
         for ( ;pairs->string != nullptr; ++pairs)
         {
@@ -52,11 +52,11 @@ namespace Common
     }
 
     template <typename Enum>
-    inline Common::ErrorCode WStringToEnumHelper(std::wstring const &strVal, __out Enum &val, const StringEnumPair<Enum>* pairs)
+    inline Common::ErrorCode WStringToEnumHelper(std::string const &strVal, __out Enum &val, const StringEnumPair<Enum>* pairs)
     {
         for ( ;pairs->string != nullptr; ++pairs)
         {
-            if (wcscmp(pairs->string, strVal.c_str()) == 0)
+            if (strcmp(pairs->string, strVal.c_str()) == 0)
             {
                 val = pairs->value;
                 return Common::ErrorCodeValue::Success;
@@ -80,12 +80,12 @@ namespace Common
     template <class T>
     struct IdlOrServiceModelEnum<true, T>
     {
-        static ErrorCode WStringToEnum(std::wstring const &enumString, __out T &enumVal)
+        static ErrorCode WStringToEnum(std::string const &enumString, __out T &enumVal)
         {
             return WStringToEnumHelper(enumString, enumVal, Common::EnumJsonSerializer<T>::Get());
         }
 
-        static ErrorCode EnumToWString(T &enumVal, __out std::wstring &enumString)
+        static ErrorCode EnumToWString(T &enumVal, __out std::string &enumString)
         {
             return EnumToWStringHelper(enumVal, enumString, Common::EnumJsonSerializer<T>::Get());
         }
@@ -95,12 +95,12 @@ namespace Common
     template <class T>
     struct IdlOrServiceModelEnum<false, T>
     {
-        static ErrorCode WStringToEnum(std::wstring const &enumString, __out T &enumVal)
+        static ErrorCode WStringToEnum(std::string const &enumString, __out T &enumVal)
         {
             return EnumFromString(enumString, enumVal);
         }
 
-        static ErrorCode EnumToWString(T &enumVal, __out std::wstring &enumString)
+        static ErrorCode EnumToWString(T &enumVal, __out std::string &enumString)
         {
             return EnumToString(enumVal, enumString);
         }
@@ -108,7 +108,7 @@ namespace Common
 
     // Enum Helpers
     template<typename T>
-    static ErrorCode EnumToWString(T &enumVal, __out std::wstring &enumString)
+    static ErrorCode EnumToWString(T &enumVal, __out std::string &enumString)
     {
         const bool isIdlEnum = EnumJsonSerializer<T>::Marker;
 
@@ -116,7 +116,7 @@ namespace Common
     }
 
     template<typename T>
-    static ErrorCode WStringToEnum(std::wstring const &enumString, __out T &enumVal)
+    static ErrorCode WStringToEnum(std::string const &enumString, __out T &enumVal)
     {
         const bool isIdlEnum = EnumJsonSerializer<T>::Marker;
 
@@ -159,14 +159,14 @@ namespace Common
 #define SERIALIZABLE_PROPERTY_SIMPLE_MAP(Name, Member)                                                          \
         if (writer != nullptr)                                                                                  \
         {                                                                                                       \
-            hr = writer->VisitSimpleMap(Common::WStringLiteral(Name).begin(), (Member), conditional);           \
+            hr = writer->VisitSimpleMap(Common::StringLiteral(Name).begin(), (Member), conditional);           \
         }                                                                                                       \
         SERIALIZABLE_PROPERTY_READ(Name, Member)                                                                \
 
 #define SERIALIZABLE_PROPERTY_SIMPLE_MAP_IF(Name, Member, Conditional)                                                                  \
     if (writer != nullptr)                                                                                                              \
     {                                                                                                                                   \
-        hr = writer->VisitSimpleMap(Common::WStringLiteral(Name).begin(), (Member), conditional ? Conditional : conditional);           \
+        hr = writer->VisitSimpleMap(Common::StringLiteral(Name).begin(), (Member), conditional ? Conditional : conditional);           \
     }                                                                                                                                   \
     SERIALIZABLE_PROPERTY_READ(Name, Member)                                                                                            \
 
@@ -209,7 +209,7 @@ namespace Common
         {                                                                                                       \
             if (writer->Flags & Common::JsonSerializerFlags::EnumInStringFormat)                                \
             {                                                                                                   \
-                std::wstring tmp;                                                                               \
+                std::string tmp;                                                                               \
                 auto error = Common::EnumToWString(Member, tmp);                                                \
                 if (!error.IsSuccess()) { return error.ToHResult(); }                                           \
                 hr = Common::JsonWriterVisitor::Dispatch(*writer, Name, tmp, conditional ? Conditional : conditional); \
@@ -282,11 +282,11 @@ struct EnumToStringSerializer                           \
 /* Having these as inline functions helps us define these without explicitly \
  * getting the namespace name as input                              \
  */                                                                 \
-inline Common::ErrorCode EnumToString(Enum &enumVal, __out std::wstring &enumString)   \
+inline Common::ErrorCode EnumToString(Enum &enumVal, __out std::string &enumString)   \
 {                                                                       \
     return Common::EnumToWStringHelper(enumVal, enumString, EnumToStringSerializer::Get());       \
 }                                                                       \
-inline Common::ErrorCode EnumFromString(std::wstring const &enumString, __out Enum &enumVal)\
+inline Common::ErrorCode EnumFromString(std::string const &enumString, __out Enum &enumVal)\
 {                                                                                           \
     return Common::WStringToEnumHelper(enumString, enumVal, EnumToStringSerializer::Get());        \
 }

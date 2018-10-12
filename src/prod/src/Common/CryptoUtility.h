@@ -11,7 +11,7 @@ namespace Common
     {
         static X509StoreLocation::Enum StoreLocation();
         static enum FABRIC_X509_STORE_LOCATION StoreLocation_Public();
-        static wstring const & StoreName();
+        static string const & StoreName();
     };
 
     class CryptoUtility : TextTraceComponent<TraceTaskCodes::Common>
@@ -19,46 +19,46 @@ namespace Common
     public:
         static ErrorCode GetCertificate(
             X509StoreLocation::Enum certificateStoreLocation,
-            std::wstring const & certificateStoreName,
+            std::string const & certificateStoreName,
             std::shared_ptr<X509FindValue> const & findValue,
             _Out_ CertContextUPtr & certContext);
 
         static ErrorCode GetCertificate(
             X509StoreLocation::Enum certificateStoreLocation,
-            std::wstring const & certificateStoreName,
+            std::string const & certificateStoreName,
             DWORD storeOpenFlag,
             std::shared_ptr<X509FindValue> const & findValue,
             _Out_ CertContextUPtr & certContext);
 
         static ErrorCode GetCertificate(
             X509StoreLocation::Enum certificateStoreLocation,
-            std::wstring const & certificateStoreName,
+            std::string const & certificateStoreName,
             std::shared_ptr<X509FindValue> const & findValue,
             _Out_ CertContexts & certContexts);
 
         static ErrorCode GetCertificate(
             X509StoreLocation::Enum certificateStoreLocation,
-            std::wstring const & certificateStoreName,
+            std::string const & certificateStoreName,
             DWORD storeOpenFlag,
             std::shared_ptr<X509FindValue> const & findValue,
             _Out_ CertContexts & certContexts);
 
         static ErrorCode GetCertificate(
             X509StoreLocation::Enum certificateStoreLocation,
-            std::wstring const & certificateStoreName,
-            std::wstring const & findType,
-            std::wstring const & findValue,
+            std::string const & certificateStoreName,
+            std::string const & findType,
+            std::string const & findValue,
             _Out_ CertContextUPtr & certContext);
 
         static ErrorCode GetCertificate(
             X509StoreLocation::Enum certificateStoreLocation,
-            std::wstring const & certificateStoreName,
-            std::wstring const & findType,
-            std::wstring const & findValue,
+            std::string const & certificateStoreName,
+            std::string const & findType,
+            std::string const & findValue,
             _Out_ CertContexts & certContexts);
 
         static ErrorCode GetCertificate(
-            std::wstring const & certFilePath,
+            std::string const & certFilePath,
             _Out_ CertContextUPtr & certContext);
 
         static ErrorCode GetCertificateChain(
@@ -76,15 +76,15 @@ namespace Common
 
         static Common::ErrorCode GetCertificateExpiration(
             X509StoreLocation::Enum certificateStoreLocation,
-            std::wstring const & certificateStoreName,
+            std::string const & certificateStoreName,
             std::shared_ptr<X509FindValue> const & findValue,
             _Out_ Common::DateTime & expiration);
 
         static Common::ErrorCode GetCertificateExpiration(
             X509StoreLocation::Enum certificateStoreLocation,
-            std::wstring const & certificateStoreName,
-            std::wstring const & findType,
-            std::wstring const & findValue,
+            std::string const & certificateStoreName,
+            std::string const & findType,
+            std::string const & findValue,
             _Out_ Common::DateTime & expiration);
 
         static Common::ErrorCode GetCertificateExpiration(
@@ -93,114 +93,114 @@ namespace Common
 
         static Common::ErrorCode GetCertificateCommonName(
             X509StoreLocation::Enum certificateStoreLocation,
-            std::wstring const & certificateStoreName,
+            std::string const & certificateStoreName,
             std::shared_ptr<X509FindValue> const & findValue,
-            _Out_ std::wstring & commonName);
+            _Out_ std::string & commonName);
 
         static Common::ErrorCode GetCertificateCommonName(
             X509StoreLocation::Enum certificateStoreLocation,
-            std::wstring const & certificateStoreName,
-            std::wstring const & findType,
-            std::wstring const & findValue,
-            _Out_ std::wstring & commonName);
+            std::string const & certificateStoreName,
+            std::string const & findType,
+            std::string const & findValue,
+            _Out_ std::string & commonName);
 
         static Common::ErrorCode GetCertificateCommonName(
             PCCertContext certContext,
-            _Out_ std::wstring & commonName);
+            _Out_ std::string & commonName);
 
         static Common::ErrorCode GetCertificatePrivateKeyFileName(
             X509StoreLocation::Enum certificateStoreLocation,
-            std::wstring const & certificateStoreName,
+            std::string const & certificateStoreName,
             std::shared_ptr<X509FindValue> const & findValue,
-            std::wstring & privateKeyFileName);
+            std::string & privateKeyFileName);
 
         static Common::ErrorCode GetCertificatePrivateKeyFileName(
             X509StoreLocation::Enum certificateStoreLocation,
-            std::wstring const & certificateStoreName,
+            std::string const & certificateStoreName,
             std::shared_ptr<X509FindValue> const & findValue,
-            std::vector<std::wstring> & privateKeyFileName);
+            std::vector<std::string> & privateKeyFileName);
 
         static Common::ErrorCode GetCertificateIssuerThumbprint(
             PCCERT_CONTEXT certContext,
             Thumbprint::SPtr & issuerThumbprint);
 
         static Common::ErrorCode CryptoUtility::GenerateExportableKey(
-            wstring const & keyContainerName,
+            string const & keyContainerName,
             _Out_ SecureString & key);
 
         static Common::ErrorCode CryptoUtility::CreateCertFromKey(
             ByteBuffer const & buffer,
-            wstring const & key,
+            string const & key,
             _Out_ Common::CertContextUPtr & cert);
 
         static Common::ErrorCode CryptoUtility::ImportCertKey(
-            wstring const& keyContainerName,
-            wstring const& key);
+            string const& keyContainerName,
+            string const& key);
 
         static Common::ErrorCode CreateSelfSignedCertificate(
-            std::wstring const & subjectName,
-            std::wstring const & keyContainerName,
+            std::string const & subjectName,
+            std::string const & keyContainerName,
             _Out_ Common::CertContextUPtr & cert);
 
         static Common::ErrorCode CreateSelfSignedCertificate(
-            std::wstring const & subjectName,
+            std::string const & subjectName,
             _Out_ Common::CertContextUPtr & cert);
 
         static Common::ErrorCode CreateSelfSignedCertificate(
-            std::wstring const & subjectName,
+            std::string const & subjectName,
             Common::DateTime expiration,
             _Out_ Common::CertContextUPtr & cert);
 
         static Common::ErrorCode CreateSelfSignedCertificate(
-            std::wstring const & subjectName,
-            const std::vector<std::wstring> *subjectAltNames,
+            std::string const & subjectName,
+            const std::vector<std::string> *subjectAltNames,
             DateTime expiration,
-            std::wstring const & keyContainerName,
+            std::string const & keyContainerName,
             _Out_ CertContextUPtr & cert);
 
         static Common::ErrorCode CreateSelfSignedCertificate(
-            std::wstring const & subjectName,
+            std::string const & subjectName,
             Common::DateTime expiration,
-            std::wstring const & keyContainerName,
+            std::string const & keyContainerName,
             _Out_ Common::CertContextUPtr & cert);
 
         static Common::ErrorCode InstallCertificate(
             CertContextUPtr & certContext,
             X509StoreLocation::Enum certificateStoreLocation = X509Default::StoreLocation(),
-            std::wstring const & certificateStoreName = X509Default::StoreName());
+            std::string const & certificateStoreName = X509Default::StoreName());
 
         static Common::ErrorCode UninstallCertificate(
             X509StoreLocation::Enum certStoreLocation,
-            std::wstring const & certStoreName,
+            std::string const & certStoreName,
             std::shared_ptr<X509FindValue> const & findValue,
-            std::wstring const & keyContainerFilePath = L"");
+            std::string const & keyContainerFilePath = "");
 
         static Common::ErrorCode EncryptText(
-            std::wstring const & plainText,
-            std::wstring const & certThumbPrint,
-            std::wstring const & certStoreName,
+            std::string const & plainText,
+            std::string const & certThumbPrint,
+            std::string const & certStoreName,
             X509StoreLocation::Enum certStoreLocation,
             _In_opt_ LPCSTR algorithmOid,
-            _Out_ std::wstring & encryptedText);
+            _Out_ std::string & encryptedText);
 
         static Common::ErrorCode EncryptText(
-            std::wstring const & plainText,
-            std::wstring const & certFilePath,
+            std::string const & plainText,
+            std::string const & certFilePath,
             _In_opt_ LPCSTR algorithmOid,
-            _Out_ std::wstring & encryptedText);
+            _Out_ std::string & encryptedText);
 
         static Common::ErrorCode EncryptText(
-            std::wstring const & plainText,
+            std::string const & plainText,
             PCCertContext certContext,
             _In_opt_ LPCSTR algorithmOid,
-            _Out_ std::wstring & encryptedText);
+            _Out_ std::string & encryptedText);
 
         static Common::ErrorCode DecryptText(
-            std::wstring const & encryptedText,
+            std::string const & encryptedText,
             _Out_ SecureString & decryptedText);
 
         static Common::ErrorCode DecryptText(
-            std::wstring const & encryptedText,
+            std::string const & encryptedText,
             X509StoreLocation::Enum certStoreLocation,
             _Out_ SecureString & decryptedText);
 
@@ -212,28 +212,28 @@ namespace Common
             _Out_ ByteBuffer & signedMessage);
 
         static Common::ErrorCode SignMessage(
-            std::wstring const & message,
+            std::string const & message,
             CertContextUPtr const & certContext,
             _Out_ ByteBuffer & signedMessage);
 
         #if !defined(PLATFORM_UNIX)
-        static Common::ErrorCode VerifyEmbeddedSignature(std::wstring const & fileName);
+        static Common::ErrorCode VerifyEmbeddedSignature(std::string const & fileName);
         #endif
 
-        static Common::ErrorCode CreateAndACLPasswordFile(std::wstring const & passwordFilePath, SecureString & password, vector<wstring> const & machineAccountNamesForACL);
+        static Common::ErrorCode CreateAndACLPasswordFile(std::string const & passwordFilePath, SecureString & password, vector<string> const & machineAccountNamesForACL);
         static Common::ErrorCode GenerateRandomString(_Out_ SecureString & password);
-        static void Base64StringToBytes(std::wstring const & encryptedValue, ByteBuffer & buffer);
-        static std::wstring BytesToBase64String(BYTE const* bytesToEncode, unsigned int length);
-        static std::wstring CertToBase64String(CertContextUPtr const & cert);
+        static void Base64StringToBytes(std::string const & encryptedValue, ByteBuffer & buffer);
+        static std::string BytesToBase64String(BYTE const* bytesToEncode, unsigned int length);
+        static std::string CertToBase64String(CertContextUPtr const & cert);
 
     private:
-        static bool IsBase64(WCHAR c);
-        static Common::ErrorCode GetKnownFolderName(int csidl, std::wstring const & relativePath, std::wstring & folderName);
+        static bool IsBase64(char c);
+        static Common::ErrorCode GetKnownFolderName(int csidl, std::string const & relativePath, std::string & folderName);
 
         #if !defined(PLATFORM_UNIX)
         static Common::ErrorCode GetCertificatePrivateKeyFileName(
             CertContextUPtr const & certContext, 
-            std::wstring & privateKeyFileName);
+            std::string & privateKeyFileName);
         #endif
         static Common::ErrorCode GetCertificateByExtension(
             HCERTSTORE certStore,
@@ -250,7 +250,7 @@ namespace Common
 
         static ErrorCode GetAllCertificates(
             X509StoreLocation::Enum certificateStoreLocation,
-            std::wstring const & certificateStoreName,
+            std::string const & certificateStoreName,
             DWORD storeOpenFlag,
             _Out_ std::vector<std::string> & certFiles);
 
@@ -278,7 +278,7 @@ namespace Common
         void TryRemoveError(Thumbprint const & cert, uint certChainFlagsUsed);
         void Update(Thumbprint const & cert, CertContext const* certContext, uint certChainFlagsUsed, bool onlyCrlOfflineEncountered, bool matched);
 
-        using HealthReportCallback = std::function<void(size_t errCount, std::wstring const & description)>;
+        using HealthReportCallback = std::function<void(size_t errCount, std::string const & description)>;
         void SetHealthReportCallback(HealthReportCallback const & callback);
 
         struct ErrorRecord
@@ -298,8 +298,8 @@ namespace Common
 
     private:
         void PurgeExpired_LockHeld(StopwatchTime now);
-        void GetHealthReport_LockHeld(size_t & errCount, std::wstring & description); 
-        void ReportHealth_LockHeld(size_t errCount, std::wstring const & description);
+        void GetHealthReport_LockHeld(size_t & errCount, std::string & description); 
+        void ReportHealth_LockHeld(size_t errCount, std::string const & description);
         void CleanUp();
         void ScheduleCleanup();
 
@@ -321,20 +321,20 @@ namespace Common
 
     public:
         InstallTestCertInScope(
-            std::wstring const & subjectName = L"", // a guid common name will be generated
-            const std::vector<std::wstring> *subjectAltNames = nullptr, // No Alt name extension added if it is null or empty.
+            std::string const & subjectName = "", // a guid common name will be generated
+            const std::vector<std::string> *subjectAltNames = nullptr, // No Alt name extension added if it is null or empty.
             TimeSpan expiration = DefaultCertExpiry(),
-            std::wstring const & storeName = X509Default::StoreName(),
-            std::wstring const & keyContainerName = L"",
+            std::string const & storeName = X509Default::StoreName(),
+            std::string const & keyContainerName = "",
             X509StoreLocation::Enum storeLocation = X509Default::StoreLocation());
 
         InstallTestCertInScope(
             bool install,
-            std::wstring const & subjectName = L"", // a guid common name will be generated
-            const std::vector<std::wstring> *subjectAltNames = nullptr, // No Alt name extension added if it is null or empty.
+            std::string const & subjectName = "", // a guid common name will be generated
+            const std::vector<std::string> *subjectAltNames = nullptr, // No Alt name extension added if it is null or empty.
             TimeSpan expiration = DefaultCertExpiry(),
-            std::wstring const & storeName = X509Default::StoreName(),
-            std::wstring const & keyContainerName = L"",
+            std::string const & storeName = X509Default::StoreName(),
+            std::string const & keyContainerName = "",
             X509StoreLocation::Enum storeLocation = X509Default::StoreLocation());
 
         ~InstallTestCertInScope();
@@ -350,8 +350,8 @@ namespace Common
 #endif
 
         Thumbprint::SPtr const & Thumbprint() const;
-        std::wstring const & SubjectName() const;
-        std::wstring const & StoreName() const;
+        std::string const & SubjectName() const;
+        std::string const & StoreName() const;
         X509StoreLocation::Enum StoreLocation() const;
 
         CertContextUPtr DetachCertContext();
@@ -360,11 +360,11 @@ namespace Common
         static TimeSpan DefaultCertExpiry();
 
     private:
-        std::wstring const subjectName_;
-        std::wstring const storeName_;
+        std::string const subjectName_;
+        std::string const storeName_;
         X509StoreLocation::Enum const storeLocation_;
         CertContextUPtr certContext_;
-        std::wstring keyContainerFilePath_;
+        std::string keyContainerFilePath_;
         Thumbprint::SPtr thumbprint_;
         bool uninstallOnDestruction_;
     };

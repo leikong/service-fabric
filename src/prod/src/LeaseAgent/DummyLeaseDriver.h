@@ -42,7 +42,7 @@ Nothing.
 typedef VOID
     (WINAPI *Dummy_LEASING_APPLICATION_LEASE_ESTABLISHED_CALLBACK)(
     __in HANDLE leaseHandle,
-    __in LPCWSTR RemoteLeasingApplicationIdentifier,
+    __in LPCSTR RemoteLeasingApplicationIdentifier,
     __in PVOID Context
     );
 
@@ -61,7 +61,7 @@ Return Value: Nothing.
 
 typedef VOID
     (WINAPI *Dummy_REMOTE_LEASING_APPLICATION_EXPIRED_CALLBACK)(
-    __in LPCWSTR RemoteLeasingApplicationIdentifier,
+    __in LPCSTR RemoteLeasingApplicationIdentifier,
     __in PVOID Context
     );
 
@@ -84,7 +84,7 @@ typedef VOID
     __in HANDLE localApplicationHandle,
     __in LONGLONG localInstance,
     __in LONG localTTL,
-    __in LPCWSTR remoteSocketAddress,
+    __in LPCSTR remoteSocketAddress,
     __in LONGLONG remoteInstance,
     __in LONG remoteTTL,
     __in PVOID context
@@ -114,8 +114,8 @@ to retrieve the actual error that occured.
 --*/
 HANDLE WINAPI 
     Dummy_RegisterLeasingApplication(
-    __in LPCWSTR SocketAddress,
-    __in LPCWSTR LeasingApplicationIdentifier,
+    __in LPCSTR SocketAddress,
+    __in LPCSTR LeasingApplicationIdentifier,
     __in PLEASE_CONFIG_DURATIONS leaseConfigDurations,
     __in LONG, // LeaseSuspendDurationMilliseconds
     __in LONG, // ArbitrationDurationMilliseconds
@@ -166,8 +166,8 @@ to retrieve the actual error that occured.
 HANDLE WINAPI 
     Dummy_EstablishLease(
     __in HANDLE LeasingApplication,
-    __in LPCWSTR RemoteApplicationIdentifier,
-    __in LPCWSTR RemoteSocketAddress,
+    __in LPCSTR RemoteApplicationIdentifier,
+    __in LPCSTR RemoteSocketAddress,
     __in LONGLONG RemoteLeaseAgentInstanceId
     );
 
@@ -241,7 +241,7 @@ TRUE if arguments are valid, FALSE otherwise.
 BOOL WINAPI
 Dummy_GetRemoteLeaseExpirationTime(
     __in HANDLE LeasingApplication,
-    __in LPCWSTR RemoteApplicationIdentifier,
+    __in LPCSTR RemoteApplicationIdentifier,
     __out PLONG MonitorExpireTTL,
     __out PLONG SubjectExpireTTL
     );
@@ -276,7 +276,7 @@ BOOL WINAPI
     Dummy_CompleteArbitrationSuccessProcessing(
     __in HANDLE localApplicationHandle,
     LONGLONG localInstance,
-    __in LPCWSTR remoteSocketAddress,
+    __in LPCSTR remoteSocketAddress,
     LONGLONG remoteInstance,
     LONG localTTL,
     LONG remoteTTL
@@ -293,7 +293,7 @@ TRUE if arguments are valid, FALSE otherwise.
 --*/
 BOOL WINAPI
     Dummy_DeleteRegisteredApplication(
-    __in LPCWSTR LeasingApplicationIdentifier
+    __in LPCSTR LeasingApplicationIdentifier
     );
 
 /*++
@@ -306,7 +306,7 @@ TRUE if arguments are valid, FALSE otherwise.
 --*/
 BOOL WINAPI
     Dummy_FaultLeaseAgent(
-    __in LPCWSTR LocalSocketAddress
+    __in LPCSTR LocalSocketAddress
     );
 
-std::wstring Dummy_DumpLeases();
+std::string Dummy_DumpLeases();

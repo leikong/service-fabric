@@ -11,10 +11,10 @@ namespace Transport
     {
     public:
         ListenInstance();
-        ListenInstance(std::wstring const & address, uint64 instance, Common::Guid const & nonce);
+        ListenInstance(std::string const & address, uint64 instance, Common::Guid const & nonce);
 
-        void SetAddress(std::wstring const & address) { address_ = address; }
-        std::wstring const & Address() const { return address_; }
+        void SetAddress(std::string const & address) { address_ = address; }
+        std::string const & Address() const { return address_; }
 
         uint64 Instance() const { return instance_; }
         void SetInstance(uint64 instance);
@@ -42,7 +42,7 @@ namespace Transport
         FABRIC_FIELDS_03(address_, instance_, nonce_);
 
     private:
-        std::wstring address_;
+        std::string address_;
         uint64 instance_;
         Common::Guid nonce_;
     };

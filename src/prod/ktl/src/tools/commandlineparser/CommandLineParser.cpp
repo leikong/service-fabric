@@ -8,7 +8,7 @@
 #include "NtstrSafe.h"
 #endif
 
-     void Parameter::InsertValue(LPCWSTR Token)
+     void Parameter::InsertValue(LPCSTR Token)
      {
          NTSTATUS Status;
 
@@ -21,7 +21,7 @@
          size_t result;
          hr = SizeTAdd(nLen, 1, &result);
          KInvariant(SUCCEEDED(hr));
-         wchar_t* pTmp = _new(KTL_TAG_CMDLINE, _Allocator) wchar_t [result];
+         char* pTmp = _new(KTL_TAG_CMDLINE, _Allocator) char [result];
          RtlStringCchCopyW(pTmp, nLen+1, Token);
          _Values[_ValueCount++] = pTmp;
      }
@@ -42,9 +42,9 @@
     //
     // This overload parses the type of command-line received from main()
     // 
-    BOOLEAN CmdLineParser::Parse(int Argc, __in_ecount(Argc ) wchar_t* Argv[])
+    BOOLEAN CmdLineParser::Parse(int Argc, __in_ecount(Argc ) char* Argv[])
     {
-        LPWSTR pszTemp;
+        LPSTR pszTemp;
         HRESULT hr;
 
         size_t TotalRequired = 0;
@@ -68,13 +68,13 @@
 
         hr = SizeTAdd(TotalRequired, 1, &TotalRequired);
         KInvariant(SUCCEEDED(hr));
-        pszTemp = _new(KTL_TAG_CMDLINE, _Allocator) wchar_t [ TotalRequired];
+        pszTemp = _new(KTL_TAG_CMDLINE, _Allocator) char [ TotalRequired];
         *pszTemp = 0;
 
         for (int i = 0; i < Argc; i++)
         {
             RtlStringCchCatW(pszTemp, TotalRequired, Argv[i]);
-            RtlStringCchCatW(pszTemp, TotalRequired, L" ");
+            RtlStringCchCatW(pszTemp, TotalRequired, " ");
         }
 
         BOOLEAN Res = Parse(pszTemp);
@@ -87,7 +87,7 @@
     // This overload parses a raw string.  The string must be
     // NULL-terminated.
     //
-    //BOOLEAN Parse(wchar_t* RawString); 
+    //BOOLEAN Parse(char* RawString); 
     
     // Reset
     //
@@ -110,7 +110,7 @@
     //
     // The message is statically allocated and does not need to be freed.
     //
-    BOOLEAN CmdLineParser::GetErrorInfo(ULONG *CharPos, __out LPWSTR* Message)
+    BOOLEAN CmdLineParser::GetErrorInfo(ULONG *CharPos, __out LPSTR* Message)
     {
         *Message = _ErrorMsg;
         *CharPos = _CharPos;
@@ -137,9 +137,9 @@
 
     // Functions
 
-    wchar_t   CmdLineParser::PeekChar() { return *_Src; }
+    char   CmdLineParser::PeekChar() { return *_Src; }
     BOOLEAN   CmdLineParser::EndOfInput() { return *_Src ? FALSE: TRUE; }
-    wchar_t*  CmdLineParser::CurrentLoc() { return _Src; }
+    char*  CmdLineParser::CurrentLoc() { return _Src; }
     
     BOOLEAN CmdLineParser::EmitParam() 
     {
@@ -148,13 +148,13 @@
         Status = RtlStringCchLengthW(_TokenBuffer, MaxTokenBuffer, &Len);
         if (!NT_SUCCESS(Status )|| Len > MaxParameterNameLength)
         {
-            _ErrorMsg = (LPWSTR) _Msg_ParameterNameTooLong;
+            _ErrorMsg = (LPSTR) _Msg_ParameterNameTooLong;
             return FALSE;
         }
 
         if (_ParamCount == MaxParameters)
         {
-            _ErrorMsg = (LPWSTR) _Msg_TooManyParameters;
+            _ErrorMsg = (LPSTR) _Msg_TooManyParameters;
             return FALSE;
         }
         _Params[_ParamCount] = _new(KTL_TAG_CMDLINE, _Allocator) Parameter(_Allocator);
@@ -186,7 +186,7 @@
     }
 
 
-    void CmdLineParser::AppendValue(wchar_t c) 
+    void CmdLineParser::AppendValue(char c) 
     {
        _TokenBuffer[_TokenBufferPos++] = c;
        _TokenBuffer[_TokenBufferPos] = 0;
@@ -199,13 +199,13 @@
         Status = RtlStringCchLengthW(_TokenBuffer, MaxTokenBuffer, &Len);
         if (!NT_SUCCESS(Status ) || Len > MaxValueLength)
         {
-            _ErrorMsg = (LPWSTR) _Msg_ValueTooLong;
+            _ErrorMsg = (LPSTR) _Msg_ValueTooLong;
             return FALSE;
         }
 
         if (_Params[_ParamCount-1]->_ValueCount == MaxValuesPerParam)
         {
-            _ErrorMsg = (LPWSTR) _Msg_TooManyValues;
+            _ErrorMsg = (LPSTR) _Msg_TooManyValues;
             return FALSE;
         }
 
@@ -214,7 +214,7 @@
         return TRUE;
     }
 
-    wchar_t CmdLineParser::NextChar()
+    char CmdLineParser::NextChar()
     {
         if (!*_Src) return 0; // End of input
         _CharPos++;
@@ -230,19 +230,19 @@
     }
 
 
-const wchar_t* CmdLineParser::_Msg_InvalidSwitchIdent   = L"Invalid switch character : must be alphanumeric or _";
-const wchar_t* CmdLineParser::_Msg_MissingSwitchIdent   = L"Missing switch identifier character : must be alphanumeric or _";
-const wchar_t* CmdLineParser::_Msg_ExpectingSwitch      = L"Expecting a parameter switch: - or /";
-const wchar_t* CmdLineParser::_Msg_UnterminatedString   = L"Unterminated string";
-const wchar_t* CmdLineParser::_Msg_NullString           = L"Null String";
-const wchar_t* CmdLineParser::_Msg_TooManyParameters    = L"Too many parameters";
-const wchar_t* CmdLineParser::_Msg_TooManyValues        = L"Too many values for the parameter";
-const wchar_t* CmdLineParser::_Msg_ParameterNameTooLong = L"Parameter name too long";
-const wchar_t* CmdLineParser::_Msg_ValueTooLong         = L"Parameter value too long";
+const char* CmdLineParser::_Msg_InvalidSwitchIdent   = "Invalid switch character : must be alphanumeric or _";
+const char* CmdLineParser::_Msg_MissingSwitchIdent   = "Missing switch identifier character : must be alphanumeric or _";
+const char* CmdLineParser::_Msg_ExpectingSwitch      = "Expecting a parameter switch: - or /";
+const char* CmdLineParser::_Msg_UnterminatedString   = "Unterminated string";
+const char* CmdLineParser::_Msg_NullString           = "Null String";
+const char* CmdLineParser::_Msg_TooManyParameters    = "Too many parameters";
+const char* CmdLineParser::_Msg_TooManyValues        = "Too many values for the parameter";
+const char* CmdLineParser::_Msg_ParameterNameTooLong = "Parameter name too long";
+const char* CmdLineParser::_Msg_ValueTooLong         = "Parameter value too long";
 
 
 
-BOOLEAN CmdLineParser::Parse(__in_opt LPWSTR RawString)
+BOOLEAN CmdLineParser::Parse(__in_opt LPSTR RawString)
 {
     // This parser models a simple DFA, and the enum holds the current 'state'.
     //
@@ -262,7 +262,7 @@ BOOLEAN CmdLineParser::Parse(__in_opt LPWSTR RawString)
 
     if (!RawString)
     {
-        _ErrorMsg = (LPWSTR) _Msg_NullString;
+        _ErrorMsg = (LPSTR) _Msg_NullString;
         return FALSE;
     }
 
@@ -289,7 +289,7 @@ BOOLEAN CmdLineParser::Parse(__in_opt LPWSTR RawString)
 
         // Recognize a command line switch start
         case eSwitch:
-            if (PeekChar() == L'/' || PeekChar() == '-')
+            if (PeekChar() == '/' || PeekChar() == '-')
             {
                 eState = eSwitchIdentStart;
                 NextChar();
@@ -298,7 +298,7 @@ BOOLEAN CmdLineParser::Parse(__in_opt LPWSTR RawString)
             else
             {
                 eState = eError;
-                _ErrorMsg = (LPWSTR) _Msg_ExpectingSwitch;
+                _ErrorMsg = (LPSTR) _Msg_ExpectingSwitch;
                 continue;
             }
 
@@ -307,13 +307,13 @@ BOOLEAN CmdLineParser::Parse(__in_opt LPWSTR RawString)
             if (EndOfInput())
             {
                 eState = eError;
-                _ErrorMsg = (LPWSTR) _Msg_MissingSwitchIdent;
+                _ErrorMsg = (LPSTR) _Msg_MissingSwitchIdent;
                 continue;
             }
             if (! (iswalpha(PeekChar()) || PeekChar() == '_'))
             {
                 eState = eError;
-                _ErrorMsg = (LPWSTR) _Msg_InvalidSwitchIdent;
+                _ErrorMsg = (LPSTR) _Msg_InvalidSwitchIdent;
                 continue;
             }
             eState = eSwitchIdent;
@@ -361,7 +361,7 @@ BOOLEAN CmdLineParser::Parse(__in_opt LPWSTR RawString)
 
             // Otherwise, some kind of error
             eState = eError;
-            _ErrorMsg = (LPWSTR) _Msg_InvalidSwitchIdent;
+            _ErrorMsg = (LPSTR) _Msg_InvalidSwitchIdent;
             continue;
 
         // We have recognized a full switch and its name, but don't know
@@ -375,7 +375,7 @@ BOOLEAN CmdLineParser::Parse(__in_opt LPWSTR RawString)
             }
 
             // If we are back to recognizing switches
-            if (PeekChar() == L'/' || PeekChar() == L'-')
+            if (PeekChar() == '/' || PeekChar() == '-')
             {
                 eState = eSwitch;
                 continue;
@@ -389,7 +389,7 @@ BOOLEAN CmdLineParser::Parse(__in_opt LPWSTR RawString)
             }
 
             // Ah, we are entering a quoted string
-            if (PeekChar() == L'"')
+            if (PeekChar() == '"')
             {
                 eState = eDoubleQuotedString;
                 ResetValueAccumulator();
@@ -398,7 +398,7 @@ BOOLEAN CmdLineParser::Parse(__in_opt LPWSTR RawString)
             }
 
             // Entering a singly quoted string
-            if (PeekChar() == L'\'')
+            if (PeekChar() == '\'')
             {
                 NextChar();
                 ResetValueAccumulator();
@@ -444,11 +444,11 @@ BOOLEAN CmdLineParser::Parse(__in_opt LPWSTR RawString)
             if (EndOfInput())
             {
                 eState = eError;
-                _ErrorMsg = (LPWSTR) _Msg_UnterminatedString;
+                _ErrorMsg = (LPSTR) _Msg_UnterminatedString;
                 break;;
             }
 
-            if (PeekChar() == L'"')
+            if (PeekChar() == '"')
             {
                 eState = ePostIdent;
                 if (!EmitValue())
@@ -467,11 +467,11 @@ BOOLEAN CmdLineParser::Parse(__in_opt LPWSTR RawString)
             if (EndOfInput())
             {
                 eState = eError;
-                _ErrorMsg = (LPWSTR) _Msg_UnterminatedString;
+                _ErrorMsg = (LPSTR) _Msg_UnterminatedString;
                 break;;
             }
 
-            if (PeekChar() == L'\'')
+            if (PeekChar() == '\'')
             {
                 eState = ePostIdent;
                 if (!EmitValue())
@@ -489,7 +489,7 @@ BOOLEAN CmdLineParser::Parse(__in_opt LPWSTR RawString)
 
 
         case ePossibleEscape:
-            if (PeekChar() == L'"')
+            if (PeekChar() == '"')
             {
                 eState = ePostIdent;
                 if (!EmitValue())

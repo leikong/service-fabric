@@ -123,7 +123,7 @@ TestWorkItem::Wait(
 
 NTSTATUS
 KThreadPoolTestX(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     UNREFERENCED_PARAMETER(argc);
@@ -241,7 +241,7 @@ TestNestedWorkItems()
     EventUnregisterMicrosoft_Windows_KTL();
     KAllocator&         allocator = KtlSystem::GlobalNonPagedAllocator();
 
-    auto                Test = ([&] (KThreadPool& ThreadPool, WCHAR* TestName) -> void
+    auto                Test = ([&] (KThreadPool& ThreadPool, CHAR* TestName) -> void
     {
 #if !defined(PLATFORM_UNIX)
         KTestPrintf("Starting: %S\n", TestName);
@@ -272,8 +272,8 @@ TestNestedWorkItems()
 #endif
     });
 
-    Test(KtlSystem::GetDefaultKtlSystem().DefaultSystemThreadPool(), L"KThreadPoolTest: TestNestedWorkItems: DefaultSystemThreadPool");
-    Test(KtlSystem::GetDefaultKtlSystem().DefaultThreadPool(), L"KThreadPoolTest: TestNestedWorkItems: DefaultThreadPool");
+    Test(KtlSystem::GetDefaultKtlSystem().DefaultSystemThreadPool(), "KThreadPoolTest: TestNestedWorkItems: DefaultSystemThreadPool");
+    Test(KtlSystem::GetDefaultKtlSystem().DefaultThreadPool(), "KThreadPoolTest: TestNestedWorkItems: DefaultThreadPool");
 
     EventRegisterMicrosoft_Windows_KTL();
 }
@@ -366,7 +366,7 @@ TestDetachThread()
 {
     EventUnregisterMicrosoft_Windows_KTL();
     KAllocator&         allocator = KtlSystem::GlobalNonPagedAllocator();
-    WCHAR*              testName = L"KThreadPoolTest: TestDetachThread";
+    CHAR*              testName = "KThreadPoolTest: TestDetachThread";
     KThreadPool&        threadPool = allocator.GetKtlSystem().DefaultSystemThreadPool();
     
 #if !defined(PLATFORM_UNIX)
@@ -525,7 +525,7 @@ void TestCoreLoading()
 
 NTSTATUS
 KThreadPoolTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     KTestPrintf("KThreadPoolTest: START\n");

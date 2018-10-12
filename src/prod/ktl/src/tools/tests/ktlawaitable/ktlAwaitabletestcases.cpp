@@ -26,7 +26,7 @@ Abstract:
 
 const KU_TEST_ENTRY gs_KuTestCases[] =
 {
-    {   L"KtlAwaitableTest",            KtlAwaitableTest,         L"BVT", L"Basic KTL awaitable tests"},
+    {   "KtlAwaitableTest",            KtlAwaitableTest,         "BVT", "Basic KTL awaitable tests"},
 };
 
 const ULONG gs_KuTestCasesSize = ARRAYSIZE(gs_KuTestCases);

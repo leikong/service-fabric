@@ -10,7 +10,7 @@ namespace LeaseWrapper
     class LeaseAgentEventSource
     {
     public:
-        Common::TraceEventWriter<std::wstring, std::wstring, uint64> TTL;
+        Common::TraceEventWriter<std::string, std::string, uint64> TTL;
 
         LeaseAgentEventSource() :
             TTL(Common::TraceTaskCodes::LeaseAgent, 10, "TTL", Common::LogLevel::Info, "{0}@{1} lease valid for {2}ms", "app", "addr", "ms")

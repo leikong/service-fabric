@@ -32,7 +32,7 @@ namespace Federation
 
         void OnRoutedBroadcastMessage(__in Transport::MessageUPtr & message, BroadcastHeader && header, RequestReceiverContextUPtr & requestReceiverContext);
 
-        void ProcessBroadcastAck(Transport::MessageId const & contextId, std::wstring const & ringName, NodeIdRange range, Common::ErrorCode error);
+        void ProcessBroadcastAck(Transport::MessageId const & contextId, std::string const & ringName, NodeIdRange range, Common::ErrorCode error);
 
         void ProcessBroadcastLocalAck(Transport::MessageId const & broadcastId, Common::ErrorCode error);
 

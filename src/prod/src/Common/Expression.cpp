@@ -13,29 +13,29 @@ vector<OperatorSPtr>* Expression::CreateOperators()
 {
     vector<OperatorSPtr>* operators = new vector<OperatorSPtr>();
     operators->reserve(16);
-    operators->push_back(make_shared<LiteralOperator>(1, L"("));
-    operators->push_back(make_shared<LiteralOperator>(1, L")"));
-    operators->push_back(make_shared<BooleanOperator>(2, L"||"));
-    operators->push_back(make_shared<BooleanOperator>(3, L"&&"));
-    operators->push_back(make_shared<ComparisonOperator>(4, L"=="));
-    operators->push_back(make_shared<ComparisonOperator>(4, L"!="));
-    operators->push_back(make_shared<ComparisonOperator>(4, L">="));
-    operators->push_back(make_shared<ComparisonOperator>(4, L"<="));
-    operators->push_back(make_shared<ComparisonOperator>(4, L"<"));
-    operators->push_back(make_shared<ComparisonOperator>(4, L">"));
-    operators->push_back(make_shared<ComparisonOperator>(4, L"^P"));
-    operators->push_back(make_shared<ComparisonOperator>(4, L"!^P"));
-    operators->push_back(make_shared<ComparisonOperator>(4, L"^"));
-    operators->push_back(make_shared<ComparisonOperator>(4, L"!^"));
-    operators->push_back(make_shared<ComparisonOperator>(4, L"~"));
-    operators->push_back(make_shared<BooleanOperator>(6, L"!"));
+    operators->push_back(make_shared<LiteralOperator>(1, "("));
+    operators->push_back(make_shared<LiteralOperator>(1, ")"));
+    operators->push_back(make_shared<BooleanOperator>(2, "||"));
+    operators->push_back(make_shared<BooleanOperator>(3, "&&"));
+    operators->push_back(make_shared<ComparisonOperator>(4, "=="));
+    operators->push_back(make_shared<ComparisonOperator>(4, "!="));
+    operators->push_back(make_shared<ComparisonOperator>(4, ">="));
+    operators->push_back(make_shared<ComparisonOperator>(4, "<="));
+    operators->push_back(make_shared<ComparisonOperator>(4, "<"));
+    operators->push_back(make_shared<ComparisonOperator>(4, ">"));
+    operators->push_back(make_shared<ComparisonOperator>(4, "^P"));
+    operators->push_back(make_shared<ComparisonOperator>(4, "!^P"));
+    operators->push_back(make_shared<ComparisonOperator>(4, "^"));
+    operators->push_back(make_shared<ComparisonOperator>(4, "!^"));
+    operators->push_back(make_shared<ComparisonOperator>(4, "~"));
+    operators->push_back(make_shared<BooleanOperator>(6, "!"));
     return operators;
 }
 
 vector<OperatorSPtr>* Expression::operators_ = Expression::CreateOperators();
-OperatorSPtr* Expression::Sentinal = new OperatorSPtr(make_shared<LiteralOperator>(0, L"Dummy"));
+OperatorSPtr* Expression::Sentinal = new OperatorSPtr(make_shared<LiteralOperator>(0, "Dummy"));
 
-ExpressionSPtr Expression::ReadToken(wstring const& expression, size_t & start)
+ExpressionSPtr Expression::ReadToken(string const& expression, size_t & start)
 {
     if (start > expression.size())
     {
@@ -45,8 +45,8 @@ ExpressionSPtr Expression::ReadToken(wstring const& expression, size_t & start)
     size_t i;
     for (i = start; i < expression.size(); i++)
     {
-        wchar_t c = expression[i];
-        if (!((c >= L'A' && c <= L'Z') || (c >= L'a' && c <= 'z') || (c >= L'0' && c <= L'9')))
+        char c = expression[i];
+        if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')))
         {
             size_t j = i;
             if (ReadOperator(expression, j) != nullptr)
@@ -56,7 +56,7 @@ ExpressionSPtr Expression::ReadToken(wstring const& expression, size_t & start)
         }
     }
 
-    wstring token = expression.substr(start, i - start);
+    string token = expression.substr(start, i - start);
     StringUtility::TrimSpaces(token);
     start = i;
     
@@ -68,7 +68,7 @@ ExpressionSPtr Expression::ReadToken(wstring const& expression, size_t & start)
     return make_shared<Expression>(make_shared<LiteralOperator>(5, token));
 }
 
-OperatorSPtr Expression::ReadOperator(wstring const& expression, size_t & start)
+OperatorSPtr Expression::ReadOperator(string const& expression, size_t & start)
 {
 	  for (OperatorSPtr const & op : *operators_)
     {
@@ -101,13 +101,13 @@ bool Expression::Process(stack<ExpressionSPtr> & tokens, stack<OperatorSPtr> & o
     tokens.pop();
 
     result->leftChild_ = tokens.top();
-    if (op->Op != L"!" && result->leftChild_ == nullptr)
+    if (op->Op != "!" && result->leftChild_ == nullptr)
     {
         return false;
     }
 
-    if (op->Op == L"~" && result->leftChild_->IsLiteral && result->rightChild_->IsLiteral 
-        && (result->leftChild_->op_->Op.compare(L"FDPolicy") == 0))
+    if (op->Op == "~" && result->leftChild_->IsLiteral && result->rightChild_->IsLiteral 
+        && (result->leftChild_->op_->Op.compare("FDPolicy") == 0))
     {
         result->FDPolicy_ = result->rightChild_->op_->Op;
     }
@@ -120,8 +120,8 @@ bool Expression::Process(stack<ExpressionSPtr> & tokens, stack<OperatorSPtr> & o
         result->FDPolicy_ = result->rightChild_->FDPolicy;
     }
 
-    if (op->Op == L"~" && result->leftChild_->IsLiteral && result->rightChild_->IsLiteral
-        && (result->leftChild_->op_->Op.compare(L"PlacePolicy") == 0))
+    if (op->Op == "~" && result->leftChild_->IsLiteral && result->rightChild_->IsLiteral
+        && (result->leftChild_->op_->Op.compare("PlacePolicy") == 0))
     {
         result->PlacePolicy_ = result->rightChild_->op_->Op;
     }
@@ -141,11 +141,11 @@ bool Expression::Process(stack<ExpressionSPtr> & tokens, stack<OperatorSPtr> & o
     return true;
 }
 
-ExpressionSPtr Expression::Build(wstring const& expression)
+ExpressionSPtr Expression::Build(string const& expression)
 {
     if (expression.size() == 0)
     {
-        return make_shared<Expression>(make_shared<LiteralOperator>(0, L"true"));
+        return make_shared<Expression>(make_shared<LiteralOperator>(0, "true"));
     }
 
     std::stack<ExpressionSPtr> tokens;
@@ -169,19 +169,19 @@ ExpressionSPtr Expression::Build(wstring const& expression)
         }
         else
         {
-            start = expression.find_first_not_of(L" \t\r\n", start);
+            start = expression.find_first_not_of(" \t\r\n", start);
             OperatorSPtr op = ReadOperator(expression, start);
             if (op == nullptr || op->IsInvalid)
             {
                 return nullptr;
             }
-            if (op->Op == L"(")
+            if (op->Op == "(")
             {
                 operators.push(op);
             }
-            else if (op->Op == L")")
+            else if (op->Op == ")")
             {
-                while (!operators.empty() && operators.top()->Op != L"(")
+                while (!operators.empty() && operators.top()->Op != "(")
                 {
                     if (!Process(tokens, operators))
                     {
@@ -195,7 +195,7 @@ ExpressionSPtr Expression::Build(wstring const& expression)
                 operators.pop();
                 isToken = true;
             }
-            else if (op->Op == L"!")
+            else if (op->Op == "!")
             {
                 operators.push(op);
                 tokens.push(nullptr);
@@ -242,12 +242,12 @@ ExpressionSPtr Expression::Build(wstring const& expression)
     return tokens.top();
 }
 
-OperationResult Expression::Evaluate(map<wstring, wstring> params, bool forPrimary)
+OperationResult Expression::Evaluate(map<string, string> params, bool forPrimary)
 {
     return op_->Evaluate(params, leftChild_, rightChild_, forPrimary);
 }
 
-bool Expression::Evaluate(map<wstring, wstring> params, wstring & error, bool forPrimary)
+bool Expression::Evaluate(map<string, string> params, string & error, bool forPrimary)
 {
     OperationResult result  = Evaluate(params, forPrimary);
     if (result.IsError())
@@ -261,6 +261,6 @@ bool Expression::Evaluate(map<wstring, wstring> params, wstring & error, bool fo
     }
     else 
     {
-        return result.Literal == L"true";
+        return result.Literal == "true";
     }
 }

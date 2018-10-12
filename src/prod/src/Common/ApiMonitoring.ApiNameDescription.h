@@ -29,7 +29,7 @@ namespace Common
             ApiNameDescription(
                 InterfaceName::Enum interfaceName,
                 ApiName::Enum apiName,
-                std::wstring metadata)
+                std::string metadata)
                 : interfaceName_(interfaceName),
                   apiName_(apiName),
                   metadata_(std::move(metadata))
@@ -61,8 +61,8 @@ namespace Common
             __declspec(property(get = get_Interface)) InterfaceName::Enum Interface;
             InterfaceName::Enum get_Interface() const { return interfaceName_; }
 
-            __declspec(property(get = get_Metadata)) std::wstring const & Metadata;
-            std::wstring const & get_Metadata() const { return metadata_; }
+            __declspec(property(get = get_Metadata)) std::string const & Metadata;
+            std::string const & get_Metadata() const { return metadata_; }
 
             __declspec(property(get = get_IsInvalid)) bool IsInvalid;
             bool get_IsInvalid() const { return interfaceName_ == InterfaceName::Invalid; }
@@ -73,14 +73,14 @@ namespace Common
             static std::string AddField(Common::TraceEvent & traceEvent, std::string const & name);
             void FillEventData(Common::TraceEventContext & context) const;
             void WriteTo(Common::TextWriter & writer, Common::FormatOptions const &) const;
-            std::wstring ToString() const;
+            std::string ToString() const;
 
             FABRIC_FIELDS_03(apiName_, interfaceName_, metadata_);
 
         private:
             ApiName::Enum apiName_;
             InterfaceName::Enum interfaceName_;
-            std::wstring metadata_;
+            std::string metadata_;
         };
     }
 }

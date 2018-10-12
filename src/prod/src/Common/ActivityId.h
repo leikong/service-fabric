@@ -55,7 +55,7 @@ namespace Common
         bool operator >= (ActivityId const &) const;
 
         void WriteTo(TextWriter& w, FormatOptions const& f) const;
-        std::wstring ToString() const;
+        std::string ToString() const;
 
         static std::string AddField(TraceEvent & traceEvent, std::string const & name);
         void FillEventData(TraceEventContext & context) const;

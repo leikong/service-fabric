@@ -127,12 +127,6 @@ VariableArgument::VariableArgument(char value)
     value_.valueChar_ = value;
 }
 
-VariableArgument::VariableArgument(wchar_t value)
-    : type_(TypeWChar)
-{
-    value_.valueWChar_ = value;
-}
-
 VariableArgument::VariableArgument(char const* value)
     : type_(TypeString)
 {
@@ -148,33 +142,11 @@ VariableArgument::VariableArgument(char * value)
     value_.valueString_.buffer_ = value;
 }
 
-VariableArgument::VariableArgument(wchar_t const* value)
-    : type_(TypeWString)
-{
-    value_.valueWString_.size_ = wcslen(value);
-    value_.valueWString_.buffer_ = value;
-}
-
-_Use_decl_annotations_
-VariableArgument::VariableArgument(wchar_t * value)
-    : type_(TypeWString)
-{
-    value_.valueWString_.size_ = wcslen(value);
-    value_.valueWString_.buffer_ = value;
-}
-
 VariableArgument::VariableArgument(string const & value)
     : type_(TypeString)
 {
     value_.valueString_.size_ = value.size();
     value_.valueString_.buffer_ = value.c_str();
-}
-
-VariableArgument::VariableArgument(wstring const & value)
-    : type_(TypeWString)
-{
-    value_.valueWString_.size_ = value.size();
-    value_.valueWString_.buffer_ = value.c_str();
 }
 
 VariableArgument::VariableArgument(literal_holder<char> const & value)
@@ -184,18 +156,12 @@ VariableArgument::VariableArgument(literal_holder<char> const & value)
     value_.valueString_.buffer_ = value.begin();
 }
 
-VariableArgument::VariableArgument(literal_holder<wchar_t> const & value)
-    : type_(TypeWString)
-{
-    value_.valueWString_.size_ = value.size();
-    value_.valueWString_.buffer_ = value.begin();
-}
 
-VariableArgument::VariableArgument(GlobalWString const & value)
-    : type_(TypeWString)
+VariableArgument::VariableArgument(GlobalString const & value)
+    : type_(TypeString)
 {
-    value_.valueWString_.size_ = value->size();
-    value_.valueWString_.buffer_ = value->c_str();
+    value_.valueString_.size_ = value->size();
+    value_.valueString_.buffer_ = value->c_str();
 }
 
 VariableArgument::VariableArgument(StringCollection const & value)
@@ -618,14 +584,8 @@ void VariableArgument::WriteTo(TextWriter& w, FormatOptions const & format) cons
     case TypeChar:
         w.WriteBuffer(&value_.valueChar_, 1);
         break;
-    case TypeWChar:
-        w.WriteBuffer(&value_.valueWChar_, 1);
-        break;
     case TypeString:
         w.WriteBuffer(value_.valueString_.buffer_, value_.valueString_.size_);
-        break;
-    case TypeWString:
-        w.WriteBuffer(value_.valueWString_.buffer_, value_.valueWString_.size_);
         break;
     case TypeStringCollection:
         w.Write(TextWritableCollection<StringCollection>(*value_.valueStringCollection_));
@@ -644,13 +604,13 @@ void VariableArgument::WriteTo(TextWriter& w, FormatOptions const & format) cons
         w.Write("{0}.{1:X}", value_.value_FABRIC_EPOCH_->DataLossNumber, value_.value_FABRIC_EPOCH_->ConfigurationNumber);
         break;
     case Type_FABRIC_OPERATION_METADATA:
-        w << value_.value_FABRIC_OPERATION_METADATA_->Type << L"." << value_.value_FABRIC_OPERATION_METADATA_->SequenceNumber;
+        w << value_.value_FABRIC_OPERATION_METADATA_->Type << "." << value_.value_FABRIC_OPERATION_METADATA_->SequenceNumber;
         break;
     case Type_FABRIC_OPERATION_TYPE:
         switch (value_.valueInt64_)
         {
             case FABRIC_OPERATION_TYPE_NORMAL:
-                w << "FABRIC_OPERATION_TYPE_NORMAL";
+                w << "FABRIC_OPERATION_TYPE_NORMA";
                 break;
             default:
                 w << "UNDEFINED FABRIC_OPERATION_TYPE=" << value_.valueInt64_;
@@ -679,7 +639,7 @@ void VariableArgument::WriteTo(TextWriter& w, FormatOptions const & format) cons
         switch (value_.valueInt64_)
         {
             case FABRIC_REPLICA_SET_QUORUM_ALL:
-                w << "FABRIC_REPLICA_SET_QUORUM_ALL";
+                w << "FABRIC_REPLICA_SET_QUORUM_A";
                 break;
             case FABRIC_REPLICA_SET_WRITE_QUORUM:
                 w << "FABRIC_REPLICA_SET_WRITE_QUORUM";
@@ -1007,7 +967,7 @@ void VariableArgument::WriteTo(TextWriter& w, FormatOptions const & format) cons
                 w << "FABRIC_SERVICE_DESCRIPTION_KIND_STATELESS";
                 break;
             case FABRIC_SERVICE_DESCRIPTION_KIND_STATEFUL:
-                w << "FABRIC_SERVICE_DESCRIPTION_KIND_STATEFUL";
+                w << "FABRIC_SERVICE_DESCRIPTION_KIND_STATEFU";
                 break;
             default:
                 w << "UNDEFINED FABRIC_SERVICE_DESCRIPTION_KIND=" << value_.valueInt64_;
@@ -1249,7 +1209,7 @@ void VariableArgument::WriteTo(TextWriter& w, FormatOptions const & format) cons
             break;
 
         case FABRIC_SERVICE_KIND_STATEFUL:
-            w << "FABRIC_SERVICE_KIND_STATEFUL";
+            w << "FABRIC_SERVICE_KIND_STATEFU";
             break;
 
         default:
@@ -1316,7 +1276,7 @@ void VariableArgument::WriteTo(TextWriter& w, FormatOptions const & format) cons
                 w << "FABRIC_PACKAGE_SHARING_POLICY_SCOPE_NONE";
                 break;
             case FABRIC_PACKAGE_SHARING_POLICY_SCOPE_ALL:
-                w << "FABRIC_PACKAGE_SHARING_POLICY_SCOPE_ALL";
+                w << "FABRIC_PACKAGE_SHARING_POLICY_SCOPE_A";
                 break;
             case FABRIC_PACKAGE_SHARING_POLICY_SCOPE_CODE:
                 w << "FABRIC_PACKAGE_SHARING_POLICY_SCOPE_CODE";
@@ -1394,7 +1354,7 @@ void VariableArgument::WriteTo(TextWriter& w, FormatOptions const & format) cons
             w << "FABRIC_ROLLING_UPGRADE_MODE_UNMONITORED_AUTO";
             break;
         case FABRIC_ROLLING_UPGRADE_MODE_UNMONITORED_MANUAL:
-            w << "FABRIC_ROLLING_UPGRADE_MODE_UNMONITORED_MANUAL";
+            w << "FABRIC_ROLLING_UPGRADE_MODE_UNMONITORED_MANUA";
             break;
         case FABRIC_ROLLING_UPGRADE_MODE_MONITORED:
             w << "FABRIC_ROLLING_UPGRADE_MODE_MONITORED";
@@ -1685,10 +1645,10 @@ void VariableArgument::WriteTo(TextWriter& w, FormatOptions const & format) cons
                 w << "FABRIC_DATA_LOSS_MODE_INVALID";
                 break;
             case FABRIC_DATA_LOSS_MODE_PARTIAL:
-                w << "FABRIC_DATA_LOSS_MODE_PARTIAL";
+                w << "FABRIC_DATA_LOSS_MODE_PARTIA";
                 break;
             case FABRIC_DATA_LOSS_MODE_FULL:
-                w << "FABRIC_DATA_LOSS_MODE_FULL";
+                w << "FABRIC_DATA_LOSS_MODE_FU";
                 break;
             default:
                 w << "Undefined FABRIC_DATA_LOSS_MODE = " << value_.valueInt64_;
@@ -1864,7 +1824,7 @@ void VariableArgument::WriteTo(TextWriter& w, FormatOptions const & format) cons
             w << "FABRIC_DIAGNOSTICS_SINKS_KIND_INVALID";
             break;
         case FABRIC_DIAGNOSTICS_SINKS_KIND_AZUREINTERNAL:
-            w << "FABRIC_DIAGNOSTICS_SINKS_KIND_AZUREINTERNAL";
+            w << "FABRIC_DIAGNOSTICS_SINKS_KIND_AZUREINTERNA";
             break;
         default:
             w << "Undefined Type_FABRIC_DIAGNOSTICS_SINKS_KIND = " << value_.valueInt64_;
@@ -1875,37 +1835,37 @@ void VariableArgument::WriteTo(TextWriter& w, FormatOptions const & format) cons
         switch (value_.valueInt64_)
         {
         case ::XmlNodeType_None:
-            w << L"XmlNodeType_None";
+            w << "XmlNodeType_None";
             break;
         case ::XmlNodeType_Element:
-            w << L"XmlNodeType_Element";
+            w << "XmlNodeType_Element";
             break;
         case ::XmlNodeType_Attribute:
-            w << L"XmlNodeType_Attribute";
+            w << "XmlNodeType_Attribute";
             break;
         case ::XmlNodeType_Text:
-            w << L"XmlNodeType_Text";
+            w << "XmlNodeType_Text";
             break;
         case ::XmlNodeType_CDATA:
-            w << L"XmlNodeType_CDATA";
+            w << "XmlNodeType_CDATA";
             break;
         case ::XmlNodeType_ProcessingInstruction:
-            w << L"XmlNodeType_ProcessingInstruction";
+            w << "XmlNodeType_ProcessingInstruction";
             break;
         case ::XmlNodeType_Comment:
-            w << L"XmlNodeType_Comment";
+            w << "XmlNodeType_Comment";
             break;
         case ::XmlNodeType_DocumentType:
-            w << L"XmlNodeType_DocumentType";
+            w << "XmlNodeType_DocumentType";
             break;
         case ::XmlNodeType_Whitespace:
-            w << L"XmlNodeType_Whitespace";
+            w << "XmlNodeType_Whitespace";
             break;
         case ::XmlNodeType_EndElement:
-            w << L"XmlNodeType_EndElement";
+            w << "XmlNodeType_EndElement";
             break;
         case ::XmlNodeType_XmlDeclaration:
-            w << L"XmlNodeType_XmlDeclaration";
+            w << "XmlNodeType_XmlDeclaration";
             break;
         default:
             w << "Unknown XmlNodeType value=" << value_.valueInt64_;

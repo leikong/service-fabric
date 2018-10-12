@@ -334,7 +334,7 @@ namespace Common
                         Trace.WriteInfo(TraceType,
                             "Mismatch: iteration={0} start={1} count={2} index={3} expected={4} actual={5}",
                             iteration, r.Start, r.Count, i, r.Start+i, *bi);
-                        throw L"BiqueRangeTest: data stored in BiqueRange did not match expected.";
+                        throw "BiqueRangeTest: data stored in BiqueRange did not match expected.";
                     }
                     ++bi;
                 }

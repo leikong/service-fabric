@@ -356,7 +356,7 @@ EXTERN_C const IID IID_IFabricStringResult;
     IFabricStringResult : public IUnknown
     {
     public:
-        virtual LPCWSTR STDMETHODCALLTYPE get_String( void) = 0;
+        virtual LPCSTR STDMETHODCALLTYPE get_String( void) = 0;
         
     };
     
@@ -379,7 +379,7 @@ EXTERN_C const IID IID_IFabricStringResult;
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IFabricStringResult * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_String )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_String )( 
             IFabricStringResult * This);
         
         END_INTERFACE
@@ -436,7 +436,7 @@ EXTERN_C const IID IID_IFabricStringListResult;
     public:
         virtual HRESULT STDMETHODCALLTYPE GetStrings( 
             /* [out] */ ULONG *itemCount,
-            /* [retval][out] */ const LPCWSTR **bufferedItems) = 0;
+            /* [retval][out] */ const LPCSTR **bufferedItems) = 0;
         
     };
     
@@ -462,7 +462,7 @@ EXTERN_C const IID IID_IFabricStringListResult;
         HRESULT ( STDMETHODCALLTYPE *GetStrings )( 
             IFabricStringListResult * This,
             /* [out] */ ULONG *itemCount,
-            /* [retval][out] */ const LPCWSTR **bufferedItems);
+            /* [retval][out] */ const LPCSTR **bufferedItems);
         
         END_INTERFACE
     } IFabricStringListResultVtbl;
@@ -591,32 +591,32 @@ EXTERN_C const IID IID_IFabricGetReplicatorStatusResult;
     /* [retval][out] */ __RPC__deref_out_opt IFabricStringResult **message);
 
 /* [entry] */ HRESULT FabricEncryptText( 
-    /* [in] */ __RPC__in LPCWSTR text,
-    /* [in] */ __RPC__in LPCWSTR certThumbprint,
-    /* [in] */ __RPC__in LPCWSTR certStoreName,
+    /* [in] */ __RPC__in LPCSTR text,
+    /* [in] */ __RPC__in LPCSTR certThumbprint,
+    /* [in] */ __RPC__in LPCSTR certStoreName,
     /* [in] */ FABRIC_X509_STORE_LOCATION certStoreLocation,
     /* [in] */ __RPC__in LPCSTR algorithmOid,
     /* [retval][out] */ __RPC__deref_out_opt IFabricStringResult **encryptedValue);
 
 /* [entry] */ HRESULT FabricEncryptText2( 
-    /* [in] */ __RPC__in LPCWSTR text,
-    /* [in] */ __RPC__in LPCWSTR certFilePath,
+    /* [in] */ __RPC__in LPCSTR text,
+    /* [in] */ __RPC__in LPCSTR certFilePath,
     /* [in] */ __RPC__in LPCSTR algorithmOid,
     /* [retval][out] */ __RPC__deref_out_opt IFabricStringResult **encryptedValue);
 
 /* [entry] */ HRESULT FabricDecryptText( 
-    /* [in] */ __RPC__in LPCWSTR encryptedText,
+    /* [in] */ __RPC__in LPCSTR encryptedText,
     /* [in] */ FABRIC_X509_STORE_LOCATION certStoreLocation,
     /* [retval][out] */ __RPC__deref_out_opt IFabricStringResult **decryptedText);
 
 /* [entry] */ HRESULT FabricEncryptValue( 
-    /* [in] */ __RPC__in LPCWSTR certThumbprint,
-    /* [in] */ __RPC__in LPCWSTR certStoreName,
-    /* [in] */ __RPC__in LPCWSTR text,
+    /* [in] */ __RPC__in LPCSTR certThumbprint,
+    /* [in] */ __RPC__in LPCSTR certStoreName,
+    /* [in] */ __RPC__in LPCSTR text,
     /* [retval][out] */ __RPC__deref_out_opt IFabricStringResult **encryptedValue);
 
 /* [entry] */ HRESULT FabricDecryptValue( 
-    /* [in] */ __RPC__in LPCWSTR encryptedValue,
+    /* [in] */ __RPC__in LPCSTR encryptedValue,
     /* [retval][out] */ __RPC__deref_out_opt IFabricStringResult **decryptedValue);
 
 #endif /* __FabricCommonModule_MODULE_DEFINED__ */

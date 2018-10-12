@@ -16,7 +16,7 @@ extern "C" {
 // 46
 NET_API_STATUS NET_API_FUNCTION
 NetUserAdd (
-    IN  LPCWSTR     servername OPTIONAL,
+    IN  LPCSTR     servername OPTIONAL,
     IN  DWORD      level,
     IN  LPBYTE     buf,
     OUT LPDWORD    parm_err OPTIONAL
@@ -24,16 +24,16 @@ NetUserAdd (
 
 NET_API_STATUS NET_API_FUNCTION
 NetUserGetInfo (
-    IN  LPCWSTR     servername OPTIONAL,
-    IN  LPCWSTR     username,
+    IN  LPCSTR     servername OPTIONAL,
+    IN  LPCSTR     username,
     IN  DWORD      level,
     OUT LPBYTE     *bufptr
     );
 
 NET_API_STATUS NET_API_FUNCTION
 NetUserSetInfo (
-    IN  LPCWSTR    servername OPTIONAL,
-    IN  LPCWSTR    username,
+    IN  LPCSTR    servername OPTIONAL,
+    IN  LPCSTR    username,
     IN  DWORD     level,
     IN  LPBYTE    buf,
     OUT LPDWORD   parm_err OPTIONAL
@@ -41,14 +41,14 @@ NetUserSetInfo (
 
 NET_API_STATUS NET_API_FUNCTION
 NetUserDel (
-    IN  LPCWSTR    servername OPTIONAL,
-    IN  LPCWSTR    username
+    IN  LPCSTR    servername OPTIONAL,
+    IN  LPCSTR    username
     );
 
 NET_API_STATUS NET_API_FUNCTION
 NetUserGetLocalGroups (
-    IN  LPCWSTR    servername OPTIONAL,
-    IN  LPCWSTR    username,
+    IN  LPCSTR    servername OPTIONAL,
+    IN  LPCSTR    username,
     IN  DWORD     level,
     IN  DWORD     flags,
     OUT LPBYTE    *bufptr,
@@ -58,12 +58,12 @@ NetUserGetLocalGroups (
     );
 
 typedef struct _LOCALGROUP_INFO_1 {
-    LPWSTR   lgrpi1_name;
-    LPWSTR   lgrpi1_comment;
+    LPSTR   lgrpi1_name;
+    LPSTR   lgrpi1_comment;
 }LOCALGROUP_INFO_1, *PLOCALGROUP_INFO_1, *LPLOCALGROUP_INFO_1;
 
 typedef struct _LOCALGROUP_INFO_1002 {
-     LPWSTR  lgrpi1002_comment;
+     LPSTR  lgrpi1002_comment;
 }LOCALGROUP_INFO_1002, *PLOCALGROUP_INFO_1002, *LPLOCALGROUP_INFO_1002;
 
 typedef struct _LOCALGROUP_MEMBERS_INFO_0 {
@@ -74,45 +74,45 @@ typedef struct _LOCALGROUP_MEMBERS_INFO_0 {
 typedef struct _LOCALGROUP_MEMBERS_INFO_1 {
      PSID         lgrmi1_sid;
      SID_NAME_USE lgrmi1_sidusage;
-     LPWSTR       lgrmi1_name;
+     LPSTR       lgrmi1_name;
 } LOCALGROUP_MEMBERS_INFO_1, *PLOCALGROUP_MEMBERS_INFO_1,
   *LPLOCALGROUP_MEMBERS_INFO_1;
 
 typedef struct _LOCALGROUP_MEMBERS_INFO_3 {
-     LPWSTR       lgrmi3_domainandname;
+     LPSTR       lgrmi3_domainandname;
 } LOCALGROUP_MEMBERS_INFO_3, *PLOCALGROUP_MEMBERS_INFO_3,
   *LPLOCALGROUP_MEMBERS_INFO_3;
 
 typedef struct _LOCALGROUP_USERS_INFO_0 {
-     LPWSTR  lgrui0_name;
+     LPSTR  lgrui0_name;
 } LOCALGROUP_USERS_INFO_0, *PLOCALGROUP_USERS_INFO_0,
   *LPLOCALGROUP_USERS_INFO_0;
 
 typedef struct _USER_INFO_1 {
-    LPWSTR   usri1_name;
-    LPWSTR   usri1_password;
+    LPSTR   usri1_name;
+    LPSTR   usri1_password;
     DWORD    usri1_password_age;
     DWORD    usri1_priv;
-    LPWSTR   usri1_home_dir;
-    LPWSTR   usri1_comment;
+    LPSTR   usri1_home_dir;
+    LPSTR   usri1_comment;
     DWORD    usri1_flags;
-    LPWSTR   usri1_script_path;
+    LPSTR   usri1_script_path;
 }USER_INFO_1, *PUSER_INFO_1, *LPUSER_INFO_1;
 
 typedef struct _USER_INFO_4 {
-    LPWSTR   usri4_name;
-    LPWSTR   usri4_password;
+    LPSTR   usri4_name;
+    LPSTR   usri4_password;
     DWORD    usri4_password_age;
     DWORD    usri4_priv;
-    LPWSTR   usri4_home_dir;
-    LPWSTR   usri4_comment;
+    LPSTR   usri4_home_dir;
+    LPSTR   usri4_comment;
     DWORD    usri4_flags;
-    LPWSTR   usri4_script_path;
+    LPSTR   usri4_script_path;
     DWORD    usri4_auth_flags;
-    LPWSTR   usri4_full_name;
-    LPWSTR   usri4_usr_comment;
-    LPWSTR   usri4_parms;
-    LPWSTR   usri4_workstations;
+    LPSTR   usri4_full_name;
+    LPSTR   usri4_usr_comment;
+    LPSTR   usri4_parms;
+    LPSTR   usri4_workstations;
     DWORD    usri4_last_logon;
     DWORD    usri4_last_logoff;
     DWORD    usri4_acct_expires;
@@ -121,18 +121,18 @@ typedef struct _USER_INFO_4 {
     PBYTE    usri4_logon_hours;
     DWORD    usri4_bad_pw_count;
     DWORD    usri4_num_logons;
-    LPWSTR   usri4_logon_server;
+    LPSTR   usri4_logon_server;
     DWORD    usri4_country_code;
     DWORD    usri4_code_page;
     PSID     usri4_user_sid;
     DWORD    usri4_primary_group_id;
-    LPWSTR   usri4_profile;
-    LPWSTR   usri4_home_dir_drive;
+    LPSTR   usri4_profile;
+    LPSTR   usri4_home_dir_drive;
     DWORD    usri4_password_expired;
 }USER_INFO_4, *PUSER_INFO_4, *LPUSER_INFO_4;
 
 typedef struct _USER_INFO_1007 {
-     LPWSTR  usri1007_comment;
+     LPSTR  usri1007_comment;
 } USER_INFO_1007, *PUSER_INFO_1007, *LPUSER_INFO_1007;
 
 // 479
@@ -178,7 +178,7 @@ typedef struct _USER_INFO_1007 {
 // 949
 NET_API_STATUS NET_API_FUNCTION
 NetLocalGroupAdd (
-    IN  LPCWSTR   servername OPTIONAL,
+    IN  LPCSTR   servername OPTIONAL,
     IN  DWORD    level,
     IN  LPBYTE   buf,
     OUT LPDWORD  parm_err OPTIONAL
@@ -187,16 +187,16 @@ NetLocalGroupAdd (
 // 975
 NET_API_STATUS NET_API_FUNCTION
 NetLocalGroupGetInfo (
-    IN  LPCWSTR   servername OPTIONAL,
-    IN  LPCWSTR   groupname,
+    IN  LPCSTR   servername OPTIONAL,
+    IN  LPCSTR   groupname,
     IN  DWORD    level,
     OUT LPBYTE   *bufptr
     );
 
 NET_API_STATUS NET_API_FUNCTION
 NetLocalGroupSetInfo (
-    IN  LPCWSTR   servername OPTIONAL,
-    IN  LPCWSTR   groupname,
+    IN  LPCSTR   servername OPTIONAL,
+    IN  LPCSTR   groupname,
     IN  DWORD    level,
     IN  LPBYTE   buf,
     OUT LPDWORD  parm_err OPTIONAL
@@ -205,14 +205,14 @@ NetLocalGroupSetInfo (
 // 993
 NET_API_STATUS NET_API_FUNCTION
 NetLocalGroupDel (
-    IN  LPCWSTR   servername OPTIONAL,
-    IN  LPCWSTR   groupname
+    IN  LPCSTR   servername OPTIONAL,
+    IN  LPCSTR   groupname
     );
 
 NET_API_STATUS NET_API_FUNCTION
 NetLocalGroupSetMembers (
-    IN  LPCWSTR     servername OPTIONAL,
-    IN  LPCWSTR     groupname,
+    IN  LPCSTR     servername OPTIONAL,
+    IN  LPCSTR     groupname,
     IN  DWORD      level,
     IN  LPBYTE     buf,
     IN  DWORD      totalentries
@@ -220,8 +220,8 @@ NetLocalGroupSetMembers (
 
 NET_API_STATUS NET_API_FUNCTION
 NetLocalGroupGetMembers (
-    IN  LPCWSTR     servername OPTIONAL,
-    IN  LPCWSTR     localgroupname,
+    IN  LPCSTR     servername OPTIONAL,
+    IN  LPCSTR     localgroupname,
     IN  DWORD      level,
     OUT LPBYTE     *bufptr,
     IN  DWORD      prefmaxlen,
@@ -233,8 +233,8 @@ NetLocalGroupGetMembers (
 // 1026
 NET_API_STATUS NET_API_FUNCTION
 NetLocalGroupAddMembers (
-    IN  LPCWSTR     servername OPTIONAL,
-    IN  LPCWSTR     groupname,
+    IN  LPCSTR     servername OPTIONAL,
+    IN  LPCSTR     groupname,
     IN  DWORD      level,
     IN  LPBYTE     buf,
     IN  DWORD      totalentries

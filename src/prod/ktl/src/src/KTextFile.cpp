@@ -29,7 +29,7 @@ Revision History:
 const KTagType KTextFile::TagName = "TextFile";
 
 KTextFile::KTextFile(
-    __in KUniquePtr<WCHAR>& Buffer,
+    __in KUniquePtr<CHAR>& Buffer,
     __in ULONG Length,
     __in ULONG MaxLineLength,
     __in ULONG AllocationTag,
@@ -60,7 +60,7 @@ KTextFile::KTextFile(
     SetTypeTag(TagName);
 
     _Buffer = Ktl::Move(Buffer);
-    _EndBuffer = (WCHAR *) _Buffer + (Length / sizeof(WCHAR));
+    _EndBuffer = (CHAR *) _Buffer + (Length / sizeof(CHAR));
 
     _LineStart = _Buffer;
 
@@ -115,7 +115,7 @@ KTextFile::OpenSynchronous(
     FILE_STANDARD_INFORMATION StandardInformation;
     HANDLE Handle;
     ULONG Attributes;
-    KUniquePtr<WCHAR>  Buffer;
+    KUniquePtr<CHAR>  Buffer;
     ULONG Size;
 
     File = nullptr;
@@ -162,7 +162,7 @@ KTextFile::OpenSynchronous(
     }
 
     if ( StandardInformation.EndOfFile.QuadPart > MaximumFileSize ||
-        StandardInformation.EndOfFile.QuadPart < sizeof(WCHAR))
+        StandardInformation.EndOfFile.QuadPart < sizeof(CHAR))
     {
         return(STATUS_FILE_TOO_LARGE);
     }
@@ -173,11 +173,11 @@ KTextFile::OpenSynchronous(
     //
 
 	HRESULT hr;
-	hr = ULongAdd(StandardInformation.EndOfFile.LowPart, sizeof(WCHAR)-1, &Size);
+	hr = ULongAdd(StandardInformation.EndOfFile.LowPart, sizeof(CHAR)-1, &Size);
 	KInvariant(SUCCEEDED(hr));
-	Size = Size / sizeof(WCHAR);
+	Size = Size / sizeof(CHAR);
 
-    Buffer = _new(AllocationTag, *Allocator) WCHAR[Size];
+    Buffer = _new(AllocationTag, *Allocator) CHAR[Size];
 
     if (Buffer == nullptr)
     {
@@ -225,7 +225,7 @@ KTextFile::OpenSynchronous(
            return(LocalStatus);
        }
 
-       Buffer = _new(AllocationTag, *Allocator) WCHAR[Size/sizeof(WCHAR)];
+       Buffer = _new(AllocationTag, *Allocator) CHAR[Size/sizeof(CHAR)];
 
        if (Buffer == nullptr)
        {
@@ -252,7 +252,7 @@ KTextFile::OpenSynchronous(
         // of the character size.
         //
 
-        if ((StandardInformation.EndOfFile.LowPart % sizeof(WCHAR)) != 0)
+        if ((StandardInformation.EndOfFile.LowPart % sizeof(CHAR)) != 0)
         {
             return(STATUS_FILE_INVALID);
         }
@@ -261,7 +261,7 @@ KTextFile::OpenSynchronous(
 
     }
 
-    KAssert((Size % sizeof(WCHAR)) == 0);
+    KAssert((Size % sizeof(CHAR)) == 0);
 
     KTextFile *LocalFile = _new(AllocationTag, *Allocator) KTextFile(
         Buffer,
@@ -454,9 +454,9 @@ KTextFile::ReadLine(
  *
 -*/
 {
-    PWCHAR Limit;
+    PCHAR Limit;
     BOOLEAN Eol = FALSE;
-    PWCHAR Cursor;
+    PCHAR Cursor;
 
     if (_LineStart == _EndBuffer)
     {
@@ -473,7 +473,7 @@ KTextFile::ReadLine(
 
     for (Cursor = _LineStart; Cursor < Limit; Cursor++)
     {
-        if (*Cursor == L'\n' || *Cursor == L'\0')
+        if (*Cursor == '\n' || *Cursor == '\0')
         {
             //
             // Files with malformed lines or NULL are rejected.
@@ -482,9 +482,9 @@ KTextFile::ReadLine(
             return(STATUS_FILE_INVALID);
         }
 
-        if (*Cursor == L'\r')
+        if (*Cursor == '\r')
         {
-            if ((Cursor + 1) < Limit && *(Cursor+1) == L'\n')
+            if ((Cursor + 1) < Limit && *(Cursor+1) == '\n')
             {
                 Eol = TRUE;
                 break;
@@ -516,7 +516,7 @@ KTextFile::ReadLine(
     UNICODE_STRING LineString;
 
     LineString.Buffer = _LineStart;
-    LineString.Length = LineString.MaximumLength = (USHORT)((Cursor - _LineStart) * sizeof(WCHAR));
+    LineString.Length = LineString.MaximumLength = (USHORT)((Cursor - _LineStart) * sizeof(CHAR));
 
     Line = LineString;
 
@@ -589,7 +589,7 @@ KTextFile::ReadBinary(
     hr = ULongPtrToULong(sizeOfResultUlongPtr, &sizeOfResult);
     KInvariant(SUCCEEDED(hr));
 
-    hr = ULongMult(sizeOfResult, sizeof(WCHAR), &sizeOfResult);
+    hr = ULongMult(sizeOfResult, sizeof(CHAR), &sizeOfResult);
     KInvariant(SUCCEEDED(hr));
 
     Result = nullptr;
@@ -640,14 +640,14 @@ KTextFile::ReadRawBinary(
     hr = ULongPtrToULong(sizeOfResultUlongPtr, &sizeOfResult);
     KInvariant(SUCCEEDED(hr));
 
-    hr = ULongMult(sizeOfResult, sizeof(WCHAR), &sizeOfResult);
+    hr = ULongMult(sizeOfResult, sizeof(CHAR), &sizeOfResult);
     KInvariant(SUCCEEDED(hr));
 
     Result = nullptr;
 
     NTSTATUS    status = KBuffer::CreateOrCopy(
         Result,
-        (WCHAR*)_Buffer,
+        (CHAR*)_Buffer,
         sizeOfResult,
         GetThisAllocator(),
         _AllocationTag);

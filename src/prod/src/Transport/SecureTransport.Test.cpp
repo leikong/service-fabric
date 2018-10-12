@@ -21,34 +21,34 @@ namespace Transport
     {
     protected:
         void X509Test_SelfSigned(
-            std::wstring const & senderAddress,
-            std::wstring const & receiverAddress);
+            std::string const & senderAddress,
+            std::string const & receiverAddress);
 
         void X509ManyMessage_SelfSigned(
-            std::wstring const & senderAddress,
-            std::wstring const & receiverAddress);
+            std::string const & senderAddress,
+            std::string const & receiverAddress);
 
         void X509ManySmallMessage_SelfSigned(
-            std::wstring const & senderAddress,
-            std::wstring const & receiverAddress);
+            std::string const & senderAddress,
+            std::string const & receiverAddress);
 
         void BasicTestWin(
             SecurityProvider::Enum provider,
-            std::wstring const & senderAddress,
-            std::wstring const & receiverAddress,
+            std::string const & senderAddress,
+            std::string const & receiverAddress,
             ProtectionLevel::Enum protectionLevel);
 
         void SecurityTest(
-            std::wstring const & senderAddress,
+            std::string const & senderAddress,
             SecuritySettings const & senderSecSettings,
-            std::wstring const & receiverAddress,
+            std::string const & receiverAddress,
             SecuritySettings const & receiverSecSettings,
             bool failureExpected = false);
 
         void ManyMessageTest(
-            std::wstring const & senderAddress,
+            std::string const & senderAddress,
             SecuritySettings const & senderSecSettings,
-            std::wstring const & receiverAddress,
+            std::string const & receiverAddress,
             SecuritySettings const & receiverSecSettings);
 
         void SignTestWithDeletedHeaders(size_t outgoingHeaderChunkSize, bool deleteHeader = true);
@@ -56,9 +56,9 @@ namespace Transport
         // signature only protection is broken when there are deleted message headers
 
         void ManySmallMessageTest(
-            std::wstring const & senderAddress,
+            std::string const & senderAddress,
             SecuritySettings const & senderSecSettings,
-            std::wstring const & receiverAddress,
+            std::string const & receiverAddress,
             SecuritySettings const & receiverSecSettings);
 
         void EncryptionTestX509(ULONG outgoingHeaderChunkSize);
@@ -72,22 +72,22 @@ namespace Transport
         void AdminRoleTest(SecuritySettings & securitySettings, bool enable, bool enableCorrectClientId);
 
         static void ClaimAuthTestClientSend(
-            std::wstring const & receiverAddress,
-            std::wstring const & clientClaims,
+            std::string const & receiverAddress,
+            std::string const & clientClaims,
             bool expectFailure = false,
             bool clientIsAdmin = false,
-            std::wstring const clientCertFindValue = L"",
+            std::string const clientCertFindValue = "",
             Common::SecurityConfig::IssuerStoreKeyValueMap clientIssuerStore = Common::SecurityConfig::IssuerStoreKeyValueMap());
 
         static void ClaimAuthTestClientSend2(
-            std::wstring const & receiverAddress,
-            std::wstring const & svrCertThumbprint,
-            std::wstring const & clientClaims,
+            std::string const & receiverAddress,
+            std::string const & svrCertThumbprint,
+            std::string const & clientClaims,
             bool expectFailure = false,
             bool clientIsAdmin = false,
-            std::wstring const clientCertFindValue = L"");
+            std::string const clientCertFindValue = "");
 
-        static void X509CertIssuerMatchTest(std::wstring const & issuers, bool shouldPass);
+        static void X509CertIssuerMatchTest(std::string const & issuers, bool shouldPass);
 
         void FramingProtectionEnabled_Negotiate_ByConfig(ProtectionLevel::Enum protectionLevel);
 
@@ -100,13 +100,13 @@ namespace Transport
         {
         }
 
-        DummyServerResponse(wstring const &response) : response_(response)
+        DummyServerResponse(string const &response) : response_(response)
         {
         }
 
         FABRIC_FIELDS_01(response_);
 
-        wstring response_;
+        string response_;
     };
 
     struct ClientIsAdmin: public Serialization::FabricSerializable
@@ -129,14 +129,14 @@ namespace Transport
     BOOST_AUTO_TEST_CASE(X509Test_SelfSigned_Ipv4)
     {
         ENTER;
-        X509Test_SelfSigned(L"127.0.0.1:0", L"127.0.0.1:0");
+        X509Test_SelfSigned("127.0.0.1:0", "127.0.0.1:0");
         LEAVE;
     }
 
     BOOST_AUTO_TEST_CASE(X509Test_SelfSigned_Ipv6)
     {
         ENTER;
-        X509Test_SelfSigned(L"[::1]:0", L"[0:0:0:0:0:0:0:1]:0");
+        X509Test_SelfSigned("[::1]:0", "[0:0:0:0:0:0:0:1]:0");
         LEAVE;
     }
 
@@ -146,26 +146,26 @@ namespace Transport
 
         cout << "test with self-signed certs, with chain validation enabled, failure expected" << endl;
 
-        wstring server = L"server"+Guid::NewGuid().ToString();
-        InstallTestCertInScope serverCert(L"CN="+server); 
+        string server = "server"+Guid::NewGuid().ToString();
+        InstallTestCertInScope serverCert("CN="+server); 
         auto serverCertThumbprint = serverCert.Thumbprint()->PrimaryToString(); 
-        wstring client = L"client"+Guid::NewGuid().ToString();
-        InstallTestCertInScope clientCert(L"CN="+client); 
+        string client = "client"+Guid::NewGuid().ToString();
+        InstallTestCertInScope clientCert("CN="+client); 
         auto clientCertThumbprint = clientCert.Thumbprint()->PrimaryToString(); 
 
         SecuritySettings senderSecSettings = TTestUtil::CreateX509SettingsTp(
             clientCertThumbprint,
-            L"", 
+            "", 
             serverCertThumbprint+L"?true",
-            L"");
+            "");
 
         SecuritySettings receiverSecSettings = TTestUtil::CreateX509SettingsTp(
             serverCertThumbprint,
-            L"",
+            "",
             clientCertThumbprint+L"?true",
-            L"");
+            "");
 
-        SecurityTest(L"127.0.0.1:0", senderSecSettings, L"127.0.0.1:0", receiverSecSettings, true);
+        SecurityTest("127.0.0.1:0", senderSecSettings, "127.0.0.1:0", receiverSecSettings, true);
 
         LEAVE;
     }
@@ -176,24 +176,24 @@ namespace Transport
 
         cout << "test with self-signed certs, chain validation required, failure expected" << endl;
 
-        wstring server = L"server"+Guid::NewGuid().ToString();
-        InstallTestCertInScope serverCert(L"CN="+server); 
-        wstring client = L"client"+Guid::NewGuid().ToString();
-        InstallTestCertInScope clientCert(L"CN="+client); 
+        string server = "server"+Guid::NewGuid().ToString();
+        InstallTestCertInScope serverCert("CN="+server); 
+        string client = "client"+Guid::NewGuid().ToString();
+        InstallTestCertInScope clientCert("CN="+client); 
 
         SecuritySettings senderSecSettings = TTestUtil::CreateX509Settings(
             client,
-            L"", 
+            "", 
             server,
-            L"");
+            "");
 
         SecuritySettings receiverSecSettings = TTestUtil::CreateX509Settings(
             server,
-            L"",
+            "",
             client,
-            L"");
+            "");
 
-        SecurityTest(L"127.0.0.1:0", senderSecSettings, L"127.0.0.1:0", receiverSecSettings, true);
+        SecurityTest("127.0.0.1:0", senderSecSettings, "127.0.0.1:0", receiverSecSettings, true);
 
         LEAVE;
     }
@@ -208,24 +208,24 @@ namespace Transport
         SecurityConfig::GetConfig().SkipX509CredentialExpirationChecking = true;
         KFinally([&] { SecurityConfig::GetConfig().SkipX509CredentialExpirationChecking = saved; });
 
-        InstallTestCertInScope serverCert(L"CN=server.TestWithExpiredSelfSignedCert", nullptr, TimeSpan::Zero);
+        InstallTestCertInScope serverCert("CN=server.TestWithExpiredSelfSignedCert", nullptr, TimeSpan::Zero);
         auto serverCertThumbprint = serverCert.Thumbprint()->PrimaryToString(); 
-        InstallTestCertInScope clientCert(L"CN=client@TestWithExpiredSelfSignedCert", nullptr, TimeSpan::Zero);
+        InstallTestCertInScope clientCert("CN=client@TestWithExpiredSelfSignedCert", nullptr, TimeSpan::Zero);
         auto clientCertThumbprint = clientCert.Thumbprint()->PrimaryToString(); 
 
         SecuritySettings senderSecSettings = TTestUtil::CreateX509SettingsTp(
             clientCertThumbprint,
-            L"", 
+            "", 
             serverCertThumbprint,
-            L"");
+            "");
 
         SecuritySettings receiverSecSettings = TTestUtil::CreateX509SettingsTp(
             serverCertThumbprint,
-            L"",
+            "",
             clientCertThumbprint,
-            L"");
+            "");
 
-        SecurityTest(L"127.0.0.1:0", senderSecSettings, L"127.0.0.1:0", receiverSecSettings, true);
+        SecurityTest("127.0.0.1:0", senderSecSettings, "127.0.0.1:0", receiverSecSettings, true);
 
         LEAVE;
     }
@@ -238,8 +238,8 @@ namespace Transport
         SecurityConfig::GetConfig().CertificateMonitorInterval = TimeSpan::FromSeconds(3);
         KFinally([&] { SecurityConfig::GetConfig().CertificateMonitorInterval = savedRefreshInterval; });
 
-        auto cn = wformatString("CertRefresh.{0}", Guid::NewGuid());
-        auto sn = wformatString("CN={0}", cn);
+        auto cn = formatString.L("CertRefresh.{0}", Guid::NewGuid());
+        auto sn = formatString.L("CN={0}", cn);
         InstallTestCertInScope c1(sn);
 
         // Create SecuritySettings with:
@@ -249,8 +249,8 @@ namespace Transport
         // by certificate thumbprint matching to avoid the complexity of also installing the certificate to trusted root.
         auto secSettings = TTestUtil::CreateX509Settings_LoadByName_AuthByThumbprint(cn, c1.Thumbprint()->PrimaryToString());
 
-        auto sender = DatagramTransportFactory::CreateTcp(L"127.0.0.1:0");
-        auto receiver = DatagramTransportFactory::CreateTcp(L"127.0.0.1:0");
+        auto sender = DatagramTransportFactory::CreateTcp("127.0.0.1:0");
+        auto receiver = DatagramTransportFactory::CreateTcp("127.0.0.1:0");
 
         VERIFY_IS_TRUE(sender->SetSecurity(secSettings).IsSuccess());
         VERIFY_IS_TRUE(receiver->SetSecurity(secSettings).IsSuccess());
@@ -272,8 +272,8 @@ namespace Transport
 
         VERIFY_IS_TRUE(receiver->Start().IsSuccess());
 
-        wstring localListenerIdentity = TransportSecurity().LocalWindowsIdentity();
-        ISendTarget::SPtr target = sender->ResolveTarget(receiver->ListenAddress(), L"", localListenerIdentity);
+        string localListenerIdentity = TransportSecurity().LocalWindowsIdentity();
+        ISendTarget::SPtr target = sender->ResolveTarget(receiver->ListenAddress(), "", localListenerIdentity);
         VERIFY_IS_TRUE(target);
 
         auto oneway = make_unique<Message>();
@@ -336,7 +336,7 @@ namespace Transport
         auto serverCertThumbprint = *(serverCert.Thumbprint());
 
         auto serverSecurity = TTestUtil::CreateSvrX509Settings_ClaimsTest(serverCertThumbprint.PrimaryToString());
-        auto error = serverSecurity.EnableClaimBasedAuthOnClients(L"t1=v1 && t2=v2 || t3=v3", L"t4=v4 && t5=v5");
+        auto error = serverSecurity.EnableClaimBasedAuthOnClients("t1=v1 && t2=v2 || t3=v3", "t4=v4 && t5=v5");
         VERIFY_IS_TRUE(error.IsSuccess());
         Trace.WriteInfo(TraceType, "server security settings = {0}", serverSecurity);
 
@@ -354,7 +354,7 @@ namespace Transport
 
         VERIFY_IS_TRUE(receiver->SetSecurity(serverSecurity).IsSuccess());
         receiver->SetClaimsHandler(
-            [](wstring const & claims, SecurityContextSPtr const & context)
+            [](string const & claims, SecurityContextSPtr const & context)
         {
             SecuritySettings::RoleClaims clientClaims;
             auto error = SecuritySettings::StringToRoleClaims(claims, clientClaims);
@@ -367,7 +367,7 @@ namespace Transport
         VERIFY_IS_TRUE(receiver->Start().IsSuccess());
 
         SecuritySettings clientSecurity;
-        error = SecuritySettings::CreateClaimTokenClient(L"t3 = v3", serverCertThumbprint.PrimaryToString(), L"", L"", wformatString(ProtectionLevel::EncryptAndSign), clientSecurity);
+        error = SecuritySettings::CreateClaimTokenClient("t3 = v3", serverCertThumbprint.PrimaryToString(), "", "", formatString(ProtectionLevel::EncryptAndSign), clientSecurity);
         VERIFY_IS_TRUE(error.IsSuccess());
 
         auto sender = DatagramTransportFactory::CreateTcpClient();
@@ -404,7 +404,7 @@ namespace Transport
     {
         ENTER;
 
-        InstallTestCertInScope serverCert(L"CN=ClaimAuthWithServerThumbprint2.TestWithExpiredSelfSignedCert", nullptr, TimeSpan::Zero);
+        InstallTestCertInScope serverCert("CN=ClaimAuthWithServerThumbprint2.TestWithExpiredSelfSignedCert", nullptr, TimeSpan::Zero);
         auto serverCertThumbprint = *(serverCert.Thumbprint());
 
         Sleep(10); //sleep to make sure certificate expired
@@ -414,7 +414,7 @@ namespace Transport
         SecurityConfig::GetConfig().SkipX509CredentialExpirationChecking = true;
 
         auto serverSecurity = TTestUtil::CreateSvrX509Settings_ClaimsTest(serverCertThumbprint.PrimaryToString());
-        auto error = serverSecurity.EnableClaimBasedAuthOnClients(L"t1=v1 && t2=v2 || t3=v3", L"t4=v4 && t5=v5");
+        auto error = serverSecurity.EnableClaimBasedAuthOnClients("t1=v1 && t2=v2 || t3=v3", "t4=v4 && t5=v5");
         VERIFY_IS_TRUE(error.IsSuccess());
         Trace.WriteInfo(TraceType, "server security settings = {0}", serverSecurity);
 
@@ -432,7 +432,7 @@ namespace Transport
 
         VERIFY_IS_TRUE(receiver->SetSecurity(serverSecurity).IsSuccess());
         receiver->SetClaimsHandler(
-            [](wstring const & claims, SecurityContextSPtr const & context)
+            [](string const & claims, SecurityContextSPtr const & context)
             {
                 SecuritySettings::RoleClaims clientClaims;
                 auto error = SecuritySettings::StringToRoleClaims(claims, clientClaims);
@@ -445,7 +445,7 @@ namespace Transport
         VERIFY_IS_TRUE(receiver->Start().IsSuccess());
 
         SecuritySettings clientSecurity;
-        error = SecuritySettings::CreateClaimTokenClient(L"t3 = v3", serverCertThumbprint.PrimaryToString()+L"?true", L"", L"", wformatString(ProtectionLevel::EncryptAndSign), clientSecurity);
+        error = SecuritySettings::CreateClaimTokenClient("t3 = v3", serverCertThumbprint.PrimaryToString()+L"?true", "", "", formatString(ProtectionLevel::EncryptAndSign), clientSecurity);
         VERIFY_IS_TRUE(error.IsSuccess());
 
         auto sender = DatagramTransportFactory::CreateTcpClient();
@@ -472,14 +472,14 @@ namespace Transport
         auto serverCertThumbprint = *(serverCert.Thumbprint());
         auto serverSecurity = TTestUtil::CreateSvrX509Settings_ClaimsTest(serverCertThumbprint.PrimaryToString());
 
-        auto error = serverSecurity.EnableClaimBasedAuthOnClients(L"ClaimType1=ClaimValue1", L"ClaimType2=ClaimValue2");
+        auto error = serverSecurity.EnableClaimBasedAuthOnClients("ClaimType1=ClaimValue1", "ClaimType2=ClaimValue2");
         VERIFY_IS_TRUE(error.IsSuccess());
         Trace.WriteInfo(TraceType, "server security settings = {0}", serverSecurity);
 
         auto receiver = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress());
         VERIFY_IS_TRUE(receiver->SetSecurity(serverSecurity).IsSuccess());
         receiver->SetClaimsHandler(
-            [](wstring const & claims, SecurityContextSPtr const & context)
+            [](string const & claims, SecurityContextSPtr const & context)
         {
             Trace.WriteInfo(TraceType, "fail client auth '{0}'", claims);
             context->CompleteClientAuth(ErrorCodeValue::InvalidCredentials, SecuritySettings::RoleClaims(), TimeSpan::MaxValue);
@@ -488,7 +488,7 @@ namespace Transport
         VERIFY_IS_TRUE(receiver->Start().IsSuccess());
 
         SecuritySettings clientSecurity;
-        error = SecuritySettings::CreateClaimTokenClient(L"ClaimType1=ClaimValue1", serverCertThumbprint.PrimaryToString(), L"", L"", wformatString(ProtectionLevel::EncryptAndSign), clientSecurity);
+        error = SecuritySettings::CreateClaimTokenClient("ClaimType1=ClaimValue1", serverCertThumbprint.PrimaryToString(), "", "", formatString(ProtectionLevel::EncryptAndSign), clientSecurity);
         VERIFY_IS_TRUE(error.IsSuccess());
         Trace.WriteInfo(TraceType, "client security settings = {0}", clientSecurity);
 
@@ -547,18 +547,18 @@ namespace Transport
         auto serverSecurity = TTestUtil::CreateSvrX509Settings_ClaimsTest(serverCertThumbprint.PrimaryToString());
 #else
         auto serverSecurity = TTestUtil::CreateX509Settings(
-            L"CN=WinFabric-Test-SAN1-Alice",
-            L"WinFabric-Test-SAN1-Bob");
+            "CN=WinFabric-Test-SAN1-Alice",
+            "WinFabric-Test-SAN1-Bob");
 #endif
 
-        auto error = serverSecurity.EnableClaimBasedAuthOnClients(L"ClaimType1=ClaimValue1", L"ClaimType2=ClaimValue2");
+        auto error = serverSecurity.EnableClaimBasedAuthOnClients("ClaimType1=ClaimValue1", "ClaimType2=ClaimValue2");
         VERIFY_IS_TRUE(error.IsSuccess());
         Trace.WriteInfo(TraceType, "server security settings = {0}", serverSecurity);
 
         auto receiver = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress());
         VERIFY_IS_TRUE(receiver->SetSecurity(serverSecurity).IsSuccess());
         receiver->SetClaimsHandler(
-        [](wstring const & claims, SecurityContextSPtr const & context)
+        [](string const & claims, SecurityContextSPtr const & context)
         {
             static bool firstCall = true;
             if (firstCall)
@@ -575,7 +575,7 @@ namespace Transport
             context->CompleteClientAuth(ErrorCodeValue::InvalidCredentials, SecuritySettings::RoleClaims(), TimeSpan::MaxValue);
         });
 
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         AutoResetEvent receiverReceivedMessage(false);
         TTestUtil::SetMessageHandler(
             receiver,
@@ -590,9 +590,9 @@ namespace Transport
 
         SecuritySettings clientSecurity;
 #ifdef PLATFORM_UNIX
-        error = SecuritySettings::CreateClaimTokenClient(L"ClaimType1=ClaimValue1", serverCertThumbprint.PrimaryToString(), L"", L"", wformatString(ProtectionLevel::EncryptAndSign), clientSecurity);
+        error = SecuritySettings::CreateClaimTokenClient("ClaimType1=ClaimValue1", serverCertThumbprint.PrimaryToString(), "", "", formatString(ProtectionLevel::EncryptAndSign), clientSecurity);
 #else
-        error = SecuritySettings::CreateClaimTokenClient(L"ClaimType1=ClaimValue1", L"", L"WinFabric-Test-SAN1-Alice", L"", wformatString(ProtectionLevel::EncryptAndSign), clientSecurity);
+        error = SecuritySettings::CreateClaimTokenClient("ClaimType1=ClaimValue1", "", "WinFabric-Test-SAN1-Alice", "", formatString(ProtectionLevel::EncryptAndSign), clientSecurity);
 #endif
 
         VERIFY_IS_TRUE(error.IsSuccess());
@@ -674,15 +674,15 @@ namespace Transport
 
         securitySettings.EnablePeerToPeerMode();
 
-        auto node1 = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), L"", L"node1");
+        auto node1 = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), "", "node1");
         VERIFY_IS_TRUE(node1->SetSecurity(securitySettings).IsSuccess());
         VERIFY_IS_TRUE(node1->Start().IsSuccess());
 
-        auto node2 = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), L"", L"node2");
+        auto node2 = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), "", "node2");
         VERIFY_IS_TRUE(node2->SetSecurity(securitySettings).IsSuccess());
 
         AutoResetEvent messageReceived;
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         TTestUtil::SetMessageHandler(
             node2,
             testAction,
@@ -726,15 +726,15 @@ namespace Transport
 
         securitySettings.EnablePeerToPeerMode();
 
-        auto node1 = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), L"", L"node1");
+        auto node1 = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), "", "node1");
         VERIFY_IS_TRUE(node1->SetSecurity(securitySettings).IsSuccess());
         VERIFY_IS_TRUE(node1->Start().IsSuccess());
 
-        auto node2 = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), L"", L"node2");
+        auto node2 = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), "", "node2");
         VERIFY_IS_TRUE(node2->SetSecurity(securitySettings).IsSuccess());
 
         AutoResetEvent messageReceived;
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         TTestUtil::SetMessageHandler(
             node2,
             testAction,
@@ -772,15 +772,15 @@ namespace Transport
             testCert.SubjectName(),
             SecurityConfig::X509NameMap());
 
-        auto node1 = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), L"", L"node1");
+        auto node1 = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), "", "node1");
         VERIFY_IS_TRUE(node1->SetSecurity(securitySettings).IsSuccess());
         VERIFY_IS_TRUE(node1->Start().IsSuccess());
 
-        auto node2 = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), L"", L"node2");
+        auto node2 = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress(), "", "node2");
         VERIFY_IS_TRUE(node2->SetSecurity(securitySettings).IsSuccess());
 
         AutoResetEvent messageReceived;
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         TTestUtil::SetMessageHandler(
             node2,
             testAction,
@@ -819,29 +819,29 @@ namespace Transport
     {
         ENTER;
 
-        wstring server = L"server"+Guid::NewGuid().ToString();
-        InstallTestCertInScope serverCert(L"CN="+server); 
+        string server = "server"+Guid::NewGuid().ToString();
+        InstallTestCertInScope serverCert("CN="+server); 
         auto serverCertThumbprint = serverCert.Thumbprint()->PrimaryToString(); 
-        wstring client = L"client"+Guid::NewGuid().ToString();
-        InstallTestCertInScope clientCert(L"CN="+client); 
+        string client = "client"+Guid::NewGuid().ToString();
+        InstallTestCertInScope clientCert("CN="+client); 
         auto clientCertThumbprint = clientCert.Thumbprint()->PrimaryToString(); 
 
         SecuritySettings senderSecSettings = TTestUtil::CreateX509SettingsTp(
             clientCertThumbprint,
-            L"", 
+            "", 
             serverCertThumbprint,
-            L"");
+            "");
 
         SecuritySettings receiverSecSettings = TTestUtil::CreateX509SettingsTp(
             serverCertThumbprint,
-            L"",
+            "",
             clientCertThumbprint,
-            L"");
+            "");
 
-        auto sender = TcpDatagramTransport::Create(L"127.0.0.1:0");
+        auto sender = TcpDatagramTransport::Create("127.0.0.1:0");
         sender->DisableListenInstanceMessage();
         sender->SetBufferFactory(make_unique<LTBufferFactory>());
-        auto receiver = TcpDatagramTransport::Create(L"127.0.0.1:0");
+        auto receiver = TcpDatagramTransport::Create("127.0.0.1:0");
         receiver->DisableListenInstanceMessage();
         receiver->SetBufferFactory(make_unique<LTBufferFactory>());
 
@@ -973,8 +973,8 @@ namespace Transport
             serverCertThumbprint,
             clientCert.Thumbprint()->PrimaryToString());
 
-        serverSecurity.EnableAdminRole(adminClientCert.Thumbprint()->PrimaryToString(), SecurityConfig::X509NameMap(), L"");
-        auto error = serverSecurity.EnableClaimBasedAuthOnClients(L"t1=v1 && t2=v2 || t3=v3", L"t4=v4 && t5=v5");
+        serverSecurity.EnableAdminRole(adminClientCert.Thumbprint()->PrimaryToString(), SecurityConfig::X509NameMap(), "");
+        auto error = serverSecurity.EnableClaimBasedAuthOnClients("t1=v1 && t2=v2 || t3=v3", "t4=v4 && t5=v5");
         VERIFY_IS_TRUE(error.IsSuccess());
         Trace.WriteInfo(TraceType, "server security settings = {0}", serverSecurity);
 
@@ -991,7 +991,7 @@ namespace Transport
 
         VERIFY_IS_TRUE(receiver->SetSecurity(serverSecurity).IsSuccess());
         receiver->SetClaimsHandler(
-            [] (wstring const & claims, SecurityContextSPtr const & context)
+            [] (string const & claims, SecurityContextSPtr const & context)
             {
                 SecuritySettings::RoleClaims clientClaims;
                 auto error = SecuritySettings::StringToRoleClaims(claims, clientClaims);
@@ -1004,16 +1004,16 @@ namespace Transport
         VERIFY_IS_TRUE(receiver->Start().IsSuccess());
 
         // test with client claims
-        ClaimAuthTestClientSend2(receiver->ListenAddress(), serverCertThumbprint, L"t1=v1 && t2=v2");
-        ClaimAuthTestClientSend2(receiver->ListenAddress(), serverCertThumbprint, L"t3 = v3");
-        ClaimAuthTestClientSend2(receiver->ListenAddress(), serverCertThumbprint, L"T4=v4 && t5 = V5", false, true);
-        ClaimAuthTestClientSend2(receiver->ListenAddress(), serverCertThumbprint, L"t1=v1", true);
-        ClaimAuthTestClientSend2(receiver->ListenAddress(), serverCertThumbprint, L"t5=v5", true);
+        ClaimAuthTestClientSend2(receiver->ListenAddress(), serverCertThumbprint, "t1=v1 && t2=v2");
+        ClaimAuthTestClientSend2(receiver->ListenAddress(), serverCertThumbprint, "t3 = v3");
+        ClaimAuthTestClientSend2(receiver->ListenAddress(), serverCertThumbprint, "T4=v4 && t5 = V5", false, true);
+        ClaimAuthTestClientSend2(receiver->ListenAddress(), serverCertThumbprint, "t1=v1", true);
+        ClaimAuthTestClientSend2(receiver->ListenAddress(), serverCertThumbprint, "t5=v5", true);
 
         // test with client certificates
-        ClaimAuthTestClientSend2(receiver->ListenAddress(), serverCertThumbprint, L"", false, false, clientCert.Thumbprint()->PrimaryToString()); 
-        ClaimAuthTestClientSend2(receiver->ListenAddress(), serverCertThumbprint, L"", false, true, adminClientCert.Thumbprint()->PrimaryToString()); 
-        ClaimAuthTestClientSend2(receiver->ListenAddress(), serverCertThumbprint, L"", true, false, nonClientCert.Thumbprint()->PrimaryToString()); 
+        ClaimAuthTestClientSend2(receiver->ListenAddress(), serverCertThumbprint, "", false, false, clientCert.Thumbprint()->PrimaryToString()); 
+        ClaimAuthTestClientSend2(receiver->ListenAddress(), serverCertThumbprint, "", false, true, adminClientCert.Thumbprint()->PrimaryToString()); 
+        ClaimAuthTestClientSend2(receiver->ListenAddress(), serverCertThumbprint, "", true, false, nonClientCert.Thumbprint()->PrimaryToString()); 
 
         receiver->RemoveClaimsHandler();
         receiver->Stop();
@@ -1024,7 +1024,7 @@ namespace Transport
     BOOST_AUTO_TEST_CASE(X509ManyMessage_SelfSignedTest)
     {
         ENTER;
-        X509ManyMessage_SelfSigned(L"127.0.0.1:0", L"127.0.0.1:0");
+        X509ManyMessage_SelfSigned("127.0.0.1:0", "127.0.0.1:0");
         LEAVE;
     }
 
@@ -1035,11 +1035,11 @@ namespace Transport
         ENTER;
 
         SecuritySettings serverSecurity = TTestUtil::CreateX509Settings(
-            L"CN=WinFabric-Test-SAN1-Alice",
-            L"WinFabric-Test-SAN1-Bob");
+            "CN=WinFabric-Test-SAN1-Alice",
+            "WinFabric-Test-SAN1-Bob");
 
-        serverSecurity.EnableAdminRole(L"", SecurityConfig::X509NameMap(), L"WinFabric-Test-SAN3-Oscar");
-        auto error = serverSecurity.EnableClaimBasedAuthOnClients(L"t1=v1 && t2=v2 || t3=v3", L"t4=v4 && t5=v5");
+        serverSecurity.EnableAdminRole("", SecurityConfig::X509NameMap(), "WinFabric-Test-SAN3-Oscar");
+        auto error = serverSecurity.EnableClaimBasedAuthOnClients("t1=v1 && t2=v2 || t3=v3", "t4=v4 && t5=v5");
         VERIFY_IS_TRUE(error.IsSuccess());
         Trace.WriteInfo(TraceType, "server security settings = {0}", serverSecurity);
 
@@ -1056,7 +1056,7 @@ namespace Transport
 
         VERIFY_IS_TRUE(receiver->SetSecurity(serverSecurity).IsSuccess());
         receiver->SetClaimsHandler(
-            [] (wstring const & claims, SecurityContextSPtr const & context)
+            [] (string const & claims, SecurityContextSPtr const & context)
             {
                 SecuritySettings::RoleClaims clientClaims;
                 auto error = SecuritySettings::StringToRoleClaims(claims, clientClaims);
@@ -1069,16 +1069,16 @@ namespace Transport
         VERIFY_IS_TRUE(receiver->Start().IsSuccess());
 
         // test with client claims
-        ClaimAuthTestClientSend(receiver->ListenAddress(), L"t1=v1 && t2=v2");
-        ClaimAuthTestClientSend(receiver->ListenAddress(), L"t3 = v3");
-        ClaimAuthTestClientSend(receiver->ListenAddress(), L"T4=v4 && t5 = V5", false, true);
-        ClaimAuthTestClientSend(receiver->ListenAddress(), L"t1=v1", true);
-        ClaimAuthTestClientSend(receiver->ListenAddress(), L"t5=v5", true);
+        ClaimAuthTestClientSend(receiver->ListenAddress(), "t1=v1 && t2=v2");
+        ClaimAuthTestClientSend(receiver->ListenAddress(), "t3 = v3");
+        ClaimAuthTestClientSend(receiver->ListenAddress(), "T4=v4 && t5 = V5", false, true);
+        ClaimAuthTestClientSend(receiver->ListenAddress(), "t1=v1", true);
+        ClaimAuthTestClientSend(receiver->ListenAddress(), "t5=v5", true);
 
         // test with client certificates
-        ClaimAuthTestClientSend(receiver->ListenAddress(), L"", false, false, L"CN=WinFabric-Test-SAN1-Bob");
-        ClaimAuthTestClientSend(receiver->ListenAddress(), L"", false, true, L"CN=WinFabric-Test-SAN3-Oscar");
-        ClaimAuthTestClientSend(receiver->ListenAddress(), L"", true, false, L"CN=WinFabric-Test-SAN2-Charlie");
+        ClaimAuthTestClientSend(receiver->ListenAddress(), "", false, false, "CN=WinFabric-Test-SAN1-Bob");
+        ClaimAuthTestClientSend(receiver->ListenAddress(), "", false, true, "CN=WinFabric-Test-SAN3-Oscar");
+        ClaimAuthTestClientSend(receiver->ListenAddress(), "", true, false, "CN=WinFabric-Test-SAN2-Charlie");
 
         receiver->RemoveClaimsHandler();
         receiver->Stop();
@@ -1090,16 +1090,16 @@ namespace Transport
     {
         ENTER;
 
-        wstring certIssuerName = L"WinFabric-Test-TA-CA";
+        string certIssuerName = "WinFabric-Test-TA-CA";
         SecurityConfig::IssuerStoreKeyValueMap issuerMap;
-        issuerMap.Add(certIssuerName, L"Root");
+        issuerMap.Add(certIssuerName, "Root");
 
         SecuritySettings serverSecurity = TTestUtil::CreateX509Settings(
-            L"CN=WinFabric-Test-SAN1-Alice",
-            L"WinFabric-Test-SAN1-Bob",
+            "CN=WinFabric-Test-SAN1-Alice",
+            "WinFabric-Test-SAN1-Bob",
             issuerMap);
 
-        serverSecurity.EnableAdminRole(L"", SecurityConfig::X509NameMap(), L"WinFabric-Test-SAN3-Oscar");
+        serverSecurity.EnableAdminRole("", SecurityConfig::X509NameMap(), "WinFabric-Test-SAN3-Oscar");
         Trace.WriteInfo(TraceType, "server security settings = {0}", serverSecurity);
 
         auto receiver = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress());
@@ -1117,9 +1117,9 @@ namespace Transport
         VERIFY_IS_TRUE(receiver->Start().IsSuccess());
 
         // test with client certificates
-        ClaimAuthTestClientSend(receiver->ListenAddress(), L"", false, false, L"CN=WinFabric-Test-SAN1-Bob", issuerMap);
-        ClaimAuthTestClientSend(receiver->ListenAddress(), L"", false, true, L"CN=WinFabric-Test-SAN3-Oscar", issuerMap);
-        ClaimAuthTestClientSend(receiver->ListenAddress(), L"", true, false, L"CN=WinFabric-Test-SAN2-Charlie", issuerMap);
+        ClaimAuthTestClientSend(receiver->ListenAddress(), "", false, false, "CN=WinFabric-Test-SAN1-Bob", issuerMap);
+        ClaimAuthTestClientSend(receiver->ListenAddress(), "", false, true, "CN=WinFabric-Test-SAN3-Oscar", issuerMap);
+        ClaimAuthTestClientSend(receiver->ListenAddress(), "", true, false, "CN=WinFabric-Test-SAN2-Charlie", issuerMap);
 
         receiver->Stop();
         LEAVE;
@@ -1133,19 +1133,19 @@ namespace Transport
         SecurityConfig::GetConfig().CertificateMonitorInterval = TimeSpan::FromSeconds(3);
         KFinally([&] { SecurityConfig::GetConfig().CertificateMonitorInterval = savedRefreshInterval; });
 
-        auto cn = wformatString("CertRefresh.{0}", Guid::NewGuid());
-        auto sn = wformatString("CN={0}", cn);
+        auto cn = formatString.L("CertRefresh.{0}", Guid::NewGuid());
+        auto sn = formatString.L("CN={0}", cn);
 
-        InstallTestCertInScope c1(sn, nullptr, TimeSpan::FromMinutes(60 * 24 * 7 * 20), L"Root", L"", X509Default::StoreLocation());
+        InstallTestCertInScope c1(sn, nullptr, TimeSpan::FromMinutes(60 * 24 * 7 * 20), "Root", "", X509Default::StoreLocation());
         SecurityConfig::X509NameMap remoteNames;
-        remoteNames.Add(cn, L"");
+        remoteNames.Add(cn, "");
         SecurityConfig::IssuerStoreKeyValueMap issuerMap;
-        issuerMap.Add(cn, L"Root");
+        issuerMap.Add(cn, "Root");
 
         SecuritySettings secSettings = TTestUtil::CreateX509Settings_CertRefresh_IssuerStore(cn, remoteNames, issuerMap);
 
-        auto sender = DatagramTransportFactory::CreateTcp(L"127.0.0.1:0");
-        auto receiver = DatagramTransportFactory::CreateTcp(L"127.0.0.1:0");
+        auto sender = DatagramTransportFactory::CreateTcp("127.0.0.1:0");
+        auto receiver = DatagramTransportFactory::CreateTcp("127.0.0.1:0");
 
         VERIFY_IS_TRUE(sender->SetSecurity(secSettings).IsSuccess());
         VERIFY_IS_TRUE(receiver->SetSecurity(secSettings).IsSuccess());
@@ -1167,8 +1167,8 @@ namespace Transport
 
         VERIFY_IS_TRUE(receiver->Start().IsSuccess());
 
-        wstring localListenerIdentity = TransportSecurity().LocalWindowsIdentity();
-        ISendTarget::SPtr target = sender->ResolveTarget(receiver->ListenAddress(), L"", localListenerIdentity);
+        string localListenerIdentity = TransportSecurity().LocalWindowsIdentity();
+        ISendTarget::SPtr target = sender->ResolveTarget(receiver->ListenAddress(), "", localListenerIdentity);
         VERIFY_IS_TRUE(target);
 
         auto oneway = make_unique<Message>();
@@ -1182,7 +1182,7 @@ namespace Transport
         Trace.WriteInfo(TraceType, "wait for receiver to get the first message");
         VERIFY_ARE_EQUAL2(messageReceived.WaitOne(waitTime), true);
 
-        InstallTestCertInScope c2(sn, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(48), L"Root", L"", X509Default::StoreLocation());
+        InstallTestCertInScope c2(sn, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(48), "Root", "", X509Default::StoreLocation());
 
         Trace.WriteInfo(TraceType, "wait for new c2 to be loaded");
         ManualResetEvent().WaitOne(SecurityConfig::GetConfig().CertificateMonitorInterval + TimeSpan::FromSeconds(3));
@@ -1211,22 +1211,22 @@ namespace Transport
     {
         ENTER;
 
-        wstring server = L"WinFabric-Test-SAN1-Alice";
-        wstring client= L"WinFabric-Test-User@microsoft.com";
+        string server = "WinFabric-Test-SAN1-Alice";
+        string client= "WinFabric-Test-User@microsoft.com";
 
         SecuritySettings senderSecSettings = TTestUtil::CreateX509Settings(
             client,
-            L"", 
+            "", 
             server,
-            L"");
+            "");
 
         SecuritySettings receiverSecSettings = TTestUtil::CreateX509Settings(
             server,
-            L"",
+            "",
             client,
-            L"");
+            "");
 
-        SecurityTest(L"127.0.0.1:0", senderSecSettings, L"127.0.0.1:0", receiverSecSettings);
+        SecurityTest("127.0.0.1:0", senderSecSettings, "127.0.0.1:0", receiverSecSettings);
 
         LEAVE;
     }
@@ -1243,7 +1243,7 @@ namespace Transport
             securityConfig.FramingProtectionEnabled = saved;
         });
 
-        X509Test_SelfSigned(L"127.0.0.1:0", L"127.0.0.1:0");
+        X509Test_SelfSigned("127.0.0.1:0", "127.0.0.1:0");
 
         LEAVE;
     }
@@ -1252,26 +1252,26 @@ namespace Transport
     {
         ENTER;
 
-        const wstring senderCn = L"sender.test.com";
-        const wstring receiverCn = L"receiver.test.com";
-        InstallTestCertInScope senderCert(L"CN=" + senderCn);
-        InstallTestCertInScope receiverCert(L"CN=" + receiverCn);
+        const string senderCn = "sender.test.com";
+        const string receiverCn = "receiver.test.com";
+        InstallTestCertInScope senderCert("CN=" + senderCn);
+        InstallTestCertInScope receiverCert("CN=" + receiverCn);
 
         auto senderSecSettings = TTestUtil::CreateX509SettingsTp(
             senderCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             receiverCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         auto receiverSecSettings = TTestUtil::CreateX509SettingsTp(
             receiverCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             senderCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         receiverSecSettings.SetFramingProtectionEnabledCallback([] { return true; });
 
-        SecurityTest(L"127.0.0.1:0", senderSecSettings, L"127.0.0.1:0", receiverSecSettings);
+        SecurityTest("127.0.0.1:0", senderSecSettings, "127.0.0.1:0", receiverSecSettings);
 
         LEAVE;
     }
@@ -1280,26 +1280,26 @@ namespace Transport
     {
         ENTER;
 
-        const wstring senderCn = L"sender.test.com";
-        const wstring receiverCn = L"receiver.test.com";
-        InstallTestCertInScope senderCert(L"CN=" + senderCn);
-        InstallTestCertInScope receiverCert(L"CN=" + receiverCn);
+        const string senderCn = "sender.test.com";
+        const string receiverCn = "receiver.test.com";
+        InstallTestCertInScope senderCert("CN=" + senderCn);
+        InstallTestCertInScope receiverCert("CN=" + receiverCn);
 
         auto senderSecSettings = TTestUtil::CreateX509SettingsTp(
             senderCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             receiverCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         senderSecSettings.SetFramingProtectionEnabledCallback([] { return true; });
 
         SecuritySettings receiverSecSettings = TTestUtil::CreateX509SettingsTp(
             receiverCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             senderCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
-        SecurityTest(L"127.0.0.1:0", senderSecSettings, L"127.0.0.1:0", receiverSecSettings);
+        SecurityTest("127.0.0.1:0", senderSecSettings, "127.0.0.1:0", receiverSecSettings);
 
         LEAVE;
     }
@@ -1316,7 +1316,7 @@ namespace Transport
             securityConfig.FramingProtectionEnabled = saved;
         });
 
-        X509ManyMessage_SelfSigned(L"127.0.0.1:0", L"127.0.0.1:0");
+        X509ManyMessage_SelfSigned("127.0.0.1:0", "127.0.0.1:0");
 
         LEAVE;
     }
@@ -1333,7 +1333,7 @@ namespace Transport
             securityConfig.FramingProtectionEnabled = saved;
         });
 
-        X509ManySmallMessage_SelfSigned(L"127.0.0.1:0", L"127.0.0.1:0");
+        X509ManySmallMessage_SelfSigned("127.0.0.1:0", "127.0.0.1:0");
 
         LEAVE;
     }
@@ -1363,7 +1363,7 @@ namespace Transport
         receiverSecSettings.Test_SetRawValues(SecurityProvider::Negotiate, ProtectionLevel::EncryptAndSign);
         receiverSecSettings.SetFramingProtectionEnabledCallback([] { return true; });
 
-        SecurityTest(L"127.0.0.1:0", senderSecSettings, L"127.0.0.1:0", receiverSecSettings);
+        SecurityTest("127.0.0.1:0", senderSecSettings, "127.0.0.1:0", receiverSecSettings);
 
         LEAVE;
     }
@@ -1379,7 +1379,7 @@ namespace Transport
         SecuritySettings receiverSecSettings;
         receiverSecSettings.Test_SetRawValues(SecurityProvider::Negotiate, ProtectionLevel::EncryptAndSign);
 
-        SecurityTest(L"127.0.0.1:0", senderSecSettings, L"127.0.0.1:0", receiverSecSettings);
+        SecurityTest("127.0.0.1:0", senderSecSettings, "127.0.0.1:0", receiverSecSettings);
 
         LEAVE;
     }
@@ -1395,7 +1395,7 @@ namespace Transport
         receiverSecSettings.Test_SetRawValues(SecurityProvider::Negotiate, ProtectionLevel::Sign);
         receiverSecSettings.SetFramingProtectionEnabledCallback([] { return true; });
 
-        SecurityTest(L"127.0.0.1:0", senderSecSettings, L"127.0.0.1:0", receiverSecSettings);
+        SecurityTest("127.0.0.1:0", senderSecSettings, "127.0.0.1:0", receiverSecSettings);
 
         LEAVE;
     }
@@ -1411,7 +1411,7 @@ namespace Transport
         SecuritySettings receiverSecSettings;
         receiverSecSettings.Test_SetRawValues(SecurityProvider::Negotiate, ProtectionLevel::Sign);
 
-        SecurityTest(L"127.0.0.1:0", senderSecSettings, L"127.0.0.1:0", receiverSecSettings);
+        SecurityTest("127.0.0.1:0", senderSecSettings, "127.0.0.1:0", receiverSecSettings);
 
         LEAVE;
     }
@@ -1427,7 +1427,7 @@ namespace Transport
         SecuritySettings receiverSecSettings;
         receiverSecSettings.Test_SetRawValues(SecurityProvider::Negotiate, ProtectionLevel::EncryptAndSign);
 
-        ManyMessageTest(L"127.0.0.1:0", senderSecSettings, L"127.0.0.1:0", receiverSecSettings);
+        ManyMessageTest("127.0.0.1:0", senderSecSettings, "127.0.0.1:0", receiverSecSettings);
 
         LEAVE;
     }
@@ -1443,7 +1443,7 @@ namespace Transport
         SecuritySettings receiverSecSettings;
         receiverSecSettings.Test_SetRawValues(SecurityProvider::Negotiate, ProtectionLevel::EncryptAndSign);
 
-        ManySmallMessageTest(L"127.0.0.1:0", senderSecSettings, L"127.0.0.1:0", receiverSecSettings);
+        ManySmallMessageTest("127.0.0.1:0", senderSecSettings, "127.0.0.1:0", receiverSecSettings);
 
         LEAVE;
     }
@@ -1459,7 +1459,7 @@ namespace Transport
         SecuritySettings receiverSecSettings;
         receiverSecSettings.Test_SetRawValues(SecurityProvider::Negotiate, ProtectionLevel::Sign);
 
-        ManyMessageTest(L"127.0.0.1:0", senderSecSettings, L"127.0.0.1:0", receiverSecSettings);
+        ManyMessageTest("127.0.0.1:0", senderSecSettings, "127.0.0.1:0", receiverSecSettings);
 
         LEAVE;
     }
@@ -1475,7 +1475,7 @@ namespace Transport
         SecuritySettings receiverSecSettings;
         receiverSecSettings.Test_SetRawValues(SecurityProvider::Negotiate, ProtectionLevel::Sign);
 
-        ManySmallMessageTest(L"127.0.0.1:0", senderSecSettings, L"127.0.0.1:0", receiverSecSettings);
+        ManySmallMessageTest("127.0.0.1:0", senderSecSettings, "127.0.0.1:0", receiverSecSettings);
 
         LEAVE;
     }
@@ -1492,15 +1492,15 @@ namespace Transport
         InstallTestCertInScope testCert;
         SecuritySettings securitySettings = TTestUtil::CreateX509SettingsTp(
             testCert.Thumbprint()->PrimaryToString(),
-            L"", 
+            "", 
             testCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         auto receiver = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress());
         VERIFY_IS_TRUE(receiver->SetSecurity(securitySettings).IsSuccess());
 
         AutoResetEvent messageReceived(false);
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         TTestUtil::SetMessageHandler(
             receiver,
             testAction,
@@ -1533,18 +1533,18 @@ namespace Transport
     {
         ENTER;
 
-        const wstring senderCn = L"sender.test.com";
-        const wstring receiverCn = L"receiver.test.com";
-        InstallTestCertInScope senderCert(L"CN=" + senderCn);
-        InstallTestCertInScope receiverCert(L"CN=" + receiverCn);
+        const string senderCn = "sender.test.com";
+        const string receiverCn = "receiver.test.com";
+        InstallTestCertInScope senderCert("CN=" + senderCn);
+        InstallTestCertInScope receiverCert("CN=" + receiverCn);
 
         SecuritySettings noOneIsAllowedSecuritySettings = TTestUtil::CreateX509SettingsTp(
             receiverCert.Thumbprint()->PrimaryToString(),
-            L"",
-            L"0000000000000000000000000000000000000000", //Assuming this will match any certificate thumbprints
-            L"");
+            "",
+            "0000000000000000000000000000000000000000", //Assuming this will match any certificate thumbprints
+            "");
 
-        auto receiver = DatagramTransportFactory::CreateTcp(L"127.0.0.1:0");
+        auto receiver = DatagramTransportFactory::CreateTcp("127.0.0.1:0");
 
         VERIFY_IS_TRUE(receiver->SetSecurity(noOneIsAllowedSecuritySettings).IsSuccess());
         VERIFY_IS_TRUE(receiver->Start().IsSuccess());
@@ -1552,9 +1552,9 @@ namespace Transport
         auto sender = DatagramTransportFactory::CreateTcpClient();
         SecuritySettings senderSecSettings = TTestUtil::CreateX509SettingsTp(
             senderCert.Thumbprint()->PrimaryToString(),
-            L"", 
+            "", 
             receiverCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         VERIFY_IS_TRUE(sender->SetSecurity(senderSecSettings).IsSuccess());
         VERIFY_IS_TRUE(sender->Start().IsSuccess());
@@ -1596,14 +1596,14 @@ namespace Transport
     {
         ENTER;
 
-        auto receiver = DatagramTransportFactory::CreateTcp(L"127.0.0.1:0");
+        auto receiver = DatagramTransportFactory::CreateTcp("127.0.0.1:0");
 
         InstallTestCertInScope testCert;
         SecuritySettings securitySettings = TTestUtil::CreateX509SettingsTp(
             testCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             testCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         VERIFY_IS_TRUE(receiver->SetSecurity(securitySettings).IsSuccess());
    
@@ -1675,35 +1675,35 @@ namespace Transport
         Assert::DisableDebugBreakInThisScope disableDebugBreakInThisScope;
         Assert::DisableTestAssertInThisScope disableTestAssertInThisScope;
 
-        const wstring clientCn = L"client.test.com";
-        const wstring adminClinetCn = L"adminclient.test.com";
-        const wstring serverCn = L"server.test.com";
-        InstallTestCertInScope clientCert(L"CN=" + clientCn);
-        InstallTestCertInScope adminClientCert(L"CN=" + adminClinetCn);
-        InstallTestCertInScope serverCert(L"CN=" + serverCn);
+        const string clientCn = "client.test.com";
+        const string adminClinetCn = "adminclient.test.com";
+        const string serverCn = "server.test.com";
+        InstallTestCertInScope clientCert("CN=" + clientCn);
+        InstallTestCertInScope adminClientCert("CN=" + adminClinetCn);
+        InstallTestCertInScope serverCert("CN=" + serverCn);
 
         auto clientSecSettings = TTestUtil::CreateX509SettingsTp(
             clientCert.Thumbprint()->PrimaryToString(),
-            L"", 
+            "", 
             serverCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         auto adminClientSecSettings = TTestUtil::CreateX509SettingsTp(
             adminClientCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             serverCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         auto serverSecSettings = TTestUtil::CreateX509SettingsTp(
             serverCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             clientCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         serverSecSettings.EnableAdminRole(
             adminClientCert.Thumbprint()->PrimaryToString(),
             SecurityConfig::X509NameMap(),
-            wstring());
+            string());
 
         auto client = DatagramTransportFactory::CreateTcpClient();
         auto adminClient = DatagramTransportFactory::CreateTcpClient();
@@ -1719,17 +1719,17 @@ namespace Transport
         server->SetMaxIncomingFrameSize(lowMessageSizeLimit);
 
         // Make sure message size is over the limit
-        std::wstring requestBodyString;
-        while (requestBodyString.size() * sizeof(wchar_t) < TransportSecurity::Test_GetInternalMaxFrameSize(lowMessageSizeLimit))
+        std::string requestBodyString;
+        while (requestBodyString.size() * sizeof(char) < TransportSecurity::Test_GetInternalMaxFrameSize(lowMessageSizeLimit))
         {
-            requestBodyString += L"Message ";
+            requestBodyString += "Message ";
         }
-        requestBodyString += L"oh yeah";
+        requestBodyString += "oh yeah";
 
         TcpTestMessage requestBody(requestBodyString);
 
         AutoResetEvent messageReceived;
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         ISendTarget::SPtr clientTargetOnServer;
         TTestUtil::SetMessageHandler(
             server,
@@ -1786,7 +1786,7 @@ namespace Transport
 
             VERIFY_IS_TRUE(adminClient->Start().IsSuccess());
 
-            ISendTarget::SPtr target = adminClient->ResolveTarget(server->ListenAddress(), L"");
+            ISendTarget::SPtr target = adminClient->ResolveTarget(server->ListenAddress(), "");
             VERIFY_IS_TRUE(target);
 
             auto ping = make_unique<Message>();
@@ -1843,7 +1843,7 @@ namespace Transport
 
             VERIFY_IS_TRUE(client->Start().IsSuccess());
 
-            ISendTarget::SPtr target = client->ResolveTarget(server->ListenAddress(), L"");
+            ISendTarget::SPtr target = client->ResolveTarget(server->ListenAddress(), "");
             VERIFY_IS_TRUE(target);
 
             auto ping = make_unique<Message>();
@@ -1889,7 +1889,7 @@ namespace Transport
             VERIFY_IS_TRUE(error.IsSuccess());
 
             Trace.WriteInfo(TraceType, "Message should be dropped due to size limit on the receiver");
-            VERIFY_IS_FALSE(messageReceived.WaitOne(TimeSpan::FromSeconds(0.1)), L"Message should be dropped due to size limit on the receiver");
+            VERIFY_IS_FALSE(messageReceived.WaitOne(TimeSpan::FromSeconds(0.1)), "Message should be dropped due to size limit on the receiver");
 
             Trace.WriteInfo(TraceType, "Increase message size limit on receiver: {0} -> {1}", lowMessageSizeLimit, messageSize);
             server->SetMaxIncomingFrameSize(static_cast<ULONG>(messageSize));
@@ -1905,7 +1905,7 @@ namespace Transport
             VERIFY_IS_TRUE(error.IsSuccess());
 
             Trace.WriteInfo(TraceType, "Message should be received since both limits have been raised");
-            VERIFY_IS_TRUE(messageReceived.WaitOne(TimeSpan::FromSeconds(10)), L"Message should be received since both limits have been raised");
+            VERIFY_IS_TRUE(messageReceived.WaitOne(TimeSpan::FromSeconds(10)), "Message should be received since both limits have been raised");
 
             Trace.WriteInfo(TraceType, "Reduce message size limit on receiver: {0} -> {1}", messageSize, lowMessageSizeLimit);
             server->SetMaxIncomingFrameSize(lowMessageSizeLimit);
@@ -1917,7 +1917,7 @@ namespace Transport
             VERIFY_IS_TRUE(error.IsSuccess());
 
             Trace.WriteInfo(TraceType, "Message should be dropped due to incoming message size limit on the server");
-            VERIFY_IS_FALSE(messageReceived.WaitOne(TimeSpan::FromSeconds(0.1)), L"Message should be dropped due to size limit on the receiver");
+            VERIFY_IS_FALSE(messageReceived.WaitOne(TimeSpan::FromSeconds(0.1)), "Message should be dropped due to size limit on the receiver");
 
             Trace.WriteInfo(TraceType, "wait for old connection cleanup to complete so that new messages will not be dropped due to cleanup");
             TTestUtil::WaitUntil([&] { return target->ConnectionCount() == 0; }, TimeSpan::FromSeconds(3));
@@ -1960,22 +1960,22 @@ namespace Transport
 
         Assert::DisableTestAssertInThisScope disableTestAssertInThisScope;
 
-        const wstring clientCn = L"client.test.com";
-        const wstring serverCn = L"server.test.com";
-        InstallTestCertInScope clientCert(L"CN=" + clientCn);
-        InstallTestCertInScope serverCert(L"CN=" + serverCn);
+        const string clientCn = "client.test.com";
+        const string serverCn = "server.test.com";
+        InstallTestCertInScope clientCert("CN=" + clientCn);
+        InstallTestCertInScope serverCert("CN=" + serverCn);
 
         auto clientSecSettings = TTestUtil::CreateX509SettingsTp(
             clientCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             serverCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         auto serverSecSettings = TTestUtil::CreateX509SettingsTp(
             serverCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             clientCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         auto clientRootSPtr = make_shared<ComponentRoot>();
 
@@ -2053,22 +2053,22 @@ namespace Transport
 
         Assert::DisableTestAssertInThisScope disableTestAssertInThisScope;
 
-        const wstring clientCn = L"client.test.com";
-        const wstring serverCn = L"server.test.com";
-        InstallTestCertInScope clientCert(L"CN=" + clientCn);
-        InstallTestCertInScope serverCert(L"CN=" + serverCn);
+        const string clientCn = "client.test.com";
+        const string serverCn = "server.test.com";
+        InstallTestCertInScope clientCert("CN=" + clientCn);
+        InstallTestCertInScope serverCert("CN=" + serverCn);
 
         auto clientSecSettings = TTestUtil::CreateX509SettingsTp(
             clientCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             serverCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         auto serverSecSettings = TTestUtil::CreateX509SettingsTp(
             serverCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             clientCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         auto clientRootSPtr = make_shared<ComponentRoot>();
 
@@ -2164,9 +2164,9 @@ namespace Transport
         InstallTestCertInScope testCert;
         SecuritySettings securitySettings = TTestUtil::CreateX509SettingsTp(
             testCert.Thumbprint()->PrimaryToString(),
-            L"", 
+            "", 
             testCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         AdminRoleTest(securitySettings, false, false);
 
@@ -2180,9 +2180,9 @@ namespace Transport
         InstallTestCertInScope testCert;
         SecuritySettings securitySettings = TTestUtil::CreateX509SettingsTp(
             testCert.Thumbprint()->PrimaryToString(),
-            L"", 
+            "", 
             testCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         AdminRoleTest(securitySettings, true, false);
 
@@ -2203,8 +2203,8 @@ namespace Transport
         ENTER;
 
         SecuritySettings securitySettings = TTestUtil::CreateX509Settings(
-            L"CN=WinFabric-Test-SAN1-Bob",
-            L"WinFabricRing.Rings.WinFabricTestDomain.com");
+            "CN=WinFabric-Test-SAN1-Bob",
+            "WinFabricRing.Rings.WinFabricTestDomain.com");
 
         // test with client cert thumbprint and common name
         AdminRoleTest(securitySettings, true, true);
@@ -2218,8 +2218,8 @@ namespace Transport
         ENTER;
         BasicTestWin(
             SecurityProvider::Negotiate,
-            L"127.0.0.1:0",
-            L"127.0.0.1:0",
+            "127.0.0.1:0",
+            "127.0.0.1:0",
             ProtectionLevel::Sign);
         LEAVE;
     }
@@ -2229,8 +2229,8 @@ namespace Transport
         ENTER;
         BasicTestWin(
             SecurityProvider::Negotiate,
-            L"[::1]:0",
-            L"[0:0:0:0:0:0:0:1]:0",
+            "[::1]:0",
+            "[0:0:0:0:0:0:0:1]:0",
             ProtectionLevel::Sign);
         LEAVE;
     }
@@ -2240,8 +2240,8 @@ namespace Transport
         ENTER;
         BasicTestWin(
             SecurityProvider::Negotiate,
-            L"127.0.0.1:0",
-            L"127.0.0.1:0",
+            "127.0.0.1:0",
+            "127.0.0.1:0",
             ProtectionLevel::EncryptAndSign);
         LEAVE;
     }
@@ -2251,8 +2251,8 @@ namespace Transport
         ENTER;
         BasicTestWin(
             SecurityProvider::Negotiate,
-            L"[::1]:0",
-            L"[0:0:0:0:0:0:0:1]:0",
+            "[::1]:0",
+            "[0:0:0:0:0:0:0:1]:0",
             ProtectionLevel::EncryptAndSign);
         LEAVE;
     }
@@ -2262,8 +2262,8 @@ namespace Transport
         ENTER;
         BasicTestWin(
             SecurityProvider::Kerberos,
-            L"127.0.0.1:0",
-            L"127.0.0.1:0",
+            "127.0.0.1:0",
+            "127.0.0.1:0",
             ProtectionLevel::Sign);
         LEAVE;
     }
@@ -2273,8 +2273,8 @@ namespace Transport
         ENTER;
         BasicTestWin(
             SecurityProvider::Kerberos,
-            L"[::1]:0",
-            L"[0:0:0:0:0:0:0:1]:0",
+            "[::1]:0",
+            "[0:0:0:0:0:0:0:1]:0",
             ProtectionLevel::Sign);
         LEAVE;
     }
@@ -2284,8 +2284,8 @@ namespace Transport
         ENTER;
         BasicTestWin(
             SecurityProvider::Kerberos,
-            L"127.0.0.1:0",
-            L"127.0.0.1:0",
+            "127.0.0.1:0",
+            "127.0.0.1:0",
             ProtectionLevel::EncryptAndSign);
         LEAVE;
     }
@@ -2295,8 +2295,8 @@ namespace Transport
         ENTER;
         BasicTestWin(
             SecurityProvider::Kerberos,
-            L"[::1]:0",
-            L"[0:0:0:0:0:0:0:1]:0",
+            "[::1]:0",
+            "[0:0:0:0:0:0:0:1]:0",
             ProtectionLevel::EncryptAndSign);
         LEAVE;
     }
@@ -2382,21 +2382,21 @@ namespace Transport
     BOOST_AUTO_TEST_CASE(X509CertIssuerMatchTest1)
     {
         ENTER;
-        X509CertIssuerMatchTest(L"b3 44 9b 01 8d 0f 68 39 a2 c5 d6 2b 5b 6c 6a c8 22 b6 f6 62", true);
+        X509CertIssuerMatchTest("b3 44 9b 01 8d 0f 68 39 a2 c5 d6 2b 5b 6c 6a c8 22 b6 f6 62", true);
         LEAVE;
     }
 
     BOOST_AUTO_TEST_CASE(X509CertIssuerMatchTest2)
     {
         ENTER;
-        X509CertIssuerMatchTest(L"bc 21 ae 9f 0b 88 cf 6e a9 b4 d6 23 3f 97 2a 60 63 b2 25 a9", false);
+        X509CertIssuerMatchTest("bc 21 ae 9f 0b 88 cf 6e a9 b4 d6 23 3f 97 2a 60 63 b2 25 a9", false);
         LEAVE;
     }
 
     BOOST_AUTO_TEST_CASE(X509CertIssuerMatchTest3)
     {
         ENTER;
-        X509CertIssuerMatchTest(L"bc 21 ae 9f 0b 88 cf 6e a9 b4 d6 23 3f 97 2a 60 63 b2 25 a9,b3 44 9b 01 8d 0f 68 39 a2 c5 d6 2b 5b 6c 6a c8 22 b6 f6 62", true);
+        X509CertIssuerMatchTest("bc 21 ae 9f 0b 88 cf 6e a9 b4 d6 23 3f 97 2a 60 63 b2 25 a9,b3 44 9b 01 8d 0f 68 39 a2 c5 d6 2b 5b 6c 6a c8 22 b6 f6 62", true);
         LEAVE;
     }
 
@@ -2407,9 +2407,9 @@ namespace Transport
 
         cout << "test with certs validated by subject + issuer, chained to untrusted root, success expected" << endl;
 
-        auto subjectName = L"untrusted-root.cert-issuer-match.test.servicefabric";
-        auto subject = wformatString("CN={0}", subjectName);
-        auto certKeyContainer = L"sf.transport.security.test";
+        auto subjectName = "untrusted-root.cert-issuer-match.test.servicefabric";
+        auto subject = formatString.L("CN={0}", subjectName);
+        auto certKeyContainer = "sf.transport.security.test";
 
         Common::StringMap subjectIssuerMap;
 
@@ -2425,11 +2425,11 @@ namespace Transport
 
         // 1. verify a matching cert (subject + issuer) with an untrusted root is accepted
         subjectIssuerMap.clear();
-        subjectIssuerMap.insert(std::pair<wstring, wstring>(subjectName, cert.Thumbprint()->PrimaryToString()));
+        subjectIssuerMap.insert(std::pair<string, string>(subjectName, cert.Thumbprint()->PrimaryToString()));
         auto names = SecurityConfig::X509NameMap::Parse(subjectIssuerMap);
         ThumbprintSet emptyX5tSet = {};
         auto result = SecurityContextSsl::VerifyCertificate(
-            L"untrusted root cert test.1 - basic",  // trace id
+            "untrusted root cert test.1 - basic",  // trace id
             cert.CertContext(),                     // cert being verified
             0,                                      // no CRL check
             true,                                   // ignore CRL offline
@@ -2441,10 +2441,10 @@ namespace Transport
 
         // 2. Verify a subject-matching cert is not accepted if the issuer is missing
         subjectIssuerMap.clear();
-        subjectIssuerMap.insert(std::pair<wstring, wstring>(subjectName, L""));
+        subjectIssuerMap.insert(std::pair<string, string>(subjectName, ""));
         names = SecurityConfig::X509NameMap::Parse(subjectIssuerMap);
         result = SecurityContextSsl::VerifyCertificate(
-            L"untrusted root cert test.2 - no issuer",  // trace id
+            "untrusted root cert test.2 - no issuer",  // trace id
             cert.CertContext(),                         // cert being verified
             0,                                          // no CRL check
             true,                                       // ignore CRL offline
@@ -2456,10 +2456,10 @@ namespace Transport
 
         // 3. Verify a subject-matching cert is not accepted if the issuer does not match
         subjectIssuerMap.clear();
-        subjectIssuerMap.insert(std::pair<wstring, wstring>(subjectName, L"deadbeef00deadbeef00deadbeef00deadbeef00"));
+        subjectIssuerMap.insert(std::pair<string, string>(subjectName, "deadbeef00deadbeef00deadbeef00deadbeef00"));
         names = SecurityConfig::X509NameMap::Parse(subjectIssuerMap);
         result = SecurityContextSsl::VerifyCertificate(
-            L"untrusted root cert test.3 - mismatching issuer", // trace id
+            "untrusted root cert test.3 - mismatching issuer", // trace id
             cert.CertContext(),                                 // cert being verified
             0,                                                  // no CRL check
             true,                                               // ignore CRL offline
@@ -2471,10 +2471,10 @@ namespace Transport
 
         // 4. verify a non-matching cert is not accepted
         subjectIssuerMap.clear();
-        subjectIssuerMap.insert(std::pair<wstring, wstring>(L"unexpected.match", cert.Thumbprint()->PrimaryToString()));
+        subjectIssuerMap.insert(std::pair<string, string>("unexpected.match", cert.Thumbprint()->PrimaryToString()));
         names = SecurityConfig::X509NameMap::Parse(subjectIssuerMap);
         result = SecurityContextSsl::VerifyCertificate(
-            L"untrusted root cert test.4 - mismatching subject",// trace id
+            "untrusted root cert test.4 - mismatching subject",// trace id
             cert.CertContext(),                                 // cert being verified
             0,                                                  // no CRL check
             true,                                               // ignore CRL offline
@@ -2491,17 +2491,17 @@ namespace Transport
     {
         ENTER;
 
-        auto server = DatagramTransportFactory::CreateTcp(L"127.0.0.1:0");
+        auto server = DatagramTransportFactory::CreateTcp("127.0.0.1:0");
         SecuritySettings serverSecurity = TTestUtil::CreateKerbSettings();
         VERIFY_IS_TRUE(server->SetSecurity(serverSecurity).IsSuccess());
         VERIFY_IS_TRUE(server->Start().IsSuccess());
 
-        InstallTestCertInScope clientCert(L"CN=client@SecurityProviderMismatchTest");
+        InstallTestCertInScope clientCert("CN=client@SecurityProviderMismatchTest");
         SecuritySettings clientSecurity = TTestUtil::CreateX509SettingsTp(
             clientCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             clientCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         auto client = DatagramTransportFactory::CreateTcpClient();
         VERIFY_IS_TRUE(client->SetSecurity(clientSecurity).IsSuccess());
@@ -2568,15 +2568,15 @@ namespace Transport
         SecurityConfig::GetConfig().UseSecondaryIfNewer = true;
         KFinally([=] { SecurityConfig::GetConfig().UseSecondaryIfNewer = saved; });
 
-        auto cn1 = wformatString("name1-{0}", Guid::NewGuid());
-        auto cn2 = wformatString("name2-{0}", Guid::NewGuid());
-        InstallTestCertInScope testCert1(L"CN=" + cn1);
-        InstallTestCertInScope testCert1_2(L"CN=" + cn1, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(48));
-        InstallTestCertInScope testCert2(L"CN=" + cn2, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(72));
-        InstallTestCertInScope testCert2_2(L"CN=" + cn2, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(24));
-        InstallTestCertInScope testCert2_3(L"CN=" + cn2, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(70));
+        auto cn1 = formatString.L("name1-{0}", Guid::NewGuid());
+        auto cn2 = formatString.L("name2-{0}", Guid::NewGuid());
+        InstallTestCertInScope testCert1("CN=" + cn1);
+        InstallTestCertInScope testCert1_2("CN=" + cn1, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(48));
+        InstallTestCertInScope testCert2("CN=" + cn2, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(72));
+        InstallTestCertInScope testCert2_2("CN=" + cn2, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(24));
+        InstallTestCertInScope testCert2_3("CN=" + cn2, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(70));
 
-        auto securitySettings  = TTestUtil::CreateX509Settings(cn1, cn2, L"DoesNotMatterForThisTest", L"");
+        auto securitySettings  = TTestUtil::CreateX509Settings(cn1, cn2, "DoesNotMatterForThisTest", "");
         vector<SecurityCredentialsSPtr> credentials, svrCredentials;
         auto error = SecurityCredentials::AcquireSsl(
             securitySettings.X509StoreLocation(),
@@ -2617,18 +2617,18 @@ namespace Transport
         SecurityConfig::GetConfig().UseSecondaryIfNewer = true;
         KFinally([=] { SecurityConfig::GetConfig().UseSecondaryIfNewer = saved; });
 
-        auto cn1 = wformatString("name1-{0}", Guid::NewGuid());
-        auto cn2 = wformatString("name2-{0}", Guid::NewGuid());
-        InstallTestCertInScope testCert1(L"CN=" + cn1);
-        InstallTestCertInScope testCert1_2(L"CN=" + cn1, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(48));
-        InstallTestCertInScope testCert2(L"CN=" + cn2, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(72));
+        auto cn1 = formatString.L("name1-{0}", Guid::NewGuid());
+        auto cn2 = formatString.L("name2-{0}", Guid::NewGuid());
+        InstallTestCertInScope testCert1("CN=" + cn1);
+        InstallTestCertInScope testCert1_2("CN=" + cn1, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(48));
+        InstallTestCertInScope testCert2("CN=" + cn2, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(72));
 
         //The following two certs are specified the same expiration as the two above, to test edge case for expiration sorting,
         //the ordering of these two certs relative to the two above will be non-deterministic after sorting.
-        InstallTestCertInScope testCert2_2(L"CN=" + cn2, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(48));
-        InstallTestCertInScope testCert2_3(L"CN=" + cn2, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(72));
+        InstallTestCertInScope testCert2_2("CN=" + cn2, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(48));
+        InstallTestCertInScope testCert2_3("CN=" + cn2, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(72));
 
-        auto securitySettings = TTestUtil::CreateX509Settings(cn2, cn1, L"DoesNotMatterForThisTest", L"");
+        auto securitySettings = TTestUtil::CreateX509Settings(cn2, cn1, "DoesNotMatterForThisTest", "");
         vector<SecurityCredentialsSPtr> credentials;
         auto error = SecurityCredentials::AcquireSsl(
             securitySettings.X509StoreLocation(),
@@ -2657,15 +2657,15 @@ namespace Transport
         SecurityConfig::GetConfig().UseSecondaryIfNewer = true;
         KFinally([=] { SecurityConfig::GetConfig().UseSecondaryIfNewer = saved; });
 
-        auto cn1 = wformatString("name1-{0}", Guid::NewGuid());
-        auto cn2 = wformatString("name2-{0}", Guid::NewGuid());
-        InstallTestCertInScope testCert1(L"CN=" + cn1);
-        InstallTestCertInScope testCert1_2(L"CN=" + cn1, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(24));
-        InstallTestCertInScope testCert2(L"CN=" + cn2, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(72));
-        InstallTestCertInScope testCert2_2(L"CN=" + cn2, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(48));
-        InstallTestCertInScope testCert2_3(L"CN=" + cn2, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(70));
+        auto cn1 = formatString.L("name1-{0}", Guid::NewGuid());
+        auto cn2 = formatString.L("name2-{0}", Guid::NewGuid());
+        InstallTestCertInScope testCert1("CN=" + cn1);
+        InstallTestCertInScope testCert1_2("CN=" + cn1, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(24));
+        InstallTestCertInScope testCert2("CN=" + cn2, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(72));
+        InstallTestCertInScope testCert2_2("CN=" + cn2, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(48));
+        InstallTestCertInScope testCert2_3("CN=" + cn2, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(70));
 
-        auto securitySettings = TTestUtil::CreateX509Settings(cn1, cn2, L"DoesNotMatterForThisTest", L"");
+        auto securitySettings = TTestUtil::CreateX509Settings(cn1, cn2, "DoesNotMatterForThisTest", "");
         vector<SecurityCredentialsSPtr> svrCredentials;
         auto error = SecurityCredentials::AcquireSsl(
             securitySettings.X509StoreLocation(),
@@ -2703,13 +2703,13 @@ namespace Transport
         SecurityConfig::GetConfig().UseSecondaryIfNewer = true;
         KFinally([=] { SecurityConfig::GetConfig().UseSecondaryIfNewer = saved; });
 
-        auto cn1 = wformatString("name1-{0}", Guid::NewGuid());
-        auto cn2 = wformatString("name2-{0}", Guid::NewGuid());
-        InstallTestCertInScope testCert1(L"CN=" + cn1);
-        InstallTestCertInScope testCert1_2(L"CN=" + cn1, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(48));
+        auto cn1 = formatString.L("name1-{0}", Guid::NewGuid());
+        auto cn2 = formatString.L("name2-{0}", Guid::NewGuid());
+        InstallTestCertInScope testCert1("CN=" + cn1);
+        InstallTestCertInScope testCert1_2("CN=" + cn1, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(48));
 
         Trace.WriteInfo(TraceType, "findValue has both cn1 and cn2, but testCert2 is not installed");
-        auto securitySettings = TTestUtil::CreateX509Settings(cn1, cn2, L"DoesNotMatterForThisTest", L"");
+        auto securitySettings = TTestUtil::CreateX509Settings(cn1, cn2, "DoesNotMatterForThisTest", "");
         vector<SecurityCredentialsSPtr> credentials, svrCredentials;
         auto error = SecurityCredentials::AcquireSsl(
             securitySettings.X509StoreLocation(),
@@ -2740,14 +2740,14 @@ namespace Transport
         SecurityConfig::GetConfig().UseSecondaryIfNewer = true;
         KFinally([=] { SecurityConfig::GetConfig().UseSecondaryIfNewer = saved; });
 
-        auto cn1 = wformatString("name1-{0}", Guid::NewGuid());
-        auto cn2 = wformatString("name2-{0}", Guid::NewGuid());
-        InstallTestCertInScope testCert2(L"CN=" + cn2, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(48));
-        InstallTestCertInScope testCert2_2(L"CN=" + cn2, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(72));
-        InstallTestCertInScope testCert2_3(L"CN=" + cn2, nullptr);
+        auto cn1 = formatString.L("name1-{0}", Guid::NewGuid());
+        auto cn2 = formatString.L("name2-{0}", Guid::NewGuid());
+        InstallTestCertInScope testCert2("CN=" + cn2, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(48));
+        InstallTestCertInScope testCert2_2("CN=" + cn2, nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(72));
+        InstallTestCertInScope testCert2_3("CN=" + cn2, nullptr);
 
         Trace.WriteInfo(TraceType, "findValue has both cn1 and cn2, but testCert1 is not installed");
-        auto securitySettings = TTestUtil::CreateX509Settings(cn1, cn2, L"DoesNotMatterForThisTest", L"");
+        auto securitySettings = TTestUtil::CreateX509Settings(cn1, cn2, "DoesNotMatterForThisTest", "");
         vector<SecurityCredentialsSPtr> credentials, svrCredentials;
         auto error = SecurityCredentials::AcquireSsl(
             securitySettings.X509StoreLocation(),
@@ -2788,14 +2788,14 @@ namespace Transport
         SecurityConfig::GetConfig().UseSecondaryIfNewer = true;
         KFinally([=] { SecurityConfig::GetConfig().UseSecondaryIfNewer = saved; });
 
-        InstallTestCertInScope testCert1(L"");
-        InstallTestCertInScope testCert2(L"", nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(48));
+        InstallTestCertInScope testCert1("");
+        InstallTestCertInScope testCert2("", nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(48));
 
         auto securitySettings = TTestUtil::CreateX509Settings2(
             testCert1.Thumbprint()->PrimaryToString(),
             testCert2.Thumbprint()->PrimaryToString(),
-            L"DoesNotMatterForThisTest",
-            L"");
+            "DoesNotMatterForThisTest",
+            "");
 
         vector<SecurityCredentialsSPtr> credentials, svrCredentials;
         auto error = SecurityCredentials::AcquireSsl(
@@ -2837,14 +2837,14 @@ namespace Transport
         SecurityConfig::GetConfig().UseSecondaryIfNewer = true;
         KFinally([=] { SecurityConfig::GetConfig().UseSecondaryIfNewer = saved; });
 
-        InstallTestCertInScope testCert1(L"", nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(48));
-        InstallTestCertInScope testCert2(L"");
+        InstallTestCertInScope testCert1("", nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(48));
+        InstallTestCertInScope testCert2("");
 
         auto securitySettings = TTestUtil::CreateX509Settings2(
             testCert1.Thumbprint()->PrimaryToString(),
             testCert2.Thumbprint()->PrimaryToString(),
-            L"DoesNotMatterForThisTest",
-            L"");
+            "DoesNotMatterForThisTest",
+            "");
 
         vector<SecurityCredentialsSPtr> credentials;
         auto error = SecurityCredentials::AcquireSsl(
@@ -2883,14 +2883,14 @@ namespace Transport
         SecurityConfig::GetConfig().UseSecondaryIfNewer = true;
         KFinally([=] { SecurityConfig::GetConfig().UseSecondaryIfNewer = saved; });
 
-        InstallTestCertInScope testCert1(L"", nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(48));
-        InstallTestCertInScope testCert2(L"");
+        InstallTestCertInScope testCert1("", nullptr, InstallTestCertInScope::DefaultCertExpiry() + TimeSpan::FromHours(48));
+        InstallTestCertInScope testCert2("");
 
         auto securitySettings = TTestUtil::CreateX509Settings2(
             testCert1.Thumbprint()->PrimaryToString(),
             testCert2.Thumbprint()->PrimaryToString(),
-            L"DoesNotMatterForThisTest",
-            L"");
+            "DoesNotMatterForThisTest",
+            "");
 
         vector<SecurityCredentialsSPtr> svrCredentials;
         auto error = SecurityCredentials::AcquireSsl(
@@ -2918,13 +2918,13 @@ namespace Transport
         SecurityConfig::GetConfig().UseSecondaryIfNewer = true;
         KFinally([=] { SecurityConfig::GetConfig().UseSecondaryIfNewer = saved; });
 
-        InstallTestCertInScope testCert1(L"");
+        InstallTestCertInScope testCert1("");
 
         auto securitySettings = TTestUtil::CreateX509Settings2(
             testCert1.Thumbprint()->PrimaryToString(),
-            L"ffffffffffffffffffffffffffffffffffffffff", // secondary certificate load will fail
-            L"DoesNotMatterForThisTest",
-            L"");
+            "ffffffffffffffffffffffffffffffffffffffff", // secondary certificate load will fail
+            "DoesNotMatterForThisTest",
+            "");
 
         vector<SecurityCredentialsSPtr> credentials;
         auto error = SecurityCredentials::AcquireSsl(
@@ -2952,13 +2952,13 @@ namespace Transport
         SecurityConfig::GetConfig().UseSecondaryIfNewer = true;
         KFinally([=] { SecurityConfig::GetConfig().UseSecondaryIfNewer = saved; });
 
-        InstallTestCertInScope testCert2(L"");
+        InstallTestCertInScope testCert2("");
 
         auto securitySettings = TTestUtil::CreateX509Settings2(
-            L"ffffffffffffffffffffffffffffffffffffffff", // primary certificate load will fail
+            "ffffffffffffffffffffffffffffffffffffffff", // primary certificate load will fail
             testCert2.Thumbprint()->PrimaryToString(),
-            L"DoesNotMatterForThisTest",
-            L"");
+            "DoesNotMatterForThisTest",
+            "");
 
         vector<SecurityCredentialsSPtr> svrCredentials;
         auto error = SecurityCredentials::AcquireSsl(
@@ -3011,9 +3011,9 @@ namespace Transport
         InstallTestCertInScope testCert;
         SecuritySettings securitySettings = TTestUtil::CreateX509SettingsTp(
             testCert.Thumbprint()->PrimaryToString(),
-            L"", 
+            "", 
             testCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         VERIFY_IS_TRUE(receiver->SetSecurity(securitySettings).IsSuccess());
         VERIFY_IS_TRUE(sender->SetSecurity(securitySettings).IsSuccess());
@@ -3079,7 +3079,7 @@ namespace Transport
         VERIFY_IS_TRUE(receiver->Start().IsSuccess());
         VERIFY_IS_TRUE(sender->Start().IsSuccess());
 
-        ISendTarget::SPtr target = sender->ResolveTarget(receiver->ListenAddress(), L"");
+        ISendTarget::SPtr target = sender->ResolveTarget(receiver->ListenAddress(), "");
         VERIFY_IS_TRUE(target);
 
         for (ULONG i = 0; i < messageExpected; ++ i)
@@ -3135,7 +3135,7 @@ namespace Transport
         });
 
         AutoResetEvent messageReceived;
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         TTestUtil::SetMessageHandler(
             receiver,
             testAction,
@@ -3176,9 +3176,9 @@ namespace Transport
         VERIFY_IS_TRUE(sender->Start().IsSuccess());
         VERIFY_IS_TRUE(receiver->Start().IsSuccess());
 
-        wstring localListenerIdentity = TransportSecurity().LocalWindowsIdentity();
+        string localListenerIdentity = TransportSecurity().LocalWindowsIdentity();
 
-        ISendTarget::SPtr target = sender->ResolveTarget(receiver->ListenAddress(), L"", localListenerIdentity);
+        ISendTarget::SPtr target = sender->ResolveTarget(receiver->ListenAddress(), "", localListenerIdentity);
         VERIFY_IS_TRUE(target);
 
         auto message = make_unique<Message>();
@@ -3263,12 +3263,12 @@ namespace Transport
                         Thumbprint clientCertThumbprint;
                         error = clientCertThumbprint.Initialize(clientCert.get());
                         VERIFY_IS_TRUE(error.IsSuccess());
-                        securitySettings.EnableAdminRole(wformatString(clientCertThumbprint), SecurityConfig::X509NameMap(), L"");
+                        securitySettings.EnableAdminRole(formatString(clientCertThumbprint), SecurityConfig::X509NameMap(), "");
                     }
                     else
                     {
                         Trace.WriteInfo(TraceType, "enable admin role with client cert commonName");
-                        wstring certCommonName;
+                        string certCommonName;
                         error = CryptoUtility::GetCertificateCommonName(
                             securitySettings.X509StoreLocation(),
                             securitySettings.X509StoreName(),
@@ -3279,12 +3279,12 @@ namespace Transport
 
                         SecurityConfig::X509NameMap names;
                         names.Add(certCommonName);
-                        securitySettings.EnableAdminRole(L"", names, L"");
+                        securitySettings.EnableAdminRole("", names, "");
                     }
                 }
                 else
                 {
-                    securitySettings.EnableAdminRole(L"", SecurityConfig::X509NameMap(), L"");
+                    securitySettings.EnableAdminRole("", SecurityConfig::X509NameMap(), "");
                 }
             }
         }
@@ -3300,7 +3300,7 @@ namespace Transport
                 }
                 else
                 {
-                    securitySettings.EnableAdminRole(L"");
+                    securitySettings.EnableAdminRole("");
                 }
             }
         }
@@ -3309,7 +3309,7 @@ namespace Transport
         VERIFY_IS_TRUE(error.IsSuccess());
 
         AutoResetEvent messageReceived;
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         TTestUtil::SetMessageHandler(
             server,
             testAction,
@@ -3352,7 +3352,7 @@ namespace Transport
         message->Headers.Add(ActionHeader(testAction));
         message->Headers.Add(MessageIdHeader());
 
-        ISendTarget::SPtr target = client->ResolveTarget(server->ListenAddress(), L"", TransportSecurity().LocalWindowsIdentity());
+        ISendTarget::SPtr target = client->ResolveTarget(server->ListenAddress(), "", TransportSecurity().LocalWindowsIdentity());
         VERIFY_IS_TRUE(target);
 
         error = client->SendOneWay(target, move(message));
@@ -3367,17 +3367,17 @@ namespace Transport
         TransportConfig::GetConfig().ConnectionOpenTimeout = TimeSpan::FromSeconds(3);
         KFinally([savedConnectionOpenTimeout] { TransportConfig::GetConfig().ConnectionOpenTimeout = savedConnectionOpenTimeout; });
 
-        const wstring listenerCn = L"NegotiationTimeoutTest";
-        InstallTestCertInScope listenerCert(L"CN=" + listenerCn);
+        const string listenerCn = "NegotiationTimeoutTest";
+        InstallTestCertInScope listenerCert("CN=" + listenerCn);
 
         SecuritySettings securitySettings;
         if (securityProvider == SecurityProvider::Ssl)
         {
             securitySettings = TTestUtil::CreateX509SettingsTp(
                 listenerCert.Thumbprint()->PrimaryToString(),
-                L"", 
+                "", 
                 listenerCert.Thumbprint()->PrimaryToString(),
-                L"");
+                "");
         }
         else
         {
@@ -3447,18 +3447,18 @@ namespace Transport
         VERIFY_IS_TRUE(testCompleted.WaitOne(TransportConfig::GetConfig().ConnectionOpenTimeout + TimeSpan::FromSeconds(60)));
     }
 
-    void SecureTransportTests::X509CertIssuerMatchTest(std::wstring const & issuers, bool shouldPass)
+    void SecureTransportTests::X509CertIssuerMatchTest(std::string const & issuers, bool shouldPass)
     {
         auto server = DatagramTransportFactory::CreateTcp(TTestUtil::GetListenAddress());
         SecuritySettings serverSecurity = TTestUtil::CreateX509Settings(
-            L"CN=WinFabric-Test-SAN1-Alice",
-            L"WinFabric-Test-SAN1-Bob",
+            "CN=WinFabric-Test-SAN1-Alice",
+            "WinFabric-Test-SAN1-Bob",
             issuers);
 
         VERIFY_IS_TRUE(server->SetSecurity(serverSecurity).IsSuccess());
 
         AutoResetEvent messageReceived;
-        wstring testAction = TTestUtil::GetListenAddress();
+        string testAction = TTestUtil::GetListenAddress();
         TTestUtil::SetMessageHandler(
             server,
             testAction,
@@ -3472,8 +3472,8 @@ namespace Transport
 
         auto client = DatagramTransportFactory::CreateTcpClient();
         SecuritySettings clientSecurity = TTestUtil::CreateX509Settings(
-            L"CN=WinFabric-Test-SAN1-Bob",
-            L"WinFabric-Test-SAN1-Alice",
+            "CN=WinFabric-Test-SAN1-Bob",
+            "WinFabric-Test-SAN1-Alice",
             issuers);
 
         VERIFY_IS_TRUE(client->SetSecurity(clientSecurity).IsSuccess());
@@ -3500,8 +3500,8 @@ namespace Transport
 
     void SecureTransportTests::BasicTestWin(
         SecurityProvider::Enum provider,
-        std::wstring const & senderAddress,
-        std::wstring const & receiverAddress,
+        std::string const & senderAddress,
+        std::string const & receiverAddress,
         ProtectionLevel::Enum protectionLevel)
     {
         VERIFY_IS_TRUE((provider == SecurityProvider::Negotiate) || (provider == SecurityProvider::Kerberos));
@@ -3513,81 +3513,81 @@ namespace Transport
     }
 
     void SecureTransportTests::X509ManyMessage_SelfSigned(
-        std::wstring const & senderAddress,
-        std::wstring const & receiverAddress)
+        std::string const & senderAddress,
+        std::string const & receiverAddress)
     {
-        const wstring senderCn = L"sender.test.com";
-        const wstring receiverCn = L"receiver.test.com";
-        InstallTestCertInScope senderCert(L"CN=" + senderCn);
-        InstallTestCertInScope receiverCert(L"CN=" + receiverCn);
+        const string senderCn = "sender.test.com";
+        const string receiverCn = "receiver.test.com";
+        InstallTestCertInScope senderCert("CN=" + senderCn);
+        InstallTestCertInScope receiverCert("CN=" + receiverCn);
 
         SecuritySettings senderSecSettings = TTestUtil::CreateX509SettingsTp(
             senderCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             receiverCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         SecuritySettings receiverSecSettings = TTestUtil::CreateX509SettingsTp(
             receiverCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             senderCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         ManyMessageTest(senderAddress, senderSecSettings, receiverAddress, receiverSecSettings);
     }
 
     void SecureTransportTests::X509ManySmallMessage_SelfSigned(
-        std::wstring const & senderAddress,
-        std::wstring const & receiverAddress)
+        std::string const & senderAddress,
+        std::string const & receiverAddress)
     {
-        const wstring senderCn = L"sender.test.com";
-        const wstring receiverCn = L"receiver.test.com";
-        InstallTestCertInScope senderCert(L"CN=" + senderCn);
-        InstallTestCertInScope receiverCert(L"CN=" + receiverCn);
+        const string senderCn = "sender.test.com";
+        const string receiverCn = "receiver.test.com";
+        InstallTestCertInScope senderCert("CN=" + senderCn);
+        InstallTestCertInScope receiverCert("CN=" + receiverCn);
 
         SecuritySettings senderSecSettings = TTestUtil::CreateX509SettingsTp(
             senderCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             receiverCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         SecuritySettings receiverSecSettings = TTestUtil::CreateX509SettingsTp(
             receiverCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             senderCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         ManySmallMessageTest(senderAddress, senderSecSettings, receiverAddress, receiverSecSettings);
     }
 
     void SecureTransportTests::X509Test_SelfSigned(
-        std::wstring const & senderAddress,
-        std::wstring const & receiverAddress)
+        std::string const & senderAddress,
+        std::string const & receiverAddress)
     {
-        const wstring senderCn = L"sender.test.com";
-        const wstring receiverCn = L"receiver.test.com";
-        InstallTestCertInScope senderCert(L"CN=" + senderCn);
-        InstallTestCertInScope receiverCert(L"CN=" + receiverCn);
+        const string senderCn = "sender.test.com";
+        const string receiverCn = "receiver.test.com";
+        InstallTestCertInScope senderCert("CN=" + senderCn);
+        InstallTestCertInScope receiverCert("CN=" + receiverCn);
 
         SecuritySettings senderSecSettings = TTestUtil::CreateX509SettingsTp(
             senderCert.Thumbprint()->PrimaryToString(),
-            L"", 
+            "", 
             receiverCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         SecuritySettings receiverSecSettings = TTestUtil::CreateX509SettingsTp(
             receiverCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             senderCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         SecurityTest(senderAddress, senderSecSettings, receiverAddress, receiverSecSettings);
     }
 
     void SecureTransportTests::SecurityTest(
-        std::wstring const & senderAddress,
+        std::string const & senderAddress,
         SecuritySettings const & senderSecSettings,
-        std::wstring const & receiverAddress,
+        std::string const & receiverAddress,
         SecuritySettings const & receiverSecSettings,
         bool failureExpected)
     {
@@ -3599,22 +3599,22 @@ namespace Transport
 
         AutoResetEvent replyReceived;
 
-        std::wstring requestAction = L"action... oh yeah!";
+        std::string requestAction = "action... oh yeah!";
 
         // Make sure message body span more than one chunk on the incoming side
-        std::wstring requestBodyString;
+        std::string requestBodyString;
         size_t targetMessageBodySize = 2 * TransportConfig::GetConfig().SslReceiveChunkSize + 1;
-        while((requestBodyString.size() * sizeof(WCHAR)) < targetMessageBodySize)
+        while((requestBodyString.size() * sizeof(CHAR)) < targetMessageBodySize)
         {
-            requestBodyString += L"Message ";
+            requestBodyString += "Message ";
         }
-        requestBodyString += L"oh yeah";
+        requestBodyString += "oh yeah";
 
         TcpTestMessage requestBody(requestBodyString);
         MessageIdHeader requestIdHeader;
 
-        std::wstring replyAction = L"reply action... oh yeah!";
-        TcpTestMessage replyBody(L"Reply message message message message oh yeah");
+        std::string replyAction = "reply action... oh yeah!";
+        TcpTestMessage replyBody("Reply message message message message oh yeah");
         MessageIdHeader replyIdHeader;
 
         TTestUtil::SetMessageHandler(
@@ -3670,8 +3670,8 @@ namespace Transport
 
         VERIFY_IS_TRUE(receiver->Start().IsSuccess());
 
-        wstring localListenerIdentity = TransportSecurity().LocalWindowsIdentity();
-        ISendTarget::SPtr target = sender->ResolveTarget(receiver->ListenAddress(), L"", localListenerIdentity);
+        string localListenerIdentity = TransportSecurity().LocalWindowsIdentity();
+        ISendTarget::SPtr target = sender->ResolveTarget(receiver->ListenAddress(), "", localListenerIdentity);
         VERIFY_IS_TRUE(target);
 
         auto oneway = make_unique<Message>(requestBody);
@@ -3695,9 +3695,9 @@ namespace Transport
     }
 
     void SecureTransportTests::ManyMessageTest(
-        std::wstring const & senderAddress,
+        std::string const & senderAddress,
         SecuritySettings const & senderSecSettings,
-        std::wstring const & receiverAddress,
+        std::string const & receiverAddress,
         SecuritySettings const & receiverSecSettings)
     {
         auto saved = SecurityConfig::GetConfig().WindowsSecurityMaxEncryptSize;
@@ -3812,8 +3812,8 @@ namespace Transport
 
         VERIFY_IS_TRUE(receiver->Start().IsSuccess());
 
-        wstring localListenerIdentity = TransportSecurity().LocalWindowsIdentity();
-        ISendTarget::SPtr target = sender->ResolveTarget(receiver->ListenAddress(), L"", localListenerIdentity);
+        string localListenerIdentity = TransportSecurity().LocalWindowsIdentity();
+        ISendTarget::SPtr target = sender->ResolveTarget(receiver->ListenAddress(), "", localListenerIdentity);
         VERIFY_IS_TRUE(target);
 
         // Make sure message body span more than one chunk on the incoming side
@@ -3848,9 +3848,9 @@ namespace Transport
     }
 
     void SecureTransportTests::ManySmallMessageTest(
-        std::wstring const & senderAddress,
+        std::string const & senderAddress,
         SecuritySettings const & senderSecSettings,
-        std::wstring const & receiverAddress,
+        std::string const & receiverAddress,
         SecuritySettings const & receiverSecSettings)
     {
         auto node1 = DatagramTransportFactory::CreateTcp(senderAddress);
@@ -3909,11 +3909,11 @@ namespace Transport
 
         VERIFY_IS_TRUE(node2->Start().IsSuccess());
 
-        wstring localListenerIdentity = TransportSecurity().LocalWindowsIdentity();
+        string localListenerIdentity = TransportSecurity().LocalWindowsIdentity();
 
         Threadpool::Post([&]
         {
-            ISendTarget::SPtr target = node1->ResolveTarget(node2->ListenAddress(), L"", localListenerIdentity);
+            ISendTarget::SPtr target = node1->ResolveTarget(node2->ListenAddress(), "", localListenerIdentity);
             VERIFY_IS_TRUE(target);
 
             for (int i = 1; i <= messageToSend; ++i)
@@ -3933,7 +3933,7 @@ namespace Transport
 
         Threadpool::Post([&]
         {
-            ISendTarget::SPtr target = node2->ResolveTarget(node1->ListenAddress(), L"", localListenerIdentity);
+            ISendTarget::SPtr target = node2->ResolveTarget(node1->ListenAddress(), "", localListenerIdentity);
             VERIFY_IS_TRUE(target);
 
             for (int i = 1; i <= messageToSend; ++i)
@@ -3974,19 +3974,19 @@ namespace Transport
 
         BasicTestWin(
             SecurityProvider::Negotiate,
-            L"127.0.0.1:0",
-            L"127.0.0.1:0",
+            "127.0.0.1:0",
+            "127.0.0.1:0",
             protectionLevel);
     }
 
 #endif
 
     void SecureTransportTests::ClaimAuthTestClientSend(
-        wstring const & receiverAddress,
-        wstring const & clientClaims,
+        string const & receiverAddress,
+        string const & clientClaims,
         bool expectFailure,
         bool clientIsAdmin,
-        std::wstring const clientCertFindValue,
+        std::string const clientCertFindValue,
         Common::SecurityConfig::IssuerStoreKeyValueMap clientIssuerStore)
     {
         Trace.WriteInfo(TraceType, "ClaimAuthTestClientSend({0})", clientClaims);
@@ -3994,14 +3994,14 @@ namespace Transport
         SecuritySettings clientSecurity;
         if (!clientClaims.empty())
         {
-            auto error = SecuritySettings::CreateClaimTokenClient(clientClaims, L"", L"WinFabric-Test-SAN1-Alice", L"", wformatString(ProtectionLevel::EncryptAndSign), clientSecurity);
+            auto error = SecuritySettings::CreateClaimTokenClient(clientClaims, "", "WinFabric-Test-SAN1-Alice", "", formatString(ProtectionLevel::EncryptAndSign), clientSecurity);
             VERIFY_IS_TRUE(error.IsSuccess());
         }
         else
         {
             clientSecurity = TTestUtil::CreateX509Settings(
                 clientCertFindValue,
-                L"WinFabric-Test-SAN1-Alice",
+                "WinFabric-Test-SAN1-Alice",
                 clientIssuerStore);
         }
 
@@ -4042,28 +4042,28 @@ namespace Transport
     }
 
     void SecureTransportTests::ClaimAuthTestClientSend2(
-        wstring const & receiverAddress,
-        wstring const & svrCertThumbprint,
-        wstring const & clientClaims,
+        string const & receiverAddress,
+        string const & svrCertThumbprint,
+        string const & clientClaims,
         bool expectFailure,
         bool clientIsAdmin,
-        std::wstring const clientCertFindValue)
+        std::string const clientCertFindValue)
     {
         Trace.WriteInfo(TraceType, "ClaimAuthTestClientSend({0})", clientClaims);
 
         SecuritySettings clientSecurity;
         if (!clientClaims.empty())
         {
-            auto error = SecuritySettings::CreateClaimTokenClient(clientClaims, svrCertThumbprint, L"", L"", wformatString(ProtectionLevel::EncryptAndSign), clientSecurity);
+            auto error = SecuritySettings::CreateClaimTokenClient(clientClaims, svrCertThumbprint, "", "", formatString(ProtectionLevel::EncryptAndSign), clientSecurity);
             VERIFY_IS_TRUE(error.IsSuccess());
         }
         else
         {
             clientSecurity = TTestUtil::CreateX509SettingsTp(
                 clientCertFindValue,
-                L"",
+                "",
                 svrCertThumbprint,
-                L"");
+                "");
         }
 
         Trace.WriteInfo(TraceType, "client security settings = {0}, expectFailure = {1}, cilentIsAdmin = {2}", clientSecurity, expectFailure, clientIsAdmin);
@@ -4106,12 +4106,12 @@ namespace Transport
     {
         namespace
         {
-            const auto certToLoad = L"*.eastus.cloudapp.azure.com";
-            const auto server = L"server.eastus.cloudapp.azure.com";
-            const auto client = L"client.eastus.cloudapp.azure.com";
-            const auto svrAddressEnv = L"X509CompatibilitySvrAddress";
+            const auto certToLoad = "*.eastus.cloudapp.azure.com";
+            const auto server = "server.eastus.cloudapp.azure.com";
+            const auto client = "client.eastus.cloudapp.azure.com";
+            const auto svrAddressEnv = "X509CompatibilitySvrAddress";
 
-            const auto msgAction = L"X509CompatibilityTest";
+            const auto msgAction = "X509CompatibilityTest";
             constexpr int replyBodySize = 0;
             constexpr int maxMessageSizeFactor = 5;
             constexpr int requestTotal = 37;
@@ -4231,15 +4231,15 @@ namespace Transport
 
                 VERIFY_IS_TRUE(receiver->Start().IsSuccess());
 
-                cout << "server started listening on " << StringUtility::Utf16ToUtf8(receiver->ListenAddress()) << endl;
+                cout << "server started listening on " << (receiver->ListenAddress()) << endl;
 
 #ifdef PLATFORM_UNIX
                 cout << "run the following command to start client on Windows:" << endl;
-                cout << StringUtility::Utf16ToUtf8(wformatString("    set {0}={1} & Transport.Test.exe --run_test=X509Compat/Client", svrAddressEnv, receiver->ListenAddress())) << endl;
-                cout << StringUtility::Utf16ToUtf8(wformatString("    set {0}={1} & Transport.Test.exe --run_test=X509Compat/Client2", svrAddressEnv, receiver->ListenAddress())) << endl;
+                cout << (formatString.L("    set {0}={1} & Transport.Test.exe --run_test=X509Compat/Client", svrAddressEnv, receiver->ListenAddress())) << endl;
+                cout << (formatString.L("    set {0}={1} & Transport.Test.exe --run_test=X509Compat/Client2", svrAddressEnv, receiver->ListenAddress())) << endl;
 #else
                 cout << "run the following command to start client on Linux:" << endl;
-                cout << StringUtility::Utf16ToUtf8(wformatString("    {0}={1} ./Transport.Test.exe --run_test=X509Compat/Client", svrAddressEnv, receiver->ListenAddress())) << endl;
+                cout << (formatString.L("    {0}={1} ./Transport.Test.exe --run_test=X509Compat/Client", svrAddressEnv, receiver->ListenAddress())) << endl;
 #endif
 
                 auto waitTime = TimeSpan::FromSeconds(300);
@@ -4327,22 +4327,22 @@ namespace Transport
         bool disableIncomingMessageSizeLimitOnClient,
         bool disableOutgoingMessageSizeLimitOnServer)
     {
-        const wstring clientCn = L"client.test.com";
-        const wstring serverCn = L"server.test.com";
-        InstallTestCertInScope clientCert(L"CN=" + clientCn);
-        InstallTestCertInScope serverCert(L"CN=" + serverCn);
+        const string clientCn = "client.test.com";
+        const string serverCn = "server.test.com";
+        InstallTestCertInScope clientCert("CN=" + clientCn);
+        InstallTestCertInScope serverCert("CN=" + serverCn);
 
         auto clientSecSettings = TTestUtil::CreateX509SettingsTp(
             clientCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             serverCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         auto serverSecSettings = TTestUtil::CreateX509SettingsTp(
             serverCert.Thumbprint()->PrimaryToString(),
-            L"",
+            "",
             clientCert.Thumbprint()->PrimaryToString(),
-            L"");
+            "");
 
         Assert::DisableDebugBreakInThisScope disableDebugBreakInThisScope;
         Assert::DisableTestAssertInThisScope disableTestAssertInThisScope;
@@ -4369,17 +4369,17 @@ namespace Transport
         }
 
         // Make sure message is larger than size limit
-        std::wstring requestBodyString;
-        while (requestBodyString.size() * sizeof(wchar_t) < TransportSecurity::Test_GetInternalMaxFrameSize(lowMessageSizeLimit))
+        std::string requestBodyString;
+        while (requestBodyString.size() * sizeof(char) < TransportSecurity::Test_GetInternalMaxFrameSize(lowMessageSizeLimit))
         {
-            requestBodyString += L"Message ";
+            requestBodyString += "Message ";
         }
-        requestBodyString += L"oh yeah";
+        requestBodyString += "oh yeah";
 
         TcpTestMessage requestBody(requestBodyString);
 
         AutoResetEvent messageReceived;
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         ISendTarget::SPtr clientTargetOnServer;
         TTestUtil::SetMessageHandler(
             server,
@@ -4422,7 +4422,7 @@ namespace Transport
 
         VERIFY_IS_TRUE(server->Start().IsSuccess());
 
-        ISendTarget::SPtr target = client->ResolveTarget(server->ListenAddress(), L"");
+        ISendTarget::SPtr target = client->ResolveTarget(server->ListenAddress(), "");
         VERIFY_IS_TRUE(target);
 
         auto ping = make_unique<Message>();
@@ -4487,22 +4487,22 @@ namespace Transport
     {
         ENTER;
 
-        wstring serverCertThumbprint = L"93CDFEA6416084BF700A49DC656B2778718C65AF";
-        wstring clientCertThumbprint = L"EDFF522AD07C5E1760E685A4F3AF5C67A4CA96BB";
+        string serverCertThumbprint = "93CDFEA6416084BF700A49DC656B2778718C65AF";
+        string clientCertThumbprint = "EDFF522AD07C5E1760E685A4F3AF5C67A4CA96BB";
 
         SecuritySettings senderSecSettings = TTestUtil::CreateX509SettingsTp(
             clientCertThumbprint,
-            L"", 
+            "", 
             serverCertThumbprint+L"?true",
-            L"");
+            "");
 
         SecuritySettings receiverSecSettings = TTestUtil::CreateX509SettingsTp(
             serverCertThumbprint,
-            L"",
+            "",
             clientCertThumbprint+L"?true",
-            L"");
+            "");
 
-        SecurityTest(L"127.0.0.1:0", senderSecSettings, L"127.0.0.1:0", receiverSecSettings);
+        SecurityTest("127.0.0.1:0", senderSecSettings, "127.0.0.1:0", receiverSecSettings);
 
         LEAVE;
     }
@@ -4511,22 +4511,22 @@ namespace Transport
     {
         ENTER;
 
-        wstring server = L"server";
-        wstring client = L"client";
+        string server = "server";
+        string client = "client";
 
         SecuritySettings senderSecSettings = TTestUtil::CreateX509Settings(
             client,
-            L"", 
+            "", 
             server,
-            L"");
+            "");
 
         SecuritySettings receiverSecSettings = TTestUtil::CreateX509Settings(
             server,
-            L"",
+            "",
             client,
-            L"");
+            "");
 
-        SecurityTest(L"127.0.0.1:0", senderSecSettings, L"127.0.0.1:0", receiverSecSettings);
+        SecurityTest("127.0.0.1:0", senderSecSettings, "127.0.0.1:0", receiverSecSettings);
 
         LEAVE;
     }
@@ -4537,10 +4537,10 @@ namespace Transport
 
         cout << "test should pass as crl checking is disabled in Transport.Test.exe.cfg" << endl;
 
-        wstring certToLoad = L"*.eastus.cloudapp.azure.com";
-        wstring server = L"server.eastus.cloudapp.azure.com";
-        wstring client = L"client.eastus.cloudapp.azure.com";
-        wstring issuerCertThumbprint = L"97EFF3028677894BDD4F9AC53F789BEE5DF4AD86";
+        string certToLoad = "*.eastus.cloudapp.azure.com";
+        string server = "server.eastus.cloudapp.azure.com";
+        string client = "client.eastus.cloudapp.azure.com";
+        string issuerCertThumbprint = "97EFF3028677894BDD4F9AC53F789BEE5DF4AD86";
 
         SecurityConfig::X509NameMap serverMap;
         serverMap.Add(server, issuerCertThumbprint);
@@ -4556,7 +4556,7 @@ namespace Transport
             certToLoad,
             clientMap);
 
-        SecurityTest(L"127.0.0.1:0", senderSecSettings, L"127.0.0.1:0", receiverSecSettings);
+        SecurityTest("127.0.0.1:0", senderSecSettings, "127.0.0.1:0", receiverSecSettings);
 
         LEAVE;
     }
@@ -4579,23 +4579,23 @@ namespace Transport
             SecurityConfig::GetConfig().IgnoreSvrCrlOfflineError = savedValue3;
         });
 
-        wstring certToLoad = L"*.eastus.cloudapp.azure.com";
-        wstring server = L"server.eastus.cloudapp.azure.com";
-        wstring client = L"client.eastus.cloudapp.azure.com";
+        string certToLoad = "*.eastus.cloudapp.azure.com";
+        string server = "server.eastus.cloudapp.azure.com";
+        string client = "client.eastus.cloudapp.azure.com";
 
         SecuritySettings senderSecSettings = TTestUtil::CreateX509Settings(
             certToLoad,
-            L"", 
+            "", 
             server,
-            L"");
+            "");
 
         SecuritySettings receiverSecSettings = TTestUtil::CreateX509Settings(
             certToLoad,
-            L"",
+            "",
             client,
-            L"");
+            "");
 
-        SecurityTest(L"127.0.0.1:0", senderSecSettings, L"127.0.0.1:0", receiverSecSettings);
+        SecurityTest("127.0.0.1:0", senderSecSettings, "127.0.0.1:0", receiverSecSettings);
 
         LEAVE;
     }
@@ -4612,23 +4612,23 @@ namespace Transport
             SecurityConfig::GetConfig().CrlCheckingFlag = savedValue;
         });
 
-        wstring certToLoad = L"*.eastus.cloudapp.azure.com";
-        wstring server = L"server.eastus.cloudapp.azure.com";
-        wstring client = L"client.eastus.cloudapp.azure.com";
+        string certToLoad = "*.eastus.cloudapp.azure.com";
+        string server = "server.eastus.cloudapp.azure.com";
+        string client = "client.eastus.cloudapp.azure.com";
 
         SecuritySettings senderSecSettings = TTestUtil::CreateX509Settings(
             certToLoad,
-            L"", 
+            "", 
             server,
-            L"");
+            "");
 
         SecuritySettings receiverSecSettings = TTestUtil::CreateX509Settings(
             certToLoad,
-            L"",
+            "",
             client,
-            L"");
+            "");
 
-        SecurityTest(L"127.0.0.1:0", senderSecSettings, L"127.0.0.1:0", receiverSecSettings, true);
+        SecurityTest("127.0.0.1:0", senderSecSettings, "127.0.0.1:0", receiverSecSettings, true);
 
         LEAVE;
     }
@@ -4643,22 +4643,22 @@ namespace Transport
         SecurityConfig::GetConfig().CrlCheckingFlag = 0x40000000;
         KFinally([=] { SecurityConfig::GetConfig().CrlCheckingFlag = savedValue; });
 
-        wstring server = L"revoked";
-        wstring client = L"revoked";
+        string server = "revoked";
+        string client = "revoked";
 
         SecuritySettings senderSecSettings = TTestUtil::CreateX509Settings(
             client,
-            L"", 
+            "", 
             server,
-            L"");
+            "");
 
         SecuritySettings receiverSecSettings = TTestUtil::CreateX509Settings(
             server,
-            L"",
+            "",
             client,
-            L"");
+            "");
 
-        SecurityTest(L"127.0.0.1:0", senderSecSettings, L"127.0.0.1:0", receiverSecSettings, true);
+        SecurityTest("127.0.0.1:0", senderSecSettings, "127.0.0.1:0", receiverSecSettings, true);
 
         LEAVE;
     }
@@ -4669,22 +4669,22 @@ namespace Transport
 
         cout << "test with certs chained to untrusted root, failure expected" << endl;
 
-        wstring server = L"WinFabric-Test-SAN1-Alice";
-        wstring client= L"WinFabric-Test-SAN1-Alice";
+        string server = "WinFabric-Test-SAN1-Alice";
+        string client= "WinFabric-Test-SAN1-Alice";
 
         SecuritySettings senderSecSettings = TTestUtil::CreateX509Settings(
             client,
-            L"", 
+            "", 
             server,
-            L"");
+            "");
 
         SecuritySettings receiverSecSettings = TTestUtil::CreateX509Settings(
             server,
-            L"",
+            "",
             client,
-            L"");
+            "");
 
-        SecurityTest(L"127.0.0.1:0", senderSecSettings, L"127.0.0.1:0", receiverSecSettings, true);
+        SecurityTest("127.0.0.1:0", senderSecSettings, "127.0.0.1:0", receiverSecSettings, true);
 
         LEAVE;
     }
@@ -4695,24 +4695,24 @@ namespace Transport
 
         cout << "test with certs chained to untrusted root, test should pass since auth is done by cert thumbprint matching" << endl;
 
-        wstring server = L"WinFabric-Test-SAN1-Alice";
-        wstring client= L"WinFabric-Test-SAN1-Alice";
-        wstring serverCertThumbprint = L"7812205A39D22376DAA037F05AEDE3601A7E64BF";
-        wstring clientCertThumbprint = L"7812205A39D22376DAA037F05AEDE3601A7E64BF";
+        string server = "WinFabric-Test-SAN1-Alice";
+        string client= "WinFabric-Test-SAN1-Alice";
+        string serverCertThumbprint = "7812205A39D22376DAA037F05AEDE3601A7E64BF";
+        string clientCertThumbprint = "7812205A39D22376DAA037F05AEDE3601A7E64BF";
 
         SecuritySettings senderSecSettings = TTestUtil::CreateX509SettingsTp(
             clientCertThumbprint,
-            L"", 
+            "", 
             serverCertThumbprint,
-            L"");
+            "");
 
         SecuritySettings receiverSecSettings = TTestUtil::CreateX509SettingsTp(
             serverCertThumbprint,
-            L"",
+            "",
             clientCertThumbprint,
-            L"");
+            "");
 
-        SecurityTest(L"127.0.0.1:0", senderSecSettings, L"127.0.0.1:0", receiverSecSettings);
+        SecurityTest("127.0.0.1:0", senderSecSettings, "127.0.0.1:0", receiverSecSettings);
 
         LEAVE;
     }

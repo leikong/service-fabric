@@ -42,26 +42,26 @@ public:
     //* Fully qualified KIDomNode name (FQN)
     struct QName
     {
-        LPCWSTR     Namespace;
-        LPCWSTR     Name;
+        LPCSTR     Namespace;
+        LPCSTR     Name;
 
-        __inline QName(LPCWSTR Namespace, LPCWSTR Name)
+        __inline QName(LPCSTR Namespace, LPCSTR Name)
         {
             this->Namespace = Namespace;
             this->Name = Name;
         }
 
-        __inline QName(LPCWSTR Name)
+        __inline QName(LPCSTR Name)
         {
             // Allow for a the defaulted namespace prefix
-            this->Namespace = L"";
+            this->Namespace = "";
             this->Name = Name;
         }
 
         __inline QName()
         {
             this->Name = nullptr;
-            this->Namespace = L"";
+            this->Namespace = "";
         }
     };
 
@@ -164,7 +164,7 @@ public:
 
     //* Validate the the Dom has the expected xnlns attribute.
     NTSTATUS
-    ValidateNamespaceAttribute(__in_z LPCWSTR Namespace);
+    ValidateNamespaceAttribute(__in_z LPCSTR Namespace);
 
     // Path-based functions
     //

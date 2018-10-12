@@ -69,10 +69,10 @@ namespace Common
             __declspec(property(get = get_StartTime)) Common::StopwatchTime StartTime;
             Common::StopwatchTime get_StartTime() const { return startTime_; }
 
-            __declspec(property(get = get_ServiceType, put=set_ServiceType)) std::wstring const & ServiceType;
-            std::wstring const & get_ServiceType() const { return serviceType_; }
+            __declspec(property(get = get_ServiceType, put=set_ServiceType)) std::string const & ServiceType;
+            std::string const & get_ServiceType() const { return serviceType_; }
 
-            void set_ServiceType(std::wstring const & value) { serviceType_ = value; }
+            void set_ServiceType(std::string const & value) { serviceType_ = value; }
 
         private:
             Common::Guid partitionId_;
@@ -82,7 +82,7 @@ namespace Common
             ApiNameDescription apiName_;
 
             // Todo: avoid copying strings
-            std::wstring serviceType_;
+            std::string serviceType_;
         };
     }
 }

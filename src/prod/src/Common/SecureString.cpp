@@ -8,19 +8,19 @@
 using namespace std;
 using namespace Common;
 
-GlobalWString SecureString::TracePlaceholder = make_global<std::wstring>(L"<SecureString>");
+GlobalString SecureString::TracePlaceholder = make_global<std::string>("<SecureString>");
 
 SecureString::SecureString()
     : value_()
 {    
 }
 
-SecureString::SecureString(wstring const & secureValue)
+SecureString::SecureString(string const & secureValue)
     : value_(secureValue)
 {    
 }
 
-SecureString::SecureString(wstring && secureValue)
+SecureString::SecureString(string && secureValue)
     : value_(move(secureValue))
 {    
 }
@@ -60,7 +60,7 @@ SecureString const & SecureString::operator = (SecureString && other)
     return *this;
 }
 
-wstring const & SecureString::GetPlaintext() const
+string const & SecureString::GetPlaintext() const
 {
     return value_;
 }
@@ -70,7 +70,7 @@ bool SecureString::IsEmpty() const
     return value_.empty();
 }
 
-void SecureString::Append(wstring const & value)
+void SecureString::Append(string const & value)
 {    
     value_.append(value);
 }
@@ -80,14 +80,14 @@ void SecureString::Append(SecureString const & value)
     value_.append(value.GetPlaintext());
 }
 
-void SecureString::TrimTrailing(wstring const & trimChars)
+void SecureString::TrimTrailing(string const & trimChars)
 {    
-    StringUtility::TrimTrailing<wstring>(value_, trimChars);
+    StringUtility::TrimTrailing<string>(value_, trimChars);
 }
 
-void SecureString::Replace(std::wstring const & stringToReplace, std::wstring const & stringToInsert)
+void SecureString::Replace(std::string const & stringToReplace, std::string const & stringToInsert)
 {    
-    StringUtility::Replace<wstring>(value_, stringToReplace, stringToInsert);
+    StringUtility::Replace<string>(value_, stringToReplace, stringToInsert);
 }
 
 void SecureString::WriteTo(TextWriter& w, FormatOptions const &) const
@@ -97,5 +97,5 @@ void SecureString::WriteTo(TextWriter& w, FormatOptions const &) const
 
 void SecureString::Clear() const
 {
-    SecureZeroMemory((void *) value_.c_str(), value_.size() * sizeof(wchar_t));
+    SecureZeroMemory((void *) value_.c_str(), value_.size() * sizeof(char));
 }

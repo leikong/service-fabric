@@ -76,7 +76,7 @@ namespace Common
 					bool slowTraceEnabled = traceFlags == EnabledTraceFlags::Slow || traceFlags == EnabledTraceFlags::All;
 					bool lifeCycleTraceEnabled = traceFlags == EnabledTraceFlags::LifeCycle || traceFlags == EnabledTraceFlags::All;
 
-					ApiNameDescription nameDesc(InterfaceName::LastValidEnum, ApiName::LastValidEnum, L"");
+					ApiNameDescription nameDesc(InterfaceName::LastValidEnum, ApiName::LastValidEnum, "");
 					auto data = MonitoringData(Guid(), replicaId, 0, std::move(nameDesc), startTime);
 					MonitoringParameters parameters(enableHealth, slowTraceEnabled, lifeCycleTraceEnabled, slowDuration, periodicTraceDuration);
 					return std::make_shared<ApiCallDescription>(std::move(data), parameters);

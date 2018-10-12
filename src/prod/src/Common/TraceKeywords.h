@@ -50,7 +50,7 @@ namespace Common
             All = 0xffffffffffffffff,
         };
 
-        ULONGLONG ParseTestKeyword(std::wstring const& testKeyword);
+        ULONGLONG ParseTestKeyword(std::string const& testKeyword);
     }
 
 #define TRACE_KEYWORDS2(x,y) (Common::TraceKeywords::Enum)(Common::TraceKeywords::x | Common::TraceKeywords::y)

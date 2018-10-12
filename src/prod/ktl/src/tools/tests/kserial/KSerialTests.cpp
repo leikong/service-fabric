@@ -217,7 +217,7 @@ public:
         _Val2 = 0;
         if (NT_SUCCESS(_Val3.Status()))
         {
-            _Val3 = L"<nullstr>";
+            _Val3 = "<nullstr>";
         }
         else
         {
@@ -251,7 +251,7 @@ public:
 
         _Val1 = 33;
         _Val2 = 44;
-        _Val3 = L"<ExplicitlyAssignedString>";
+        _Val3 = "<ExplicitlyAssignedString>";
 
         // Set KBuffer
         memset(_Buf->GetBuffer(), 'z', 256);
@@ -299,7 +299,7 @@ public:
             KTestPrintf("_Val2 value incorrect.\nExpected: 44\nActual: %I64u\n", _Val2);
             return FALSE;
         }
-        if (_Val3.CompareTo(L"<ExplicitlyAssignedString>") != 0)
+        if (_Val3.CompareTo("<ExplicitlyAssignedString>") != 0)
         {
             KTestPrintf("_Val3 value incorrect.\nExpected: <ExplicitlyAssignedString>\n");
             return FALSE;
@@ -585,7 +585,7 @@ NTSTATUS CheckIt(Container::SPtr newObj)
         return STATUS_UNSUCCESSFUL;
     }
 
-    if (str.CompareTo(L"<ExplicitlyAssignedString>") != 0)
+    if (str.CompareTo("<ExplicitlyAssignedString>") != 0)
     {
         KTestPrintf("CheckIt() failure: str value incorrect.\nExpected: <ExplicitlyAssignedString>\n");
         return STATUS_UNSUCCESSFUL;
@@ -688,7 +688,7 @@ NTSTATUS KVariantTests()
     KVariant v2(LONG(-22));
 
     KVariant v3(GUID_SampleObject);
-    KVariant v4 = KVariant::Create(L"Blah", *g_Alloc);
+    KVariant v4 = KVariant::Create("Blah", *g_Alloc);
     if (! NT_SUCCESS(v4.Status()))
     {
         KTestPrintf("Failed to allocate v4\n");
@@ -749,7 +749,7 @@ NTSTATUS KVariantTests()
         return STATUS_UNSUCCESSFUL;
     }
 
-    KWString Verify(KtlSystem::GlobalNonPagedAllocator(), L"Blah");
+    KWString Verify(KtlSystem::GlobalNonPagedAllocator(), "Blah");
     if (! NT_SUCCESS(Verify.Status()))
     {
         KTestPrintf("Failed to allocate Verify\n");
@@ -891,20 +891,20 @@ NTSTATUS VirtualNetworkTests()
 
 NTSTATUS KIDomNodeTests()
 {
-    const WCHAR xml[] =
+    const CHAR xml[] =
         {L"\xFEFF<NodeConfig>"
-                    L"<NodeId xsi:type=\"ktl:STRING\">0</NodeId>"
-                    L"<NodeAddress xsi:type=\"ktl:STRING\">127.0.0.1:9000</NodeAddress>"
-                    L"<LeaseAgentAddress xsi:type=\"ktl:STRING\">127.0.0.1:9001</LeaseAgentAddress>"
-                    L"<RuntimeServiceAddress xsi:type=\"ktl:STRING\">127.0.0.1:9002</RuntimeServiceAddress>"
-                    L"<ClientConnectionAddress xsi:type=\"ktl:STRING\">127.0.0.1:19000</ClientConnectionAddress>"
-                    L"<NodeProperties>"
-                        L"<Property>"
-                            L"<Name xsi:type=\"ktl:STRING\">NodeType</Name>"
-                            L"<Value xsi:type=\"ktl:STRING\">SeedNode</Value>"
-                        L"</Property>"
-                    L"</NodeProperties>"
-                L"</NodeConfig>"};
+                    "<NodeId xsi:type=\"ktl:STRING\">0</NodeId>"
+                    "<NodeAddress xsi:type=\"ktl:STRING\">127.0.0.1:9000</NodeAddress>"
+                    "<LeaseAgentAddress xsi:type=\"ktl:STRING\">127.0.0.1:9001</LeaseAgentAddress>"
+                    "<RuntimeServiceAddress xsi:type=\"ktl:STRING\">127.0.0.1:9002</RuntimeServiceAddress>"
+                    "<ClientConnectionAddress xsi:type=\"ktl:STRING\">127.0.0.1:19000</ClientConnectionAddress>"
+                    "<NodeProperties>"
+                        "<Property>"
+                            "<Name xsi:type=\"ktl:STRING\">NodeType</Name>"
+                            "<Value xsi:type=\"ktl:STRING\">SeedNode</Value>"
+                        "</Property>"
+                    "</NodeProperties>"
+                "</NodeConfig>"};
 
     KAllocator& Alloc = *g_Alloc;
 
@@ -914,9 +914,9 @@ NTSTATUS KIDomNodeTests()
 	HRESULT hr;
 	size_t result;
 	size_t bufferSize;
-	hr = SizeTAdd(wcslen(xml), 1, &result);
+	hr = SizeTAdd(strlen(xml), 1, &result);
 	KInvariant(SUCCEEDED(hr));
-    hr = SizeTMult(result, sizeof(WCHAR), &bufferSize);
+    hr = SizeTMult(result, sizeof(CHAR), &bufferSize);
 	KInvariant(SUCCEEDED(hr));
     if (bufferSize > ULONG_MAX)
     {
@@ -1136,7 +1136,7 @@ NTSTATUS TestSequence()
 
 NTSTATUS
 KSerialTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     UNREFERENCED_PARAMETER(argc);
@@ -1187,7 +1187,7 @@ KSerialTest(
 #if CONSOLE_TEST
 int
 #if !defined(PLATFORM_UNIX)
-main(int argc, WCHAR* args[])
+main(int argc, CHAR* args[])
 {
 #else
 main(int argc, char* cargs[])

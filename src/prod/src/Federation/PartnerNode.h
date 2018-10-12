@@ -47,10 +47,10 @@ namespace Federation
         PartnerNode(
             NodeId const& id,
             uint64 instanceId,
-            std::wstring const & address,
-            std::wstring const & leaseAgentAddress,
+            std::string const & address,
+            std::string const & leaseAgentAddress,
             Common::Uri const & nodeFaultDomainId,
-            std::wstring const & ringName);
+            std::string const & ringName);
 
         void SetAsUnknown() const;
         void OnSend(bool expectsReply) const;
@@ -62,10 +62,10 @@ namespace Federation
 
         // Properties
         __declspec (property(get=getNodeId)) NodeId Id;
-        __declspec (property(get=getIdString)) std::wstring const & IdString;
+        __declspec (property(get=getIdString)) std::string const & IdString;
         __declspec (property(get=getNodeInstance)) NodeInstance const & Instance;
-        __declspec (property(get=getAddress, put=setAddress)) std::wstring const & Address;
-        __declspec (property(get=getLeaseAgentAddress)) std::wstring const & LeaseAgentAddress;
+        __declspec (property(get=getAddress, put=setAddress)) std::string const & Address;
+        __declspec (property(get=getLeaseAgentAddress)) std::string const & LeaseAgentAddress;
         __declspec (property(get=getLeaseAgentInstanceId)) int64 LeaseAgentInstanceId;
         __declspec (property(get=getPhase,put=setPhase)) NodePhase::Enum Phase;
         __declspec (property(get=getTarget)) Transport::ISendTarget::SPtr const & Target;
@@ -80,19 +80,19 @@ namespace Federation
         __declspec (property(get=getNextLivenessUpdate)) Common::StopwatchTime NextLivenessUpdate;
         __declspec (property(get=getNodeFaultDomainId)) Common::Uri const& NodeFaultDomainId;
         __declspec (property(get=getGlobalTimeUpperLimit)) Common::TimeSpan GlobalTimeUpperLimit;
-        __declspec (property(get=getRingName)) std::wstring const & RingName;
+        __declspec (property(get=getRingName)) std::string const & RingName;
         __declspec (property(get=getFlags)) int Flags;
 
         // Getter function for properties.
         NodeId getNodeId() const {return nodeInstance_.Id;}
-        std::wstring const & getIdString() const { return idString_; }
+        std::string const & getIdString() const { return idString_; }
         NodeInstance const & getNodeInstance() const {return nodeInstance_;}
         NodePhase::Enum getPhase() const {return phase_;}
         void setPhase(NodePhase::Enum value) {phase_ = value;}
-        std::wstring const & getAddress() const {return address_;}
-        void setAddress(std::wstring const & value) {address_ = value;}
+        std::string const & getAddress() const {return address_;}
+        void setAddress(std::string const & value) {address_ = value;}
         bool getIsRouting() const {return phase_ == NodePhase::Routing;}
-        std::wstring const & getLeaseAgentAddress() const {return leaseAgentAddress_;}
+        std::string const & getLeaseAgentAddress() const {return leaseAgentAddress_;}
         int64 getLeaseAgentInstanceId() const {return leaseAgentInstanceId_;}
         bool getIsAvailable() const {return phase_ == NodePhase::Inserting || phase_ == NodePhase::Routing;}
         bool getIsShutdown() const {return phase_ == NodePhase::Shutdown;}
@@ -107,7 +107,7 @@ namespace Federation
         RoutingToken const & getRoutingToken() const { return token_; }
         Common::Uri const& getNodeFaultDomainId() const { return nodeFaultDomainId_; }
         Common::TimeSpan getGlobalTimeUpperLimit() const;
-        std::wstring const & getRingName() const { return ringName_; }
+        std::string const & getRingName() const { return ringName_; }
         int getFlags() const { return flags_; }
 
         void Test_SetToken(RoutingToken const & token)
@@ -145,11 +145,11 @@ namespace Federation
         NodeInstance nodeInstance_; // Instance information for this node instance.
         NodePhase::Enum phase_; // The phase of this partner node.
         RoutingToken token_; // The routing token.
-        std::wstring address_; // The listener address for this partner node.
-        std::wstring leaseAgentAddress_; // The listener address for the lease agent of this partner node.
+        std::string address_; // The listener address for this partner node.
+        std::string leaseAgentAddress_; // The listener address for the lease agent of this partner node.
         Common::Uri nodeFaultDomainId_; // The fault domain setting of this partner node.
         int64 leaseAgentInstanceId_; // Instance of the lease agent.
-        std::wstring idString_;
+        std::string idString_;
         Common::StopwatchTime lastUpdated_; // Last time phase changed.
         mutable Common::StopwatchTime lastAccessed_; // Last time accessed from routing table.
         mutable Common::StopwatchTime lastConsider_; // Last time considered in routing table.
@@ -159,7 +159,7 @@ namespace Federation
         mutable Transport::ISendTarget::SPtr target_; // The channel to this remote node from the current site node.
         mutable Common::TimeSpan globalTimeUpperLimit_;
         mutable Common::StopwatchTime lastGlobalTimeRefresh_;
-        std::wstring ringName_;
+        std::string ringName_;
         int flags_;
     };
 }

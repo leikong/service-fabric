@@ -23,7 +23,7 @@ namespace Federation
         {
         }
 
-        NodeConfig(NodeId id, std::wstring const& address, std::wstring const& leaseAgentAddress, std::wstring const& workingDir, std::wstring const& ringName = L"")
+        NodeConfig(NodeId id, std::string const& address, std::string const& leaseAgentAddress, std::string const& workingDir, std::string const& ringName = "")
             : id_(id), address_(address), leaseAgentAddress_(leaseAgentAddress), workingDir_(workingDir), ringName_(ringName)
         {
         }
@@ -34,20 +34,20 @@ namespace Federation
         }
 
         __declspec (property(get=getId)) NodeId Id;
-        __declspec (property(get=getAddress)) std::wstring const& Address;
-        __declspec (property(get=getLeaseAgentAddress)) std::wstring const& LeaseAgentAddress;
-        __declspec (property(get=getWorkingDir)) std::wstring const& WorkingDir;
-        __declspec (property(get=getRingName)) std::wstring const& RingName;
+        __declspec (property(get=getAddress)) std::string const& Address;
+        __declspec (property(get=getLeaseAgentAddress)) std::string const& LeaseAgentAddress;
+        __declspec (property(get=getWorkingDir)) std::string const& WorkingDir;
+        __declspec (property(get=getRingName)) std::string const& RingName;
 
         NodeId getId() const { return id_; }
 
-        std::wstring const& getAddress() const { return address_; }
+        std::string const& getAddress() const { return address_; }
 
-        std::wstring const& getLeaseAgentAddress() const { return leaseAgentAddress_; }
+        std::string const& getLeaseAgentAddress() const { return leaseAgentAddress_; }
 
-        std::wstring const& getWorkingDir() const { return workingDir_; }
+        std::string const& getWorkingDir() const { return workingDir_; }
 
-        std::wstring const& getRingName() const { return ringName_; }
+        std::string const& getRingName() const { return ringName_; }
 
         void WriteTo(Common::TextWriter& w, Common::FormatOptions const&) const
         {
@@ -59,9 +59,9 @@ namespace Federation
     private:
 
         NodeId id_;
-        std::wstring address_;
-        std::wstring leaseAgentAddress_;
-        std::wstring workingDir_;
-        std::wstring ringName_;
+        std::string address_;
+        std::string leaseAgentAddress_;
+        std::string workingDir_;
+        std::string ringName_;
     };
 }

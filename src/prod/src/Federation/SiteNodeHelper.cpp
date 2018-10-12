@@ -13,58 +13,58 @@ using namespace Common;
 using namespace std;
 using namespace FederationUnitTests;
 
-wstring SiteNodeHelper::GetLoopbackAddress()
+string SiteNodeHelper::GetLoopbackAddress()
 {
-    return L"localhost";
+    return "localhost";
 }
 
-wstring SiteNodeHelper::GetFederationPort()
+string SiteNodeHelper::GetFederationPort()
 {
     USHORT basePort = 0;
     TestPortHelper::GetPorts(1, basePort);
 
-    wstring portString;
+    string portString;
     StringWriter(portString).Write(basePort);
     return portString;
 }
 
-wstring SiteNodeHelper::GetLeaseAgentPort()
+string SiteNodeHelper::GetLeaseAgentPort()
 {
     USHORT basePort = 0;
     TestPortHelper::GetPorts(1, basePort);
 
-    wstring portString;
+    string portString;
     StringWriter(portString).Write(basePort);
     return portString;
 }
 
-wstring SiteNodeHelper::BuildAddress(wstring hostname, wstring port)
+string SiteNodeHelper::BuildAddress(string hostname, string port)
 {
-    wstring addr = hostname;
-    addr.append(L":");
+    string addr = hostname;
+    addr.append(":");
     addr.append(port);
 
     return addr;
 }
 
-SiteNodeSPtr SiteNodeHelper::CreateSiteNode(NodeId nodeId, wstring host, wstring port)
+SiteNodeSPtr SiteNodeHelper::CreateSiteNode(NodeId nodeId, string host, string port)
 {
-    wstring addr = BuildAddress(host, port);
-    wstring laAddr = BuildAddress(host, GetLeaseAgentPort());
+    string addr = BuildAddress(host, port);
+    string laAddr = BuildAddress(host, GetLeaseAgentPort());
     NodeConfig config = NodeConfig(nodeId, addr, laAddr, GetWorkingDir());
     return SiteNode::Create(config, FabricCodeVersion(), nullptr);
 }
 
 SiteNodeSPtr SiteNodeHelper::CreateSiteNode(NodeId nodeId)
 {
-    wstring  port = GetFederationPort();
-    wstring host = GetLoopbackAddress();
+    string  port = GetFederationPort();
+    string host = GetLoopbackAddress();
     return SiteNodeHelper::CreateSiteNode(nodeId, host, port);
 }
 
-wstring SiteNodeHelper::GetWorkingDir()
+string SiteNodeHelper::GetWorkingDir()
 {
-    wstring workingDir = L".\\Federation.Test\\Data";
+    string workingDir = ".\\Federation.Test\\Data";
     if(!Directory::Exists(workingDir))
     {
         Directory::Create(workingDir);
@@ -73,9 +73,9 @@ wstring SiteNodeHelper::GetWorkingDir()
     return workingDir;
 }
 
-wstring SiteNodeHelper::GetTicketFilePath(Federation::NodeId nodeId)
+string SiteNodeHelper::GetTicketFilePath(Federation::NodeId nodeId)
 {
-    return Path::Combine(GetWorkingDir(), nodeId.ToString() + L".tkt");
+    return Path::Combine(GetWorkingDir(), nodeId.ToString() + ".tkt");
 }
 
 void SiteNodeHelper::DeleteTicketFile(Federation::NodeId nodeId)

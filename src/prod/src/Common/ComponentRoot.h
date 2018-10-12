@@ -21,8 +21,8 @@ namespace Common
         ComponentRoot(ComponentRoot && other);
         virtual ~ComponentRoot();
 
-        __declspec(property(get=get_TraceId)) std::wstring const & TraceId;
-        std::wstring const & get_TraceId() const { return traceId_; }
+        __declspec(property(get=get_TraceId)) std::string const & TraceId;
+        std::string const & get_TraceId() const { return traceId_; }
 
         __declspec(property(get=get_IsReferenceTrackingEnabled)) bool IsReferenceTrackingEnabled;
         bool get_IsReferenceTrackingEnabled() const { return (referenceTracker_.get() != nullptr); }
@@ -47,19 +47,19 @@ namespace Common
         virtual void WriteTo(Common::TextWriter & w, Common::FormatOptions const &) const;
 
     protected:
-        void SetTraceId(std::wstring const & traceId, size_t capacity = 0);
+        void SetTraceId(std::string const & traceId, size_t capacity = 0);
 
         // Allow derived classes to update the trace Id without memory allocation 
         // (i.e. avoid pointer/reference/iterator invalidation).
         // 
-        bool TryPutReservedTraceId(std::wstring const & traceId);
+        bool TryPutReservedTraceId(std::string const & traceId);
 
     private:
         class ReferenceTracker;
 
         static void LeakDetectionTimerCallback(ComponentRootWPtr const &);
 
-        std::wstring traceId_;
+        std::string traceId_;
         std::unique_ptr<ReferenceTracker> referenceTracker_;
         TimerSPtr leakDetectionTimer_;
     };

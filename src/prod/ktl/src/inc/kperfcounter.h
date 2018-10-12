@@ -138,7 +138,7 @@ public:
     //
     NTSTATUS
     SpawnInstance(
-        __in  LPCWSTR InstanceName,
+        __in  LPCSTR InstanceName,
         __out KSharedPtr<KPerfCounterSetInstance>& NewInst
         );
 
@@ -281,7 +281,7 @@ public:
 private:
 
     KPerfCounterSetInstance(
-        __in LPCWSTR InstanceName,
+        __in LPCSTR InstanceName,
         __in KSharedPtr<KPerfCounterSet> Parent,
         __in ULONG InstanceId
         )

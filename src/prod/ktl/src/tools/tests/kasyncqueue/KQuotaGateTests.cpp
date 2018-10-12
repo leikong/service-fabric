@@ -351,7 +351,7 @@ SimpleQuotaGateTest(KtlSystem& KtlSystem)
 }
 
 NTSTATUS
-KQuotaGateTest(int argc, WCHAR* args[])
+KQuotaGateTest(int argc, CHAR* args[])
 {
     UNREFERENCED_PARAMETER(argc);
     UNREFERENCED_PARAMETER(args);

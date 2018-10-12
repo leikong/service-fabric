@@ -34,11 +34,11 @@ namespace LeaseLayerTestCommon
        bool & foundV6
        )    
     {
-        WCHAR LocalComputerName[ENDPOINT_ADDR_CCH_MAX] = {0};
+        CHAR LocalComputerName[ENDPOINT_ADDR_CCH_MAX] = {0};
         DWORD dwSize = ENDPOINT_ADDR_CCH_MAX;
         GetComputerNameEx(
             ComputerNameDnsFullyQualified,
-            (LPWSTR)&LocalComputerName, &dwSize);
+            (LPSTR)&LocalComputerName, &dwSize);
 
         // Setup hints
         ADDRINFOW hints = {};
@@ -50,7 +50,7 @@ namespace LeaseLayerTestCommon
         ADDRINFOW *result = nullptr;
         ADDRINFOW *ptr = nullptr;
 #if defined(PLATFORM_UNIX)
-        DWORD dwRetval = GetAddrInfoW(L"", nullptr, &hints, &result);
+        DWORD dwRetval = GetAddrInfoW("", nullptr, &hints, &result);
 #else
         DWORD dwRetval = GetAddrInfoW(LocalComputerName, nullptr, &hints, &result);
 #endif
@@ -84,7 +84,7 @@ namespace LeaseLayerTestCommon
 #if defined(PLATFORM_UNIX)
                 ::sockaddr sockaddr = *(ptr->ai_addr);
                 Common::Endpoint endpoint(sockaddr);
-                wcsncpy(socketAddress1.Address, endpoint.GetIpString2().c_str(), ENDPOINT_ADDR_CCH_MAX);
+                strncpy(socketAddress1.Address, endpoint.GetIpString2().c_str(), ENDPOINT_ADDR_CCH_MAX);
                 socketAddress1.Address[ENDPOINT_ADDR_CCH_MAX - 1] = '\0';
 #else
 #pragma warning(suppress : 24007) // Dealing with IPv4 specifically
@@ -113,7 +113,7 @@ namespace LeaseLayerTestCommon
 #if defined(PLATFORM_UNIX)
                 ::sockaddr sockaddr = *(ptr->ai_addr);
                 Common::Endpoint endpoint(sockaddr);
-                wcsncpy(socketAddress6_1.Address, endpoint.GetIpString2().c_str(), ENDPOINT_ADDR_CCH_MAX);
+                strncpy(socketAddress6_1.Address, endpoint.GetIpString2().c_str(), ENDPOINT_ADDR_CCH_MAX);
                 socketAddress6_1.Address[ENDPOINT_ADDR_CCH_MAX - 1] = '\0';
 #else
                 RtlIpv6AddressToStringW(&((PSOCKADDR_IN6)ptr->ai_addr)->sin6_addr, socketAddress6_1.Address);

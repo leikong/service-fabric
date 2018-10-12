@@ -59,7 +59,7 @@ int rmdir_p(const char* dirname)
     return result;
 }
 
-DWORD GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR lpBuffer)
+DWORD GetCurrentDirectoryW(DWORD nBufferLength, LPSTR lpBuffer)
 {
     char buf[MAX_PATH + 1];
     char* cwd = getcwd(buf, MAX_PATH + 1);
@@ -72,12 +72,11 @@ DWORD GetCurrentDirectoryW(DWORD nBufferLength, LPWSTR lpBuffer)
     {
         return len + 1;
     }
-    wstring cwdW = Common::StringUtility::Utf8ToUtf16(cwd);
-    memcpy(lpBuffer, cwdW.c_str(), (cwdW.length() + 1) * sizeof(wchar_t));
+    memcpy(lpBuffer, cwd, (len + 1) * sizeof(char));
     return len;
 }
 
-BOOL SetCurrentDirectoryW(LPCWSTR lpPathName)
+BOOL SetCurrentDirectoryW(LPCSTR lpPathName)
 {
     string pathA = FileNormalizePath(lpPathName);
     if (pathA.empty())
@@ -102,7 +101,7 @@ BOOL SetCurrentDirectoryW(LPCWSTR lpPathName)
     return TRUE;
 }
 
-BOOL CreateDirectoryW(LPCWSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes)
+BOOL CreateDirectoryW(LPCSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes)
 {
     string pathA = FileNormalizePath(lpPathName);
     if (pathA.empty())
@@ -132,7 +131,7 @@ BOOL CreateDirectoryW(LPCWSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttrib
     return TRUE;
 }
 
-BOOL RemoveDirectoryW(LPCWSTR lpPathName)
+BOOL RemoveDirectoryW(LPCSTR lpPathName)
 {
     string pathA = FileNormalizePath(lpPathName);
     if (pathA.empty())
@@ -164,7 +163,7 @@ namespace Common
     const int Directory::DirectoryOperationRetryIntervalInMillis = 200;
 
     void Directory::Create(
-        std::wstring const & path)
+        std::string const & path)
     {
         while (!::CreateDirectory(Path::ConvertToNtPath(path).c_str(), NULL))
         {
@@ -184,17 +183,17 @@ namespace Common
                 {
                     auto offset = path.find_last_of(Path::GetPathSeparatorChar());
 #if defined(PLATFORM_UNIX)
-                    if (offset == std::wstring::npos)
+                    if (offset == std::string::npos)
                     {
                         offset = path.find_last_of('\\');
                     }
 #endif
-                    if (offset == std::wstring::npos)
+                    if (offset == std::string::npos)
                     {
                         THROW_FMT(microsoft::GetLastErrorCode(), "CreateDirectory failed for '{0}'", path);
                     }
 
-                    std::wstring parent = path.substr(0, offset);
+                    std::string parent = path.substr(0, offset);
                     Directory::CreateDirectory(parent);
                     break;
                 }
@@ -205,13 +204,8 @@ namespace Common
         }
     }
 
-    ErrorCode Directory::Create2(std::string const & path)
-    {
-        return Create2(StringUtility::Utf8ToUtf16(path));
-    }
-
     ErrorCode Directory::Create2(
-        std::wstring const & path)
+        std::string const & path)
     {
         bool parentDirectoryCreated = false;
         while (!::CreateDirectory(Path::ConvertToNtPath(path).c_str(), NULL))
@@ -232,17 +226,17 @@ namespace Common
                 {
                     auto offset = path.find_last_of(Path::GetPathSeparatorChar());
 #if defined(PLATFORM_UNIX)
-                    if (offset == std::wstring::npos)
+                    if (offset == std::string::npos)
                     {
                         offset = path.find_last_of('\\');
                     }
 #endif
-                    if (offset == std::wstring::npos || parentDirectoryCreated)
+                    if (offset == std::string::npos || parentDirectoryCreated)
                     {
                         return ErrorCodeValue::InvalidDirectory;
                     }   
 
-                    std::wstring parent = path.substr(0, offset);
+                    std::string parent = path.substr(0, offset);
                     ErrorCode err = Directory::Create2(parent);
                     if (!err.IsSuccess())
                     {
@@ -268,17 +262,17 @@ namespace Common
         return ErrorCodeValue::Success;
     }
 
-    ErrorCode Directory::Delete(std::wstring const & path, bool recursive)
+    ErrorCode Directory::Delete(std::string const & path, bool recursive)
     {
         return Directory::DeleteInternal(path, recursive, false);
     }
 
-    ErrorCode Directory::Delete(std::wstring const & path, bool recursive, bool deleteReadOnlyFiles)
+    ErrorCode Directory::Delete(std::string const & path, bool recursive, bool deleteReadOnlyFiles)
     {
         return Directory::DeleteInternal(path, recursive, deleteReadOnlyFiles);
     }
 
-    ErrorCode Directory::Delete_WithRetry(std::wstring const & path, bool recursive, bool deleteReadOnlyFiles)
+    ErrorCode Directory::Delete_WithRetry(std::string const & path, bool recursive, bool deleteReadOnlyFiles)
     {
         ErrorCode error(ErrorCodeValue::Success);
         int count = 0;
@@ -294,8 +288,8 @@ namespace Common
             {
                 Trace.WriteWarning(
                     TraceSource, 
-                    L"Delete_WithRetry", 
-                    "Delete conflict error {0}: from {1}.", 
+                    StringLiteral("Delete_WithRetry"), 
+                    StringLiteral("Delete conflict error {0}: from {1}."),
                     error, 
                     path);
 
@@ -313,7 +307,7 @@ namespace Common
         return error;
     }
 
-    ErrorCode Directory::DeleteInternal(std::wstring const & path, bool recursive, bool deleteReadOnlyFiles)
+    ErrorCode Directory::DeleteInternal(std::string const & path, bool recursive, bool deleteReadOnlyFiles)
     {
         while (!::RemoveDirectory(Path::ConvertToNtPath(path).c_str()))
         {
@@ -329,18 +323,18 @@ namespace Common
             }
             else
             {
-                std::wstring pattern(path);
-                pattern.append(Path::GetPathSeparatorWstr() + L"*");
+                std::string pattern(path);
+                pattern.append(Path::GetPathSeparatorWstr() + "*");
                 auto find = File::Search(move(pattern));
 
-                std::wstring fullPath;
+                std::string fullPath;
 
                 ErrorCode err;
                 while ((err = find->MoveNext()).IsSuccess())
                 {
                     auto currentName = &(find->GetCurrent().cFileName[0]);
-                    if (((currentName[0] == L'.') && (currentName[1] == 0)) ||
-                        ((currentName[0] == L'.') && (currentName[1] == L'.') && (currentName[2] == 0)))
+                    if (((currentName[0] == '.') && (currentName[1] == 0)) ||
+                        ((currentName[0] == '.') && (currentName[1] == '.') && (currentName[2] == 0)))
                     {
                         // Skip . and ..
                         continue;
@@ -399,18 +393,12 @@ namespace Common
 
     bool Directory::Exists(std::string const & path)
     {
-        auto result = ::GetFileAttributesW(Path::ConvertToNtPath(StringUtility::Utf8ToUtf16(path)).c_str());
-        return (result != INVALID_FILE_ATTRIBUTES) && ((result & FILE_ATTRIBUTE_DIRECTORY) != 0);
-    }
-
-    bool Directory::Exists(std::wstring const & path)
-    {
         auto result = ::GetFileAttributesW(Path::ConvertToNtPath(path).c_str());
         return (result != INVALID_FILE_ATTRIBUTES) && ((result & FILE_ATTRIBUTE_DIRECTORY) != 0);
     }
 
     ErrorCode Directory::Exists(
-        std::wstring const & path,
+        std::string const & path,
         __out bool & exists)
     {
         auto result = ::GetFileAttributesW(Path::ConvertToNtPath(path).c_str());
@@ -424,7 +412,7 @@ namespace Common
 
                 Trace.WriteWarning(
                     TraceSource,
-                    L"Exists",
+                    StringLiteral("Exists"),
                     "Directory Exists error {0}: for {1}.",
                     error,
                     path);
@@ -440,14 +428,14 @@ namespace Common
         return error;
     }
 
-    std::wstring Directory::GetCurrentDirectory()
+    std::string Directory::GetCurrentDirectory()
     {
-        std::wstring path;
+        std::string path;
         auto winSize = ::GetCurrentDirectory(0, NULL);
         auto stlSize = static_cast<size_t>(winSize);
         path.resize(stlSize);
 
-        if (!::GetCurrentDirectory(winSize, const_cast<wchar_t *>(path.data())))
+        if (!::GetCurrentDirectory(winSize, const_cast<char *>(path.data())))
         {
             THROW_FMT(microsoft::GetLastErrorCode(), "GetCurrentDirectory failed for '{0}'", path);
         }
@@ -459,7 +447,7 @@ namespace Common
         return path;
     }
 
-    void Directory::SetCurrentDirectory(std::wstring const & path)
+    void Directory::SetCurrentDirectory(std::string const & path)
     {
         if (!::SetCurrentDirectory(path.c_str()))
         {
@@ -467,7 +455,7 @@ namespace Common
         }
     }
 
-    ErrorCode Directory::Copy(std::wstring const & src, std::wstring const & dest, bool overwrite)
+    ErrorCode Directory::Copy(std::string const & src, std::string const & dest, bool overwrite)
     {
         ErrorCode err = ErrorCodeValue::Success;
         if (!Directory::Exists(dest))
@@ -479,25 +467,25 @@ namespace Common
             }
         }
 
-        std::wstring pattern(src);
-        pattern.append(Path::GetPathSeparatorWstr() + L"*");
+        std::string pattern(src);
+        pattern.append(Path::GetPathSeparatorWstr() + "*");
         auto find = File::Search(move(pattern));
         while ((err = find->MoveNext()).IsSuccess())
         {
             auto currentName = &(find->GetCurrent().cFileName[0]);
-            if (((currentName[0] == L'.') && (currentName[1] == 0)) ||
-                ((currentName[0] == L'.') && (currentName[1] == L'.') && (currentName[2] == 0)) ||
+            if (((currentName[0] == '.') && (currentName[1] == 0)) ||
+                ((currentName[0] == '.') && (currentName[1] == '.') && (currentName[2] == 0)) ||
                 HasFileLockExtension(currentName))
             {
                 // Skip . and ..
                 continue;
             }
 
-            std::wstring sourcePath = src;
+            std::string sourcePath = src;
             sourcePath.append(Path::GetPathSeparatorWstr());
             sourcePath.append(currentName);
 
-            std::wstring destinationPath = dest;
+            std::string destinationPath = dest;
             destinationPath.append(Path::GetPathSeparatorWstr());
             destinationPath.append(currentName);
 
@@ -543,7 +531,7 @@ namespace Common
         }
     }
 
-    ErrorCode Directory::MoveFile(const std::wstring& source, const std::wstring& destination, bool overwrite)
+    ErrorCode Directory::MoveFile(const std::string& source, const std::string& destination, bool overwrite)
     {
         auto uncSrc = Path::ConvertToNtPath(source);
         auto uncDest = Path::ConvertToNtPath(destination);
@@ -561,7 +549,7 @@ namespace Common
             {
                 Trace.WriteWarning(
                     TraceSource,
-                    L"MoveFile",
+                    StringLiteral("MoveFile"),
                     "MoveFile overwrite directory exists failed for {0} to {1}: error={2}",
                     uncSrc,
                     uncDest,
@@ -575,7 +563,7 @@ namespace Common
                 {
                     Trace.WriteWarning(
                         TraceSource,
-                        L"MoveFile",
+                        StringLiteral("MoveFile"),
                         "MoveFile overwrite directory delete failed for {0}: error={1}",
                         uncDest,
                         error);
@@ -591,7 +579,7 @@ namespace Common
             HRESULT hr = HRESULT_FROM_WIN32(::GetLastError());
             Trace.WriteError(
                 TraceSource,
-                L"MoveFile",
+                StringLiteral("MoveFile"),
                 "MoveFileEx from {0} to {1} failed: error={2}",
                 uncSrc,
                 uncDest,
@@ -603,12 +591,12 @@ namespace Common
     }
 
     ErrorCode Directory::SafeCopy(
-        std::wstring const & src,
-        std::wstring const & dest,
+        std::string const & src,
+        std::string const & dest,
         bool overwrite,
         Common::TimeSpan const timeout)
     {
-        std::wstring path = Path::GetDirectoryName(dest);
+        std::string path = Path::GetDirectoryName(dest);
         if (!path.empty())
         {
             ErrorCode err = Directory::Create2(path);
@@ -619,16 +607,16 @@ namespace Common
         }
         else
         {
-            path = L".";
+            path = ".";
         }
 
-        std::wstring tempFilePath = File::GetTempFileName(path);
+        std::string tempFilePath = File::GetTempFileName(path);
 
         if(tempFilePath.length() > MAX_PATH)
         {
             Trace.WriteError(
                 TraceSource,
-                L"SafeCopy",
+                StringLiteral("SafeCopy"),
                 "Temp path {0} is greater than MAX_PATH {1}",
                 tempFilePath,
                 MAX_PATH);
@@ -638,11 +626,11 @@ namespace Common
 
         Trace.WriteInfo(
             TraceSource,
-            L"SafeCopy",
+            StringLiteral("SafeCopy"),
             "Doing Safecopy from {0} to temp file {1} {2} overwrite.",
             src,
             tempFilePath,
-            overwrite ? L"with" : L"without");
+            overwrite ? "with" : "without");
 
         FileReaderLock srcLock(src);
         FileWriterLock cacheLock(tempFilePath), destLock(dest);
@@ -678,12 +666,12 @@ namespace Common
         return error;
     }
 
-    ErrorCode Directory::Rename(std::wstring const & src, std::wstring const & dest, bool const overwrite)
+    ErrorCode Directory::Rename(std::string const & src, std::string const & dest, bool const overwrite)
     {
         return MoveFile(src, dest, overwrite);
     }
 
-    ErrorCode Directory::Rename_WithRetry(std::wstring const & src, std::wstring const & dest, bool const overwrite)
+    ErrorCode Directory::Rename_WithRetry(std::string const & src, std::string const & dest, bool const overwrite)
     {
         ErrorCode error(ErrorCodeValue::Success);
         int count = 0;
@@ -694,7 +682,7 @@ namespace Common
             {
                 Trace.WriteWarning(
                     TraceSource, 
-                    L"Rename_WithRetry", 
+                    StringLiteral("Rename_WithRetry"), 
                     "Move conflict error {0}: from {1} to {2}.", 
                     error, 
                     src, 
@@ -709,8 +697,8 @@ namespace Common
     }
 
     ErrorCode Directory::Echo(
-        std::wstring const & src,
-        std::wstring const & dest,
+        std::string const & src,
+        std::string const & dest,
         Common::TimeSpan const timeout)
     {
         ErrorCode err = ErrorCodeValue::Success;
@@ -738,25 +726,25 @@ namespace Common
             return error;
         }
 
-        std::wstring pattern(src);
-        pattern.append(Path::GetPathSeparatorWstr() + L"*");
+        std::string pattern(src);
+        pattern.append(Path::GetPathSeparatorWstr() + "*");
         auto find = File::Search(move(pattern));
         while ((err = find->MoveNext()).IsSuccess())
         {
             auto currentName = &(find->GetCurrent().cFileName[0]);
-            if (((currentName[0] == L'.') && (currentName[1] == 0)) ||
-                ((currentName[0] == L'.') && (currentName[1] == L'.') && (currentName[2] == 0)) ||
+            if (((currentName[0] == '.') && (currentName[1] == 0)) ||
+                ((currentName[0] == '.') && (currentName[1] == '.') && (currentName[2] == 0)) ||
                 HasFileLockExtension(currentName))
             {
                 // Skip ., .. and .ReadLock/.WriteLock
                 continue;
             }
 
-            std::wstring sourcePath = src;
+            std::string sourcePath = src;
             sourcePath.append(Path::GetPathSeparatorWstr());
             sourcePath.append(currentName);
 
-            std::wstring destinationPath = dest;
+            std::string destinationPath = dest;
             destinationPath.append(Path::GetPathSeparatorWstr());
             destinationPath.append(currentName);
 
@@ -788,11 +776,11 @@ namespace Common
         }
     }
 
-    vector<wstring> Directory::Find(wstring const & path, wstring const & filePattern, uint expectedFileCount, bool findRecursively)
+    vector<string> Directory::Find(string const & path, string const & filePattern, uint expectedFileCount, bool findRecursively)
     {                
-        vector<wstring> fileList;
-        map<std::wstring, WIN32_FIND_DATA> fileListMap = FindWithFileProperties(path, filePattern, expectedFileCount, findRecursively);
-        typedef map<std::wstring, WIN32_FIND_DATA>::value_type pair_type;
+        vector<string> fileList;
+        map<std::string, WIN32_FIND_DATA> fileListMap = FindWithFileProperties(path, filePattern, expectedFileCount, findRecursively);
+        typedef map<std::string, WIN32_FIND_DATA>::value_type pair_type;
 
         transform(
             fileListMap.begin(), 
@@ -803,15 +791,13 @@ namespace Common
         return fileList;
     }
 
-    map<std::wstring, WIN32_FIND_DATA> Directory::FindWithFileProperties(wstring const & path, wstring const & filePattern, uint expectedFileCount, bool findRecursively)
+    map<std::string, WIN32_FIND_DATA> Directory::FindWithFileProperties(string const & path, string const & filePattern, uint expectedFileCount, bool findRecursively)
     {                
-        map<std::wstring, WIN32_FIND_DATA> fileList;
+        map<std::string, WIN32_FIND_DATA> fileList;
 
 #if defined(PLATFORM_UNIX)
         queue<string> directoriesToSearch;
-        string pathA, filePatternA;
-        StringUtility::Utf16ToUtf8(path, pathA);
-        StringUtility::Utf16ToUtf8(filePattern, filePatternA);
+        string pathA(path);
 
         // normalize the path
         std::replace(pathA.begin(), pathA.end(), '\\', '/');
@@ -837,16 +823,12 @@ namespace Common
 
                 string currentName(dptr->d_name);
                 string currentPath = currentDirectory + "/" + currentName;
-                wstring currentDirectoryW, currentNameW, currentPathW;
-                StringUtility::Utf8ToUtf16(currentDirectory, currentDirectoryW);
-                StringUtility::Utf8ToUtf16(currentName, currentNameW);
-                StringUtility::Utf8ToUtf16(currentPath, currentPathW);
 
-                if (dptr->d_type == DT_REG && GlobMatch(currentName.c_str(), filePatternA.c_str()))
+                if (dptr->d_type == DT_REG && GlobMatch(currentName.c_str(), filePattern.c_str()))
                 {
                     WIN32_FIND_DATA findData;
                     memset(&findData, 0, sizeof(findData));
-                    memcpy(findData.cFileName, currentNameW.c_str(), (currentNameW.length() + 1) * sizeof(wchar_t));
+                    memcpy(findData.cFileName, currentName.c_str(), (currentName.length() + 1) * sizeof(char));
                     findData.dwFileAttributes = FILE_ATTRIBUTE_REPARSE_POINT;
                     struct stat stat_data;
                     if(stat(currentPath.c_str(), &stat_data) == 0)
@@ -857,7 +839,7 @@ namespace Common
                         findData.nFileSizeLow     = (DWORD) stat_data.st_size;
                         findData.nFileSizeHigh    = (DWORD)(stat_data.st_size >> 32);
 
-                        fileList.insert(make_pair(currentPathW, findData));
+                        fileList.insert(make_pair(currentPath, findData));
                     }
 
                     if(fileList.size() == expectedFileCount)
@@ -874,15 +856,15 @@ namespace Common
             closedir(dp);
         }
 #else
-        queue<wstring> directoriesToSearch;
+        queue<string> directoriesToSearch;
         directoriesToSearch.push(path);
 
         while(!directoriesToSearch.empty())
         {
-            wstring currentDirectory = directoriesToSearch.front();
+            string currentDirectory = directoriesToSearch.front();
             directoriesToSearch.pop();
 
-            wstring fileSearchPattern = Path::Combine(currentDirectory, filePattern);
+            string fileSearchPattern = Path::Combine(currentDirectory, filePattern);
             auto findFiles = File::Search(move(fileSearchPattern));
 
             ErrorCode err;
@@ -905,7 +887,7 @@ namespace Common
 
             if(findRecursively)
             {
-                wstring directorySearchPattern = Path::Combine(currentDirectory, L"*");
+                string directorySearchPattern = Path::Combine(currentDirectory, "*");
                 auto findDirectories = File::Search(move(directorySearchPattern));
 
                 ErrorCode err2;
@@ -913,8 +895,8 @@ namespace Common
                 {
                     auto currentName = &(findDirectories->GetCurrent().cFileName[0]);
 
-                    if (((currentName[0] == L'.') && (currentName[1] == 0)) ||
-                        ((currentName[0] == L'.') && (currentName[1] == L'.') && (currentName[2] == 0)))
+                    if (((currentName[0] == '.') && (currentName[1] == 0)) ||
+                        ((currentName[0] == '.') && (currentName[1] == '.') && (currentName[2] == 0)))
                     {
                         // Skip ., ..
                         continue;
@@ -932,67 +914,40 @@ namespace Common
         return fileList;
     }
 
-    vector<wstring> Directory::GetFiles(wstring const & path)
+    vector<string> Directory::GetFiles(string const & path)
     {
-        return GetFiles(path, L"*", false, true);
+        return GetFiles(path, "*", false, true);
     }
 
     vector<string> Directory::GetFiles(string const & path, string const & pattern, bool fullPath, bool topDirectoryOnly)
-    {
-        auto pathw = StringUtility::Utf8ToUtf16(path);
-        auto patternw = StringUtility::Utf8ToUtf16(pattern);
-
-        vector<wstring> resultw;
-        if (topDirectoryOnly)
-        {
-            resultw = GetFilesInternal(pathw, patternw, fullPath);
-        }
-        else
-        {
-            GetFilesHelper(pathw, patternw, fullPath, resultw);
-        }
-
-        vector<string> result;
-        result.reserve(resultw.size());
-        for(auto const & ws : resultw)
-        {
-            string s;
-            StringUtility::Utf16ToUtf8(ws, s);
-            result.emplace_back(move(s));
-        }
-
-        return result;
-    }
-
-    vector<wstring> Directory::GetFiles(wstring const & path, wstring const & pattern, bool fullPath, bool topDirectoryOnly)
     {
         if (topDirectoryOnly)
         {
            return GetFilesInternal(path, pattern, fullPath);
         }
 
-        vector<wstring> result;
+        vector<string> result;
         GetFilesHelper(path, pattern, fullPath, result);
         return result;
     }
 
-    void Directory::GetFilesHelper(wstring const & path, wstring const & pattern, bool fullPath, vector<wstring> & result)
+    void Directory::GetFilesHelper(string const & path, string const & pattern, bool fullPath, vector<string> & result)
     {
-        vector<wstring> files = GetFilesInternal(path, pattern, fullPath);
+        vector<string> files = GetFilesInternal(path, pattern, fullPath);
         result.insert(result.begin(), files.begin(), files.end());
 
-        vector<wstring> subdirectories = GetSubDirectoriesInternal(path, L"*", true);
+        vector<string> subdirectories = GetSubDirectoriesInternal(path, "*", true);
         for (auto it = subdirectories.begin(); it != subdirectories.end(); it++)
         {
             GetFilesHelper(*it, pattern, fullPath, result);
         }
     }
 
-    vector<wstring> Directory::GetFilesInternal(wstring const & path, wstring const & pattern, bool fullPath)
+    vector<string> Directory::GetFilesInternal(string const & path, string const & pattern, bool fullPath)
     {
-        vector<wstring> fileList;
+        vector<string> fileList;
 
-        wstring fileSearchPattern = Path::Combine(path, pattern);
+        string fileSearchPattern = Path::Combine(path, pattern);
         auto findFiles = File::Search(move(fileSearchPattern));
 
         ErrorCode err;
@@ -1017,28 +972,28 @@ namespace Common
         return fileList;
     }
 
-    vector<wstring> Directory::GetSubDirectories(wstring const & path)
+    vector<string> Directory::GetSubDirectories(string const & path)
     {
-        return GetSubDirectories(path, L"*", false, true);
+        return GetSubDirectories(path, "*", false, true);
     }
 
-    vector<wstring> Directory::GetSubDirectories(wstring const & path, wstring const & pattern, bool fullPath, bool topDirectoryOnly)
+    vector<string> Directory::GetSubDirectories(string const & path, string const & pattern, bool fullPath, bool topDirectoryOnly)
     {
         if (topDirectoryOnly)
         {
             return GetSubDirectoriesInternal(path, pattern, fullPath);
         }
 
-        vector<wstring> result;
+        vector<string> result;
         GetSubDirectoriesHelper(path, pattern, fullPath, result);
         return result;
     }
 
-    void Directory::GetSubDirectoriesHelper(wstring const & path, wstring const & pattern, bool fullPath, vector<wstring> & result)
+    void Directory::GetSubDirectoriesHelper(string const & path, string const & pattern, bool fullPath, vector<string> & result)
     {
-        vector<wstring> subdirectories = GetSubDirectoriesInternal(path, pattern, false);
+        vector<string> subdirectories = GetSubDirectoriesInternal(path, pattern, false);
         for (auto it = subdirectories.begin(); it != subdirectories.end(); it++) {
-            wstring nextPath = Path::Combine(path, *it);
+            string nextPath = Path::Combine(path, *it);
             if (fullPath)
             {
                 result.push_back(nextPath);
@@ -1051,11 +1006,11 @@ namespace Common
         }
     }
 
-    vector<wstring> Directory::GetSubDirectoriesInternal(wstring const & path, wstring const & pattern, bool fullPath)
+    vector<string> Directory::GetSubDirectoriesInternal(string const & path, string const & pattern, bool fullPath)
     {
-        vector<wstring> subDirectoryList;
+        vector<string> subDirectoryList;
 
-        wstring fileSearchPattern = Path::Combine(path, pattern);
+        string fileSearchPattern = Path::Combine(path, pattern);
         auto findFiles = File::Search(move(fileSearchPattern));
 
         ErrorCode err;
@@ -1064,8 +1019,8 @@ namespace Common
             auto fileProperties = findFiles->GetCurrent();
             auto currentName = &(fileProperties.cFileName[0]);
 
-            if (((currentName[0] == L'.') && (currentName[1] == 0)) ||
-                ((currentName[0] == L'.') && (currentName[1] == L'.') && (currentName[2] == 0)))                        
+            if (((currentName[0] == '.') && (currentName[1] == 0)) ||
+                ((currentName[0] == '.') && (currentName[1] == '.') && (currentName[2] == 0)))                        
             {
                 // Skip ., ..
                 continue;
@@ -1087,20 +1042,20 @@ namespace Common
         return subDirectoryList;
     }
 
-    bool Directory::HasFileLockExtension(std::wstring const & fileName)
+    bool Directory::HasFileLockExtension(std::string const & fileName)
     {
-        std::wstring fileExtension = Path::GetExtension(fileName);
-        return fileExtension == L".ReaderLock" || fileExtension == L".WriterLock";
+        std::string fileExtension = Path::GetExtension(fileName);
+        return fileExtension == ".ReaderLock" || fileExtension == ".WriterLock";
     }
 
-    ErrorCode Directory::GetLastWriteTime(std::wstring const & path, __out DateTime & lastWriteTime)
+    ErrorCode Directory::GetLastWriteTime(std::string const & path, __out DateTime & lastWriteTime)
     {
         WIN32_FILE_ATTRIBUTE_DATA fileAttributes;
         if (!::GetFileAttributesEx(Path::ConvertToNtPath(path).c_str(), GET_FILEEX_INFO_LEVELS::GetFileExInfoStandard	, &fileAttributes))
         {
             Trace.WriteWarning(
                 TraceSource,
-                L"File.GetLastWriteTime",
+                StringLiteral("File.GetLastWriteTime"),
                 "GetFileAttributesEx failed with the following error {0}",
                 ::GetLastError());
             return ErrorCode::FromHResult(HRESULT_FROM_WIN32(::GetLastError()));
@@ -1109,7 +1064,7 @@ namespace Common
         lastWriteTime = DateTime(fileAttributes.ftLastWriteTime);
         Trace.WriteNoise(
             TraceSource,
-            L"File.GetLastWriteTime",
+            StringLiteral("File.GetLastWriteTime"),
             "GetFileAttributesEx got file time {0} and set last writetime to {1}",
             fileAttributes.ftLastWriteTime.dwLowDateTime,
             lastWriteTime);
@@ -1117,7 +1072,7 @@ namespace Common
         return ErrorCodeValue::Success;
     }
 
-    bool Directory::IsSymbolicLink(wstring const & path)
+    bool Directory::IsSymbolicLink(string const & path)
     {
         if(Directory::Exists(path))
         {
@@ -1130,14 +1085,14 @@ namespace Common
         return false;
     }
 
-    int64 Directory::GetSize(wstring const & path)
+    int64 Directory::GetSize(string const & path)
     {
         if (!Directory::Exists(path))
         {
             return -1;
         }
 
-        vector<wstring> files = GetFiles(path, L"*", true, false);
+        vector<string> files = GetFiles(path, "*", true, false);
 
         ErrorCode error(ErrorCodeValue::Success);
         __int64 accumulator = 0;
@@ -1149,7 +1104,7 @@ namespace Common
             {
                 Trace.WriteWarning(
                     TraceSource,
-                    L"GetDirectorySize",
+                    StringLiteral("GetDirectorySize"),
                     "GetDirectorySize could not get size of file={0} error={1}. Cumulative size may be inaccurate.",
                     file,
                     error);
@@ -1168,9 +1123,9 @@ namespace Common
 
 #if defined(PLATFORM_UNIX)
     int Directory::TryZipDirectory(
-        wchar_t const * srcDirectoryPath,
-        wchar_t const * destZipFileName,
-        wchar_t * errorMessageBuffer,
+        char const * srcDirectoryPath,
+        char const * destZipFileName,
+        char * errorMessageBuffer,
         int errorMessageBufferSize)
     {
         return 1;
@@ -1178,17 +1133,17 @@ namespace Common
     }
 #else
 extern "C" DllImport int TryZipDirectory(
-    wchar_t const * srcDirectoryPath, 
-    wchar_t const * destZipFileName, 
-    wchar_t * errorMessageBuffer, 
+    char const * srcDirectoryPath, 
+    char const * destZipFileName, 
+    char * errorMessageBuffer, 
     int errorMessageBufferSize);
 #endif
 
     ErrorCode Directory::CreateArchive(
-        wstring const & src, 
-        wstring const & dest)
+        string const & src, 
+        string const & dest)
     {
-        wchar_t errMessageBuffer[ERROR_MESSAGE_BUFFER_SIZE];
+        char errMessageBuffer[ERROR_MESSAGE_BUFFER_SIZE];
 
         auto err = TryZipDirectory(
             src.c_str(),
@@ -1200,11 +1155,11 @@ extern "C" DllImport int TryZipDirectory(
 
         if (!success)
         {
-            auto msg = wformatString(GET_COMMON_RC( Zip_Failed ), src, dest);
-            msg.append(L"\n");
+            auto msg = formatString(GET_COMMON_RC( Zip_Failed ), src, dest);
+            msg.append("\n");
             msg.append(GET_COMMON_RC( Win_Long_Paths ));
-            msg.append(L"\n");
-            msg.append(wstring(move(&errMessageBuffer[0])));
+            msg.append("\n");
+            msg.append(string(move(&errMessageBuffer[0])));
 
             Trace.WriteWarning(TraceSource, "{0}", msg);
 
@@ -1218,9 +1173,9 @@ extern "C" DllImport int TryZipDirectory(
 
 #if defined(PLATFORM_UNIX)
     int Directory::TryUnzipDirectory(
-        wchar_t const * srcFileName,
-        wchar_t const * destDirectoryPath,
-        wchar_t * errorMessageBuffer,
+        char const * srcFileName,
+        char const * destDirectoryPath,
+        char * errorMessageBuffer,
         int errorMessageBufferSize)
     {
         return 1;
@@ -1228,17 +1183,17 @@ extern "C" DllImport int TryZipDirectory(
     }
 #else
 extern "C" DllImport int TryUnzipDirectory(
-    wchar_t const * srcFileName,
-    wchar_t const * destDirectoryPath,
-    wchar_t * errorMessageBuffer,
+    char const * srcFileName,
+    char const * destDirectoryPath,
+    char * errorMessageBuffer,
     int errorMessageBufferSize);
 #endif
 
     ErrorCode Directory::ExtractArchive(
-        wstring const & src, 
-        wstring const & dest) 
+        string const & src, 
+        string const & dest) 
     {
-        wchar_t errMessageBuffer[ERROR_MESSAGE_BUFFER_SIZE];
+        char errMessageBuffer[ERROR_MESSAGE_BUFFER_SIZE];
 
         auto err = TryUnzipDirectory(
             src.c_str(),
@@ -1250,11 +1205,11 @@ extern "C" DllImport int TryUnzipDirectory(
 
         if (!success)
         {
-            auto msg = wformatString(GET_COMMON_RC( Unzip_Failed ), src, dest);
-            msg.append(L"\n");
+            auto msg = formatString(GET_COMMON_RC( Unzip_Failed ), src, dest);
+            msg.append("\n");
             msg.append(GET_COMMON_RC( Win_Long_Paths ));
-            msg.append(L"\n");
-            msg.append(wstring(move(&errMessageBuffer[0])));
+            msg.append("\n");
+            msg.append(string(move(&errMessageBuffer[0])));
 
             Trace.WriteWarning(TraceSource, "{0}", msg);
 

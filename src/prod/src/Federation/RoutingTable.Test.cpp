@@ -20,24 +20,24 @@ namespace FederationUnitTests
     {
     };
 
-    const wstring prefix = L"addr_";
+    const string prefix = "addr_";
     int basePort_ = 10500;
 
-    wstring AddressOfNode(size_t node)
+    string AddressOfNode(size_t node)
     {
         CODING_ERROR_ASSERT(basePort_ + node < 65536);
-        return wformatString("127.0.0.1:{0}", basePort_ + node);
+        return formatString.L("127.0.0.1:{0}", basePort_ + node);
     }
 
     SiteNodeSPtr CreateSiteNode(size_t low, bool initializeAsSeedNode = true)
     {
-        wstring host = SiteNodeHelper::GetLoopbackAddress();
-        wstring port = SiteNodeHelper::GetFederationPort();
+        string host = SiteNodeHelper::GetLoopbackAddress();
+        string port = SiteNodeHelper::GetFederationPort();
         NodeId nodeId(LargeInteger(0, low));
 
         // override seednode config
         VoteConfig seedNodes;
-        seedNodes.push_back(VoteEntryConfig(nodeId, Federation::Constants::SeedNodeVoteType, host + L":" + port));
+        seedNodes.push_back(VoteEntryConfig(nodeId, Federation::Constants::SeedNodeVoteType, host + ":" + port));
 
         if (initializeAsSeedNode)
         {
@@ -52,7 +52,7 @@ namespace FederationUnitTests
     FederationPartnerNodeHeader CreateNodeHeader(size_t low, NodePhase::Enum phase, int nodeInstance, int tokenVersion)
     {
         NodeId id(LargeInteger(0, low));
-        return FederationPartnerNodeHeader(NodeInstance(id, nodeInstance), phase, AddressOfNode(low), L"", 0, RoutingToken(NodeIdRange(), tokenVersion), Common::Uri(), false, L"", 1);
+        return FederationPartnerNodeHeader(NodeInstance(id, nodeInstance), phase, AddressOfNode(low), "", 0, RoutingToken(NodeIdRange(), tokenVersion), Common::Uri(), false, "", 1);
     }
 
     FederationPartnerNodeHeader CreateNodeHeader(size_t low, NodePhase::Enum phase)
@@ -364,12 +364,12 @@ namespace FederationUnitTests
         VERIFY_IS_TRUE(partnerNode->Phase == NodePhase::Routing);
 
         // Try to shutdown with a 'past' instance (no-op)
-        table.SetShutdown(wrongInstancePast, L"");
+        table.SetShutdown(wrongInstancePast, "");
         partnerNode = table.Get(correctNodeId);
         VERIFY_IS_TRUE(partnerNode->Phase == NodePhase::Routing);
 
         // Try to shutdown with a 'future' instance (success)
-        table.SetShutdown(wrongInstanceFuture, L"");
+        table.SetShutdown(wrongInstanceFuture, "");
         partnerNode = table.Get(correctNodeId);
         VERIFY_IS_TRUE(partnerNode->Phase == NodePhase::Shutdown);
 
@@ -380,18 +380,18 @@ namespace FederationUnitTests
         partnerNode = table.Get(correctNodeId);
         VERIFY_IS_TRUE(partnerNode->Phase == NodePhase::Routing);
 
-        table.SetShutdown(correctInstance, L"");
+        table.SetShutdown(correctInstance, "");
         partnerNode = table.Get(correctNodeId);
         VERIFY_IS_TRUE(partnerNode->Phase == NodePhase::Shutdown);
 
         // Double shutdown (no-op)
-        table.SetShutdown(correctInstance, L"");
+        table.SetShutdown(correctInstance, "");
         partnerNode = table.Get(correctNodeId);
         VERIFY_IS_TRUE(partnerNode->Phase == NodePhase::Shutdown);
 
         // Try to make a partner unknown (success)
         VERIFY_IS_TRUE(!partnerNode->IsUnknown);
-        table.SetUnknown(correctInstance, L"");
+        table.SetUnknown(correctInstance, "");
         VERIFY_IS_TRUE(partnerNode->IsUnknown);
 
         // Try to make a previous or future instance unknown (no-op)
@@ -404,13 +404,13 @@ namespace FederationUnitTests
         VERIFY_IS_TRUE(partnerNode->Phase == NodePhase::Routing);
 
         VERIFY_IS_TRUE(!partnerNode->IsUnknown);
-        table.SetUnknown(wrongInstancePast, L"");
+        table.SetUnknown(wrongInstancePast, "");
         VERIFY_IS_TRUE(!partnerNode->IsUnknown);
 
-        table.SetUnknown(wrongInstanceFuture, L"");
+        table.SetUnknown(wrongInstanceFuture, "");
         VERIFY_IS_TRUE(!partnerNode->IsUnknown);
 
-        table.SetUnknown(correctInstance, L"");
+        table.SetUnknown(correctInstance, "");
         VERIFY_IS_TRUE(partnerNode->IsUnknown);
 
         CloseSiteNode(sitePtr);
@@ -438,50 +438,50 @@ namespace FederationUnitTests
 
         // Test all interesting points for Node 140
         // Range is defined as (low midpoint, high midpoint]
-        node = table.FindClosest(NodeId(LargeInteger(0, 140)), L"");
+        node = table.FindClosest(NodeId(LargeInteger(0, 140)), "");
         VERIFY_IS_TRUE(node->Instance.Id == node140);
 
-        node = table.FindClosest(NodeId(LargeInteger(0, 139)), L"");
+        node = table.FindClosest(NodeId(LargeInteger(0, 139)), "");
         VERIFY_IS_TRUE(node->Instance.Id == node140);
 
-        node = table.FindClosest(NodeId(LargeInteger(0, 141)), L"");
+        node = table.FindClosest(NodeId(LargeInteger(0, 141)), "");
         VERIFY_IS_TRUE(node->Instance.Id == node140);
 
-        node = table.FindClosest(NodeId(LargeInteger(0, 136)), L"");
+        node = table.FindClosest(NodeId(LargeInteger(0, 136)), "");
         VERIFY_IS_TRUE(node->Instance.Id == node140);
 
-        node = table.FindClosest(NodeId(LargeInteger(0, 145)), L"");
+        node = table.FindClosest(NodeId(LargeInteger(0, 145)), "");
         VERIFY_IS_TRUE(node->Instance.Id == node140);
 
-        node = table.FindClosest(NodeId(LargeInteger(0, 135)), L"");
+        node = table.FindClosest(NodeId(LargeInteger(0, 135)), "");
         VERIFY_IS_TRUE(node->Instance.Id == node130);
 
-        node = table.FindClosest(NodeId(LargeInteger(0, 146)), L"");
+        node = table.FindClosest(NodeId(LargeInteger(0, 146)), "");
         VERIFY_IS_TRUE(node->Instance.Id == node150);
 
         // Unknown\Shutdown nodes should not be found...
-        table.SetShutdown(NodeInstance(node150, 1), L"");
-        node = table.FindClosest(NodeId(LargeInteger(0, 152)), L"");
+        table.SetShutdown(NodeInstance(node150, 1), "");
+        node = table.FindClosest(NodeId(LargeInteger(0, 152)), "");
         VERIFY_IS_TRUE(node->Instance.Id == node160);
 
-        table.SetUnknown(NodeInstance(node160, 1), L"");
-        node = table.FindClosest(NodeId(LargeInteger(0, 152)), L"");
+        table.SetUnknown(NodeInstance(node160, 1), "");
+        node = table.FindClosest(NodeId(LargeInteger(0, 152)), "");
         VERIFY_IS_TRUE(node->Instance.Id == node140);
 
         // Unknown nodes SHOULD be found if there are no other Routing nodes available
-        table.SetShutdown(NodeInstance(NodeId(LargeInteger(0, 110)), 1), L"");
-        table.SetShutdown(NodeInstance(NodeId(LargeInteger(0, 120)), 1), L"");
-        table.SetShutdown(NodeInstance(NodeId(LargeInteger(0, 130)), 1), L"");
-        table.SetShutdown(NodeInstance(NodeId(LargeInteger(0, 140)), 1), L"");
+        table.SetShutdown(NodeInstance(NodeId(LargeInteger(0, 110)), 1), "");
+        table.SetShutdown(NodeInstance(NodeId(LargeInteger(0, 120)), 1), "");
+        table.SetShutdown(NodeInstance(NodeId(LargeInteger(0, 130)), 1), "");
+        table.SetShutdown(NodeInstance(NodeId(LargeInteger(0, 140)), 1), "");
 
-        node = table.FindClosest(NodeId(LargeInteger(0, 152)), L"");
+        node = table.FindClosest(NodeId(LargeInteger(0, 152)), "");
         VERIFY_IS_TRUE(node->Instance.Id == node160);
 
         // Null should be returned if FindClosest fails
         SiteNodeSPtr sitePtrEmpty = CreateSiteNode(0);
         RoutingTable emptyTable(sitePtrEmpty, 2);
 
-        node = emptyTable.FindClosest(NodeId(LargeInteger(0, 0)), L"");
+        node = emptyTable.FindClosest(NodeId(LargeInteger(0, 0)), "");
         VERIFY_IS_TRUE(!node);
 
         OpenSiteNode(sitePtrEmpty);
@@ -515,27 +515,27 @@ namespace FederationUnitTests
 		sitePtr->Test_SetToken(RoutingToken(NodeIdRange(LargeInteger(0, 96), LargeInteger(0, 105)), 1));
 
         // Check a routing hop arriving at the current node
-        node = table.GetRoutingHop(NodeId(LargeInteger(0, 100)), L"", 0, ownsToken);
+        node = table.GetRoutingHop(NodeId(LargeInteger(0, 100)), "", 0, ownsToken);
         VERIFY_IS_TRUE(node->Instance.Id == node100);
         VERIFY_IS_TRUE(ownsToken);
 
-        node = table.GetRoutingHop(NodeId(LargeInteger(0, 102)), L"", 0, ownsToken);
+        node = table.GetRoutingHop(NodeId(LargeInteger(0, 102)), "", 0, ownsToken);
         VERIFY_IS_TRUE(node->Instance.Id == node100);
         VERIFY_IS_TRUE(ownsToken);
 
         // Check a routing hop arriving at some other node
-        node = table.GetRoutingHop(NodeId(LargeInteger(0, 142)), L"", 0, ownsToken);
+        node = table.GetRoutingHop(NodeId(LargeInteger(0, 142)), "", 0, ownsToken);
         VERIFY_IS_TRUE(node->Instance.Id == node140);
         VERIFY_IS_TRUE(!ownsToken);
 
         // Unknown nodes should again not be found for a hop...
-        table.SetUnknown(NodeInstance(node140, 1), L"");
-        node = table.GetRoutingHop(NodeId(LargeInteger(0, 142)), L"", 0, ownsToken);
+        table.SetUnknown(NodeInstance(node140, 1), "");
+        node = table.GetRoutingHop(NodeId(LargeInteger(0, 142)), "", 0, ownsToken);
         VERIFY_IS_TRUE(node->Instance.Id == node150);
         VERIFY_IS_TRUE(!ownsToken);
 
-        table.SetShutdown(NodeInstance(node150, 1), L"");
-        node = table.GetRoutingHop(NodeId(LargeInteger(0, 142)), L"", 0, ownsToken);
+        table.SetShutdown(NodeInstance(node150, 1), "");
+        node = table.GetRoutingHop(NodeId(LargeInteger(0, 142)), "", 0, ownsToken);
         VERIFY_IS_TRUE(node->Instance.Id == node130);
         VERIFY_IS_TRUE(!ownsToken);
 
@@ -634,8 +634,8 @@ namespace FederationUnitTests
 
         // All nodes should be included for GetHood
         // Only unknown nodes should be included for GetExtendedHood
-        table.SetShutdown(NodeInstance(node90, 1), L"");
-        table.SetUnknown(NodeInstance(node150, 1), L"");
+        table.SetShutdown(NodeInstance(node90, 1), "");
+        table.SetUnknown(NodeInstance(node150, 1), "");
 
         hoodNodes.clear();
         extHoodNodes.clear();
@@ -679,7 +679,7 @@ namespace FederationUnitTests
 
         size_t tableNodes[] = {70, 80, 90, 110, 120, 130};
         FillTable(table, tableNodes, 6);
-        table.SetShutdown(NodeInstance(node120, 1), L"");
+        table.SetShutdown(NodeInstance(node120, 1), "");
 
         VERIFY_IS_TRUE(table.Size == 7);
         nodeIdRange = table.GetHood(hoodNodes);
@@ -752,8 +752,8 @@ namespace FederationUnitTests
         VERIFY_IS_TRUE(ContainsExactlyOne(pingTargets, node150));
 
         // Shutdown nodes should not be included for GetPingTargets
-        table.SetShutdown(NodeInstance(node90, 1), L"");
-        table.SetUnknown(NodeInstance(node150, 1), L"");
+        table.SetShutdown(NodeInstance(node90, 1), "");
+        table.SetUnknown(NodeInstance(node150, 1), "");
 
         pingTargets.clear();
         table.GetPingTargets(pingTargets);
@@ -843,7 +843,7 @@ namespace FederationUnitTests
             try
             {
                 NodeInstance from(NodeId::MinNodeId, 0);
-                routingTable.ProcessNeighborHeaders(*message, from, L"", true);
+                routingTable.ProcessNeighborHeaders(*message, from, "", true);
             }
             catch (system_error error)
             {

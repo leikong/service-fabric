@@ -69,14 +69,14 @@ namespace Common
 
     public:
 
-        static ErrorCode TryParse(std::wstring const & input, Endpoint & output);
+        static ErrorCode TryParse(std::string const & input, Endpoint & output);
 
         explicit Endpoint() 
         {
             ZeroMemory( &address, sizeof(address) );
         }
 
-        explicit Endpoint( std::wstring const & address, int port = 0 );
+        explicit Endpoint( std::string const & address, int port = 0 );
 
         explicit Endpoint ( ::ADDRINFOW const & addrInfo );
 
@@ -90,9 +90,9 @@ namespace Common
 
         static ErrorCode GetSockName(Socket const & socket, _Out_ Endpoint & localEndpoint);
 
-        void ToString( std::wstring & result) const;
+        void ToString( std::string & result) const;
 
-        std::wstring ToString() const;
+        std::string ToString() const;
 
         const ::sockaddr* get_AsSockAddr() const 
         {
@@ -169,10 +169,10 @@ namespace Common
         }
 
         // ipString must be large enough to hold INET_ADDRSTRLEN/INET6_ADDRSTRLEN characters, depending on address type
-        void GetIpString(_Out_writes_(size) WCHAR * ipString, socklen_t size = INET6_ADDRSTRLEN) const;
-        void GetIpString(_Out_ std::wstring & ipString) const;
-        std::wstring GetIpString() const;
-        std::wstring GetIpString2() const; // [] enclosure is added if IPv6
+        void GetIpString(_Out_writes_(size) CHAR * ipString, socklen_t size = INET6_ADDRSTRLEN) const;
+        void GetIpString(_Out_ std::string & ipString) const;
+        std::string GetIpString() const;
+        std::string GetIpString2() const; // [] enclosure is added if IPv6
 
         bool IsLoopback() const;
         SCOPE_LEVEL IpScopeLevel() const;
@@ -259,7 +259,7 @@ namespace Common
             return ( this->Port == rhs.Port );
         }
 
-        std::wstring AsSmbServerName() const;
+        std::string AsSmbServerName() const;
 
         //
         // Compare without the port
@@ -303,8 +303,8 @@ namespace Common
 
     //template <> struct SerializerTrait<Endpoint>
     //{
-    //    static void ReadFrom(SerializeReader & r, Endpoint & value, std::wstring const & name);
-    //    static void WriteTo(SerializeWriter & w, Endpoint const & value, std::wstring const & name);
+    //    static void ReadFrom(SerializeReader & r, Endpoint & value, std::string const & name);
+    //    static void WriteTo(SerializeWriter & w, Endpoint const & value, std::string const & name);
     //};
 
     //typedef std::pair< Endpoint, Endpoint > EndpointPair;

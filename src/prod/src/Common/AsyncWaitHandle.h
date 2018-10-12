@@ -13,7 +13,7 @@ namespace Common
         DENY_COPY(AsyncWaitHandle)
 
     public:
-        AsyncWaitHandle(bool initialState = false, std::wstring const & eventName = L"");
+        AsyncWaitHandle(bool initialState = false, std::string const & eventName = "");
 
         Common::AsyncOperationSPtr BeginWaitOne(
             Common::TimeSpan const timeout,

@@ -10,13 +10,13 @@ namespace Common
     class Uri::Parser::UnicodeRange
     {
     public:
-        UnicodeRange(wchar_t first, wchar_t last) : first_(first), last_(last) { }
+        UnicodeRange(char first, char last) : first_(first), last_(last) { }
 
-        bool Contains(wchar_t ch) const { return (first_ <= ch && ch <= last_); }
+        bool Contains(char ch) const { return (first_ <= ch && ch <= last_); }
 
     private:
-        wchar_t first_;
-        wchar_t last_;
+        char first_;
+        char last_;
     };
 
     // Ranges taken from version 6.1 of the character code charts (http://www.unicode.org/charts/)
@@ -35,8 +35,8 @@ namespace Common
     //
     const Uri::Parser::UnicodeRange Uri::Parser::NonAsciiRange(0x00FF, 0xD7FF);
 
-    LPCWSTR Uri::Parser::hexDigit_ = L"0123456789abcdefABCDEF";
-    LPCWSTR Uri::Parser::decDigit_ = L"0123456789";
+    LPCSTR Uri::Parser::hexDigit_ = "0123456789abcdefABCDEF";
+    LPCSTR Uri::Parser::decDigit_ = "0123456789";
 
     // RFC 3986                   URI Generic Syntax               January 2005
     //                   http://www.ietf.org/rfc/rfc3986.txt
@@ -130,17 +130,17 @@ namespace Common
     // (+) IPvFuture is not supported and not implemented.
     //
 
-    LPCWSTR UnreservedChars = L"-._~";
-    LPCWSTR GenDelimsChars = L":/?#[]@";
-    LPCWSTR SubDelimsChars = L"!$&'()*+,;={}";
-    LPCWSTR WhitespaceChars = L" \t\r\n";
+    LPCSTR UnreservedChars = "-._~";
+    LPCSTR GenDelimsChars = ":/?#[]@";
+    LPCSTR SubDelimsChars = "!$&'()*+,;={}";
+    LPCSTR WhitespaceChars = " \t\r\n";
 
     Uri::Parser::Parser(bool traceOnFailure)
         : traceOnFailure_(traceOnFailure)
     {
     }
 
-    bool Uri::Parser::TryParse(std::wstring const & input)
+    bool Uri::Parser::TryParse(std::string const & input)
     {
         type_ = UriType::Empty;
         inputStart_ = input.begin();
@@ -175,23 +175,23 @@ namespace Common
         }
 
         if (!MatchUri(inputStart_, /*out*/cursor)) { return false; }
-        if (cursor != inputEnd_) { return Fail(cursor, L"Invalid character."); }
+        if (cursor != inputEnd_) { return Fail(cursor, "Invalid character."); }
 
         return true;
     }
 
-    bool Uri::Parser::Fail(iterator position, wchar_t const * tag)
+    bool Uri::Parser::Fail(iterator position, char const * tag)
     {
         if (!traceOnFailure_)
         {
             return false;
         }
 
-        auto c = ((position < inputEnd_) ? *position : L' ');
+        auto c = ((position < inputEnd_) ? *position : ' ');
         Trace.WriteInfo(
             Uri::TraceCategory,
             "Parsing Uri '{0}' failed at character {1}('{2}')(U+{3:X}): {4}",
-            std::wstring(inputStart_, inputEnd_),
+            std::string(inputStart_, inputEnd_),
             position - inputStart_,
             c,
             static_cast<LONG>(c),
@@ -204,14 +204,14 @@ namespace Common
     bool Uri::Parser::MatchUri(iterator cursor, __out iterator & end)
     {
         if (!MatchScheme(cursor, /*out*/cursor)) { return false; }
-        if (!MatchChar(cursor, L':', /*out*/cursor)) { return Fail(cursor, L"Scheme must end with ':'."); }
+        if (!MatchChar(cursor, ':', /*out*/cursor)) { return Fail(cursor, "Scheme must end with ':'."); }
         if (!MatchHierPart(cursor, /*out*/cursor)) { return false; }
 
         iterator query;
-        if (MatchChar(cursor, L'?', /*out*/query)) { MatchQuery(query, /*out*/cursor); }
+        if (MatchChar(cursor, '?', /*out*/query)) { MatchQuery(query, /*out*/cursor); }
 
         iterator fragment;
-        if (MatchChar(cursor, L'#', /*out*/fragment)) { MatchFragment(fragment, /*out*/cursor); }
+        if (MatchChar(cursor, '#', /*out*/fragment)) { MatchFragment(fragment, /*out*/cursor); }
 
         end = cursor;
         return true;
@@ -221,11 +221,11 @@ namespace Common
     bool Uri::Parser::MatchScheme(iterator start, __out iterator & end)
     {
         iterator cursor = start;
-        if (!MatchAlpha(start, /*out*/cursor)) { return Fail(cursor, L"Scheme must start with ALPHA."); }
+        if (!MatchAlpha(start, /*out*/cursor)) { return Fail(cursor, "Scheme must start with ALPHA."); }
 
         while (MatchAlpha(cursor, /*out*/cursor) ||
                MatchChar(cursor, decDigit_, /*out*/cursor) ||
-               MatchChar(cursor, L"+-.", /*out*/cursor))
+               MatchChar(cursor, "+-.", /*out*/cursor))
         {
         }
 
@@ -244,7 +244,7 @@ namespace Common
     {
         iterator cursor = start;
 
-        if (MatchLiteral(start, L"//", /*out*/cursor))
+        if (MatchLiteral(start, "//", /*out*/cursor))
         {
             if (MatchAuthority(cursor, /*out*/cursor) && MatchPathAbEmpty(cursor, /*out*/end)) { return true; }
         }
@@ -252,7 +252,7 @@ namespace Common
         else if (MatchPathRootless(start, /*out*/end)) { return true; }
         else if (MatchPathEmpty(start, /*out*/end)) { return true; }
 
-        return Fail(start, L"Invalid path.");
+        return Fail(start, "Invalid path.");
     }
 
     //    authority     = [ userinfo "@" ] host [ ":" port ]
@@ -262,13 +262,13 @@ namespace Common
         iterator atsign;
         if (MatchUserInfo(cursor, /*out*/atsign))
         {
-            MatchChar(atsign, L'@', /*out*/cursor);
+            MatchChar(atsign, '@', /*out*/cursor);
         }
 
         if (!MatchHost(cursor, /*out*/cursor)) { return false; }
 
         iterator port;
-        if (MatchChar(cursor, L':', /*out*/port))
+        if (MatchChar(cursor, ':', /*out*/port))
         {
             MatchPort(port, /*out*/cursor);
         }
@@ -286,7 +286,7 @@ namespace Common
         while (MatchUnreserved(cursor, /*out*/cursor) ||
                MatchPctEncoded(cursor, /*out*/cursor) ||
                MatchSubDelims(cursor, /*out*/cursor) ||
-               MatchChar(cursor, L':', /*out*/cursor))
+               MatchChar(cursor, ':', /*out*/cursor))
         {
         }
 
@@ -302,7 +302,7 @@ namespace Common
             !MatchRegName(start, /*out*/end))
         {
             hostType_ = UriHostType::None;
-            return Fail(start, L"Invalid host.");
+            return Fail(start, "Invalid host.");
         }
 
         hostStart_ = start;
@@ -318,7 +318,7 @@ namespace Common
         while (MatchChar(cursor, decDigit_, /*out*/next))
         {
             port *= 10;
-            port += static_cast<int>(*cursor - L'0');
+            port += static_cast<int>(*cursor - '0');
             cursor = next;
 
             if (port >= 0x10000) { return false; }
@@ -332,9 +332,9 @@ namespace Common
     //    IP-literal    = "[" ( IPv6address / IPvFuture  ) "]"
     bool Uri::Parser::MatchIPLiteral(iterator cursor, __out iterator & end)
     {
-        if (!MatchChar(cursor, L'[', /*out*/cursor)) { return false; }
-        if (!MatchIPv6Address(cursor, /*out*/cursor)) { return Fail(cursor, L"Invalid IPv6 address"); }
-        return MatchChar(cursor, L']', /*out*/end);
+        if (!MatchChar(cursor, '[', /*out*/cursor)) { return false; }
+        if (!MatchIPv6Address(cursor, /*out*/cursor)) { return Fail(cursor, "Invalid IPv6 address"); }
+        return MatchChar(cursor, ']', /*out*/end);
     }
 
     //    IPv6address   =                            6( h16 ":" ) ls32
@@ -359,7 +359,7 @@ namespace Common
         }
 
         //                  /                       "::" 5( h16 ":" ) ls32
-        if (MatchLiteral(start, L"::", /*out*/cursor) &&
+        if (MatchLiteral(start, "::", /*out*/cursor) &&
             MatchH16ColonN(cursor, 5, /*out*/cursor) &&
             MatchLs32(cursor, /*out*/end))
         {
@@ -376,7 +376,7 @@ namespace Common
         for (int i=0; i<=limit; i++)
         {
             if (MatchH16ColonH16N(start, i, /*out*/cursor) &&
-                MatchLiteral(cursor, L"::", /*out*/cursor) &&
+                MatchLiteral(cursor, "::", /*out*/cursor) &&
                 MatchH16ColonN(cursor, limit-i, /*out*/cursor) &&
                 MatchLs32(cursor, /*out*/end))
             {
@@ -387,7 +387,7 @@ namespace Common
 
         //                  / [ *5( h16 ":" ) h16 ] "::"              h16
         if (MatchH16ColonH16N(start, 5, /*out*/cursor) &&
-            MatchLiteral(cursor, L"::", /*out*/cursor) &&
+            MatchLiteral(cursor, "::", /*out*/cursor) &&
             MatchH16(cursor, /*out*/end))
         {
             hostType_ = UriHostType::IPv6;
@@ -396,7 +396,7 @@ namespace Common
 
         //                  / [ *6( h16 ":" ) h16 ] "::"
         if (MatchH16ColonH16N(start, 6, /*out*/cursor) &&
-            MatchLiteral(cursor, L"::", /*out*/end))
+            MatchLiteral(cursor, "::", /*out*/end))
         {
             hostType_ = UriHostType::IPv6;
             return true;
@@ -412,7 +412,7 @@ namespace Common
         for (int i=0; i<maxSepCount; i++)
         {
             iterator h16;
-            if (!MatchChar(cursor, L':', /*out*/h16) || !MatchH16(h16, /*out*/cursor))
+            if (!MatchChar(cursor, ':', /*out*/h16) || !MatchH16(h16, /*out*/cursor))
             {
                 end = cursor;
                 return true;
@@ -428,7 +428,7 @@ namespace Common
         for (int i=0; i<count; i++)
         {
             iterator colon;
-            if (!MatchH16(cursor, /*out*/colon) || !MatchChar(colon, L':', /*out*/cursor)) { return false; }
+            if (!MatchH16(cursor, /*out*/colon) || !MatchChar(colon, ':', /*out*/cursor)) { return false; }
         }
 
         end = cursor;
@@ -454,7 +454,7 @@ namespace Common
     {
         iterator cursor;
         if (MatchH16(start, /*out*/cursor) &&
-            MatchChar(cursor, L':', /*out*/cursor) &&
+            MatchChar(cursor, ':', /*out*/cursor) &&
             MatchH16(cursor, /*out*/end))
         {
             return true;
@@ -471,7 +471,7 @@ namespace Common
         for (int i=0; i<3; i++)
         {
             if (!MatchDecOctet(cursor, /*out*/cursor)) { return false; }
-            if (!MatchChar(cursor, L'.', /*out*/cursor)) { return false; }
+            if (!MatchChar(cursor, '.', /*out*/cursor)) { return false; }
         }
 
         if (MatchDecOctet(cursor, /*out*/end))
@@ -492,24 +492,24 @@ namespace Common
         iterator cursor;
 
         // Go in reverse order to match greedily
-        if (MatchLiteral(start, L"25", /*out*/cursor) &&
-            MatchChar(cursor, L"012345", /*out*/end))
+        if (MatchLiteral(start, "25", /*out*/cursor) &&
+            MatchChar(cursor, "012345", /*out*/end))
         {
             return true;
         }
-        else if (MatchChar(start, L'2', /*out*/cursor) &&
-                 MatchChar(cursor, L"01234", /*out*/cursor) &&
+        else if (MatchChar(start, '2', /*out*/cursor) &&
+                 MatchChar(cursor, "01234", /*out*/cursor) &&
                  MatchChar(cursor, decDigit_, /*out*/end))
         {
             return true;
         }
-        else if (MatchChar(start, L'1', /*out*/cursor) &&
+        else if (MatchChar(start, '1', /*out*/cursor) &&
                  MatchChar(cursor, decDigit_, /*out*/cursor) &&
                  MatchChar(cursor, decDigit_, /*out*/end))
         {
             return true;
         }
-        else if (MatchChar(start, L"123456789", /*out*/cursor) &&
+        else if (MatchChar(start, "123456789", /*out*/cursor) &&
                  MatchChar(cursor, decDigit_, /*out*/end))
         {
             return true;
@@ -539,7 +539,7 @@ namespace Common
     {
         iterator cursor = start;
         iterator segment;
-        while (MatchChar(cursor, L'/', /*out*/segment) && MatchSegment(segment, /*out*/cursor))
+        while (MatchChar(cursor, '/', /*out*/segment) && MatchSegment(segment, /*out*/cursor))
         {
         }
 
@@ -551,12 +551,12 @@ namespace Common
     bool Uri::Parser::MatchPathAbsolute(iterator start, __out iterator & end)
     {
         iterator cursor = start;
-        if (!MatchChar(cursor, L'/', /*out*/cursor)) { return false; }
+        if (!MatchChar(cursor, '/', /*out*/cursor)) { return false; }
 
         if (MatchSegmentNz(cursor, /*out*/cursor))
         {
             iterator segment;
-            while (MatchChar(cursor, L'/', /*out*/segment) && MatchSegment(segment, /*out*/cursor)) { }
+            while (MatchChar(cursor, '/', /*out*/segment) && MatchSegment(segment, /*out*/cursor)) { }
         }
 
         end = InitializePath(UriType::Absolute, start, cursor);
@@ -571,7 +571,7 @@ namespace Common
         if (!MatchSegmentNz(cursor, /*out*/cursor)) { return false; }
 
         iterator segment;
-        while (MatchChar(cursor, L'/', /*out*/segment) && MatchSegment(segment, /*out*/cursor)) { }
+        while (MatchChar(cursor, '/', /*out*/segment) && MatchSegment(segment, /*out*/cursor)) { }
 
         end = InitializePath(UriType::Rootless, start, cursor);
         return true;
@@ -618,7 +618,7 @@ namespace Common
         return (MatchUnreserved(start, /*out*/end) ||
                 MatchPctEncoded(start, /*out*/end) ||
                 MatchSubDelims(start, /*out*/end) ||
-                MatchChar(start, L":@", /*out*/end) ||
+                MatchChar(start, ":@", /*out*/end) ||
                 MatchWhitespace(start, /*out*/end));
     }
 
@@ -627,7 +627,7 @@ namespace Common
     bool Uri::Parser::MatchQueryOrFragment(iterator cursor, __out iterator & end)
     {
         while (MatchPChar(cursor, /*out*/cursor) ||
-               MatchChar(cursor, L"/?", /*out*/cursor))
+               MatchChar(cursor, "/?", /*out*/cursor))
         {
         }
 
@@ -657,7 +657,7 @@ namespace Common
     bool Uri::Parser::MatchPctEncoded(iterator start, __out iterator & end)
     {
         iterator cursor;
-        return (MatchChar(start, L'%', /*out*/cursor) &&
+        return (MatchChar(start, '%', /*out*/cursor) &&
                 MatchChar(cursor, hexDigit_, /*out*/cursor) &&
                 MatchChar(cursor, hexDigit_, /*out*/end));
     }
@@ -726,7 +726,7 @@ namespace Common
     }
 
     // Matches a literal string.
-    bool Uri::Parser::MatchLiteral(iterator cursor, wchar_t const * literal, __out iterator & end)
+    bool Uri::Parser::MatchLiteral(iterator cursor, char const * literal, __out iterator & end)
     {
         for (size_t i=0; literal[i]; i++)
         {
@@ -738,7 +738,7 @@ namespace Common
     }
 
     // Matches a single specific character
-    bool Uri::Parser::MatchChar(iterator start, wchar_t ch, __out iterator & end)
+    bool Uri::Parser::MatchChar(iterator start, char ch, __out iterator & end)
     {
         if ((start == inputEnd_) || (*start != ch)) { return false; }
 
@@ -747,7 +747,7 @@ namespace Common
     }
 
     // Matches a single character that appears in the 'chars' string.
-    bool Uri::Parser::MatchChar(iterator start, LPCWSTR chars, __out iterator & end)
+    bool Uri::Parser::MatchChar(iterator start, LPCSTR chars, __out iterator & end)
     {
         if (start < inputEnd_)
         {
@@ -764,34 +764,45 @@ namespace Common
         return false;
     }
 
-    bool Uri::Parser::IsSurrogatePair(wchar_t leading, wchar_t trailing)
+    bool Uri::Parser::IsSurrogatePair(char leading, char trailing)
     {
-        return (IS_SURROGATE_PAIR(leading, trailing) == TRUE);
+        return false;
+//todo.utf8 handle in utf8
+//        return (IS_SURROGATE_PAIR(leading, trailing) == TRUE);
     }
 
-    bool Uri::Parser::IsDiacriticalMark(wchar_t ch)
+    bool Uri::Parser::IsDiacriticalMark(char ch)
     {
-        return DiacriticalMarksRange.Contains(ch);
+//todo.utf8 handle in utf8
+//        return DiacriticalMarksRange.Contains(ch);
     }
 
-    bool Uri::Parser::IsDiacriticalMarkSupplement(wchar_t ch)
+    bool Uri::Parser::IsDiacriticalMarkSupplement(char ch)
     {
-        return DiacriticalMarksSupplementRange.Contains(ch);
+        return false;
+//todo.utf8 handle in utf8
+//        return DiacriticalMarksSupplementRange.Contains(ch);
     }
 
-    bool Uri::Parser::IsHalfMark(wchar_t ch)
+    bool Uri::Parser::IsHalfMark(char ch)
     {
-        return HalfMarksRange.Contains(ch);
+        return false;
+//todo.utf8 handle in utf8
+//        return HalfMarksRange.Contains(ch);
     }
 
-    bool Uri::Parser::IsDiacriticalMarkForSymbols(wchar_t ch)
+    bool Uri::Parser::IsDiacriticalMarkForSymbols(char ch)
     {
-        return DiacriticalMarksForSymbolsRange.Contains(ch);
+        return false;
+//todo.utf8 handle in utf8
+//        return DiacriticalMarksForSymbolsRange.Contains(ch);
     }
 
-    bool Uri::Parser::IsNonAscii(wchar_t ch)
+    bool Uri::Parser::IsNonAscii(char ch)
     {
-        return NonAsciiRange.Contains(ch);
+        return false;
+//todo.utf8 handle in utf8
+//        return NonAsciiRange.Contains(ch);
     }
 
     Uri::Parser::iterator Uri::Parser::InitializePath(UriType::Enum type, iterator pathStart, iterator pathEnd)

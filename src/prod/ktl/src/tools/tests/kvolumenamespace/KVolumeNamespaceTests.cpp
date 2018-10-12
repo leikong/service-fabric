@@ -113,7 +113,7 @@ TestContext::Wait(
 
 //* Sub-tree deletion helper
 void
-DeleteDir(WCHAR* DirPath, KAllocator& Allocator, BOOLEAN OkToFail = FALSE)
+DeleteDir(CHAR* DirPath, KAllocator& Allocator, BOOLEAN OkToFail = FALSE)
 {
     KSynchronizer       compSync;
     NTSTATUS            status = STATUS_SUCCESS;
@@ -142,7 +142,7 @@ DeleteDir(WCHAR* DirPath, KAllocator& Allocator, BOOLEAN OkToFail = FALSE)
         delPath += namesToDelete[ix];
         KInvariant(NT_SUCCESS(delPath.Status()));
 
-        DeleteDir((WCHAR*)delPath, Allocator);
+        DeleteDir((CHAR*)delPath, Allocator);
     }
 
     // Waste any files
@@ -175,7 +175,7 @@ DeleteDir(WCHAR* DirPath, KAllocator& Allocator, BOOLEAN OkToFail = FALSE)
 
 #if defined(K_UseResumable)
 ktl::Awaitable<void>
-DeleteDirAsync(WCHAR* DirPath, KAllocator& Allocator, BOOLEAN OkToFail = FALSE)
+DeleteDirAsync(CHAR* DirPath, KAllocator& Allocator, BOOLEAN OkToFail = FALSE)
 {
     NTSTATUS            status = STATUS_SUCCESS;
     KWString            toDelete(Allocator, DirPath);
@@ -183,7 +183,7 @@ DeleteDirAsync(WCHAR* DirPath, KAllocator& Allocator, BOOLEAN OkToFail = FALSE)
 
     // Recurse for each sub-dir
     KVolumeNamespace::NameArray namesToDelete(Allocator);
-    status = co_await KVolumeNamespace::QueryDirectoriesAsync((LPCWSTR)toDelete, namesToDelete, Allocator);
+    status = co_await KVolumeNamespace::QueryDirectoriesAsync((LPCSTR)toDelete, namesToDelete, Allocator);
     KInvariant(OkToFail || NT_SUCCESS(status) || (status == STATUS_OBJECT_NAME_NOT_FOUND));
 
     if (status == STATUS_OBJECT_NAME_NOT_FOUND)
@@ -201,11 +201,11 @@ DeleteDirAsync(WCHAR* DirPath, KAllocator& Allocator, BOOLEAN OkToFail = FALSE)
         delPath += namesToDelete[ix];
         KInvariant(NT_SUCCESS(delPath.Status()));
 
-        co_await DeleteDirAsync((WCHAR*)delPath, Allocator);
+        co_await DeleteDirAsync((CHAR*)delPath, Allocator);
     }
 
     // Waste any files
-    status = co_await KVolumeNamespace::QueryFilesAsync((LPCWSTR)toDelete, namesToDelete, Allocator);
+    status = co_await KVolumeNamespace::QueryFilesAsync((LPCSTR)toDelete, namesToDelete, Allocator);
     KInvariant(OkToFail || NT_SUCCESS(status));
 
     for (ULONG ix = 0; ix < namesToDelete.Count(); ix++)
@@ -300,15 +300,15 @@ PerformHardLinkTest(
     KSynchronizer       compSync;
     KAllocator&         allocator = KtlSystem::GlobalNonPagedAllocator();
 
-    static WCHAR*       subDirs[] =
+    static CHAR*       subDirs[] =
     {
-        L"",
-        L"TestHLinks1",
-        L"TestHLinks1\\TestHLinks2",
+        "",
+        "TestHLinks1",
+        "TestHLinks1\\TestHLinks2",
         nullptr
     };
 
-    WCHAR**             subDirNamePtr = &subDirs[0];
+    CHAR**             subDirNamePtr = &subDirs[0];
     while (*subDirNamePtr != nullptr)
     {
         if (rootDir && **subDirNamePtr == 0)
@@ -320,7 +320,7 @@ PerformHardLinkTest(
         KWString        subDirName(convertedVolName);  
             KInvariant(NT_SUCCESS(subDirName.Status()));
         
-        subDirName += L"\\";
+        subDirName += "\\";
             KInvariant(NT_SUCCESS(subDirName.Status()));
 
         subDirName += *subDirNamePtr;
@@ -341,7 +341,7 @@ PerformHardLinkTest(
     // Build up FQN for root HardLink
     KWString                hl0(convertedVolName);
         KInvariant(NT_SUCCESS(hl0.Status()));
-    hl0 += L"\\real.txt";
+    hl0 += "\\real.txt";
         KInvariant(NT_SUCCESS(hl0.Status()));
 
     HANDLE                  realFileHandle; 
@@ -392,15 +392,15 @@ PerformHardLinkTest(
     KInvariant(NT_SUCCESS(status));
 
     KArray<KWString>        fqHardLinkNames(allocator);
-    WCHAR*                  fqHardLinkNamesPtrs[] =
+    CHAR*                  fqHardLinkNamesPtrs[] =
     {
-        L"\\hl2.txt",
-        L"\\hl1.txt",
-        L"\\TestHLinks1\\hl3.txt",
-        L"\\TestHLinks1\\TestHLinks2\\hl4.txt",
+        "\\hl2.txt",
+        "\\hl1.txt",
+        "\\TestHLinks1\\hl3.txt",
+        "\\TestHLinks1\\TestHLinks2\\hl4.txt",
     };
 
-    for (ULONG ix = 0; ix < sizeof(fqHardLinkNamesPtrs) / sizeof(WCHAR*); ix++)
+    for (ULONG ix = 0; ix < sizeof(fqHardLinkNamesPtrs) / sizeof(CHAR*); ix++)
     {
         KWString        hlPath(convertedVolName);
             KInvariant(NT_SUCCESS(hlPath.Status()));
@@ -427,7 +427,7 @@ PerformHardLinkTest(
     // Prove all (and only) HardLinks created above are returned from QueryHardLinks()
     for (ULONG ix = 0; ix < links.Count(); ix++)
     {
-        KTestPrintf("KVolumeNamespaceTest: Link(%u): %S\n", ix, (PWCHAR)(links[ix]));
+        KTestPrintf("KVolumeNamespaceTest: Link(%u): %S\n", ix, (PCHAR)(links[ix]));
 
         KStringView             currentHardLink((UNICODE_STRING&)links[ix]);
         BOOLEAN                 foundLink = FALSE;
@@ -459,15 +459,15 @@ PerformHardLinkTestAsync(
     NTSTATUS status;
     KAllocator&         allocator = KtlSystem::GlobalNonPagedAllocator();
 
-    static WCHAR*       subDirs[] =
+    static CHAR*       subDirs[] =
     {
-        L"",
-        L"TestHLinks1",
-        L"TestHLinks1\\TestHLinks2",
+        "",
+        "TestHLinks1",
+        "TestHLinks1\\TestHLinks2",
         nullptr
     };
 
-    WCHAR**             subDirNamePtr = &subDirs[0];
+    CHAR**             subDirNamePtr = &subDirs[0];
     while (*subDirNamePtr != nullptr)
     {
         if (rootDir && **subDirNamePtr == 0)
@@ -479,7 +479,7 @@ PerformHardLinkTestAsync(
         KWString        subDirName(convertedVolName);  
             KInvariant(NT_SUCCESS(subDirName.Status()));
         
-        subDirName += L"\\";
+        subDirName += "\\";
             KInvariant(NT_SUCCESS(subDirName.Status()));
 
         subDirName += *subDirNamePtr;
@@ -498,7 +498,7 @@ PerformHardLinkTestAsync(
     // Build up FQN for root HardLink
     KWString                hl0(convertedVolName);
         KInvariant(NT_SUCCESS(hl0.Status()));
-    hl0 += L"\\real.txt";
+    hl0 += "\\real.txt";
         KInvariant(NT_SUCCESS(hl0.Status()));
 
     status = co_await CreateAFileAsync(hl0, allocator);
@@ -508,19 +508,19 @@ PerformHardLinkTestAsync(
     // Prove it exists - testing QueryFullFileAttributes()
     FILE_NETWORK_OPEN_INFORMATION   fnoi;
 
-    status = co_await KVolumeNamespace::QueryFullFileAttributesAsync((LPCWSTR)hl0, allocator, fnoi);
+    status = co_await KVolumeNamespace::QueryFullFileAttributesAsync((LPCSTR)hl0, allocator, fnoi);
     KInvariant(NT_SUCCESS(status));
 
     KArray<KWString>        fqHardLinkNames(allocator);
-    WCHAR*                  fqHardLinkNamesPtrs[] =
+    CHAR*                  fqHardLinkNamesPtrs[] =
     {
-        L"\\hl2.txt",
-        L"\\hl1.txt",
-        L"\\TestHLinks1\\hl3.txt",
-        L"\\TestHLinks1\\TestHLinks2\\hl4.txt",
+        "\\hl2.txt",
+        "\\hl1.txt",
+        "\\TestHLinks1\\hl3.txt",
+        "\\TestHLinks1\\TestHLinks2\\hl4.txt",
     };
 
-    for (ULONG ix = 0; ix < sizeof(fqHardLinkNamesPtrs) / sizeof(WCHAR*); ix++)
+    for (ULONG ix = 0; ix < sizeof(fqHardLinkNamesPtrs) / sizeof(CHAR*); ix++)
     {
         KWString        hlPath(convertedVolName);
             KInvariant(NT_SUCCESS(hlPath.Status()));
@@ -543,7 +543,7 @@ PerformHardLinkTestAsync(
     // Prove all (and only) HardLinks created above are returned from QueryHardLinks()
     for (ULONG ix = 0; ix < links.Count(); ix++)
     {
-        KTestPrintf("KVolumeNamespaceTest: Link(%u): %S\n", ix, (PWCHAR)(links[ix]));
+        KTestPrintf("KVolumeNamespaceTest: Link(%u): %S\n", ix, (PCHAR)(links[ix]));
 
         KStringView             currentHardLink((UNICODE_STRING&)links[ix]);
         BOOLEAN                 foundLink = FALSE;
@@ -578,31 +578,31 @@ HardLinksSupportTest()
     KWString dirName(allocator);
     //** Prove QueryVolumeIdFromRootDirectoryName() works
 
-    dirName = KWString(allocator, L"C:");
+    dirName = KWString(allocator, "C:");
     status = KVolumeNamespace::QueryVolumeIdFromRootDirectoryName(dirName, allocator, volId, compSync);
     KInvariant(NT_SUCCESS(status));
     status = compSync.WaitForCompletion();
     KInvariant(NT_SUCCESS(status));
 
-    dirName = KWString(allocator, L"c:");
+    dirName = KWString(allocator, "c:");
     status = KVolumeNamespace::QueryVolumeIdFromRootDirectoryName(dirName, allocator, volId, compSync);
     KInvariant(NT_SUCCESS(status));
     status = compSync.WaitForCompletion();
     KInvariant(NT_SUCCESS(status));
 
-    dirName = KWString(allocator, L"C:\\temp");
+    dirName = KWString(allocator, "C:\\temp");
     status = KVolumeNamespace::QueryVolumeIdFromRootDirectoryName(dirName, allocator, volId, compSync);
     KInvariant(NT_SUCCESS(status));
     status = compSync.WaitForCompletion();
     KInvariant(NT_SUCCESS(status));
 
-    dirName = KWString(allocator, L"\\??\\C:");
+    dirName = KWString(allocator, "\\??\\C:");
     status = KVolumeNamespace::QueryVolumeIdFromRootDirectoryName(dirName, allocator, volId, compSync);
     KInvariant(NT_SUCCESS(status));
     status = compSync.WaitForCompletion();
     KInvariant(NT_SUCCESS(status));
 
-    dirName = KWString(allocator, L"\\global??\\C:\\Windows\\System32");
+    dirName = KWString(allocator, "\\global??\\C:\\Windows\\System32");
     status = KVolumeNamespace::QueryVolumeIdFromRootDirectoryName(dirName, allocator, volId, compSync);
     KInvariant(NT_SUCCESS(status));
     status = compSync.WaitForCompletion();
@@ -619,14 +619,14 @@ HardLinksSupportTest()
     KInvariant(volId == volId1);
 
     // Prove proper error returns
-    dirName = KWString(allocator, L"1:");
+    dirName = KWString(allocator, "1:");
     status = KVolumeNamespace::QueryVolumeIdFromRootDirectoryName(dirName, allocator, volId, compSync);
     KInvariant(NT_SUCCESS(status));
     status = compSync.WaitForCompletion();
     KInvariant(!NT_SUCCESS(status));
     KInvariant(status == STATUS_OBJECT_NAME_NOT_FOUND);
 
-    dirName = KWString(allocator, L"\\Device\\HarddiskVolume1");
+    dirName = KWString(allocator, "\\Device\\HarddiskVolume1");
     status = KVolumeNamespace::QueryVolumeIdFromRootDirectoryName(dirName, allocator, volId1, compSync);
     KInvariant(NT_SUCCESS(status));
     status = compSync.WaitForCompletion();
@@ -635,9 +635,9 @@ HardLinksSupportTest()
 
     //** Prove QueryGlobalVolumeDirectoryName() works
     KWString                        convertedVolName(allocator);
-    dirName = KWString(allocator, L"\\??\\C:");
+    dirName = KWString(allocator, "\\??\\C:");
     status = KVolumeNamespace::QueryGlobalVolumeDirectoryName(dirName, allocator, convertedVolName, compSync);
-    //status = KVolumeNamespace::QueryGlobalVolumeDirectoryName(KWString(allocator, L"\\??\\F:"), allocator, convertedVolName, compSync);
+    //status = KVolumeNamespace::QueryGlobalVolumeDirectoryName(KWString(allocator, "\\??\\F:"), allocator, convertedVolName, compSync);
     KInvariant(NT_SUCCESS(status));
     status = compSync.WaitForCompletion();
     KInvariant(NT_SUCCESS(status));
@@ -647,13 +647,13 @@ HardLinksSupportTest()
     //      012345678901234567890123456789012345678901234567890123
     //                1         2         3         4         5
 
-    KInvariant(convertedVolName.Length() == (sizeof(WCHAR) * 54));
-    KInvariant(memcmp((WCHAR*)convertedVolName, L"\\GLOBAL??\\Volume{", 17) == 0);
-    KInvariant(*(((WCHAR*)convertedVolName) + 25) == '-');
-    KInvariant(*(((WCHAR*)convertedVolName) + 30) == '-');
-    KInvariant(*(((WCHAR*)convertedVolName) + 35) == '-');
-    KInvariant(*(((WCHAR*)convertedVolName) + 40) == '-');
-    KInvariant(*(((WCHAR*)convertedVolName) + 53) == '}');
+    KInvariant(convertedVolName.Length() == (sizeof(CHAR) * 54));
+    KInvariant(memcmp((CHAR*)convertedVolName, "\\GLOBAL??\\Volume{", 17) == 0);
+    KInvariant(*(((CHAR*)convertedVolName) + 25) == '-');
+    KInvariant(*(((CHAR*)convertedVolName) + 30) == '-');
+    KInvariant(*(((CHAR*)convertedVolName) + 35) == '-');
+    KInvariant(*(((CHAR*)convertedVolName) + 40) == '-');
+    KInvariant(*(((CHAR*)convertedVolName) + 53) == '}');
 
     //* Prove hardlink creation
 
@@ -662,7 +662,7 @@ HardLinksSupportTest()
     
     // Next try in a subdirectory
     //      Create some sub-dirs
-    convertedVolName += L"\\KtlCITDir";
+    convertedVolName += "\\KtlCITDir";
     KInvariant(NT_SUCCESS(convertedVolName.Status()));
 
     // Just an easy way to make sure DeleteDir works
@@ -693,23 +693,23 @@ HardLinksSupportTestAsync()
     KWString dirName(allocator);
     //** Prove QueryVolumeIdFromRootDirectoryName() works
 
-    dirName = KWString(allocator, L"C:");
+    dirName = KWString(allocator, "C:");
     status = co_await KVolumeNamespace::QueryVolumeIdFromRootDirectoryNameAsync(dirName, allocator, volId);
     KInvariant(NT_SUCCESS(status));
 
-    dirName = KWString(allocator, L"c:");
+    dirName = KWString(allocator, "c:");
     status = co_await KVolumeNamespace::QueryVolumeIdFromRootDirectoryNameAsync(dirName, allocator, volId);
     KInvariant(NT_SUCCESS(status));
 
-    dirName = KWString(allocator, L"C:\\temp");
+    dirName = KWString(allocator, "C:\\temp");
     status = co_await KVolumeNamespace::QueryVolumeIdFromRootDirectoryNameAsync(dirName, allocator, volId);
     KInvariant(NT_SUCCESS(status));
 
-    dirName = KWString(allocator, L"\\??\\C:");
+    dirName = KWString(allocator, "\\??\\C:");
     status = co_await KVolumeNamespace::QueryVolumeIdFromRootDirectoryNameAsync(dirName, allocator, volId);
     KInvariant(NT_SUCCESS(status));
 
-    dirName = KWString(allocator, L"\\global??\\C:\\Windows\\System32");
+    dirName = KWString(allocator, "\\global??\\C:\\Windows\\System32");
     status = co_await KVolumeNamespace::QueryVolumeIdFromRootDirectoryNameAsync(dirName, allocator, volId);
     KInvariant(NT_SUCCESS(status));
 
@@ -722,21 +722,21 @@ HardLinksSupportTestAsync()
     KInvariant(volId == volId1);
 
     // Prove proper error returns
-    dirName = KWString(allocator, L"1:");
+    dirName = KWString(allocator, "1:");
     status = co_await KVolumeNamespace::QueryVolumeIdFromRootDirectoryNameAsync(dirName, allocator, volId);
     KInvariant(!NT_SUCCESS(status));
     KInvariant(status == STATUS_OBJECT_NAME_NOT_FOUND);
 
-    dirName = KWString(allocator, L"\\Device\\HarddiskVolume1");
+    dirName = KWString(allocator, "\\Device\\HarddiskVolume1");
     status = co_await KVolumeNamespace::QueryVolumeIdFromRootDirectoryNameAsync(dirName, allocator, volId1);
     KInvariant(!NT_SUCCESS(status));
     KInvariant(status == STATUS_OBJECT_TYPE_MISMATCH);
 
     //** Prove QueryGlobalVolumeDirectoryName() works
     KWString                        convertedVolName(allocator);
-    dirName = KWString(allocator, L"\\??\\C:");
+    dirName = KWString(allocator, "\\??\\C:");
     status = co_await KVolumeNamespace::QueryGlobalVolumeDirectoryNameAsync(dirName, allocator, convertedVolName);
-    //status = KVolumeNamespace::QueryGlobalVolumeDirectoryName(KWString(allocator, L"\\??\\F:"), allocator, convertedVolName, compSync);
+    //status = KVolumeNamespace::QueryGlobalVolumeDirectoryName(KWString(allocator, "\\??\\F:"), allocator, convertedVolName, compSync);
     KInvariant(NT_SUCCESS(status));
 
     // Validate a result in the following form:
@@ -744,13 +744,13 @@ HardLinksSupportTestAsync()
     //      012345678901234567890123456789012345678901234567890123
     //                1         2         3         4         5
 
-    KInvariant(convertedVolName.Length() == (sizeof(WCHAR) * 54));
-    KInvariant(memcmp((WCHAR*)convertedVolName, L"\\GLOBAL??\\Volume{", 17) == 0);
-    KInvariant(*(((WCHAR*)convertedVolName) + 25) == '-');
-    KInvariant(*(((WCHAR*)convertedVolName) + 30) == '-');
-    KInvariant(*(((WCHAR*)convertedVolName) + 35) == '-');
-    KInvariant(*(((WCHAR*)convertedVolName) + 40) == '-');
-    KInvariant(*(((WCHAR*)convertedVolName) + 53) == '}');
+    KInvariant(convertedVolName.Length() == (sizeof(CHAR) * 54));
+    KInvariant(memcmp((CHAR*)convertedVolName, "\\GLOBAL??\\Volume{", 17) == 0);
+    KInvariant(*(((CHAR*)convertedVolName) + 25) == '-');
+    KInvariant(*(((CHAR*)convertedVolName) + 30) == '-');
+    KInvariant(*(((CHAR*)convertedVolName) + 35) == '-');
+    KInvariant(*(((CHAR*)convertedVolName) + 40) == '-');
+    KInvariant(*(((CHAR*)convertedVolName) + 53) == '}');
 
     //* Prove hardlink creation
 
@@ -759,7 +759,7 @@ HardLinksSupportTestAsync()
     
     // Next try in a subdirectory
     //      Create some sub-dirs
-    convertedVolName += L"\\KtlCITDir";
+    convertedVolName += "\\KtlCITDir";
     KInvariant(NT_SUCCESS(convertedVolName.Status()));
 
     // Just an easy way to make sure DeleteDir works
@@ -799,27 +799,27 @@ NTSTATUS TestSplitObjectPathInPathAndFilename(
 
 #if !defined(PLATFORM_UNIX)
         // Positive test cases
-        { L"\\", STATUS_SUCCESS, L"\\", L"" },
-        { L"\\Filename", STATUS_SUCCESS, L"\\", L"Filename" },
-        { L"\\Path1\\Filename", STATUS_SUCCESS, L"\\Path1\\", L"Filename" },
-        { L"\\Path1\\Path2\\Filename", STATUS_SUCCESS, L"\\Path1\\Path2\\", L"Filename" },
-        { L"\\??\\c:\\", STATUS_SUCCESS, L"\\??\\c:\\", L"" },
-        { L"\\??\\c:\\onelevel", STATUS_SUCCESS, L"\\??\\c:\\", L"onelevel" },
-        { L"\\??\\c:\\onelevel\\twolevel", STATUS_SUCCESS, L"\\??\\c:\\onelevel\\", L"twolevel"  },
-        { L"\\??\\c:\\onelevel\\twolevel\\", STATUS_SUCCESS, L"\\??\\c:\\onelevel\\twolevel\\", L""  },
-        { L"\\??\\c:\\a\\b\\c\\d\\e\\f\\g", STATUS_SUCCESS, L"\\??\\c:\\a\\b\\c\\d\\e\\f\\", L"g"  },
+        { "\\", STATUS_SUCCESS, "\\", "" },
+        { "\\Filename", STATUS_SUCCESS, "\\", "Filename" },
+        { "\\Path1\\Filename", STATUS_SUCCESS, "\\Path1\\", "Filename" },
+        { "\\Path1\\Path2\\Filename", STATUS_SUCCESS, "\\Path1\\Path2\\", "Filename" },
+        { "\\??\\c:\\", STATUS_SUCCESS, "\\??\\c:\\", "" },
+        { "\\??\\c:\\onelevel", STATUS_SUCCESS, "\\??\\c:\\", "onelevel" },
+        { "\\??\\c:\\onelevel\\twolevel", STATUS_SUCCESS, "\\??\\c:\\onelevel\\", "twolevel"  },
+        { "\\??\\c:\\onelevel\\twolevel\\", STATUS_SUCCESS, "\\??\\c:\\onelevel\\twolevel\\", ""  },
+        { "\\??\\c:\\a\\b\\c\\d\\e\\f\\g", STATUS_SUCCESS, "\\??\\c:\\a\\b\\c\\d\\e\\f\\", "g"  },
 
         // Negative test cases
-        { L"abcd", STATUS_INVALID_PARAMETER, L"", L""  },
+        { "abcd", STATUS_INVALID_PARAMETER, "", ""  },
 #else
         // Positive test cases
-        { L"/", STATUS_SUCCESS, L"/", L"" },
-        { L"/Filename", STATUS_SUCCESS, L"/", L"Filename" },
-        { L"/Path1/Filename", STATUS_SUCCESS, L"/Path1/", L"Filename" },
-        { L"/Path1/Path2/Filename", STATUS_SUCCESS, L"/Path1/Path2/", L"Filename" },
+        { "/", STATUS_SUCCESS, "/", "" },
+        { "/Filename", STATUS_SUCCESS, "/", "Filename" },
+        { "/Path1/Filename", STATUS_SUCCESS, "/Path1/", "Filename" },
+        { "/Path1/Path2/Filename", STATUS_SUCCESS, "/Path1/Path2/", "Filename" },
 
         // Negative test cases
-        { L"abcd", STATUS_INVALID_PARAMETER, L"", L""  },       
+        { "abcd", STATUS_INVALID_PARAMETER, "", ""  },       
 #endif
     };
 
@@ -835,25 +835,25 @@ NTSTATUS TestSplitObjectPathInPathAndFilename(
         if (status != testCase[i].ExpectedStatus)
         {
             KTestPrintf("TestSplitObjectPathInPathAndFilename: %ws expected status %x, actual status %x\n",
-                        (PWCHAR)testCase[i].ObjectPath, testCase[i].ExpectedStatus, status);
+                        (PCHAR)testCase[i].ObjectPath, testCase[i].ExpectedStatus, status);
             KInvariant(FALSE);
         }
 
         if (NT_SUCCESS(status))
         {
-            KWString expectedPath(KtlSystem::GlobalNonPagedAllocator(), (PWCHAR)(testCase[i].ExpectedPath));
+            KWString expectedPath(KtlSystem::GlobalNonPagedAllocator(), (PCHAR)(testCase[i].ExpectedPath));
             if (path != expectedPath)
             {
                 KTestPrintf("TestSplitObjectPathInPathAndFilename: %ws expected path %ws, actual path %ws\n",
-                            (PWCHAR)testCase[i].ObjectPath, (PWCHAR)testCase[i].ExpectedPath, (PWCHAR)path);
+                            (PCHAR)testCase[i].ObjectPath, (PCHAR)testCase[i].ExpectedPath, (PCHAR)path);
                 KInvariant(FALSE);
             }
 
-            KWString expectedFilename(KtlSystem::GlobalNonPagedAllocator(), (PWCHAR)(testCase[i].ExpectedFilename));
+            KWString expectedFilename(KtlSystem::GlobalNonPagedAllocator(), (PCHAR)(testCase[i].ExpectedFilename));
             if (filename != expectedFilename)
             {
                 KTestPrintf("TestSplitObjectPathInPathAndFilename: %ws expected filename %ws, actual filename %ws\n",
-                            (PWCHAR)testCase[i].ObjectPath, (PWCHAR)testCase[i].ExpectedFilename, (PWCHAR)filename);
+                            (PCHAR)testCase[i].ObjectPath, (PCHAR)testCase[i].ExpectedFilename, (PCHAR)filename);
                 KInvariant(FALSE);
             }
         }
@@ -931,7 +931,7 @@ DeleteAFile(
 ktl::Awaitable<NTSTATUS>
 TestRenameFilesAsync(
     __in KAllocator& Allocator,
-    __in WCHAR* DirPath
+    __in CHAR* DirPath
     )
 {
     //
@@ -944,11 +944,11 @@ TestRenameFilesAsync(
         KWString toFile(Allocator, DirPath);
         
         fromFile += KVolumeNamespace::PathSeparator;
-        fromFile += L"FromFile";
+        fromFile += "FromFile";
         KInvariant(NT_SUCCESS(fromFile.Status()));
         
         toFile += KVolumeNamespace::PathSeparator;
-        toFile += L"ToFile";
+        toFile += "ToFile";
         KInvariant(NT_SUCCESS(toFile.Status()));
 
         status = co_await DeleteAFileAsync(fromFile, Allocator);        
@@ -971,12 +971,12 @@ TestRenameFilesAsync(
 
 
         //
-        // Now try with the WCHAR version of the api
+        // Now try with the CHAR version of the api
         //
         status = co_await CreateAFileAsync(fromFile, Allocator);
         KInvariant(NT_SUCCESS(status));
 
-        status = co_await KVolumeNamespace::RenameFileAsync((PWCHAR)fromFile, (PWCHAR)toFile, FALSE, Allocator, NULL);
+        status = co_await KVolumeNamespace::RenameFileAsync((PCHAR)fromFile, (PCHAR)toFile, FALSE, Allocator, NULL);
         KInvariant(NT_SUCCESS(status));
 
         status = co_await VerifyAFileAsync(toFile, Allocator);
@@ -999,11 +999,11 @@ TestRenameFilesAsync(
         KWString toFile(Allocator, DirPath);
 
         fromFile += KVolumeNamespace::PathSeparator;
-        fromFile += L"FromFile";
+        fromFile += "FromFile";
         KInvariant(NT_SUCCESS(fromFile.Status()));
         
         toFile += KVolumeNamespace::PathSeparator;
-        toFile += L"ToFile";
+        toFile += "ToFile";
         KInvariant(NT_SUCCESS(toFile.Status()));
 
         status = co_await CreateAFileAsync(fromFile, Allocator);
@@ -1035,11 +1035,11 @@ TestRenameFilesAsync(
         KWString toFile(Allocator, DirPath);
 
         fromFile += KVolumeNamespace::PathSeparator;
-        fromFile += L"FromFile";
+        fromFile += "FromFile";
         KInvariant(NT_SUCCESS(fromFile.Status()));
         
         toFile += KVolumeNamespace::PathSeparator;
-        toFile += L"ToFile";
+        toFile += "ToFile";
         KInvariant(NT_SUCCESS(toFile.Status()));
 
         status = co_await CreateAFileAsync(fromFile, Allocator);
@@ -1068,11 +1068,11 @@ TestRenameFilesAsync(
         KWString toFile(Allocator, DirPath);
 
         fromFile += KVolumeNamespace::PathSeparator;
-        fromFile += L"FromFile";
+        fromFile += "FromFile";
         KInvariant(NT_SUCCESS(fromFile.Status()));
         
         toFile += KVolumeNamespace::PathSeparator;
-        toFile += L"ToFile";
+        toFile += "ToFile";
         KInvariant(NT_SUCCESS(toFile.Status()));
 
         status = co_await CreateAFileAsync(fromFile, Allocator);
@@ -1106,11 +1106,11 @@ TestRenameFilesAsync(
         KWString toFile(Allocator, DirPath);
 
         fromFile += KVolumeNamespace::PathSeparator;
-        fromFile += L"FromFile";
+        fromFile += "FromFile";
         KInvariant(NT_SUCCESS(fromFile.Status()));
         
         toFile += KVolumeNamespace::PathSeparator;
-        toFile += L"ToFile";
+        toFile += "ToFile";
         KInvariant(NT_SUCCESS(toFile.Status()));
 
         status = co_await KVolumeNamespace::RenameFileAsync(fromFile, toFile, FALSE, Allocator, NULL);
@@ -1124,7 +1124,7 @@ TestRenameFilesAsync(
 NTSTATUS
 TestRenameFiles(
     __in KAllocator& Allocator,
-    __in WCHAR* DirPath
+    __in CHAR* DirPath
     )
 {
     //
@@ -1138,11 +1138,11 @@ TestRenameFiles(
         KWString toFile(Allocator, DirPath);
         
         fromFile += KVolumeNamespace::PathSeparator;
-        fromFile += L"FromFile";
+        fromFile += "FromFile";
         KInvariant(NT_SUCCESS(fromFile.Status()));
         
         toFile += KVolumeNamespace::PathSeparator;
-        toFile += L"ToFile";
+        toFile += "ToFile";
         KInvariant(NT_SUCCESS(toFile.Status()));
 
         status = DeleteAFile(fromFile, Allocator);      
@@ -1167,12 +1167,12 @@ TestRenameFiles(
 
 
         //
-        // Now try with the WCHAR version of the api
+        // Now try with the CHAR version of the api
         //
         status = CreateAFile(fromFile, Allocator);
         KInvariant(NT_SUCCESS(status));
 
-        status = KVolumeNamespace::RenameFile((PWCHAR)fromFile, (PWCHAR)toFile, FALSE, Allocator, sync, NULL);
+        status = KVolumeNamespace::RenameFile((PCHAR)fromFile, (PCHAR)toFile, FALSE, Allocator, sync, NULL);
         KInvariant(NT_SUCCESS(status));
         status = sync.WaitForCompletion();
         KInvariant(NT_SUCCESS(status));
@@ -1199,11 +1199,11 @@ TestRenameFiles(
         KWString toFile(Allocator, DirPath);
 
         fromFile += KVolumeNamespace::PathSeparator;
-        fromFile += L"FromFile";
+        fromFile += "FromFile";
         KInvariant(NT_SUCCESS(fromFile.Status()));
         
         toFile += KVolumeNamespace::PathSeparator;
-        toFile += L"ToFile";
+        toFile += "ToFile";
         KInvariant(NT_SUCCESS(toFile.Status()));
 
         status = CreateAFile(fromFile, Allocator);
@@ -1238,11 +1238,11 @@ TestRenameFiles(
         KWString toFile(Allocator, DirPath);
 
         fromFile += KVolumeNamespace::PathSeparator;
-        fromFile += L"FromFile";
+        fromFile += "FromFile";
         KInvariant(NT_SUCCESS(fromFile.Status()));
         
         toFile += KVolumeNamespace::PathSeparator;
-        toFile += L"ToFile";
+        toFile += "ToFile";
         KInvariant(NT_SUCCESS(toFile.Status()));
 
         status = CreateAFile(fromFile, Allocator);
@@ -1274,11 +1274,11 @@ TestRenameFiles(
         KWString toFile(Allocator, DirPath);
 
         fromFile += KVolumeNamespace::PathSeparator;
-        fromFile += L"FromFile";
+        fromFile += "FromFile";
         KInvariant(NT_SUCCESS(fromFile.Status()));
         
         toFile += KVolumeNamespace::PathSeparator;
-        toFile += L"ToFile";
+        toFile += "ToFile";
         KInvariant(NT_SUCCESS(toFile.Status()));
 
         status = CreateAFile(fromFile, Allocator);
@@ -1315,11 +1315,11 @@ TestRenameFiles(
         KWString toFile(Allocator, DirPath);
 
         fromFile += KVolumeNamespace::PathSeparator;
-        fromFile += L"FromFile";
+        fromFile += "FromFile";
         KInvariant(NT_SUCCESS(fromFile.Status()));
         
         toFile += KVolumeNamespace::PathSeparator;
-        toFile += L"ToFile";
+        toFile += "ToFile";
         KInvariant(NT_SUCCESS(toFile.Status()));
 
         status = KVolumeNamespace::RenameFile(fromFile, toFile, FALSE, Allocator, sync, NULL);
@@ -1334,7 +1334,7 @@ TestRenameFiles(
 
 NTSTATUS
 KVolumeNamespaceTestX(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     UNREFERENCED_PARAMETER(argc);
@@ -1380,7 +1380,7 @@ KVolumeNamespaceTestX(
         KWString expectedName1(KtlSystem::GlobalNonPagedAllocator());
         KWString dir2(KtlSystem::GlobalNonPagedAllocator());
         KWString expectedName2(KtlSystem::GlobalNonPagedAllocator());
-        name = L"filename";
+        name = "filename";
 
     status = name.Status();
     if (!NT_SUCCESS(status)) {
@@ -1388,14 +1388,14 @@ KVolumeNamespaceTestX(
         goto Finish;
     }
 
-    expectedName1 = L"/filename";
+    expectedName1 = "/filename";
     status = expectedName1.Status();
     if (!NT_SUCCESS(status)) {
         KTestPrintf("could not assign expectedname1 %x\n", status);
         goto Finish;
     }
 
-    dir1 = L"/";
+    dir1 = "/";
     status = dir1.Status();
     if (!NT_SUCCESS(status)) {
         KTestPrintf("could not assign dir1 %x\n", status);
@@ -1415,14 +1415,14 @@ KVolumeNamespaceTestX(
         goto Finish;
     }
     
-    expectedName2 = L"/dir/filename";
+    expectedName2 = "/dir/filename";
     status = expectedName2.Status();
     if (!NT_SUCCESS(status)) {
         KTestPrintf("could not assign expectedname2 %x\n", status);
         goto Finish;
     }
     
-    dir2 = L"/dir";
+    dir2 = "/dir";
     status = dir2.Status();
     if (!NT_SUCCESS(status)) {
         KTestPrintf("could not assign dir2 %x\n", status);
@@ -1531,7 +1531,7 @@ KVolumeNamespaceTestX(
         goto Finish;
     }
 #else
-    volumeName = L"/tmp";
+    volumeName = "/tmp";
     status = volumeName.Status();
     if (!NT_SUCCESS(status)) {
         KTestPrintf("could not create volume name %x\n", status);
@@ -1539,7 +1539,7 @@ KVolumeNamespaceTestX(
     }   
 #endif
 
-    testDirName = L"KVolumeNamespaceTestDirectory";
+    testDirName = "KVolumeNamespaceTestDirectory";
 
     status = testDirName.Status();
 
@@ -1577,7 +1577,7 @@ KVolumeNamespaceTestX(
     //
     // Rename files tests
     //
-    status = TestRenameFiles(KtlSystem::GlobalNonPagedAllocator(), (WCHAR*)dirName);
+    status = TestRenameFiles(KtlSystem::GlobalNonPagedAllocator(), (CHAR*)dirName);
     KInvariant(NT_SUCCESS(status));
 
         
@@ -1808,9 +1808,9 @@ Finish:
 }
 
 #if defined(PLATFORM_UNIX)
-static std::string utf16to8X(const wchar_t *wstr)
+static std::string utf16to8X(const char *wstr)
 {
-	std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> conv;
+	std::string_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> conv;
     return conv.to_bytes((const char16_t *) wstr);
 }
 #endif
@@ -1819,11 +1819,11 @@ static std::string utf16to8X(const wchar_t *wstr)
 ktl::Awaitable<void>
 LongPathnameTestAsync(
     __in KAllocator& Allocator,
-    __in WCHAR* DirPath
+    __in CHAR* DirPath
     )
 {
     NTSTATUS status;
-    PWCHAR longPath128 = L"0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
+    PCHAR longPath128 = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
     KWString dirName(Allocator, DirPath);
 
     //
@@ -1836,13 +1836,13 @@ LongPathnameTestAsync(
             dirName += longPath128;		
             KInvariant(NT_SUCCESS(dirName.Status()));
 
-            status = co_await KVolumeNamespace::CreateDirectoryAsync((LPCWSTR)dirName, Allocator);
+            status = co_await KVolumeNamespace::CreateDirectoryAsync((LPCSTR)dirName, Allocator);
 
 #if defined(PLATFORM_UNIX)
             if (! NT_SUCCESS(status))
             {
-                std::string fmtA = utf16to8X((LPCWSTR)dirName);
-                printf("\nStatus %x %s %llx \n", status, fmtA.c_str(), (ULONGLONG)((LPCWSTR)dirName));
+                std::string fmtA = utf16to8X((LPCSTR)dirName);
+                printf("\nStatus %x %s %llx \n", status, fmtA.c_str(), (ULONGLONG)((LPCSTR)dirName));
             }
 #endif
             
@@ -1852,12 +1852,12 @@ LongPathnameTestAsync(
     
     KWString fileName(dirName);
     fileName += KVolumeNamespace::PathSeparator;
-    fileName += L"filename";
+    fileName += "filename";
     KInvariant(NT_SUCCESS(fileName.Status()));
 
     KWString fileName2(dirName);
     fileName2 += KVolumeNamespace::PathSeparator;
-    fileName2 += L"filename2";
+    fileName2 += "filename2";
     KInvariant(NT_SUCCESS(fileName2.Status()));    
 
     //
@@ -1874,7 +1874,7 @@ LongPathnameTestAsync(
     //
     {
 		
-        status = co_await KVolumeNamespace::RenameFileAsync((LPCWSTR)fileName, (LPCWSTR)fileName2, FALSE, Allocator, NULL);
+        status = co_await KVolumeNamespace::RenameFileAsync((LPCSTR)fileName, (LPCSTR)fileName2, FALSE, Allocator, NULL);
         KInvariant(NT_SUCCESS(status));
 
         status = co_await VerifyAFileAsync(fileName2, Allocator);
@@ -1885,7 +1885,7 @@ LongPathnameTestAsync(
     // Test 4: Delete file and directory with long names
     //
     {
-        status = co_await KVolumeNamespace::DeleteFileOrDirectoryAsync((LPCWSTR)fileName2, Allocator);
+        status = co_await KVolumeNamespace::DeleteFileOrDirectoryAsync((LPCSTR)fileName2, Allocator);
         KInvariant(NT_SUCCESS(status));
 
         status = co_await KVolumeNamespace::DeleteFileOrDirectoryAsync(dirName, Allocator);
@@ -1898,7 +1898,7 @@ LongPathnameTestAsync(
 
 ktl::Awaitable<NTSTATUS>
 KVolumeNamespaceTestXAsync(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     UNREFERENCED_PARAMETER(argc);
@@ -1989,7 +1989,7 @@ KVolumeNamespaceTestXAsync(
         goto Finish;
     }
 #else
-    volumeName = L"/tmp";
+    volumeName = "/tmp";
     status = volumeName.Status();
     if (!NT_SUCCESS(status)) {
         KTestPrintf("could not create volume name %x\n", status);
@@ -1997,7 +1997,7 @@ KVolumeNamespaceTestXAsync(
     }   
 #endif
 
-    testDirName = L"KVolumeNamespaceTestDirectory";
+    testDirName = "KVolumeNamespaceTestDirectory";
 
     status = testDirName.Status();
 
@@ -2030,7 +2030,7 @@ KVolumeNamespaceTestXAsync(
     //
     // Rename files tests
     //
-    status = co_await TestRenameFilesAsync(KtlSystem::GlobalNonPagedAllocator(), (WCHAR*)dirName);
+    status = co_await TestRenameFilesAsync(KtlSystem::GlobalNonPagedAllocator(), (CHAR*)dirName);
     KInvariant(NT_SUCCESS(status));
 
     //
@@ -2221,7 +2221,7 @@ Finish:
 
 NTSTATUS
 KVolumeNamespaceTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     KTestPrintf("KVolumeNamespaceTest: STARTED\n");

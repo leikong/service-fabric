@@ -44,7 +44,7 @@ void UnreliableTransport::SetMessageHandler(MessageHandler const & handler)
 }
 
 ISendTarget::SPtr UnreliableTransport::Resolve(
-    wstring const & address, wstring const & targetId, wstring const & sspiTarget, uint64 instance)
+    string const & address, string const & targetId, string const & sspiTarget, uint64 instance)
 {
     return this->innerTransport_->Resolve(address, targetId, sspiTarget, instance);
 }
@@ -146,7 +146,7 @@ ErrorCode UnreliableTransport::SetOutgoingMessageExpiration(TimeSpan expiration)
     return innerTransport_->SetOutgoingMessageExpiration(expiration);
 }
 
-wstring const & UnreliableTransport::get_IdString() const
+string const & UnreliableTransport::get_IdString() const
 {
     return innerTransport_->get_IdString();
 }
@@ -156,7 +156,7 @@ TransportSecuritySPtr UnreliableTransport::Security() const
     return innerTransport_->Security();
 }
 
-wstring const & UnreliableTransport::ListenAddress() const
+string const & UnreliableTransport::ListenAddress() const
 {
     return innerTransport_->ListenAddress();
 }
@@ -261,7 +261,7 @@ void UnreliableTransport::SetConnectionOpenTimeout(Common::TimeSpan timeout)
     innerTransport_->SetConnectionOpenTimeout(timeout);
 }
 
-wstring const & UnreliableTransport::TraceId() const
+string const & UnreliableTransport::TraceId() const
 {
     return innerTransport_->TraceId();
 }

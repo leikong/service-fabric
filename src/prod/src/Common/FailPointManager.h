@@ -11,17 +11,17 @@ namespace Common
     {
     public: 
 
-        static void Set(FailPointCriteriaSPtr const & criteria, FailPointActionSPtr const & action, int priority=0, std::wstring name=std::wstring())
+        static void Set(FailPointCriteriaSPtr const & criteria, FailPointActionSPtr const & action, int priority=0, std::string name=std::string())
         {
             FailPointManager::list_.Set(criteria,action,priority,name);
         }
 
-        static void Remove(std::wstring name)
+        static void Remove(std::string name)
         {
             FailPointManager::list_.Remove(name);
         }
 
-        static void Remove(FailPointCriteriaSPtr const & criteria,std::wstring name=std::wstring())
+        static void Remove(FailPointCriteriaSPtr const & criteria,std::string name=std::string())
         {
             FailPointManager::list_.Remove(criteria,name);
         }
@@ -31,12 +31,12 @@ namespace Common
             FailPointManager::Remove(failpoint.CriteriaSPtr);
         }
 
-        static bool Check(FailPointContext context, bool invokeAction,std::wstring name=std::wstring())
+        static bool Check(FailPointContext context, bool invokeAction,std::string name=std::string())
         {
             return FailPointManager::list_.Check(context,invokeAction,name);
         }
 
-        static bool Check(FailPointContext context,std::wstring name=std::wstring())
+        static bool Check(FailPointContext context,std::string name=std::string())
         {
             return FailPointManager::Check(context,true,name);
         }

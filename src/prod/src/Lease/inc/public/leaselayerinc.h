@@ -23,7 +23,7 @@
 typedef struct
 {
     // Address can be either numerical IP v4 or v6 address string, or hostname string.
-    WCHAR Address[ENDPOINT_ADDR_CCH_MAX];
+    CHAR Address[ENDPOINT_ADDR_CCH_MAX];
 
     // when Address is hostname instead of numerical address, resolve type can be:
     //   AF_UNSPEC : unspecified
@@ -35,7 +35,7 @@ typedef struct
 
     // SspiTarget is the target identity for authenticating listener. Currently
     // it is only used for Kerberos.The value could be logon name, upn or spn.
-    WCHAR SspiTarget[SSPI_TARGET_MAX];
+    CHAR SspiTarget[SSPI_TARGET_MAX];
 } TRANSPORT_LISTEN_ENDPOINT, *PTRANSPORT_LISTEN_ENDPOINT;
 
 typedef const TRANSPORT_LISTEN_ENDPOINT * PCTRANSPORT_LISTEN_ENDPOINT;
@@ -115,7 +115,7 @@ typedef struct _TRANSPORT_BEHAVIOR_BUFFER {
     //
     // A name used for lookup or delete
     //
-    WCHAR Alias[TEST_TRANSPORT_ALIAS_LENGTH];
+    CHAR Alias[TEST_TRANSPORT_ALIAS_LENGTH];
 } TRANSPORT_BEHAVIOR_BUFFER, *PTRANSPORT_BEHAVIOR_BUFFER;
 
 // Max char count of lease agent identifier

@@ -10,7 +10,7 @@ void KTestPrintf(const char *Fmt, ...);
 typedef
 NTSTATUS
 (*KU_TEST_CASE)(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     );
 
 //
@@ -74,7 +74,7 @@ namespace ktl
                 __out KWString& TestDirName,
                 __out KWString& TestFileName,
                 __out KBlockFile::SPtr& File,
-                __in_opt LPCWSTR partialFileName = nullptr);
+                __in_opt LPCSTR partialFileName = nullptr);
         }
     }
 }

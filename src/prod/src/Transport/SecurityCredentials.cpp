@@ -56,9 +56,9 @@ namespace
     }
 }
 
-std::wstring SecurityCredentials::VectorsToString(vector<SecurityCredentialsSPtr> const & v)
+std::string SecurityCredentials::VectorsToString(vector<SecurityCredentialsSPtr> const & v)
 {
-    wstring s;
+    string s;
     StringWriter sw(s);
     for (auto const & e : v)
     {
@@ -102,7 +102,7 @@ SecurityCredentials::SecurityCredentials()
 
 _Use_decl_annotations_
 ErrorCode SecurityCredentials::AcquireWin(
-    wstring const & securityPrincipal,
+    string const & securityPrincipal,
     SecurityProvider::Enum securityProvider,
     bool outboundOnly,
     PVOID authenticationData,
@@ -115,8 +115,8 @@ ErrorCode SecurityCredentials::AcquireWin(
     return ErrorCode();
 #else
     auto credentials =  SecurityCredentialsSPtr(new SecurityCredentials());
-    wchar_t * principal = securityPrincipal.empty() ? nullptr : const_cast<wchar_t *>(securityPrincipal.c_str());
-    wchar_t * package = SecurityProvider::GetSspiProviderName(securityProvider);
+    char * principal = securityPrincipal.empty() ? nullptr : const_cast<char *>(securityPrincipal.c_str());
+    char * package = SecurityProvider::GetSspiProviderName(securityProvider);
     ULONG credentialUse = outboundOnly ? SECPKG_CRED_OUTBOUND : SECPKG_CRED_BOTH;
 
     TimeStamp expiration;
@@ -342,7 +342,7 @@ _Use_decl_annotations_ ErrorCode SecurityCredentials::AcquireSsl(
 
 _Use_decl_annotations_ ErrorCode SecurityCredentials::AcquireSsl(
     X509StoreLocation::Enum certStoreLocation,
-    wstring const & certStoreName,
+    string const & certStoreName,
     shared_ptr<X509FindValue> const & findValue,
     vector<SecurityCredentialsSPtr> * credentials,
     vector<SecurityCredentialsSPtr> * svrCredentials)

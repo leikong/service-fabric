@@ -31,10 +31,10 @@ namespace Common
         typedef FailedEvent::HHandler FailedEventHHandler;
 
         typedef std::function<void (FileChangeMonitor2SPtr const & monitor)> ChangeCallback;
-        static FileChangeMonitor2SPtr Create(std::wstring const & filePath, bool const supportFileDelete = FALSE);
+        static FileChangeMonitor2SPtr Create(std::string const & filePath, bool const supportFileDelete = FALSE);
 
     public:
-        FileChangeMonitor2(std::wstring const & filePath, bool const supportFileDelete = FALSE);
+        FileChangeMonitor2(std::string const & filePath, bool const supportFileDelete = FALSE);
         virtual ~FileChangeMonitor2();
 
         FailedEventHHandler RegisterFailedEventHandler(FailedEventHandler const & handler);
@@ -58,7 +58,7 @@ namespace Common
 
     private:
         ChangeCallback callback_;
-        std::wstring traceId_;
+        std::string traceId_;
         FailedEvent failedEvent_;
         bool supportFileDelete_;
 
@@ -69,16 +69,16 @@ namespace Common
 
         class INotify;
 #else
-        static Common::ErrorCode GetLastWriteTime(std::wstring const & filePath, __out Common::DateTime & lastWriteTime);
+        static Common::ErrorCode GetLastWriteTime(std::string const & filePath, __out Common::DateTime & lastWriteTime);
         Common::ErrorCode UpdateLastWriteTime();
         Common::ErrorCode IsMyChange(__out bool & myChange);
-        Common::ErrorCode OnWin32Error(std::wstring const & win32FunctionName);
+        Common::ErrorCode OnWin32Error(std::string const & win32FunctionName);
         void CancelThreadpoolWait();
         Common::ErrorCode WaitForNextChange();
         void OnWaitCompleted();
 
-        std::wstring const filePath_;
-        std::wstring const directory_;
+        std::string const filePath_;
+        std::string const directory_;
         HANDLE directoryChangeHandle_;
         PTP_WAIT wait_;
         Common::DateTime lastWriteTime_;

@@ -15,26 +15,26 @@ namespace Common
         {
         }
 
-        static ExpressionSPtr Build(std::wstring const& expression);
-        bool Evaluate(std::map<std::wstring, std::wstring> params, std::wstring & error, bool forPrimary = false);
-        OperationResult Evaluate(std::map<std::wstring, std::wstring> params, bool forPrimary = false);
+        static ExpressionSPtr Build(std::string const& expression);
+        bool Evaluate(std::map<std::string, std::string> params, std::string & error, bool forPrimary = false);
+        OperationResult Evaluate(std::map<std::string, std::string> params, bool forPrimary = false);
 
         __declspec (property(get=get_ForPrimary)) bool ForPrimary;
         bool get_ForPrimary() const { return forPrimary_; }
 
-        __declspec (property(get=get_FDPolicy)) std::wstring FDPolicy;
-        std::wstring get_FDPolicy() const { return FDPolicy_; }
+        __declspec (property(get=get_FDPolicy)) std::string FDPolicy;
+        std::string get_FDPolicy() const { return FDPolicy_; }
 
-        __declspec (property(get = get_PlacePolicy)) std::wstring PlacePolicy;
-        std::wstring get_PlacePolicy() const { return PlacePolicy_; }
+        __declspec (property(get = get_PlacePolicy)) std::string PlacePolicy;
+        std::string get_PlacePolicy() const { return PlacePolicy_; }
 
         __declspec (property(get=get_IsLiteral)) bool IsLiteral;
         bool get_IsLiteral() const { return (op_->Level == 5 && leftChild_ == nullptr && rightChild_ == nullptr); }
 
     private:
-        static ExpressionSPtr ReadToken(std::wstring const& expression, size_t & start);
+        static ExpressionSPtr ReadToken(std::string const& expression, size_t & start);
 
-        static OperatorSPtr ReadOperator(std::wstring const& expression, size_t & start);
+        static OperatorSPtr ReadOperator(std::string const& expression, size_t & start);
 
         static std::vector<OperatorSPtr>* CreateOperators();
 
@@ -44,8 +44,8 @@ namespace Common
         ExpressionSPtr leftChild_;
         ExpressionSPtr rightChild_;
         bool forPrimary_;
-        std::wstring FDPolicy_;
-        std::wstring PlacePolicy_;
+        std::string FDPolicy_;
+        std::string PlacePolicy_;
 
         static std::vector<OperatorSPtr>* operators_;
         static OperatorSPtr* Sentinal;

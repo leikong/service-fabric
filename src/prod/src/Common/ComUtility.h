@@ -14,7 +14,7 @@ namespace Common
         static void ClearErrorInfo();
 
         static HRESULT OnPublicApiReturn(HRESULT hr);
-        static HRESULT OnPublicApiReturn(HRESULT hr, std::wstring && description);
+        static HRESULT OnPublicApiReturn(HRESULT hr, std::string && description);
         static HRESULT OnPublicApiReturn(Common::ErrorCode const & error);
         static HRESULT OnPublicApiReturn(Common::ErrorCode && error);
     private:

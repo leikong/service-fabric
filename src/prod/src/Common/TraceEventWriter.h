@@ -17,13 +17,13 @@ namespace Common
     DECLARE_OPERATIONAL_TRACE(traceName, __VA_ARGS__)
 
 #define DECLARE_NODES_OPERATIONAL_TRACE(traceName, ...) \
-    DECLARE_OPERATIONAL_TRACE(traceName, std::wstring, __VA_ARGS__)
+    DECLARE_OPERATIONAL_TRACE(traceName, std::string, __VA_ARGS__)
 
 #define DECLARE_APPLICATIONS_OPERATIONAL_TRACE(traceName, ...) \
-    DECLARE_OPERATIONAL_TRACE(traceName, std::wstring, __VA_ARGS__)
+    DECLARE_OPERATIONAL_TRACE(traceName, std::string, __VA_ARGS__)
 
 #define DECLARE_SERVICES_OPERATIONAL_TRACE(traceName, ...) \
-    DECLARE_OPERATIONAL_TRACE(traceName, std::wstring, __VA_ARGS__)
+    DECLARE_OPERATIONAL_TRACE(traceName, std::string, __VA_ARGS__)
 
 #define DECLARE_PARTITIONS_OPERATIONAL_TRACE(traceName, ...) \
     DECLARE_OPERATIONAL_TRACE(traceName, Common::Guid, __VA_ARGS__)
@@ -83,10 +83,10 @@ namespace Common
 #define STRUCTURED_OPERATIONAL_TRACE_HELPER(traceName, queryTraceName, publicEventName, category, taskCode, traceId, traceLevel, ...) \
     traceName(ExtendedEventMetadata::Create(publicEventName, category), Common::TraceTaskCodes::taskCode, traceId, #queryTraceName, Common::LogLevel::traceLevel, __VA_ARGS__)
 
-#define OperationalStateTransitionCategory L"StateTransition"
-#define OperationalLifeCycleCategory L"LifeCycle"
-#define OperationalUpgradeCategory L"Upgrade"
-#define OperationalHealthCategory L"Health"
+#define OperationalStateTransitionCategory "StateTransition"
+#define OperationalLifeCycleCategory "LifeCycle"
+#define OperationalUpgradeCategory "Upgrade"
+#define OperationalHealthCategory "Health"
 
 #define DECLARE_ENUM_STRUCTURED_TRACE( enumClassName ) \
     class Trace \
@@ -540,7 +540,7 @@ namespace Common
 #endif
             if (useConsole || useFile || useETW)
             {
-                std::wstring formattedString;
+                std::string formattedString;
                 StringWriter w(formattedString);
 
                 if (extendedMetadata_)
@@ -550,7 +550,7 @@ namespace Common
 
                 w.Write(event_.GetFormat());
 
-                event_.WriteToTextSink(std::wstring(), formattedString, useConsole, useFile, useETW);
+                event_.WriteToTextSink(std::string(), formattedString, useConsole, useFile, useETW);
             }
         }
 
@@ -593,7 +593,7 @@ namespace Common
 #endif
             if (useConsole || useFile || useETW)
             {
-                std::wstring formattedString;
+                std::string formattedString;
                 StringWriter w(formattedString);
 
                 if (extendedMetadata_)
@@ -647,7 +647,7 @@ namespace Common
 #endif
             if (useConsole || useFile || useETW)
             {
-                std::wstring formattedString;
+                std::string formattedString;
                 StringWriter w(formattedString);
 
                 if (extendedMetadata_)
@@ -702,7 +702,7 @@ namespace Common
 #endif
             if (useConsole || useFile || useETW)
             {
-                std::wstring formattedString;
+                std::string formattedString;
                 StringWriter w(formattedString);
 
                 if (extendedMetadata_)
@@ -758,7 +758,7 @@ namespace Common
 #endif
             if (useConsole || useFile || useETW)
             {
-                std::wstring formattedString;
+                std::string formattedString;
                 StringWriter w(formattedString);
 
                 if (extendedMetadata_)
@@ -815,7 +815,7 @@ namespace Common
 #endif
             if (useConsole || useFile || useETW)
             {
-                std::wstring formattedString;
+                std::string formattedString;
                 StringWriter w(formattedString);
 
                 if (extendedMetadata_)
@@ -873,7 +873,7 @@ namespace Common
 #endif
             if (useConsole || useFile || useETW)
             {
-                std::wstring formattedString;
+                std::string formattedString;
                 StringWriter w(formattedString);
 
                 if (extendedMetadata_)
@@ -932,7 +932,7 @@ namespace Common
 #endif
             if (useConsole || useFile || useETW)
             {
-                std::wstring formattedString;
+                std::string formattedString;
                 StringWriter w(formattedString);
 
                 if (extendedMetadata_)
@@ -992,7 +992,7 @@ namespace Common
 #endif
             if (useConsole || useFile || useETW)
             {
-                std::wstring formattedString;
+                std::string formattedString;
                 StringWriter w(formattedString);
 
                 if (extendedMetadata_)
@@ -1053,7 +1053,7 @@ namespace Common
 #endif
             if (useConsole || useFile || useETW)
             {
-                std::wstring formattedString;
+                std::string formattedString;
                 StringWriter w(formattedString);
 
                 if (extendedMetadata_)
@@ -1115,7 +1115,7 @@ namespace Common
 #endif
             if (useConsole || useFile || useETW)
             {
-                std::wstring formattedString;
+                std::string formattedString;
                 StringWriter w(formattedString);
 
                 if (extendedMetadata_)
@@ -1178,7 +1178,7 @@ namespace Common
 #endif
             if (useConsole || useFile || useETW)
             {
-                std::wstring formattedString;
+                std::string formattedString;
                 StringWriter w(formattedString);
 
                 if (extendedMetadata_)
@@ -1242,7 +1242,7 @@ namespace Common
 #endif
             if (useConsole || useFile || useETW)
             {
-                std::wstring formattedString;
+                std::string formattedString;
                 StringWriter w(formattedString);
 
                 if (extendedMetadata_)
@@ -1307,7 +1307,7 @@ namespace Common
 #endif
             if (useConsole || useFile || useETW)
             {
-                std::wstring formattedString;
+                std::string formattedString;
                 StringWriter w(formattedString);
 
                 if (extendedMetadata_)
@@ -1371,7 +1371,7 @@ namespace Common
 #endif
             if (useConsole || useFile || useETW)
             {
-                std::wstring formattedString;
+                std::string formattedString;
                 StringWriter w(formattedString);
 
                 if (extendedMetadata_)

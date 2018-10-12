@@ -26,7 +26,7 @@ Abstract:
 
 const KU_TEST_ENTRY gs_KuTestCases[] =
 {
-    {   L"KInvariantTest",              KInvariantTest,         L"BVT", L"KInvariant tests"},
+    {   "KInvariantTest",              KInvariantTest,         "BVT", "KInvariant tests"},
 
 };
 

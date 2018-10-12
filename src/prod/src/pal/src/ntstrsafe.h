@@ -13,9 +13,9 @@ extern "C" {
 
 typedef _Null_terminated_ char* NTSTRSAFE_PSTR;
 typedef _Null_terminated_ const char* NTSTRSAFE_PCSTR;
-typedef _Null_terminated_ wchar_t* NTSTRSAFE_PWSTR;
-typedef _Null_terminated_ const wchar_t* NTSTRSAFE_PCWSTR;
-typedef _Null_terminated_ const wchar_t UNALIGNED* NTSTRSAFE_PCUWSTR;
+typedef _Null_terminated_ char* NTSTRSAFE_PWSTR;
+typedef _Null_terminated_ const char* NTSTRSAFE_PCWSTR;
+typedef _Null_terminated_ const char UNALIGNED* NTSTRSAFE_PCUWSTR;
 
 #ifdef __cplusplus
 }

@@ -70,6 +70,6 @@ void MessageHeaderTrace::Trace(Common::TextWriter & w, MessageHeaders::HeaderRef
     }
     else
     {
-        w << L'(' << headerReference.Id() << L':' << headerReference.SerializedHeaderObjectSize() << L":Unknown)";
+        w << '(' << headerReference.Id() << ':' << headerReference.SerializedHeaderObjectSize() << ":Unknown)";
     }
 }

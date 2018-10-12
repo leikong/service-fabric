@@ -19,7 +19,7 @@ namespace Common
     StringLiteral const TraceCategory("ParameterValidator");
 
     ErrorCode ParameterValidator::IsValid(
-        LPCWSTR param,
+        LPCSTR param,
         size_t minAllowedLength,
         size_t maxAllowedLength)
     {
@@ -28,7 +28,7 @@ namespace Common
     }
 
     ErrorCode ParameterValidator::IsValidTruncated(
-        LPCWSTR param,
+        LPCSTR param,
         size_t minAllowedLength,
         __inout size_t & length)
     {
@@ -37,7 +37,7 @@ namespace Common
     }
 
     ErrorCode ParameterValidator::IsValid(
-        LPCWSTR param, 
+        LPCSTR param, 
         size_t minAllowedLength, 
         size_t maxAllowedLength,
         __inout size_t & length) 
@@ -53,26 +53,26 @@ namespace Common
         {
             return TraceAndCreateError(
                 ErrorCodeValue::InvalidArgument, 
-                wformatString(GET_COMMON_RC(String_Too_Long2), wstring(param, maxAllowedLength), maxAllowedLength));
+                formatString(GET_COMMON_RC(String_Too_Long2), string(param, maxAllowedLength), maxAllowedLength));
         }
 
         if (length < minAllowedLength)
         {
             return TraceAndCreateError(
                 ErrorCodeValue::InvalidArgument,
-                wformatString(GET_COMMON_RC(String_Too_Short), wstring(param), minAllowedLength));
+                formatString(GET_COMMON_RC(String_Too_Short), string(param), minAllowedLength));
         }
 
         return ErrorCodeValue::Success;
     }
 
-    ErrorCode ParameterValidator::ValidatePercentValue(BYTE percentValue, Common::WStringLiteral const & parameterName)
+    ErrorCode ParameterValidator::ValidatePercentValue(BYTE percentValue, Common::StringLiteral const & parameterName)
     {
         if ((percentValue < 0) || (percentValue > 100))
         {
             return TraceAndCreateError(
                 ErrorCodeValue::InvalidArgument, 
-                wformatString("{0} {1}={2}.", GET_COMMON_RC(Invalid_Percent_Value), parameterName, percentValue));
+                formatString.L("{0} {1}={2}.", GET_COMMON_RC(Invalid_Percent_Value), parameterName, percentValue));
         }
         else
         {
@@ -80,7 +80,7 @@ namespace Common
         }
     }
 
-    ErrorCode ParameterValidator::TraceAndCreateError(ErrorCodeValue::Enum error, wstring && errorMessage)
+    ErrorCode ParameterValidator::TraceAndCreateError(ErrorCodeValue::Enum error, string && errorMessage)
     {
         Trace.WriteWarning(TraceCategory, "{0}", errorMessage);
 

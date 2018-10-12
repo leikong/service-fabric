@@ -14,10 +14,10 @@ namespace Transport
     StringLiteral const Constants::MemoryTrace("Memory");
     StringLiteral const Constants::DemuxerTrace("Demuxer");
     StringLiteral const Constants::ConfigTrace("Config");
-    Global<wstring> const Constants::ClaimsTokenError = make_global<wstring>(L"ClaimsTokenError");
-    Global<wstring> const Constants::ConnectionAuth = make_global<wstring>(L"ConnectionAuth");
+    Global<string> const Constants::ClaimsTokenError = make_global<string>("ClaimsTokenError");
+    Global<string> const Constants::ConnectionAuth = make_global<string>("ConnectionAuth");
     StringLiteral const Constants::PartitionIdString("PartitionId");
-    Global<wstring> const Constants::PartitionIdWString = make_global<wstring>(L"PartitionId");
-    Global<wstring> const Constants::ClaimsMessageAction = make_global<wstring>(L"Claims");
-    Global<wstring> const Constants::ReconnectAction = make_global<wstring>(L"Reconnect");
+    Global<string> const Constants::PartitionIdWString = make_global<string>("PartitionId");
+    Global<string> const Constants::ClaimsMessageAction = make_global<string>("Claims");
+    Global<string> const Constants::ReconnectAction = make_global<string>("Reconnect");
 }

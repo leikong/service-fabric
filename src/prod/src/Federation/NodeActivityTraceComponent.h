@@ -33,16 +33,16 @@ namespace Federation
             Common::StringWriter(traceId_).Write("[{0}+{1}]", node_, activityId_);
         }
 
-        __declspec(property(get=get_TraceId)) std::wstring const & TraceId;
+        __declspec(property(get=get_TraceId)) std::string const & TraceId;
         __declspec(property(get=get_NodeInstance)) Federation::NodeInstance const & NodeInstance;
         __declspec(property(get=get_ActivityId)) Common::ActivityId const & ActivityId;
 
-        std::wstring const & get_TraceId() const { return traceId_; }
+        std::string const & get_TraceId() const { return traceId_; }
         Federation::NodeInstance const & get_NodeInstance() const { return node_; }
         Common::ActivityId const & get_ActivityId() const { return activityId_; }
 
     private:
-        std::wstring traceId_;
+        std::string traceId_;
         Federation::NodeInstance node_;
         Common::ActivityId activityId_;
     };

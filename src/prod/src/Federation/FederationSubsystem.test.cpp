@@ -31,16 +31,16 @@ namespace FederationUnitTests
         {
             RootSPtr root = make_shared<Root>();
 
-            wstring host = SiteNodeHelper::GetLoopbackAddress();
-            wstring port = SiteNodeHelper::GetFederationPort();
+            string host = SiteNodeHelper::GetLoopbackAddress();
+            string port = SiteNodeHelper::GetFederationPort();
 
             VoteConfig seedNodes;
-            seedNodes.push_back(VoteEntryConfig(NodeId::MinNodeId, Federation::Constants::SeedNodeVoteType, host + L":" + port));
+            seedNodes.push_back(VoteEntryConfig(NodeId::MinNodeId, Federation::Constants::SeedNodeVoteType, host + ":" + port));
             FederationConfig & federationConfig = FederationConfig::GetConfig();
             federationConfig.Votes = seedNodes;
 
-            wstring addr = SiteNodeHelper::BuildAddress(host, port);
-            wstring laAddr = SiteNodeHelper::BuildAddress(host, SiteNodeHelper::GetLeaseAgentPort());
+            string addr = SiteNodeHelper::BuildAddress(host, port);
+            string laAddr = SiteNodeHelper::BuildAddress(host, SiteNodeHelper::GetLeaseAgentPort());
             NodeConfig config(nodeId, addr, laAddr, SiteNodeHelper::GetWorkingDir());
 
             Transport::SecuritySettings defaultSettings;

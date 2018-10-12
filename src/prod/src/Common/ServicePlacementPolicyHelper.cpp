@@ -10,38 +10,38 @@ using namespace Common;
 
 HRESULT ServicePlacementPolicyHelper::PolicyDescriptionToPlacementConstraints(
     __in const FABRIC_PLACEMENT_POLICY_TYPE & policyType,
-    __in const std::wstring & domainName,
-    __out std::wstring & placementConstraints
+    __in const std::string & domainName,
+    __out std::string & placementConstraints
     )
 {
     switch (policyType)
     {
     case FABRIC_PLACEMENT_POLICY_TYPE::FABRIC_PLACEMENT_POLICY_INVALID_DOMAIN:
         {
-            placementConstraints.append(L"FaultDomain !^ ");
+            placementConstraints.append("FaultDomain !^ ");
             placementConstraints.append(domainName);
             break;
         }
     case FABRIC_PLACEMENT_POLICY_TYPE::FABRIC_PLACEMENT_POLICY_REQUIRED_DOMAIN:
         {
-            placementConstraints.append(L"FaultDomain ^ ");
+            placementConstraints.append("FaultDomain ^ ");
             placementConstraints.append(domainName);
             break;
         }
     case FABRIC_PLACEMENT_POLICY_TYPE::FABRIC_PLACEMENT_POLICY_PREFERRED_PRIMARY_DOMAIN:
         {
-            placementConstraints.append(L"FaultDomain ^P ");
+            placementConstraints.append("FaultDomain ^P ");
             placementConstraints.append(domainName);
             break;
         }
     case FABRIC_PLACEMENT_POLICY_TYPE::FABRIC_PLACEMENT_POLICY_REQUIRED_DOMAIN_DISTRIBUTION:
         {
-            placementConstraints.append(L"FDPolicy ~ Nonpacking ");
+            placementConstraints.append("FDPolicy ~ Nonpacking ");
             break;
         }
     case FABRIC_PLACEMENT_POLICY_TYPE::FABRIC_PLACEMENT_POLICY_NONPARTIALLY_PLACE_SERVICE:
         {
-            placementConstraints.append(L"PlacePolicy ~ NonPartially");
+            placementConstraints.append("PlacePolicy ~ NonPartially");
             break;
            }
 
@@ -54,7 +54,7 @@ HRESULT ServicePlacementPolicyHelper::PolicyDescriptionToPlacementConstraints(
 
 HRESULT ServicePlacementPolicyHelper::PolicyDescriptionToDomainName(
     __in const FABRIC_SERVICE_PLACEMENT_POLICY_DESCRIPTION & placementPolicyDescription,
-    __out std::wstring & domainName)
+    __out std::string & domainName)
 {
     switch (placementPolicyDescription.Type)
     {

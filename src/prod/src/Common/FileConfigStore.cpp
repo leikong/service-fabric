@@ -12,21 +12,21 @@
 namespace 
 {
     using Common::StringWriter;
-    using std::wstring;
+    using std::string;
 
     // Private methods used by the FileConfigStore implementation
     // Finds the first non-encoded appearance of ch;
-    // if not found, wstring::npos is returned
-    size_t GetFirstNonEncodedPosition(wstring const & line, wchar_t ch, size_t startIndex = 0)
+    // if not found, string::npos is returned
+    size_t GetFirstNonEncodedPosition(string const & line, char ch, size_t startIndex = 0)
     {
-        static const wchar_t encoder = L'\\';
+        static const char encoder = '\\';
 
         size_t index = 0;
         bool done = false;
         while(!done)
         {
             index = line.find_first_of(ch, startIndex);
-            if(index == wstring::npos)
+            if(index == string::npos)
             {
                 done = true;
             }
@@ -54,27 +54,27 @@ namespace
     }
 
     // Remove everything after an encoded ;
-    void RemoveComment(wstring & str)
+    void RemoveComment(string & str)
     {
-        static const wchar_t commentDelim = L';';
+        static const char commentDelim = ';';
         size_t index = GetFirstNonEncodedPosition(str, commentDelim);
-        if (index != wstring::npos)
+        if (index != string::npos)
         {
             str.resize(index);
         }
     }
 
-    wstring GetNextLine(wstring const & text, size_t & pos)
+    string GetNextLine(string const & text, size_t & pos)
     {
-        static wstring lineSeparator = L"\n\r";
+        static string lineSeparator = "\n\r";
         size_t start = text.find_first_not_of(lineSeparator, pos);
-        if(start == wstring::npos)
+        if(start == string::npos)
         {
-            return wstring();
+            return string();
         }
 
         pos = text.find_first_of(lineSeparator, start);
-        if(pos == wstring::npos)
+        if(pos == string::npos)
         {
             // Return all the text since start
             return text.substr(start);
@@ -86,10 +86,10 @@ namespace
     }
 
     // Check if the crtLine is a section name (a name defined inside [])
-    bool IsSectionName(wstring const & line)
+    bool IsSectionName(string const & line)
     {
-        static const wchar_t sectionStart = L'[';
-        static const wchar_t sectionEnd = L']';
+        static const char sectionStart = '[';
+        static const char sectionEnd = ']';
 
         if(line[0] == sectionStart)
         {
@@ -97,7 +97,7 @@ namespace
             // if the file is correct, it should contain just one ], at the end of the string
             // and no more [
             ASSERT_IF(line.size() - 1 != line.find_first_of(sectionEnd), "The only allowed ] in section name is at the end");
-            ASSERT_IF(wstring::npos != line.find_first_of(sectionStart, 1), "The only allowed [ in section name is at the beginning");
+            ASSERT_IF(string::npos != line.find_first_of(sectionStart, 1), "The only allowed [ in section name is at the beginning");
 
             return true;
         }
@@ -117,9 +117,9 @@ namespace Common
     using Common::StringUtility;
     using std::pair;
     using std::string;
-    using std::wstring;
+    using std::string;
 
-    FileConfigStore::FileConfigStore(wstring const & fileName, bool readFromString)
+    FileConfigStore::FileConfigStore(string const & fileName, bool readFromString)
     {
         if(readFromString)
         {
@@ -127,7 +127,7 @@ namespace Common
             return;
         }
 
-        wstring fileNameLocal = fileName;
+        string fileNameLocal = fileName;
         if (!File::Exists(fileNameLocal))
         {
             ConfigEventSource::Events.FileConfigStoreFileNotFound(fileNameLocal);
@@ -160,20 +160,20 @@ namespace Common
         fileReader.Read(&configText[0], static_cast<int>(size));
         fileReader.Close();
 
-        wstring configTextW;
+        string configTextW;
         StringWriter(configTextW).Write(configText);
         Parse(configTextW);
     }
      
-    void FileConfigStore::Parse(wstring const & configText)
+    void FileConfigStore::Parse(string const & configText)
     {
-        wstring crtLine;
-        wstring crtSectionName;
+        string crtLine;
+        string crtSectionName;
         SectionMap crtKeyValues;
                 
         size_t pos = 0;
         size_t oldPos;
-        while (pos != std::wstring::npos)
+        while (pos != std::string::npos)
         {
             oldPos = pos;
             crtLine = GetNextLine(configText, pos);
@@ -214,7 +214,7 @@ namespace Common
     {
     }
 
-    void FileConfigStore::AddSection(wstring const & crtSectionName, SectionMap const & crtKeyValues)
+    void FileConfigStore::AddSection(string const & crtSectionName, SectionMap const & crtKeyValues)
     {
         if(!crtKeyValues.empty())
         {
@@ -223,39 +223,39 @@ namespace Common
         }
     }
         
-    void FileConfigStore::ParseSectionName(wstring const & line, wstring & crtSectionName)
+    void FileConfigStore::ParseSectionName(string const & line, string & crtSectionName)
     {
         // Remove [ and ] from the beginning and end of string
         crtSectionName = line.substr(1, line.size() - 2);
         StringUtility::TrimWhitespaces(crtSectionName);
     }
 
-    void FileConfigStore::ParseKeyValue(wstring const & line, SectionMap & crtKeyValues)
+    void FileConfigStore::ParseKeyValue(string const & line, SectionMap & crtKeyValues)
     {
-        static const wchar_t keyValueSeparator = L'=';
+        static const char keyValueSeparator = '=';
 
         size_t index = GetFirstNonEncodedPosition(line, keyValueSeparator, 0);
-        ASSERT_IF(index == wstring::npos, "key/value not separated by =");
+        ASSERT_IF(index == string::npos, "key/value not separated by =");
 
         // Verify that there is no other non-encoded = in the string
         ASSERT_IF(
-            GetFirstNonEncodedPosition(line, keyValueSeparator, index + 1) != wstring::npos,
+            GetFirstNonEncodedPosition(line, keyValueSeparator, index + 1) != string::npos,
             "Line tried to define multiple Key/value pairs");
         
         ASSERT_IF(index == 0, "empty key name is not allowed");
 
-        wstring key = line.substr(0, index);
+        string key = line.substr(0, index);
         StringUtility::TrimWhitespaces(key);
-        wstring value = line.substr(index + 1);
+        string value = line.substr(index + 1);
         StringUtility::TrimWhitespaces(value);
-        StringUtility::Replace<wstring>(value, L"\\;", L";");
-        StringUtility::Replace<wstring>(value, L"\\=", L"=");
+        StringUtility::Replace<string>(value, "\\;", ";");
+        StringUtility::Replace<string>(value, "\\=", "=");
         crtKeyValues[key] = value;        
     }
 
-    bool FileConfigStore::GetSectionMap(wstring const & section, SectionMap & keyValuesMap) const
+    bool FileConfigStore::GetSectionMap(string const & section, SectionMap & keyValuesMap) const
     {
-        auto matchSectionNameLambda = [section](pair<wstring, SectionMap> const & mapPair) -> bool
+        auto matchSectionNameLambda = [section](pair<string, SectionMap> const & mapPair) -> bool
         {
             return StringUtility::AreEqualCaseInsensitive(mapPair.first, section);
         };
@@ -273,9 +273,9 @@ namespace Common
         }
     }
 
-    bool FileConfigStore::GetKey(wstring const & key, SectionMap const & keyValueMap, wstring & value) const
+    bool FileConfigStore::GetKey(string const & key, SectionMap const & keyValueMap, string & value) const
     {
-        auto matchKeyLambda = [key](pair<wstring, wstring> const & mapPair) -> bool
+        auto matchKeyLambda = [key](pair<string, string> const & mapPair) -> bool
         {   
             return StringUtility::AreEqualCaseInsensitive(mapPair.first, key);
         };
@@ -293,32 +293,32 @@ namespace Common
         }
     }
 
-    std::wstring FileConfigStore::ReadString(
-        wstring const & section, 
-        wstring const & key,
+    std::string FileConfigStore::ReadString(
+        string const & section, 
+        string const & key,
         __out bool & isEncrypted) const
     {
         isEncrypted = false;
 
-        std::wstring result;
+        std::string result;
         SectionMap keyValueMap;
         if(GetSectionMap(section, keyValueMap))
         {
             if(GetKey(key, keyValueMap, result))
             {
-                StringUtility::Replace<std::wstring>(result, L"\\=", L"="); // '=' had to be escaped because it seperates key and value
-                StringUtility::Replace<std::wstring>(result, L"\\;", L";"); // ';' had to be escaped because it precedes comment text
+                StringUtility::Replace<std::string>(result, "\\=", "="); // '=' had to be escaped because it seperates key and value
+                StringUtility::Replace<std::string>(result, "\\;", ";"); // ';' had to be escaped because it precedes comment text
                 return result;
             }
         }
 
         // The section or the key were not found
-        return L"";
+        return "";
     }
      
     void FileConfigStore::GetSections(
         Common::StringCollection & sectionNames, 
-        wstring const & partialName) const
+        string const & partialName) const
     {
         bool allNames = partialName.empty();
         for(DocumentMapConstIterator sectionIter = sections.begin(); sectionIter != sections.end(); ++sectionIter)
@@ -331,9 +331,9 @@ namespace Common
     }
 
     void FileConfigStore::GetKeys(
-        wstring const & section,
+        string const & section,
         Common::StringCollection & keyNames, 
-        wstring const & partialName) const
+        string const & partialName) const
     {
         SectionMap sectionMap;
         if(GetSectionMap(section, sectionMap))

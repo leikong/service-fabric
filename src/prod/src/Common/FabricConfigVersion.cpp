@@ -16,7 +16,7 @@ FabricConfigVersion::FabricConfigVersion()
 }
 
 FabricConfigVersion::FabricConfigVersion(
-    wstring const & value)
+    string const & value)
     : value_(value)
 {
 }
@@ -82,16 +82,16 @@ void FabricConfigVersion::WriteTo(__in Common::TextWriter& w, Common::FormatOpti
     w.Write(ToString());
 }
 
-wstring FabricConfigVersion::ToString() const
+string FabricConfigVersion::ToString() const
 {
     return value_;
 }
 
-ErrorCode FabricConfigVersion::FromString(wstring const & input)
+ErrorCode FabricConfigVersion::FromString(string const & input)
 {
-    if (StringUtility::Contains<wstring>(input, FabricVersion::Delimiter))
+    if (StringUtility::Contains<string>(input, FabricVersion::Delimiter))
     {
-        auto msg = wformatString(GET_COMMON_RC(Invalid_FabricVersion), input, FabricVersion::Delimiter);
+        auto msg = formatString(GET_COMMON_RC(Invalid_FabricVersion), input, FabricVersion::Delimiter);
 
         Trace.WriteWarning(TraceCategory, "{0}", msg);
 
@@ -104,7 +104,7 @@ ErrorCode FabricConfigVersion::FromString(wstring const & input)
     }
 }
 
-ErrorCode FabricConfigVersion::FromString(wstring const & input, __out FabricConfigVersion & result)
+ErrorCode FabricConfigVersion::FromString(string const & input, __out FabricConfigVersion & result)
 {
     FabricConfigVersion configVersion;
     auto error = configVersion.FromString(input);
@@ -116,7 +116,7 @@ ErrorCode FabricConfigVersion::FromString(wstring const & input, __out FabricCon
     return error;
 }
 
-bool FabricConfigVersion::TryParse(std::wstring const & input, __out FabricConfigVersion & result)
+bool FabricConfigVersion::TryParse(std::string const & input, __out FabricConfigVersion & result)
 {
     auto error = FabricConfigVersion::FromString(input, result);
     return error.IsSuccess();
@@ -127,12 +127,12 @@ string FabricConfigVersion::AddField(Common::TraceEvent & traceEvent, string con
     string format = "{0}";
     size_t index = 0;
 
-    traceEvent.AddEventField<wstring>(format, name + ".value", index);
+    traceEvent.AddEventField<string>(format, name + ".value", index);
 
     return format;
 }
 
 void FabricConfigVersion::FillEventData(Common::TraceEventContext & context) const
 {
-    context.Write<wstring>(value_);
+    context.Write<string>(value_);
 }

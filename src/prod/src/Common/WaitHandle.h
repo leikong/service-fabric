@@ -13,7 +13,7 @@ namespace Common
         DENY_COPY(WaitHandle);
 
     public:
-        WaitHandle(bool initialState = false, std::wstring = L"");
+        WaitHandle(bool initialState = false, std::string = "");
         virtual ~WaitHandle();
 
         ErrorCode Set();
@@ -49,7 +49,7 @@ namespace Common
 
         ::HANDLE handle_;
         bool closed_ = false;
-        std::wstring eventName_;
+        std::string eventName_;
 #endif
     };
 

@@ -132,21 +132,21 @@ NullActivateDeactiveTest()
 }
 
 NTSTATUS
-CleanAndPrepLog(WCHAR const DriveLetter, BOOLEAN CreateDir)
+CleanAndPrepLog(CHAR const DriveLetter, BOOLEAN CreateDir)
 {
     // Make the directory if needed
     NTSTATUS status;
-    WCHAR       driveLetterStr[2];
+    CHAR       driveLetterStr[2];
     driveLetterStr[0] = DriveLetter;
     driveLetterStr[1] = 0;
 
     KWString    rootPath(KtlSystem::GlobalNonPagedAllocator());
 #if ! defined(PLATFORM_UNIX)
-    rootPath = L"\\??\\";
+    rootPath = "\\??\\";
     rootPath += driveLetterStr;
-    rootPath += L":\\";
+    rootPath += ":\\";
 #else
-    rootPath = L"";
+    rootPath = "";
 #endif
 
     rootPath += &RvdDiskLogConstants::DirectoryName();
@@ -255,7 +255,7 @@ BasicLogCreateTest()
     UCHAR const testDriveLetter = 'C';
 
     // Clean the unit test drive environment
-    status = CleanAndPrepLog((WCHAR)testDriveLetter, FALSE);        // Prove auto directory create works
+    status = CleanAndPrepLog((CHAR)testDriveLetter, FALSE);        // Prove auto directory create works
     if (!NT_SUCCESS(status))
     {
         KDbgPrintf("BasicLogCreateTest: CleanAndPrepLog Failed: %i\n", __LINE__);
@@ -407,7 +407,7 @@ BasicLogCreateTest()
     }
 
     // Prove Create with bad geometry params fails correctly
-    KWString logType(KtlSystem::GlobalNonPagedAllocator(), L"RvdLog");
+    KWString logType(KtlSystem::GlobalNonPagedAllocator(), "RvdLog");
     KInvariant(NT_SUCCESS(logType.Status()));
 
     createOp->StartCreateLog(
@@ -460,7 +460,7 @@ BasicLogCreateTest()
     doneEvent.WaitUntilSet();
     if (!NT_SUCCESS(createOp->Status()))
     {
-        KDbgPrintf("BasicLogCreateTest: StartCreateLog(%ws, %ws, %I64d) Failed: 0x%x at line  %i\n", (LPCWSTR)diskId, (LPCWSTR)logId, DefaultTestLogFileSize, createOp->Status(), __LINE__);
+        KDbgPrintf("BasicLogCreateTest: StartCreateLog(%ws, %ws, %I64d) Failed: 0x%x at line  %i\n", (LPCSTR)diskId, (LPCSTR)logId, DefaultTestLogFileSize, createOp->Status(), __LINE__);
         KInvariant(FALSE);
         return createOp->Status();
     }
@@ -1022,7 +1022,7 @@ SimpleLogFullAndWrapTest(RvdLog::SPtr Log, RvdLogStream::SPtr Stream)
 
 NTSTATUS
 BasicLogStreamTest(
-    WCHAR const TestDriveLetter,
+    CHAR const TestDriveLetter,
     BOOLEAN DoFinalStreamDeleteTest,
     LogState::SPtr *const ResultingState)
 {
@@ -1127,7 +1127,7 @@ BasicLogStreamTest(
     KAsyncContextBase::CompletionCallback streamDeleteDoneCallback((PVOID)(&deleteStreamDoneEvent), &StaticTestCallback);
 
     // Create a log file; with altered geometry
-    KWString logType(KtlSystem::GlobalNonPagedAllocator(), L"RvdLog");
+    KWString logType(KtlSystem::GlobalNonPagedAllocator(), "RvdLog");
     KInvariant(NT_SUCCESS(logType.Status()));
 
     createOp->StartCreateLog(
@@ -2275,7 +2275,7 @@ namespace SimpleParallelStreamTest
     }
 
     NTSTATUS
-    Execute(WCHAR TestDrive, KtlSystem& KtlSys)
+    Execute(CHAR TestDrive, KtlSystem& KtlSys)
     {
         NTSTATUS                        status;
         Synchronizer                    activeLogSynchronizer;
@@ -2357,7 +2357,7 @@ namespace SimpleParallelStreamTest
 
         RvdLog::SPtr log1;
 
-        KWString logType(KtlSystem::GlobalNonPagedAllocator(), L"RvdLog");
+        KWString logType(KtlSystem::GlobalNonPagedAllocator(), "RvdLog");
         KInvariant(NT_SUCCESS(logType.Status()));
 
         // Create a log file
@@ -3121,7 +3121,7 @@ InternalStructuresTest()
 }
 
 NTSTATUS
-InternalBasicDiskLoggerTest(__in int argc, __in_ecount(argc) WCHAR* args[])
+InternalBasicDiskLoggerTest(__in int argc, __in_ecount(argc) CHAR* args[])
 {
     KDbgPrintf("RvdLogger Unit Test: Start: BasicDiskLoggerTest\n");
     KInvariant(argc >= 1);
@@ -3171,7 +3171,7 @@ InternalBasicDiskLoggerTest(__in int argc, __in_ecount(argc) WCHAR* args[])
 
 //** Main Test Entry Point: BasicDiskLoggerTest
 NTSTATUS
-BasicDiskLoggerTest(__in int argc, __in_ecount(argc) WCHAR* args[])
+BasicDiskLoggerTest(__in int argc, __in_ecount(argc) CHAR* args[])
 {
     NTSTATUS result;
     KtlSystem* underlyingSystem;
@@ -3194,18 +3194,18 @@ BasicDiskLoggerTest(__in int argc, __in_ecount(argc) WCHAR* args[])
 #if CONSOLE_TEST
 int __cdecl
 #if !defined(PLATFORM_UNIX)
-wmain(__in int argc, __in_ecount(argc) WCHAR* args[])
+wmain(__in int argc, __in_ecount(argc) CHAR* args[])
 {
 #else
 main(int argc, char* cargs[])
 {
-    std::vector<WCHAR*> args_vec(argc);
-    WCHAR** args = (WCHAR**)args_vec.data();
-    std::vector<std::wstring> wargs(argc);
+    std::vector<CHAR*> args_vec(argc);
+    CHAR** args = (CHAR**)args_vec.data();
+    std::vector<std::string> wargs(argc);
     for (int iter = 0; iter < argc; iter++)
     {
         wargs[iter] = Utf8To16(cargs[iter]);
-        args[iter] = (WCHAR*)(wargs[iter].data());
+        args[iter] = (CHAR*)(wargs[iter].data());
     }
 #endif
     NTSTATUS result = STATUS_SUCCESS;
@@ -3221,23 +3221,23 @@ main(int argc, char* cargs[])
     {
         argc--;
         args++;
-        if (_wcsicmp(args[0], L"Basic") == 0)
+        if (strcasecmp(args[0], "Basic") == 0)
         {
             result = BasicDiskLoggerTest(argc - 1, args + 1);
         }
-        else if (_wcsicmp(args[0], L"AliasTest") == 0)
+        else if (strcasecmp(args[0], "AliasTest") == 0)
         {
             result = RvdLoggerAliasTests(argc - 1, args + 1);
         }
-        else if (_wcsicmp(args[0], L"RecoveryTest") == 0)
+        else if (strcasecmp(args[0], "RecoveryTest") == 0)
         {
             result = RvdLoggerRecoveryTests(argc - 1, args + 1);
         }
-        else if (_wcsicmp(args[0], L"StructVerify") == 0)
+        else if (strcasecmp(args[0], "StructVerify") == 0)
         {
             result = DiskLoggerStructureVerifyTests(argc - 1, args + 1);
         }
-        else if ((_wcsicmp(args[0], L"StreamTest") == 0) && (argc >= 2))
+        else if ((strcasecmp(args[0], "StreamTest") == 0) && (argc >= 2))
         {
             result = LogStreamAsyncIoTests(argc - 1, args + 1);
         }

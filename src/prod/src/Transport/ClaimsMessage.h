@@ -11,17 +11,17 @@ namespace Transport
     {
     public:
         ClaimsMessage();
-        ClaimsMessage(std::wstring const & claims);
+        ClaimsMessage(std::string const & claims);
 
-        static MessageUPtr CreateClaimsMessage(std::wstring const& token);
+        static MessageUPtr CreateClaimsMessage(std::string const& token);
 
-        std::wstring const & Claims() const;
+        std::string const & Claims() const;
 
         void WriteTo(Common::TextWriter & w, Common::FormatOptions const &) const;
 
         FABRIC_FIELDS_01(claims_);
 
     private:
-        std::wstring claims_;
+        std::string claims_;
     };
 }

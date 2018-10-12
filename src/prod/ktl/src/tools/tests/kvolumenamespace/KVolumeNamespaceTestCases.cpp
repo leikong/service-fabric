@@ -26,5 +26,5 @@ Abstract:
 
 const KU_TEST_ENTRY gs_KuTestCases[] =
 {
-    {   L"KVolumeNamespaceTest",              KVolumeNamespaceTest,         L"BVT", L"KVolumeNamespace unit test"}
+    {   "KVolumeNamespaceTest",              KVolumeNamespaceTest,         "BVT", "KVolumeNamespace unit test"}
 };

@@ -11,7 +11,7 @@ namespace Common
     struct ConfigSettingsOverride
     {
     public:
-        typedef std::map<std::wstring, ConfigSectionOverride, IsLessCaseInsensitiveComparer<std::wstring>> SectionMapType;
+        typedef std::map<std::string, ConfigSectionOverride, IsLessCaseInsensitiveComparer<std::string>> SectionMapType;
 
         ConfigSettingsOverride();
         ConfigSettingsOverride(SectionMapType && sections);

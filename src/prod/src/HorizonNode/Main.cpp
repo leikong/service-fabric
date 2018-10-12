@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
     string nodeIdString = "0";
     string hostname = "localhost";
     unsigned int port = 19000;
-    wstring workingDirectory = L"./";
+    string workingDirectory = "./";
 
     for (auto ix=0; ix<argc; ++ix)
     {
@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
     }
 
     NodeId nodeId;
-    if (!NodeId::TryParse(StringUtility::Utf8ToUtf16(nodeIdString), nodeId))
+    if (!NodeId::TryParse(Utf8ToUtf16NotNeeded(nodeIdString), nodeId))
     {
         printf("Failed to parse '%s' as NodeId \n", nodeIdString.c_str());
         return 1;
@@ -74,8 +74,8 @@ int main(int argc, char* argv[])
     auto federation = make_shared<Federation::FederationSubsystem>(
         NodeConfig(
             nodeId, 
-            StringUtility::Utf8ToUtf16(nodeAddress), 
-            StringUtility::Utf8ToUtf16(leaseAddress), 
+            Utf8ToUtf16NotNeeded(nodeAddress), 
+            Utf8ToUtf16NotNeeded(leaseAddress), 
             workingDirectory),
         FabricCodeVersion(1, 0, 960, 0), // minimum acceptable version at Federation layer
         Uri(),
@@ -102,7 +102,7 @@ int main(int argc, char* argv[])
 
     auto error = federation->EndOpen(operation);
 
-    printf("Opened FederationSubsystem: %s \n", StringUtility::Utf16ToUtf8(error.ErrorCodeValueToString()).c_str());
+    printf("Opened FederationSubsystem: %s \n", Utf16ToUtf8NotNeeded(error.ErrorCodeValueToString()).c_str());
 
     if (error.IsSuccess())
     {

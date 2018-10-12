@@ -10,32 +10,32 @@ namespace Common
     class SMBShareUtility
     {
     public:
-        static GlobalWString WindowsFabricSMBShareRemark;        
+        static GlobalString WindowsFabricSMBShareRemark;        
         
-        static GlobalWString NullSessionSharesRegistryValue;
-        static GlobalWString LanmanServerParametersRegistryPath;
+        static GlobalString NullSessionSharesRegistryValue;
+        static GlobalString LanmanServerParametersRegistryPath;
 
-        static GlobalWString LsaRegistryPath;
-        static GlobalWString EveryoneIncludesAnonymousRegistryValue;
+        static GlobalString LsaRegistryPath;
+        static GlobalString EveryoneIncludesAnonymousRegistryValue;
 
         static ErrorCode EnsureServerServiceIsRunning();
 
         static ErrorCode CreateShare(
-            std::wstring const & localPath, 
-            std::wstring const & shareName, 
+            std::string const & localPath, 
+            std::string const & shareName, 
             SecurityDescriptorSPtr const & securityDescriptor);
         
-        static ErrorCode DeleteShare(std::wstring const & shareName);
+        static ErrorCode DeleteShare(std::string const & shareName);
         
-        static std::set<std::wstring> DeleteOrphanShares();
+        static std::set<std::string> DeleteOrphanShares();
 
         static ErrorCode EnableAnonymousAccess(
-            std::wstring const & localPath,
-            std::wstring const & shareName,
+            std::string const & localPath,
+            std::string const & shareName,
             DWORD accessMask,
             SidSPtr const & anonymousSid,
 			TimeSpan const & timeout);
 
-        static ErrorCode DisableAnonymousAccess(std::wstring const & localPath, std::wstring const & shareName, TimeSpan const & timeout);
+        static ErrorCode DisableAnonymousAccess(std::string const & localPath, std::string const & shareName, TimeSpan const & timeout);
     };
 }

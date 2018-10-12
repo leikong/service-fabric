@@ -20,19 +20,19 @@ namespace Transport
     struct ExampleHeader : public MessageHeader<MessageHeaderId::Example>, public Serialization::FabricSerializable
     {
         ExampleHeader() {}
-        ExampleHeader(std::wstring name, std::vector<LONG> samples)
+        ExampleHeader(std::string name, std::vector<LONG> samples)
             : name_(std::move(name)), samples_(std::move(samples)) {}
-        ExampleHeader(std::wstring name, std::vector<LONG> samples, unsigned int seq)
+        ExampleHeader(std::string name, std::vector<LONG> samples, unsigned int seq)
             : name_(std::move(name)), samples_(std::move(samples)), seq_(seq) {}
 
         FABRIC_FIELDS_03(name_, samples_, seq_);
 
-        std::wstring const & Name() const { return name_; }
+        std::string const & Name() const { return name_; }
         std::vector<LONG> const & Samples() const { return samples_; }
         unsigned int Seq() const { return seq_; }
 
     private:
-        std::wstring name_;
+        std::string name_;
         std::vector<LONG> samples_;
         uint seq_;
     };
@@ -40,40 +40,40 @@ namespace Transport
     struct ExampleHeader2 : public MessageHeader<MessageHeaderId::Example2>, public Serialization::FabricSerializable
     {
         ExampleHeader2() {}
-        ExampleHeader2(std::wstring key, std::wstring value)
+        ExampleHeader2(std::string key, std::string value)
             : key_(std::move(key)), value_(std::move(value)) {}
-        ExampleHeader2(std::wstring key, std::wstring value, unsigned int seq)
+        ExampleHeader2(std::string key, std::string value, unsigned int seq)
             : key_(key), value_(value), seq_(seq) {}
 
         FABRIC_FIELDS_03(key_, value_, seq_);
 
-        std::wstring const & Key() const { return key_; }
-        std::wstring const & Value() const { return value_; }
+        std::string const & Key() const { return key_; }
+        std::string const & Value() const { return value_; }
         unsigned int Seq() const { return seq_; }
 
     private:
-        std::wstring key_;
-        std::wstring value_;
+        std::string key_;
+        std::string value_;
         uint seq_;
     };
 
     struct ExampleHeader3 : public MessageHeader<MessageHeaderId::Example3>, public Serialization::FabricSerializable
     {
         ExampleHeader3() { }
-        ExampleHeader3(std::wstring key, std::wstring value)
+        ExampleHeader3(std::string key, std::string value)
             : key_(std::move(key)), value_(std::move(value)) {}
-        ExampleHeader3(std::wstring key, std::wstring value, unsigned int seq)
+        ExampleHeader3(std::string key, std::string value, unsigned int seq)
             : key_(std::move(key)), value_(std::move(value)), seq_(seq) {}
 
         FABRIC_FIELDS_03(key_, value_, seq_);
 
-        std::wstring const & Key() const { return key_; }
-        std::wstring const & Value() const { return value_; }
+        std::string const & Key() const { return key_; }
+        std::string const & Value() const { return value_; }
         unsigned int Seq() const { return seq_; }
 
     private:
-        std::wstring key_;
-        std::wstring value_;
+        std::string key_;
+        std::string value_;
         uint seq_;
     };
 
@@ -81,20 +81,20 @@ namespace Transport
     {
     public:
         MessageBodyExample() {}
-        MessageBodyExample(wstring&& key, wstring&& value) : key_(std::move(key)), value_(std::move(value)) {}
-        std::wstring const & Key() const { return key_; }
-        std::wstring const & Value() const { return value_; }
+        MessageBodyExample(string&& key, string&& value) : key_(std::move(key)), value_(std::move(value)) {}
+        std::string const & Key() const { return key_; }
+        std::string const & Value() const { return value_; }
         FABRIC_FIELDS_02(key_, value_);
 
     private:
-        wstring key_;
-        wstring value_;
+        string key_;
+        string value_;
     };
 
     class MessagePropertyUserDefined
     {
     public:
-        MessagePropertyUserDefined(const std::wstring& value) : value_(value) 
+        MessagePropertyUserDefined(const std::string& value) : value_(value) 
         {
             thisPtr_ = reinterpret_cast<std::uintptr_t>(this);
             tickCount_ = Stopwatch::Now();
@@ -113,10 +113,10 @@ namespace Transport
             Trace.WriteNoise(TraceType, "~MessagePropertyUserDefined called on {0}:{1}", thisPtr_, tickCount_); 
         }
 
-        const std::wstring& Value() const { return value_; } 
+        const std::string& Value() const { return value_; } 
 
     private:
-        std::wstring value_;
+        std::string value_;
 
         // The following two fields are used to ID an object for tracing purpose
         std::uintptr_t thisPtr_;
@@ -142,7 +142,7 @@ namespace Transport
             {
             case 0:
                 {
-                    auto name = std::wstring(L"ExampleHeader");
+                    auto name = std::string("ExampleHeader");
                     auto samples = std::vector<LONG>();
                     for (LONG j = 0; j < i * 5; j++) { samples.push_back(i); }
                     ExampleHeader header(std::move(name), std::move(samples), i);
@@ -153,8 +153,8 @@ namespace Transport
 
             case 1:
                 {
-                    auto key = std::wstring(L"ExampleHeader2 Key");
-                    auto value = std::wstring(L"ExampleHeader2 Value");
+                    auto key = std::string("ExampleHeader2 Key");
+                    auto value = std::string("ExampleHeader2 Value");
                     ExampleHeader2 header(std::move(key), std::move(value), i);
                     messageHeaders.Add(header);
                     Trace.WriteInfo(TraceType, "{0}: ExampleHeader2 added.", i);
@@ -163,8 +163,8 @@ namespace Transport
 
             case 2:  
                 {
-                    auto key = std::wstring(L"ExampleHeader3 Key");
-                    auto value = std::wstring(L"ExampleHeader3 Value");
+                    auto key = std::string("ExampleHeader3 Key");
+                    auto value = std::string("ExampleHeader3 Value");
                     ExampleHeader3 header(std::move(key), std::move(value), i);
                     messageHeaders.Add(header);
                     Trace.WriteInfo(TraceType, "{0}: ExampleHeader3 added.", i);
@@ -213,7 +213,7 @@ namespace Transport
             {
             case 0:
                 {
-                    auto name = std::wstring(L"ExampleHeader");
+                    auto name = std::string("ExampleHeader");
                     auto samples = std::vector<LONG>();
                     for (LONG j = 0; j < i * 5; j++) { samples.push_back(i); }
                     ExampleHeader header(std::move(name), std::move(samples), i);
@@ -224,8 +224,8 @@ namespace Transport
 
             case 1:
                 {
-                    auto key = std::wstring(L"ExampleHeader2 Key");
-                    auto value = std::wstring(L"ExampleHeader2 Value");
+                    auto key = std::string("ExampleHeader2 Key");
+                    auto value = std::string("ExampleHeader2 Value");
                     ExampleHeader2 header(std::move(key), std::move(value), i);
                     AddHeader(biqueStream, header);
                     Trace.WriteInfo(TraceType, "{0}: ExampleHeader2 added.", i);
@@ -234,8 +234,8 @@ namespace Transport
 
             case 2:  
                 {
-                    auto key = std::wstring(L"ExampleHeader3 Key");
-                    auto value = std::wstring(L"ExampleHeader3 Value");
+                    auto key = std::string("ExampleHeader3 Key");
+                    auto value = std::string("ExampleHeader3 Value");
                     ExampleHeader3 header(std::move(key), std::move(value), i);
                     AddHeader(biqueStream, header);
                     Trace.WriteInfo(TraceType, "{0}: ExampleHeader3 added.", i);
@@ -439,7 +439,7 @@ namespace Transport
         // create a stream object to add all shared headers
         auto sharedStream = FabricSerializer::CreateSerializableStream();
 
-        wstring testAction = L"SerializeOnce";
+        string testAction = "SerializeOnce";
         auto status = MessageHeaders::Serialize(*sharedStream, ActionHeader(testAction));
         BOOST_REQUIRE(NT_SUCCESS(status));
 
@@ -452,8 +452,8 @@ namespace Transport
         BOOST_REQUIRE(NT_SUCCESS(status));
 
         ExampleHeader3 eh3(
-            L"12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890",
-            L"asdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnm",
+            "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890",
+            "asdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnm",
             202);
         status = MessageHeaders::Serialize(*sharedStream, eh3);
         BOOST_REQUIRE(NT_SUCCESS(status));
@@ -511,12 +511,12 @@ namespace Transport
 
     BOOST_AUTO_TEST_CASE(SerializeOnce_MultiThread) // Serialize headers once, copy to messages without buffer merging
     {
-        auto testAction = wstring(L"SerializeOnce");
+        auto testAction = string("SerializeOnce");
         auto testActor = Actor::GenericTestActor;
         ExampleHeader2 eh2(Guid::NewGuid().ToString(), Guid::NewGuid().ToString(), 101);
         ExampleHeader3 eh3(
-            L"12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890",
-            L"asdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnm",
+            "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890",
+            "asdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnm",
             202);
 
         // create a stream object to add all shared headers
@@ -614,12 +614,12 @@ namespace Transport
 
     BOOST_AUTO_TEST_CASE(SerializeOnceWithBufferMerging_SingleThread) // Serialize headers once, merge into a single buffer before copying to many messages
     {
-        auto testAction = wstring(L"SerializeOnce");
+        auto testAction = string("SerializeOnce");
         auto testActor = Actor::GenericTestActor;
         ExampleHeader2 eh2(Guid::NewGuid().ToString(), Guid::NewGuid().ToString(), 101);
         ExampleHeader3 eh3(
-            L"12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890",
-            L"asdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnm",
+            "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890",
+            "asdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnm",
             202);
 
         // Since shared headers will be added to many messages, so it is worthwhile to merge buffer list in stream 
@@ -680,12 +680,12 @@ namespace Transport
 
     BOOST_AUTO_TEST_CASE(SerializeOnceWithBufferMerging_MultiThread) // Serialize headers once, merge into a single buffer before copying to many messages
     {
-        auto testAction = wstring(L"SerializeOnce");
+        auto testAction = string("SerializeOnce");
         auto testActor = Actor::GenericTestActor;
         ExampleHeader2 eh2(Guid::NewGuid().ToString(), Guid::NewGuid().ToString(), 101);
         ExampleHeader3 eh3(
-            L"12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890",
-            L"asdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnm",
+            "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890",
+            "asdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnmasdfghjklqwertyuiopzxcvbnm",
             202);
 
         // Since shared headers will be added to many messages, so it is worthwhile to merge buffer list in stream 
@@ -790,11 +790,11 @@ namespace Transport
 
     BOOST_AUTO_TEST_CASE(SerializeOnce_NoCopy_SingleThread) // Serialize headers once, no memory copy for sharing headers
     {
-        MessageBodyExample messageBody(wstring(L"example message body key"), wstring(L"example message body value"));
+        MessageBodyExample messageBody(string("example message body key"), string("example message body value"));
         auto msg1 = make_unique<Message>(messageBody);
         auto msg2 = make_unique<Message>(messageBody);
 
-        auto testAction = wstring(L"SerializeOnce_NoCopy");
+        auto testAction = string("SerializeOnce_NoCopy");
         auto testActor = Actor::GenericTestActor;
         MessageId relatesTo1;
         MessageId relatesTo2;
@@ -847,7 +847,7 @@ namespace Transport
 
     BOOST_AUTO_TEST_CASE(SerializeOnce_NoCopy_MultipleThread) // Serialize headers once, no memory copy for sharing headers
     {
-        auto testAction = wstring(L"SerializeOnce_NoCopy");
+        auto testAction = string("SerializeOnce_NoCopy");
         auto testActor = Actor::GenericTestActor;
 
         auto completeCount = make_shared<atomic_uint64>(0);
@@ -883,7 +883,7 @@ namespace Transport
             {
                 Threadpool::Post([=, &sharedBuffers]
                 {
-                    MessageBodyExample messageBody(wstring(L"example message body key"), wstring(L"example message body value"));
+                    MessageBodyExample messageBody(string("example message body key"), string("example message body value"));
 
                     auto msg1 = make_unique<Message>(messageBody);
                     msg1->Headers.Add(MessageIdHeader()); // non-shared
@@ -936,7 +936,7 @@ namespace Transport
 
     BOOST_AUTO_TEST_CASE(TestSimpleExampleHeader)
     {
-        auto name = std::wstring(L"SamplesName");
+        auto name = std::string("SamplesName");
         auto samples = std::vector<LONG>();
         for (LONG i=0; i<10; i++) { samples.push_back(i); }
 
@@ -965,7 +965,7 @@ namespace Transport
 
         VERIFY_ARE_EQUAL2(headerCount, 0);
 
-        VERIFY_ARE_EQUAL2(messageHeaders.Action, wstring());
+        VERIFY_ARE_EQUAL2(messageHeaders.Action, string());
         VERIFY_ARE_EQUAL2(messageHeaders.Actor, Actor::Enum::Empty); 
         VERIFY_ARE_EQUAL2(messageHeaders.MessageId, MessageId(Common::Guid::Empty(), 0));
         VERIFY_ARE_EQUAL2(messageHeaders.RelatesTo, MessageId(Common::Guid::Empty(), 0));
@@ -1051,7 +1051,7 @@ namespace Transport
     {
         ENTER;
 
-        wstring action(L"MyAction");
+        string action("MyAction");
         Actor::Enum actor = Actor::Enum::GenericTestActor;
         MessageId messageId(Common::Guid::NewGuid(), 5);
         Message message;
@@ -1152,23 +1152,23 @@ namespace Transport
         int testInteger = 12345;
         message.AddProperty(testInteger);
 
-        // Add a wstring
-        std::wstring testString = L"test string";
+        // Add a string
+        std::string testString = "test string";
         message.AddProperty(testString);
 
         // Add a user defined type
-        MessagePropertyUserDefined testClass(L"User defined message property");
+        MessagePropertyUserDefined testClass("User defined message property");
         message.AddProperty(testClass);
 
         // Add a user defined type with a user specified name
         const char* propertyName = "User specified name for user defined message property";
-        MessagePropertyUserDefined testClass2(L"User defined message property with name");
+        MessagePropertyUserDefined testClass2("User defined message property with name");
         message.AddProperty(testClass2, propertyName);
 
         // Retrieving properties
         int integerRetrieved = message.GetProperty<int>();
         VERIFY_IS_TRUE(integerRetrieved == testInteger);
-        std::wstring stringRetrived = message.GetProperty<std::wstring>();
+        std::string stringRetrived = message.GetProperty<std::string>();
         VERIFY_IS_TRUE(stringRetrived == testString);
         MessagePropertyUserDefined userDefinedPropertyRetrieved = message.GetProperty<MessagePropertyUserDefined>();
         VERIFY_IS_TRUE(userDefinedPropertyRetrieved.Value() == testClass.Value());
@@ -1182,14 +1182,14 @@ namespace Transport
         VERIFY_IS_FALSE(removed);
 
         // Add the user defined type with unqiue_ptr
-        std::wstring uniquePtrpropertyValue = L"User defined message property with unique pointer";
+        std::string uniquePtrpropertyValue = "User defined message property with unique pointer";
         std::unique_ptr<MessagePropertyUserDefined> uniquePtr(new MessagePropertyUserDefined(uniquePtrpropertyValue));
         message.AddProperty(std::move(uniquePtr));
         VERIFY_IS_FALSE(uniquePtr);
 
         // Add the user defined type with shared_ptr
         const char* propertyKey = "Property name for user defined message property with shared pointer";
-        std::wstring sharedPtrPropertyValue = L"User defined message property with shared pointer";
+        std::string sharedPtrPropertyValue = "User defined message property with shared pointer";
         std::shared_ptr<MessagePropertyUserDefined> sharedPtr(new MessagePropertyUserDefined(sharedPtrPropertyValue));
         message.AddProperty(sharedPtr, propertyKey);
         VERIFY_IS_TRUE(sharedPtr);
@@ -1262,7 +1262,7 @@ namespace Transport
         //
         {
             // test outgoing message
-            MessageBodyExample messageBodyExample(wstring(L"example message body key"), wstring(L"example message body value"));
+            MessageBodyExample messageBodyExample(string("example message body key"), string("example message body value"));
             Message message(messageBodyExample);
             VERIFY_IS_TRUE(message.SerializedHeaderSize() == 0);
             VERIFY_IS_TRUE(message.SerializedBodySize() == 116);
@@ -1304,7 +1304,7 @@ namespace Transport
         BiqueWriteStream headerStream(headerBytes);
         AddMessageHeaders(headerStream, 2);
 
-        MessageBodyExample msgBody(wstring(L"example message body key"), wstring(L"example message body value"));
+        MessageBodyExample msgBody(string("example message body key"), string("example message body value"));
         ByteBique bodyBytes;
         BiqueWriteStream bodyStream(bodyBytes);
 
@@ -1317,7 +1317,7 @@ namespace Transport
         MessageId msgId;
         msg->Headers.Add(MessageIdHeader(msgId));
 
-        wstring action = Guid::NewGuid().ToString();
+        string action = Guid::NewGuid().ToString();
         msg->Headers.Add(ActionHeader(action));
 
         Message deepCopy = *msg;
@@ -1336,13 +1336,13 @@ namespace Transport
 
     BOOST_AUTO_TEST_CASE(DeepCopyOutgoingMessage)
     {
-        MessageBodyExample msgBody(wstring(L"example message body key"), wstring(L"example message body value"));
+        MessageBodyExample msgBody(string("example message body key"), string("example message body value"));
         auto msg = make_unique<Message>(msgBody);
 
         MessageId msgId;
         msg->Headers.Add(MessageIdHeader(msgId));
 
-        wstring action = Guid::NewGuid().ToString();
+        string action = Guid::NewGuid().ToString();
         msg->Headers.Add(ActionHeader(action));
 
         Message deepCopy(*msg);
@@ -1445,7 +1445,7 @@ namespace Transport
     BOOST_AUTO_TEST_CASE(CloneTest_SharedHeaderNoCopy)
     {
         auto msg = make_unique<Message>();
-        msg->Headers.Add(ActionHeader(L"TestAction"));
+        msg->Headers.Add(ActionHeader("TestAction"));
 
         // Enables sharing of ActionHeader added above, without CheckPoint(), copy will happen
         msg->CheckPoint();
@@ -1470,7 +1470,7 @@ namespace Transport
         BiqueWriteStream headerStream(headerBytes);
         AddMessageHeaders(headerStream, 5);
 
-        MessageBodyExample messageBodyExample(wstring(L"example message body key"), wstring(L"example message body value"));
+        MessageBodyExample messageBodyExample(string("example message body key"), string("example message body value"));
         ByteBique bodyBytes;
         BiqueWriteStream bodyStream(bodyBytes);
 
@@ -1512,7 +1512,7 @@ namespace Transport
         BiqueWriteStream headerStream(headerBytes);
         AddMessageHeaders(headerStream, 5);
 
-        MessageBodyExample messageBodyExample(wstring(L"example message body key"), wstring(L"example message body value"));
+        MessageBodyExample messageBodyExample(string("example message body key"), string("example message body value"));
         ByteBique bodyBytes;
         BiqueWriteStream bodyStream(bodyBytes);
 
@@ -1576,8 +1576,8 @@ namespace Transport
 
     BOOST_AUTO_TEST_CASE(UserBufferTest)
     {
-        wstring state(L"STATE");
-        wstring body(L"body");
+        string state("STATE");
+        string body("body");
 
         MessageUPtr clone;
         Common::atomic_long count(0);
@@ -1590,11 +1590,11 @@ namespace Transport
             auto message = make_unique<Message>(buffers,
                 [&count](vector<const_buffer> const & buffers, void * state)
                 {
-                    auto * myBody = reinterpret_cast<wchar_t*>(buffers[0].buf);
-                    auto * stringState = static_cast<wstring*>(state);
-                    VERIFY_IS_TRUE(*stringState == L"STATE");
+                    auto * myBody = reinterpret_cast<char*>(buffers[0].buf);
+                    auto * stringState = static_cast<string*>(state);
+                    VERIFY_IS_TRUE(*stringState == "STATE");
 
-                    VERIFY_IS_TRUE(wstring(myBody) == L"body");
+                    VERIFY_IS_TRUE(string(myBody) == "body");
                     ++count;
                 },
                 &state);
@@ -1627,7 +1627,7 @@ namespace Transport
         auto message1 = make_unique<Message>();
         auto message2 = make_unique<Message>();
 
-        wstring action = L"It's action time!";
+        string action = "It's action time!";
         Actor::Enum actor = Actor::GenericTestActor;
 
         message1->Headers.Add(ActionHeader(action));
@@ -1651,7 +1651,7 @@ namespace Transport
 
         auto message1 = make_unique<Message>();
 
-        wstring action = L"It's action time!";
+        string action = "It's action time!";
         Actor::Enum actor = Actor::GenericTestActor;
 
         message1->Headers.Add(ActionHeader(action));
@@ -1712,7 +1712,7 @@ namespace Transport
     {
         Trace.WriteInfo(TraceType, "CompactTest: shouldClone = {0}, keepClone = {1}", shouldClone, keepClone);
 
-        wstring action(L"MyAction");
+        string action("MyAction");
         Actor::Enum actor = Actor::Enum::GenericTestActor;
         MessageId messageId(Common::Guid::NewGuid(), 5);
         Message message;
@@ -1852,8 +1852,8 @@ namespace Transport
 
             auto sizeBeforeAdd = msg->Headers.SerializedSize();
             msg->Headers.Add(ExampleHeader2(
-                L"keyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",
-                L"valueeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"));
+                "keyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",
+                "valueeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"));
 
             auto sizeAfterAdd = msg->Headers.SerializedSize();
             Trace.WriteInfo(TraceType, "new serialized size = {0}", sizeAfterAdd); 
@@ -2086,13 +2086,13 @@ namespace Transport
         KFinally([=] { TransportConfig::GetConfig().MessageErrorCheckingEnabled = saved; }); 
 
         auto sender = TcpDatagramTransport::CreateClient();
-        auto receiver = TcpDatagramTransport::Create(L"127.0.0.1:0");
+        auto receiver = TcpDatagramTransport::Create("127.0.0.1:0");
 
         static int replyToSend = 20;
         static int idHeaderPerMessage = 1600;
         static int testMsgBodySize = 32;
 
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
 
         TTestUtil::SetMessageHandler(
             receiver,
@@ -2186,13 +2186,13 @@ namespace Transport
         KFinally([=] { TransportConfig::GetConfig().MessageErrorCheckingEnabled = saved; }); 
 
         auto sender = TcpDatagramTransport::CreateClient();
-        auto receiver = TcpDatagramTransport::Create(L"127.0.0.1:0");
+        auto receiver = TcpDatagramTransport::Create("127.0.0.1:0");
 
         static int replyToSend = 20;
         static int idHeaderPerMessage = 1600;
         static int testMsgBodySize = 32;
 
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
 
         TTestUtil::SetMessageHandler(
             receiver,

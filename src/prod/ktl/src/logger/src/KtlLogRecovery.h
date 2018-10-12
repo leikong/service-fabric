@@ -686,8 +686,8 @@ private:
     ULONG                               _NumberOfStreams;
     RvdLogConfig                        _Config;
     KArray<RvdLogStreamInformation>     _StreamInfos;
-    WCHAR                               _CreationDirectory[RvdDiskLogConstants::MaxCreationPathSize];
-    WCHAR                               _LogType[RvdLogManager::AsyncCreateLog::MaxLogTypeLength];
+    CHAR                               _CreationDirectory[RvdDiskLogConstants::MaxCreationPathSize];
+    CHAR                               _LogType[RvdLogManager::AsyncCreateLog::MaxLogTypeLength];
 
     //
     // Sparse file recovery

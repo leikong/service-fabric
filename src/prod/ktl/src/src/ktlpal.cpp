@@ -144,44 +144,6 @@ void ReleaseKxmHandle()
     }
 }
 
-// 
-// char16_t needs to be used if -fshort-wchar is enabled
-//
-// Also, these conversion functions are duplicated from pal_string_util.cpp
-//
-//using lchar_t = char16_t;
-using lchar_t = wchar_t;
-
-static wstring utf8to16(const char *str)
-{
-    wstring_convert<codecvt_utf8_utf16<lchar_t>, lchar_t> conv;
-    auto u16str = conv.from_bytes(str);
-    basic_string<wchar_t> result;
-    for(int index = 0; index < u16str.length(); index++)
-    {
-        result.push_back((wchar_t)u16str[index]);
-    }
-    return result;
-}
-
-static wstring utf8to16(const char *str, int length)
-{
-    wstring_convert<codecvt_utf8_utf16<lchar_t>, lchar_t> conv;
-    auto u16str = conv.from_bytes(str, str+length);
-    basic_string<wchar_t> result;
-    for(int index = 0; index < u16str.length(); index++)
-    {
-        result.push_back((wchar_t)u16str[index]);
-    }
-    return result;
-}
-
-static string utf16to8(const wchar_t *wstr)
-{
-    wstring_convert<codecvt_utf8_utf16<lchar_t>, lchar_t> conv;
-    return conv.to_bytes((const lchar_t *)wstr);
-}
-
 PALIMPORT
 HANDLE
 PALAPI
@@ -189,7 +151,7 @@ CreateEventW(
          IN LPSECURITY_ATTRIBUTES lpEventAttributes,
          IN BOOL bManualReset,
          IN BOOL bInitialState,
-         IN LPCWSTR lpName)
+         IN LPCSTR lpName)
 {
     FAIL_UNIMPLEMENTED(__func__);
     return nullptr;
@@ -694,7 +656,7 @@ DWORD
 PALAPI
 GetModuleFileNameW(
            IN HMODULE hModule,
-           OUT LPWSTR lpFileName,
+           OUT LPSTR lpFileName,
            IN DWORD nSize)
 {
     char exeName[PATH_MAX] = {0};
@@ -703,9 +665,9 @@ GetModuleFileNameW(
     int res = readlink("/proc/self/exe", exeName, sizeof(exeName) - 1);
     if(res != -1) {
         exeName[res] = 0;
-        std::wstring exeNameW = utf8to16(exeName);
+        std::string exeNameW(exeName);
         copied = __min((int)(nSize - 1), res);
-        KMemCpySafe(lpFileName, nSize * sizeof(wchar_t), exeNameW.c_str(), (copied + 1) * sizeof(wchar_t));
+        KMemCpySafe(lpFileName, nSize * sizeof(char), exeNameW.c_str(), (copied + 1) * sizeof(char));
         if (copied < res)
         {
             lpFileName[nSize - 1] = 0;
@@ -1319,7 +1281,7 @@ StringLengthWorkerW(
 {
     HRESULT hr = S_OK;
     size_t cchOriginalMax = cchMax;
-    while (cchMax && (*psz != L'\0'))
+    while (cchMax && (*psz != '\0'))
     {
         psz++;
         cchMax--;
@@ -1342,36 +1304,6 @@ StringLengthWorkerW(
     }
 
     return hr;
-}
-
-NTSTATUS RtlMultiByteToUnicodeSize(
-        _Out_       PULONG BytesInUnicodeString,
-        _In_  const CHAR   *MultiByteString,
-        _In_        ULONG  BytesInMultiByteString
-)
-{
-    wstring strW = utf8to16(MultiByteString, BytesInMultiByteString);
-    *BytesInUnicodeString = strW.length() * sizeof(WCHAR);
-    return S_OK;
-}
-
-NTSTATUS
-RtlMultiByteToUnicodeN(
-        OUT PWCH UnicodeString,
-        IN ULONG MaxBytesInUnicodeString,
-        OUT PULONG BytesInUnicodeString OPTIONAL,
-        IN PCSTR MultiByteString,
-        IN ULONG BytesInMultiByteString)
-{
-    wstring strW = utf8to16(MultiByteString, BytesInMultiByteString);
-    if (BytesInUnicodeString)
-    {
-        *BytesInUnicodeString = strW.length() * sizeof(WCHAR);
-    }
-    int copyWChars = __min(MaxBytesInUnicodeString/sizeof(WCHAR), strW.length());
-    memcpy(UnicodeString, strW.c_str(), copyWChars * sizeof(WCHAR));
-    return S_OK;
-
 }
 
 NTSTATUS NtQueryVolumeInformationFile(
@@ -1456,7 +1388,7 @@ BOOL WINAPI QueryPerformanceCounter(
 PPERF_COUNTERSET_INSTANCE PerfCreateInstance(
   _In_ HANDLE  hProvider,
   _In_ LPCGUID CounterSetGuid,
-  _In_ LPCWSTR szInstanceName,
+  _In_ LPCSTR szInstanceName,
   _In_ ULONG   dwInstance
 )
 {
@@ -1619,7 +1551,7 @@ LSTATUS
 APIENTRY
 RegOpenKeyExW(
     HKEY hKey,
-    LPCWSTR lpSubKey,
+    LPCSTR lpSubKey,
     DWORD ulOptions,
     REGSAM samDesired,
     PHKEY phkResult
@@ -1643,7 +1575,7 @@ LSTATUS
 APIENTRY
 RegQueryValueExW(
     _In_ HKEY hKey,
-    _In_opt_ LPCWSTR lpValueName,
+    _In_opt_ LPCSTR lpValueName,
     _Reserved_ LPDWORD lpReserved,
     _Out_opt_ LPDWORD lpType,
      LPBYTE lpData,
@@ -1658,7 +1590,7 @@ LSTATUS
 APIENTRY
 RegSetValueExW(
     HKEY hKey,
-    LPCWSTR lpValueName,
+    LPCSTR lpValueName,
     DWORD Reserved,
     DWORD dwType,
     const BYTE *lpData,
@@ -1673,7 +1605,7 @@ LSTATUS
 APIENTRY
 RegDeleteValueW(
     _In_ HKEY hKey,
-    _In_opt_ LPCWSTR lpValueName
+    _In_opt_ LPCSTR lpValueName
     )
 {
     FAIL_UNIMPLEMENTED(__func__);
@@ -1727,18 +1659,9 @@ WaitForThreadpoolTimerCallbacks(
 
 NTSTATUS
 RtlStringCchCatW(
-    __out_ecount(cchDest) STRSAFE_LPWSTR pszDest,
+    __out_ecount(cchDest) STRSAFE_LPSTR pszDest,
     __in size_t cchDest,
-    __in STRSAFE_LPCWSTR pszSrc)
-{
-    FAIL_UNIMPLEMENTED(__func__);
-}
-
-NTSTATUS
-RtlStringCchLengthW(
-    _In_      STRSAFE_PCNZWCH psz,
-    _In_      size_t cchMax,
-    _Out_opt_ size_t* pcchLength)
+    __in STRSAFE_LPCSTR pszSrc)
 {
     FAIL_UNIMPLEMENTED(__func__);
 }
@@ -1768,19 +1691,19 @@ DWORD GetEnvironmentVariableA(LPCSTR lpName, LPSTR lpBuffer, DWORD nSize)
     return 0;
 }
 
-DWORD GetEnvironmentVariableW(LPCWSTR lpName, LPWSTR lpBuffer, DWORD nSize)
+DWORD GetEnvironmentVariableW(LPCSTR lpName, LPSTR lpBuffer, DWORD nSize)
 {
-    string name = utf16to8(lpName);
+    string name(lpName);
     char* value = getenv(name.c_str());
     if (value)
     {
-        wstring valueW = utf8to16(value);
+        string valueW(value);
         int len = valueW.length();
         if (nSize < len + 1)
         {
             return len + 1;
         }
-        memcpy(lpBuffer, valueW.c_str(), (len + 1) * sizeof(wchar_t));
+        memcpy(lpBuffer, valueW.c_str(), (len + 1) * sizeof(char));
         return len;
     }
     return 0;
@@ -1810,34 +1733,10 @@ bool GetEnvironmentVariable(string const & name, string& outValue)
     return true;
 }
 
-bool GetEnvironmentVariable(wstring const & name, wstring& outValue)
-{
-    int valueLen = 16; // first shot
-    outValue.resize(valueLen);
-    for(;;)
-    {
-        int n = GetEnvironmentVariableW(name.c_str(), &outValue[0], valueLen);
-        outValue.resize(n);
-        if (n == 0)
-        {
-            return false;
-        }
-        else if (n < valueLen)
-        {
-            break;
-        }
-        else
-        {
-            valueLen = n;
-        }
-    }
-    return true;
-}
-
 WINBASEAPI
 DWORD
 WINAPI
-ExpandEnvironmentStringsA(
+ExpandEnvironmentStrings(
     _In_ LPCSTR lpSrc,
     LPSTR lpDst,
     _In_ DWORD nSize)
@@ -1877,51 +1776,6 @@ ExpandEnvironmentStringsA(
     if (nSize > dest.length())
     {
         KMemCpySafe(lpDst, nSize, dest.c_str(), dest.length());
-        lpDst[dest.length()] = 0;
-    }
-    return dest.length() + 1;
-}
-
-WINBASEAPI
-DWORD
-WINAPI
-ExpandEnvironmentStringsW(_In_ LPCWSTR lpSrc, LPWSTR lpDst, _In_ DWORD nSize)
-{
-    int si = 0;
-    wstring dest;
-
-    while(lpSrc[si])
-    {
-        if (lpSrc[si] != '%')
-        {
-            dest.push_back(lpSrc[si]);
-            si ++;
-        }
-        else
-        {
-            int endtoken = si + 1;
-            while(lpSrc[endtoken] && lpSrc[endtoken] != '%')  endtoken++;
-
-            wstring token, tokenvalue;
-            if(lpSrc[endtoken] == '%')
-            {
-                for (int i = si + 1; i < endtoken; i++)
-                    token.push_back(lpSrc[i]);
-                if (GetEnvironmentVariable(token, tokenvalue))
-                    dest += tokenvalue;
-                si = endtoken + 1;
-            }
-            else
-            {
-                for (int i = si + 1; i < endtoken; i++)
-                    dest.push_back(lpSrc[i]);
-                si = endtoken;
-            }
-        }
-    }
-    if (nSize > dest.length())
-    {
-        KMemCpySafe(lpDst, nSize, dest.c_str(), sizeof(wchar_t)*dest.length());
         lpDst[dest.length()] = 0;
     }
     return dest.length() + 1;
@@ -2079,10 +1933,6 @@ ULONG RtlNtStatusToDosError( __in  NTSTATUS Status )
     return (ULONG) Status;
 }
 
-int _wcsicmp(const WCHAR *s1, const WCHAR*s2)
-{
-    return wcscasecmp(s1, s2);
-}
 
 /*
 winnt.cpp:(.text+0x30): multiple definition of `InterlockedCompareExchange16'
@@ -2146,7 +1996,7 @@ KtlCopyMemory (
 
 
 #define MAXUSHORT   0xffff
-#define MAX_USTRING ( sizeof(WCHAR) * (MAXUSHORT/sizeof(WCHAR)) )
+#define MAX_USTRING ( sizeof(char) * (MAXUSHORT/sizeof(char)) )
 
 VOID
 KtlInitUnicodeString (
@@ -2157,7 +2007,7 @@ KtlInitUnicodeString (
     ULONG length;
     DestinationString->Buffer = (PWSTR)SourceString;
     if (ARGUMENT_PRESENT(SourceString)) {
-        length = (ULONG)wcslen( SourceString ) * sizeof( WCHAR);
+        length = (ULONG)strlen( SourceString ) * sizeof( char);
 
         KAssert(length < MAX_USTRING);
 
@@ -2180,7 +2030,7 @@ KtlCopyUnicodeString(
     __in_opt PCUNICODE_STRING SourceString
 )
 {
-    UNALIGNED WCHAR *src, *dst;
+    UNALIGNED char *src, *dst;
     ULONG n;
 
     if (ARGUMENT_PRESENT(SourceString)) {
@@ -2193,8 +2043,8 @@ KtlCopyUnicodeString(
 
         DestinationString->Length = (USHORT)n;
         KtlCopyMemory(dst, src, n);
-        if( (DestinationString->Length + sizeof (WCHAR)) <= DestinationString->MaximumLength) {
-            dst[n / sizeof(WCHAR)] = UNICODE_NULL;
+        if( (DestinationString->Length + sizeof (char)) <= DestinationString->MaximumLength) {
+            dst[n / sizeof(char)] = UNICODE_NULL;
         }
 
     } else {
@@ -2224,7 +2074,7 @@ KtlCompareUnicodeStrings (
 {
     PCWSTR s1, s2, Limit;
     SIZE_T n1, n2;
-    WCHAR c1, c2;
+    char c1, c2;
     LONG returnValue;
 
     s1 = String1;
@@ -2277,9 +2127,9 @@ KtlCompareUnicodeString (
 )
 {
     return KtlCompareUnicodeStrings(String1->Buffer,
-                                    String1->Length / sizeof(WCHAR),
+                                    String1->Length / sizeof(char),
                                     String2->Buffer,
-                                    String2->Length / sizeof(WCHAR),
+                                    String2->Length / sizeof(char),
                                     CaseInSensitive);
 }
 
@@ -2290,7 +2140,7 @@ KtlAppendUnicodeStringToString (
 )
 {
     USHORT n;
-    WCHAR UNALIGNED *dst;
+    char UNALIGNED *dst;
     NTSTATUS status;
 
     status = STATUS_SUCCESS;
@@ -2300,11 +2150,11 @@ KtlAppendUnicodeStringToString (
             status = STATUS_BUFFER_TOO_SMALL;
 
         } else {
-            dst = &Destination->Buffer[(Destination->Length / sizeof(WCHAR))];
+            dst = &Destination->Buffer[(Destination->Length / sizeof(char))];
             RtlMoveMemory(dst, Source->Buffer, n);
             Destination->Length = Destination->Length + n;
             if (Destination->Length < Destination->MaximumLength) {
-                dst[n / sizeof(WCHAR)] = UNICODE_NULL;
+                dst[n / sizeof(char)] = UNICODE_NULL;
             }
         }
     }
@@ -2316,9 +2166,9 @@ static
 int
 __cdecl
 KtlScanHexFormat(
-    __in_ecount(MaximumLength) const WCHAR* Buffer,
+    __in_ecount(MaximumLength) const char* Buffer,
     __in ULONG MaximumLength,
-    __in_z const WCHAR* Format,
+    __in_z const char* Format,
     ...)
 {
     va_list argList;
@@ -2384,8 +2234,7 @@ KtlScanHexFormat(
     }
 }
 
-#define GUIDFORMAT   L"{%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x}"
-#define GUIDFORMAT_A "{%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x}"
+#define GUIDFORMAT   "{%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x}"
 
 NTSTATUS
 KtlGUIDFromString(
@@ -2396,7 +2245,7 @@ KtlGUIDFromString(
     USHORT    data4[8] = {0};
     int       count;
 
-    if (KtlScanHexFormat(GuidString->Buffer, GuidString->Length / sizeof(WCHAR), GUIDFORMAT,
+    if (KtlScanHexFormat(GuidString->Buffer, GuidString->Length / sizeof(char), GUIDFORMAT,
                       &Guid->Data1, &Guid->Data2, &Guid->Data3,
                       &data4[0], &data4[1], &data4[2], &data4[3],
                       &data4[4], &data4[5], &data4[6], &data4[7]) == -1) {
@@ -2419,7 +2268,7 @@ KtlStringFromGUIDEx(
 )
 {
     const USHORT numChars = KTL_GUID_STRING_SIZE + 1;
-    const USHORT requiredSize = numChars * sizeof(WCHAR);
+    const USHORT requiredSize = numChars * sizeof(char);
     if (Allocate != FALSE) {
         GuidString->MaximumLength = requiredSize;
         GuidString->Buffer = (PWSTR)malloc(requiredSize);
@@ -2436,7 +2285,7 @@ KtlStringFromGUIDEx(
     char buf[numChars] = {0};
     snprintf(  buf,
                numChars,
-               GUIDFORMAT_A,
+               GUIDFORMAT,
                Guid.Data1,
                Guid.Data2,
                Guid.Data3,
@@ -2448,8 +2297,8 @@ KtlStringFromGUIDEx(
                Guid.Data4[5],
                Guid.Data4[6],
                Guid.Data4[7]);
-    wstring res = utf8to16(buf);
-    KMemCpySafe((char*)GuidString->Buffer, requiredSize, (char*)res.c_str(), res.length() * sizeof(WCHAR));
+    string res(buf);
+    KMemCpySafe((char*)GuidString->Buffer, requiredSize, (char*)res.c_str(), res.length() * sizeof(char));
     GuidString->Buffer[res.length()] = 0;
     return STATUS_SUCCESS;
 }
@@ -2465,9 +2314,9 @@ KtlStringFromGUID(
 
 #define MAX_DIGITS 65
 #define STATUS_BUFFER_OVERFLOW           ((NTSTATUS)0x80000005L)
-const WCHAR KtlpIntegerWChars[] = { L'0', L'1', L'2', L'3', L'4', L'5',
-                                    L'6', L'7', L'8', L'9', L'A', L'B',
-                                    L'C', L'D', L'E', L'F' };
+const char KtlpIntegerWChars[] = { '0', '1', '2', '3', '4', '5',
+                                    '6', '7', '8', '9', 'A', 'B',
+                                    'C', 'D', 'E', 'F' };
 const CHAR KtlpIntegerChars[] = {'0', '1', '2', '3', '4', '5', '6', '7',
                                  '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
@@ -2497,7 +2346,7 @@ KtlLargeIntegerToUnicode (
     __out PWSTR String
 )
 {
-    WCHAR result [MAX_DIGITS], *s;
+    char result [MAX_DIGITS], *s;
     ULONG shift, mask = 0, digit, length;
 
     shift = 0;
@@ -2539,7 +2388,7 @@ KtlLargeIntegerToUnicode (
     if (OutputLength < 0) {
         OutputLength = -OutputLength;
         while ((LONG)length < OutputLength) {
-            *String++ = L'0';
+            *String++ = '0';
             OutputLength--;
         }
     }
@@ -2548,9 +2397,9 @@ KtlLargeIntegerToUnicode (
         return (STATUS_BUFFER_OVERFLOW);
     }
     else {
-        KtlCopyMemory (String, s, length * sizeof(WCHAR));
+        KtlCopyMemory (String, s, length * sizeof(char));
         if ((LONG)length < OutputLength) {
-            String [length] = L'\0';
+            String [length] = '\0';
         }
         return (STATUS_SUCCESS);
     }
@@ -2640,7 +2489,7 @@ KtlAnsiStringToUnicodeString (
 
 	KAssert(AllocateDestinationString == FALSE);
 
-    unicodeLength = (SourceString->Length * sizeof(WCHAR)) +
+    unicodeLength = (SourceString->Length * sizeof(char)) +
                     sizeof(UNICODE_NULL);
 
     if (unicodeLength > MAX_USTRING) {
@@ -2656,7 +2505,7 @@ KtlAnsiStringToUnicodeString (
     DestinationString->Length = (USHORT)(unicodeLength - sizeof(UNICODE_NULL));
     index = 0;
     while(index < SourceString->Length ) {
-        DestinationString->Buffer[index] = (WCHAR)SourceString->Buffer[index];
+        DestinationString->Buffer[index] = (char)SourceString->Buffer[index];
         index++;
     }
 
@@ -2697,40 +2546,16 @@ KtlInt64ToUnicodeString (
     return status;
 }
 
-//
-// String Safe functions
-//
-WINBASEAPI HRESULT KtlStringCchLengthW(
-    _In_  LPCWSTR psz,
-    _In_  size_t  cchMax,
-    _Out_ size_t  *pcch
-    )
+HRESULT StringCchLength(const char* psz, size_t cchMax, size_t* pcch)
 {
-    HRESULT hr = S_OK;
-    size_t cchMaxPrev = cchMax;
+    *pcch = strnlen(psz, cchMax);
 
-    while (cchMax && (*psz != L'\0'))
-    {
-        psz++;
-        cchMax--;
-    }
-
-    if (cchMax == 0)
-    {
-        // the string is longer than cchMax
-        hr = STRSAFE_E_INVALID_PARAMETER;
-    }
-
-    if (SUCCEEDED(hr) && pcch)
-    {
-        *pcch = cchMaxPrev - cchMax;
-    }
-
-    return hr;
+    if (*pcch == cchMax) return E_INVALIDARG;
+    return S_OK;
 }
 
 STRSAFEAPI
-KtlStringCopyWorkerW(wchar_t* pszDest, size_t cchDest, const wchar_t* pszSrc)
+KtlStringCopyWorkerW(char* pszDest, size_t cchDest, const char* pszSrc)
 {
     HRESULT hr = S_OK;
 
@@ -2741,7 +2566,7 @@ KtlStringCopyWorkerW(wchar_t* pszDest, size_t cchDest, const wchar_t* pszSrc)
     }
     else
     {
-        while (cchDest && (*pszSrc != L'\0'))
+        while (cchDest && (*pszSrc != '\0'))
         {
             *pszDest++ = *pszSrc++;
             cchDest--;
@@ -2754,7 +2579,7 @@ KtlStringCopyWorkerW(wchar_t* pszDest, size_t cchDest, const wchar_t* pszSrc)
             hr = STRSAFE_E_INSUFFICIENT_BUFFER;
         }
 
-        *pszDest= L'\0';
+        *pszDest= '\0';
     }
 
     return hr;
@@ -2762,9 +2587,9 @@ KtlStringCopyWorkerW(wchar_t* pszDest, size_t cchDest, const wchar_t* pszSrc)
 
 STRSAFEAPI
 KtlStringCchCopyW(
-        _Out_writes_(cchDest) _Always_(_Post_z_) STRSAFE_LPWSTR pszDest,
+        _Out_writes_(cchDest) _Always_(_Post_z_) STRSAFE_LPSTR pszDest,
         _In_ size_t cchDest,
-        _In_ STRSAFE_LPCWSTR pszSrc)
+        _In_ STRSAFE_LPCSTR pszSrc)
 {
     HRESULT hr;
 
@@ -2781,7 +2606,7 @@ KtlStringCchCopyW(
 }
 
 STRSAFEAPI
-KtlStringVPrintfWorkerW(wchar_t* pszDest, size_t cchDest, const wchar_t* pszFormat, va_list argList)
+KtlStringVPrintfWorkerW(char* pszDest, size_t cchDest, const char* pszFormat, va_list argList)
 {
     HRESULT hr = S_OK;
 
@@ -2799,14 +2624,14 @@ KtlStringVPrintfWorkerW(wchar_t* pszDest, size_t cchDest, const wchar_t* pszForm
         cchMax = cchDest - 1;
 
         //iRet = _vsnwprintf(pszDest, cchMax, pszFormat, argList);
-        iRet = vswprintf(pszDest, cchMax, pszFormat, argList);
+        iRet = vsnprintf(pszDest, cchMax, pszFormat, argList);
         // ASSERT((iRet < 0) || (((size_t)iRet) <= cchMax));
 
         if ((iRet < 0) || (((size_t)iRet) > cchMax))
         {
             // need to null terminate the string
             pszDest += cchMax;
-            *pszDest = L'\0';
+            *pszDest = '\0';
 
             // we have truncated pszDest
             hr = STRSAFE_E_INSUFFICIENT_BUFFER;
@@ -2815,7 +2640,7 @@ KtlStringVPrintfWorkerW(wchar_t* pszDest, size_t cchDest, const wchar_t* pszForm
         {
             // need to null terminate the string
             pszDest += cchMax;
-            *pszDest = L'\0';
+            *pszDest = '\0';
         }
     }
 
@@ -2823,12 +2648,12 @@ KtlStringVPrintfWorkerW(wchar_t* pszDest, size_t cchDest, const wchar_t* pszForm
 }
 
 STRSAFEAPI
-KtlStringCbPrintfW(WCHAR* pszDest, size_t cbDest, const WCHAR* pszFormat, ...)
+KtlStringCbPrintfW(char* pszDest, size_t cbDest, const char* pszFormat, ...)
 {
     HRESULT hr;
     size_t cchDest;
 
-    cchDest = cbDest / sizeof(WCHAR);
+    cchDest = cbDest / sizeof(char);
 
     if (cchDest > STRSAFE_MAX_CCH)
     {
@@ -3036,12 +2861,12 @@ KtlStringCbLengthA(
 
 STRSAFEAPI
 KtlStringCbLengthW(
-        _In_reads_or_z_(cbMax / sizeof(wchar_t)) STRSAFE_PCNZWCH psz,
-        _In_ _In_range_(1, STRSAFE_MAX_CCH * sizeof(wchar_t)) size_t cbMax,
+        _In_reads_or_z_(cbMax / sizeof(char)) STRSAFE_PCNZWCH psz,
+        _In_ _In_range_(1, STRSAFE_MAX_CCH * sizeof(char)) size_t cbMax,
         _Out_opt_ _Deref_out_range_(<, cbMax - 1) size_t* pcbLength)
 {
     HRESULT hr;
-    size_t cchMax = cbMax / sizeof(wchar_t);
+    size_t cchMax = cbMax / sizeof(char);
     size_t cchLength = 0;
     if ((psz == NULL) || (cchMax > STRSAFE_MAX_CCH))
     {
@@ -3055,8 +2880,8 @@ KtlStringCbLengthW(
     {
         if (SUCCEEDED(hr))
         {
-            // safe to multiply cchLength * sizeof(wchar_t) since cchLength < STRSAFE_MAX_CCH and sizeof(wchar_t) is 2
-            *pcbLength = cchLength * sizeof(wchar_t);
+            // safe to multiply cchLength * sizeof(char) since cchLength < STRSAFE_MAX_CCH and sizeof(char) is 2
+            *pcbLength = cchLength * sizeof(char);
         }
         else
         {
@@ -3068,16 +2893,16 @@ KtlStringCbLengthW(
 
 STRSAFEAPI
 KtlStringCchVPrintfW(
-        __out_ecount(cchDest) STRSAFE_LPWSTR pszDest,
+        __out_ecount(cchDest) STRSAFE_LPSTR pszDest,
         __in size_t cchDest,
-        __in __format_string STRSAFE_LPCWSTR pszFormat,
+        __in __format_string STRSAFE_LPCSTR pszFormat,
         __in va_list argList)
 {
-    string fmtA = utf16to8(pszFormat);
-    vsnprintf((char*)pszDest, cchDest * sizeof(wchar_t), fmtA.c_str(), argList);
-    wstring destW = utf8to16((char*)pszDest);
+    string fmtA(pszFormat);
+    vsnprintf((char*)pszDest, cchDest * sizeof(char), fmtA.c_str(), argList);
+    string destW((char*)pszDest);
     int len = __min(cchDest - 1, destW.length());
-    memcpy(pszDest, destW.c_str(), len * sizeof(wchar_t));
+    memcpy(pszDest, destW.c_str(), len * sizeof(char));
     pszDest[len] = 0;
     return S_OK;
 }

@@ -51,7 +51,7 @@ static const GUID TestGUID =
 #define K$AnsiStringTarget
 #include "KStringViewTests.proto.cpp"
 
-// Generate WCHAR version of unit tests
+// Generate CHAR version of unit tests
 #undef K$AnsiStringTarget
 #include "KStringViewTests.proto.cpp"
 
@@ -342,7 +342,7 @@ TestSequence()
 
 NTSTATUS
 KStringViewTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     UNREFERENCED_PARAMETER(argc);
@@ -400,7 +400,7 @@ KStringViewTest(
 #if CONSOLE_TEST
 int
 #if !defined(PLATFORM_UNIX)
-wmain(int argc, WCHAR* args[])
+wmain(int argc, CHAR* args[])
 {
 #else
 main(int argc, char* cargs[])

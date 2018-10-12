@@ -26,7 +26,7 @@ namespace TransportUnitTest
 
         shared_ptr<AsyncOperation> BeginSendRequest(
             MessageUPtr && message,
-            wstring const &,
+            string const &,
             TimeSpan const & timeout,
             AsyncCallback const & callback,
             Common::AsyncOperationSPtr const & parent)
@@ -104,7 +104,7 @@ namespace TransportUnitTest
 
             messageIds.push_back(request->MessageId);
 
-            auto result = siteNode.BeginSendRequest(std::move(request), L"localhost", TimeSpan::FromSeconds(5), 
+            auto result = siteNode.BeginSendRequest(std::move(request), "localhost", TimeSpan::FromSeconds(5), 
                 [&siteNode](AsyncOperationSPtr contextSPtr) -> void
                 {
                     MessageUPtr resultSPtr;
@@ -130,7 +130,7 @@ namespace TransportUnitTest
         // create a message
         request->Headers.Add(MessageIdHeader());
 
-        auto result = siteNode->BeginSendRequest(std::move(request), L"localhost", TimeSpan::FromSeconds(5),
+        auto result = siteNode->BeginSendRequest(std::move(request), "localhost", TimeSpan::FromSeconds(5),
             [](AsyncOperationSPtr contextSPtr) -> void
             {
                 auto callbackSiteNode = AsyncOperationRoot<std::shared_ptr<TestClient> >::Get(contextSPtr->Parent);
@@ -158,7 +158,7 @@ namespace TransportUnitTest
 
         ManualResetEvent callbackFired(false);
 
-        auto result = siteNode.BeginSendRequest(std::move(request), L"localhost", TimeSpan::FromSeconds(5), 
+        auto result = siteNode.BeginSendRequest(std::move(request), "localhost", TimeSpan::FromSeconds(5), 
             [&siteNode, &callbackFired](AsyncOperationSPtr contextSPtr) -> void
             {
                 MessageUPtr resultSPtr;
@@ -191,7 +191,7 @@ namespace TransportUnitTest
         Stopwatch timer;
         timer.Start();
 
-        auto result = siteNode.BeginSendRequest(std::move(request), L"localhost", TimeSpan::FromSeconds(2),
+        auto result = siteNode.BeginSendRequest(std::move(request), "localhost", TimeSpan::FromSeconds(2),
             [&siteNode, &callbackFired](AsyncOperationSPtr contextSPtr) -> void
             {
                 MessageUPtr resultSPtr;
@@ -222,7 +222,7 @@ namespace TransportUnitTest
 
         siteNode.Close();
 
-        auto result = siteNode.BeginSendRequest(std::move(request), L"localhost", TimeSpan::FromSeconds(2),
+        auto result = siteNode.BeginSendRequest(std::move(request), "localhost", TimeSpan::FromSeconds(2),
             [&siteNode, &callbackFired](AsyncOperationSPtr contextSPtr) -> void
             {
                 MessageUPtr resultSPtr;

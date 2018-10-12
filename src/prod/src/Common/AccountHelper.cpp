@@ -8,25 +8,25 @@
 using namespace std;
 using namespace Common;
 
-GlobalWString AccountHelper::UPNDelimiter = make_global<wstring>(L"@");
-GlobalWString AccountHelper::DLNDelimiter = make_global<wstring>(L"\\");
-GlobalWString AccountHelper::GroupNameLOCAL = make_global<wstring>(L"Local");
+GlobalString AccountHelper::UPNDelimiter = make_global<string>("@");
+GlobalString AccountHelper::DLNDelimiter = make_global<string>("\\");
+GlobalString AccountHelper::GroupNameLOCAL = make_global<string>("Local");
 
 // Use a prefix that contains multiple different characters,
 // so the account password policy doesn't complain
-GlobalWString AccountHelper::PasswordPrefix = make_global<wstring>(L"ABCD!abcd@#$");
+GlobalString AccountHelper::PasswordPrefix = make_global<string>("ABCD!abcd@#$");
 DWORD const AccountHelper::RandomDigitsInPassword = 10;
 size_t const AccountHelper::MaxCharactersInAccountUsername = 20;
 int64 const AccountHelper::ExpiryBaselineTicks = 131592384000000000; // ticks for January 1st, 2018
 
 StringLiteral TraceType_AccountHelper = "AccountHelper";
 
-ErrorCode AccountHelper::GetDomainUserAccountName(wstring accountName, __out wstring & userName, __out wstring & domain, __out wstring & dlnFormatName)
+ErrorCode AccountHelper::GetDomainUserAccountName(string accountName, __out string & userName, __out string & domain, __out string & dlnFormatName)
 {
-    vector<wstring> names;
-    if(StringUtility::Contains<wstring>(accountName, UPNDelimiter))
+    vector<string> names;
+    if(StringUtility::Contains<string>(accountName, UPNDelimiter))
     {
-        StringUtility::Split<wstring>(accountName, names, UPNDelimiter, true);
+        StringUtility::Split<string>(accountName, names, UPNDelimiter, true);
 
         if(names.size() != 2)
         {
@@ -40,11 +40,11 @@ ErrorCode AccountHelper::GetDomainUserAccountName(wstring accountName, __out wst
 
         domain = move(names[1]);
         userName = move(names[0]);
-        dlnFormatName = wformatString("{0}\\{1}", domain, userName);
+        dlnFormatName = formatString.L("{0}\\{1}", domain, userName);
     }
     else
     {
-        StringUtility::Split<wstring>(accountName, names, DLNDelimiter, true);
+        StringUtility::Split<string>(accountName, names, DLNDelimiter, true);
 
         if(names.size() != 2)
         {
@@ -64,12 +64,12 @@ ErrorCode AccountHelper::GetDomainUserAccountName(wstring accountName, __out wst
     return ErrorCodeValue::Success;
 }
 
-ErrorCode AccountHelper::GetServiceAccountName(wstring accountName, __out wstring & serviceName, __out wstring & domain, __out wstring & dlnFormatName)
+ErrorCode AccountHelper::GetServiceAccountName(string accountName, __out string & serviceName, __out string & domain, __out string & dlnFormatName)
 {
-    vector<wstring> names;
-    if(StringUtility::Contains<wstring>(accountName, UPNDelimiter))
+    vector<string> names;
+    if(StringUtility::Contains<string>(accountName, UPNDelimiter))
     {
-        StringUtility::Split<wstring>(accountName, names, UPNDelimiter, true);
+        StringUtility::Split<string>(accountName, names, UPNDelimiter, true);
 
         if(names.size() != 2)
         {
@@ -86,7 +86,7 @@ ErrorCode AccountHelper::GetServiceAccountName(wstring accountName, __out wstrin
     }
     else
     {
-        StringUtility::Split<wstring>(accountName, names, DLNDelimiter, true);
+        StringUtility::Split<string>(accountName, names, DLNDelimiter, true);
 
         if(names.size() != 2)
         {
@@ -101,17 +101,17 @@ ErrorCode AccountHelper::GetServiceAccountName(wstring accountName, __out wstrin
         domain = move(names[0]);
         serviceName = move(names[1]);
     }
-    if(!StringUtility::EndsWith<wstring>(serviceName, L"$"))
+    if(!StringUtility::EndsWith<string>(serviceName, "$"))
     {
-        serviceName += L"$";
+        serviceName += "$";
     }
 
-    dlnFormatName = wformatString("{0}\\{1}", domain, serviceName);
+    dlnFormatName = formatString.L("{0}\\{1}", domain, serviceName);
 
     return ErrorCodeValue::Success;
 }
 
-bool AccountHelper::GroupAllowsMemberAddition(wstring const & groupName)
+bool AccountHelper::GroupAllowsMemberAddition(string const & groupName)
 {
     if(StringUtility::AreEqualCaseInsensitive(groupName, AccountHelper::GroupNameLOCAL))
     {
@@ -120,24 +120,24 @@ bool AccountHelper::GroupAllowsMemberAddition(wstring const & groupName)
     return true;
 }
 
-wstring AccountHelper::GetAccountName(wstring const & name, ULONG applicationPackageCounter, bool canSkipAddCounter)
+string AccountHelper::GetAccountName(string const & name, ULONG applicationPackageCounter, bool canSkipAddCounter)
 {
     if (canSkipAddCounter && name.size() == MaxCharactersInAccountUsername)
     {
         return name;
     }
 
-    wstring output;
+    string output;
     StringWriter(output).Write("{0}{1:x}", name, applicationPackageCounter);
     return output;
 }
 
 ErrorCode AccountHelper::GetAccountNamesWithCertificateCommonName(
-    std::wstring const& commonName,
+    std::string const& commonName,
     X509StoreLocation::Enum storeLocation,
-    std::wstring const & storeName,
+    std::string const & storeName,
     bool generateV1Account,
-    __inout std::map<std::wstring, std::wstring> & accountNamesMap)
+    __inout std::map<std::string, std::string> & accountNamesMap)
 {
     TraceInfo(
         TraceTaskCodes::Common,
@@ -193,10 +193,10 @@ ErrorCode AccountHelper::GetAccountNamesWithCertificateCommonName(
             return errorCode;
         }
 
-        wstring thumbprint = wformatString(thumbprintObj);
+        string thumbprint = formatString(thumbprintObj);
         if (generateV1Account)
         {
-            wstring accountNameV1 = AccountHelper::GenerateUserAcountNameV1(thumbprintObj);
+            string accountNameV1 = AccountHelper::GenerateUserAcountNameV1(thumbprintObj);
             TraceInfo(
                 TraceTaskCodes::Common,
                 TraceType_AccountHelper,
@@ -232,7 +232,7 @@ ErrorCode AccountHelper::GetAccountNamesWithCertificateCommonName(
         }
         else
         {
-            wstring accountNameV2 = AccountHelper::GenerateUserAcountName(thumbprintObj, expirationTime);
+            string accountNameV2 = AccountHelper::GenerateUserAcountName(thumbprintObj, expirationTime);
             TraceInfo(
                 TraceTaskCodes::Common,
                 TraceType_AccountHelper,
@@ -247,28 +247,28 @@ ErrorCode AccountHelper::GetAccountNamesWithCertificateCommonName(
     return ErrorCode::Success();
 }
 
-void AccountHelper::ReplaceAccountInvalidChars(__inout std::wstring & accountName)
+void AccountHelper::ReplaceAccountInvalidChars(__inout std::string & accountName)
 {
     // Account names invalid characters: " / \ [ ] : ; | = , + * ? < >
     // Base64 encoding returns digits, letters and /, + and =
     for (size_t i = 0; i < accountName.size(); ++i)
     {
-        if (accountName[i] == L'/')
+        if (accountName[i] == '/')
         {
-            accountName[i] = L'!';
+            accountName[i] = '!';
         }
-        else if (accountName[i] == L'+')
+        else if (accountName[i] == '+')
         {
-            accountName[i] = L'%';
+            accountName[i] = '%';
         }
-        else if (accountName[i] == L'=')
+        else if (accountName[i] == '=')
         {
-            accountName[i] = L'.';
+            accountName[i] = '.';
         }
     }
 }
 
-std::wstring AccountHelper::GenerateUserAcountName(
+std::string AccountHelper::GenerateUserAcountName(
     Thumbprint::SPtr const & thumbprint,
     DateTime const & expirationTime)
 {
@@ -286,7 +286,7 @@ std::wstring AccountHelper::GenerateUserAcountName(
     ASSERT_IFNOT(hashSizeInBytes >= maxConvertByteCount, "GenerateUserAcountName: the certificate thumbprint has less than {0} bytes, can't create account name", maxConvertByteCount);
     
     // Encode the first 12 BYTEs to Base64, resulting in 16 chars string.
-    wstring userName = CryptoUtility::BytesToBase64String(hash, maxConvertByteCount);
+    string userName = CryptoUtility::BytesToBase64String(hash, maxConvertByteCount);
     
     // Compress the date time in 4 characters
     // Take the ticks for January 1, 2018
@@ -335,7 +335,7 @@ std::wstring AccountHelper::GenerateUserAcountName(
 
     // Add the chars for the ticks since baseline, using only the last 3 BYTES.
     BYTE const* expiryBytes = reinterpret_cast<BYTE const*>(&minSinceBaseline);
-    wstring expiryStr = CryptoUtility::BytesToBase64String(expiryBytes + 1, 3);
+    string expiryStr = CryptoUtility::BytesToBase64String(expiryBytes + 1, 3);
     userName.append(expiryStr);
 
     ReplaceAccountInvalidChars(userName);
@@ -353,10 +353,10 @@ std::wstring AccountHelper::GenerateUserAcountName(
 // v1 version for generating account name based on a certificate, generating Unicode characters.
 // Deprecated in favor of generation account name using the thumbprint and expiration date,
 // which is more stable and has user readable characters.
-std::wstring AccountHelper::GenerateUserAcountNameV1(Thumbprint::SPtr const & thumbprint)
+std::string AccountHelper::GenerateUserAcountNameV1(Thumbprint::SPtr const & thumbprint)
 {
     //
-    // A thumbprint has 20 BYTES and when written to wstring it takes 40 chars.
+    // A thumbprint has 20 BYTES and when written to string it takes 40 chars.
     // A user name is limited to 20 characters.
     // To avoid hitting the limit, take the bytes inside the thumbprint in binary format.
     // Encode any 0 to prevent early string termination.
@@ -379,12 +379,12 @@ std::wstring AccountHelper::GenerateUserAcountNameV1(Thumbprint::SPtr const & th
     }
 
     DWORD sizeInBytes = hashSizeInBytes + bytesToReplace;
-    DWORD charSize = sizeof(wchar_t);
+    DWORD charSize = sizeof(char);
     DWORD charCount = sizeInBytes / charSize;
     DWORD charReminder = sizeInBytes % charSize;
     if(charReminder != 0)
     {
-        // Round the size to be multiple of wchar_t size
+        // Round the size to be multiple of char size
         ++charCount;
         sizeInBytes += charSize - charReminder;
     }
@@ -417,18 +417,18 @@ std::wstring AccountHelper::GenerateUserAcountNameV1(Thumbprint::SPtr const & th
         userNameData,
         bytesToReplace);
 
-    wstring userName(reinterpret_cast<wchar_t*>(userNameData), charCount);
+    string userName(reinterpret_cast<char*>(userNameData), charCount);
     delete userNameData;
 
     return userName;
 }
 
 ErrorCode AccountHelper::GeneratePasswordForNTLMAuthenticatedUser(
-    wstring const& accountName,
+    string const& accountName,
     SecureString const & passwordSecret,
     X509StoreLocation::Enum storeLocation,
-    wstring const & x509StoreName,
-    wstring const & x509Thumbprint,
+    string const & x509StoreName,
+    string const & x509Thumbprint,
     __inout SecureString & password)
 {
     TraceInfo(
@@ -501,9 +501,9 @@ ErrorCode AccountHelper::GeneratePasswordForNTLMAuthenticatedUser(
     errorCode = cryptoUtil.DeriveKey(hashedSignedMsg, derivedKey);
     if(!errorCode.IsSuccess()) return errorCode;
 
-    wstring str = move(accountName + passwordSecret.GetPlaintext());
+    string str = move(accountName + passwordSecret.GetPlaintext());
     auto dataInputForHmac = StringToByteBuffer(str);
-    SecureZeroMemory((void*)str.c_str(), str.size() * sizeof(wchar_t));
+    SecureZeroMemory((void*)str.c_str(), str.size() * sizeof(char));
 
     ByteBuffer hashedData;
     errorCode = cryptoUtil.ComputeHmac(dataInputForHmac, derivedKey, hashedData);
@@ -614,14 +614,14 @@ ErrorCode AccountHelper::GeneratePasswordForNTLMAuthenticatedUser(
         return errorCode;
     }
 
-    wstring hashData = move(accountName + passwordSecret.GetPlaintext());
+    string hashData = move(accountName + passwordSecret.GetPlaintext());
 
     auto result = CryptHashData(
         hHmacHash,
         (BYTE *)hashData.c_str(),
-        (DWORD)hashData.size() * sizeof(WCHAR),
+        (DWORD)hashData.size() * sizeof(CHAR),
         0);
-    SecureZeroMemory((void *)hashData.c_str(), hashData.size() * sizeof(WCHAR));
+    SecureZeroMemory((void *)hashData.c_str(), hashData.size() * sizeof(CHAR));
 
     if(!result)
     {
@@ -655,7 +655,7 @@ ErrorCode AccountHelper::GeneratePasswordForNTLMAuthenticatedUser(
     }
 #endif
 
-    wstring value;
+    string value;
     StringWriter writer(value);
     writer.Write("{0}", PasswordPrefix);
     for(auto it = hashedData.begin(); it != hashedData.end(); ++it)
@@ -668,13 +668,13 @@ ErrorCode AccountHelper::GeneratePasswordForNTLMAuthenticatedUser(
     return ErrorCodeValue::Success;
 }
 
-ErrorCode AccountHelper::GeneratePasswordForNTLMAuthenticatedUser(wstring const& accountName, SecureString const & passwordSecret, __inout SecureString & password)
+ErrorCode AccountHelper::GeneratePasswordForNTLMAuthenticatedUser(string const& accountName, SecureString const & passwordSecret, __inout SecureString & password)
 {
 #if defined(PLATFORM_UNIX)
 
-    wstring str = move(accountName + passwordSecret.GetPlaintext());
+    string str = move(accountName + passwordSecret.GetPlaintext());
     auto hashInput = StringToByteBuffer(str);
-    SecureZeroMemory((void*)str.c_str(), str.size() * sizeof(wchar_t));
+    SecureZeroMemory((void*)str.c_str(), str.size() * sizeof(char));
 
     ByteBuffer hashedData;
     auto errorCode = LinuxCryptUtil().ComputeHash(hashInput, hashedData);
@@ -698,11 +698,11 @@ ErrorCode AccountHelper::GeneratePasswordForNTLMAuthenticatedUser(wstring const&
 
     if(result)
     {
-        wstring hashData = move(accountName + passwordSecret.GetPlaintext());
+        string hashData = move(accountName + passwordSecret.GetPlaintext());
 
-        result = CryptHashData(hHash, (BYTE *)hashData.c_str(), (DWORD)hashData.size() * sizeof(WCHAR), 0);
+        result = CryptHashData(hHash, (BYTE *)hashData.c_str(), (DWORD)hashData.size() * sizeof(CHAR), 0);
 
-        SecureZeroMemory((void *)hashData.c_str(), hashData.size() * sizeof(WCHAR));
+        SecureZeroMemory((void *)hashData.c_str(), hashData.size() * sizeof(CHAR));
     }
 
     DWORD dataSize = 0;
@@ -733,7 +733,7 @@ ErrorCode AccountHelper::GeneratePasswordForNTLMAuthenticatedUser(wstring const&
 
 #endif
 
-    wstring value;
+    string value;
     StringWriter writer(value);
     writer.Write("{0}", PasswordPrefix);
     for(auto it = hashedData.begin(); it != hashedData.end(); ++it)
@@ -767,7 +767,7 @@ bool AccountHelper::GenerateRandomPassword(__out SecureString & password)
             return false;
         }
 
-        wstring value;
+        string value;
         StringWriter writer(value);
         writer.Write("{0}", PasswordPrefix);
         for(DWORD i = 0; i < RandomDigitsInPassword; ++i)

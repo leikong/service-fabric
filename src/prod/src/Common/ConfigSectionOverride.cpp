@@ -14,7 +14,7 @@ ConfigSectionOverride::ConfigSectionOverride()
 {
 }
 
-ConfigSectionOverride::ConfigSectionOverride(std::wstring && name, ParametersMapType && parameters) :
+ConfigSectionOverride::ConfigSectionOverride(std::string && name, ParametersMapType && parameters) :
     Name(move(name)),
     Parameters(move(parameters))
 {

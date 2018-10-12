@@ -9,23 +9,23 @@ using namespace std;
 
 namespace Common
 {
-    GlobalWString NamingUri::NameUriScheme = make_global<std::wstring>(L"fabric");
-    GlobalWString NamingUri::RootAuthority = make_global<std::wstring>(L"");
-    GlobalWString NamingUri::RootNamingUriString = make_global<std::wstring>(L"fabric:");
-    GlobalWString NamingUri::InvalidRootNamingUriString = make_global<std::wstring>(L"fabric://");
-    GlobalWString NamingUri::NamingUriConcatenationReservedTokenDelimiter = make_global<std::wstring>(L"+");
+    GlobalString NamingUri::NameUriScheme = make_global<std::string>("fabric");
+    GlobalString NamingUri::RootAuthority = make_global<std::string>("");
+    GlobalString NamingUri::RootNamingUriString = make_global<std::string>("fabric:");
+    GlobalString NamingUri::InvalidRootNamingUriString = make_global<std::string>("fabric://");
+    GlobalString NamingUri::NamingUriConcatenationReservedTokenDelimiter = make_global<std::string>("+");
     // All reserved token delimiters should be listed here.
-    GlobalWString NamingUri::ReservedTokenDelimiters = make_global<std::wstring>(L"$+|~");
-    Global<NamingUri> NamingUri::RootNamingUri = make_global<NamingUri>(L"");
-    GlobalWString NamingUri::SegmentDelimiter = make_global<std::wstring>(L"/");
-    GlobalWString NamingUri::HierarchicalNameDelimiter = make_global<std::wstring>(L"~");
+    GlobalString NamingUri::ReservedTokenDelimiters = make_global<std::string>("$+|~");
+    Global<NamingUri> NamingUri::RootNamingUri = make_global<NamingUri>("");
+    GlobalString NamingUri::SegmentDelimiter = make_global<std::string>("/");
+    GlobalString NamingUri::HierarchicalNameDelimiter = make_global<std::string>("~");
 
     NamingUri::NamingUri(
-        std::wstring const & scheme,
-        std::wstring const & authority,
-        std::wstring const & path,
-        std::wstring const & query,
-        std::wstring const & fragment)
+        std::string const & scheme,
+        std::string const & authority,
+        std::string const & path,
+        std::string const & query,
+        std::string const & fragment)
         : Uri(scheme, authority, path, query, fragment)
     {
         ASSERT_IFNOT(IsNamingUri(*this), "Invalid naming uri");
@@ -43,10 +43,10 @@ namespace Common
             return NamingUri::RootNamingUri;
         }
 
-        size_t index = Path.find_last_of(L"/");
-        ASSERT_IF(index == wstring::npos, "No / in path?");
+        size_t index = Path.find_last_of("/");
+        ASSERT_IF(index == string::npos, "No / in path?");
 
-        wstring truncPath = Path.substr(0, index);
+        string truncPath = Path.substr(0, index);
         return NamingUri(truncPath);
     }
 
@@ -77,9 +77,9 @@ namespace Common
         return Uri::IsPrefixOf(other);
     }
 
-    bool NamingUri::TryParse(std::wstring const & input, __out NamingUri & output)
+    bool NamingUri::TryParse(std::string const & input, __out NamingUri & output)
     {
-        if (StringUtility::StartsWith<std::wstring>(input, InvalidRootNamingUriString))
+        if (StringUtility::StartsWith<std::string>(input, InvalidRootNamingUriString))
         {
             Trace.WriteWarning(
                 Uri::TraceCategory,
@@ -105,13 +105,13 @@ namespace Common
             return false;
         }
 
-        std::wstring tempName(name);
+        std::string tempName(name);
         return NamingUri::TryParse(tempName, /*out*/output);
     }
 
     HRESULT NamingUri::TryParse(
         FABRIC_URI name,
-        std::wstring const & traceId,
+        std::string const & traceId,
         __out NamingUri & nameUri)
     {
         // Validate and parse the input name pointer
@@ -136,7 +136,7 @@ namespace Common
             return error.ToHResult();
         }
 
-        std::wstring tempName(name);
+        std::string tempName(name);
         if (!NamingUri::TryParse(tempName, /*out*/nameUri))
         {
             Trace.WriteWarning(Uri::TraceCategory, traceId, "{0}: Input uri is not a valid naming uri.", tempName);
@@ -154,7 +154,7 @@ namespace Common
         // Validate and parse the input name pointer
         if (name == NULL)
         {
-            ErrorCode innerError(ErrorCodeValue::ArgumentNull, wformatString("{0} {1}.", GET_COMMON_RC(Invalid_Null_Pointer), parameterName));
+            ErrorCode innerError(ErrorCodeValue::ArgumentNull, formatString.L("{0} {1}.", GET_COMMON_RC(Invalid_Null_Pointer), parameterName));
             Trace.WriteWarning(Uri::TraceCategory, "NamingUri::TryParse: {0}: {1}", innerError, innerError.Message);
             return innerError;
         }
@@ -167,15 +167,15 @@ namespace Common
         {
             ErrorCode innerError(
                 ErrorCodeValue::InvalidArgument,
-                wformatString("{0} {1}, {2}, {3}.", GET_COMMON_RC(Invalid_LPCWSTR_Length), parameterName, ParameterValidator::MinStringSize, CommonConfig::GetConfig().MaxNamingUriLength));
+                formatString.L("{0} {1}, {2}, {3}.", GET_COMMON_RC(Invalid_LPCSTR_Length), parameterName, ParameterValidator::MinStringSize, CommonConfig::GetConfig().MaxNamingUriLength));
             Trace.WriteWarning(Uri::TraceCategory, "NamingUri::TryParse: {0}: {1}", innerError, innerError.Message);
             return innerError;
         }
 
-        std::wstring tempName(name);
+        std::string tempName(name);
         if (!NamingUri::TryParse(tempName, /*out*/nameUri))
         {
-            ErrorCode innerError(ErrorCodeValue::InvalidNameUri, wformatString("{0} {1}.", GET_NAMING_RC(Invalid_Uri), tempName));
+            ErrorCode innerError(ErrorCodeValue::InvalidNameUri, formatString.L("{0} {1}.", GET_NAMING_RC(Invalid_Uri), tempName));
             Trace.WriteWarning(Uri::TraceCategory, "NamingUri::TryParse: {0}: {1}", innerError, innerError.Message);
             return innerError;
         }
@@ -184,8 +184,8 @@ namespace Common
     }
 
     ErrorCode NamingUri::TryParse(
-        std::wstring const & nameText,
-        std::wstring const & traceId,
+        std::string const & nameText,
+        std::string const & traceId,
         __out NamingUri & nameUri)
     {
         auto error = ParameterValidator::IsValid(
@@ -194,9 +194,9 @@ namespace Common
             CommonConfig::GetConfig().MaxNamingUriLength);
         if (!error.IsSuccess())
         {
-            ErrorCode innerError(ErrorCodeValue::InvalidNameUri, wformatString(
+            ErrorCode innerError(ErrorCodeValue::InvalidNameUri, formatString(
                 "{0} {1} {2}, {3}.", 
-                GET_COMMON_RC(Invalid_LPCWSTR_Length), 
+                GET_COMMON_RC(Invalid_LPCSTR_Length), 
                 nameText, 
                 ParameterValidator::MinStringSize, 
                 CommonConfig::GetConfig().MaxNamingUriLength));
@@ -206,7 +206,7 @@ namespace Common
 
         if (!TryParse(nameText, nameUri))
         {
-            ErrorCode innerError(ErrorCodeValue::InvalidNameUri, wformatString("{0} {1}.", GET_NAMING_RC(Invalid_Uri), nameText));
+            ErrorCode innerError(ErrorCodeValue::InvalidNameUri, formatString.L("{0} {1}.", GET_NAMING_RC(Invalid_Uri), nameText));
             Trace.WriteWarning(Uri::TraceCategory, traceId, "NamingUri::TryParse: {0}: {1}", innerError, innerError.Message);
             return innerError;
         }
@@ -235,7 +235,7 @@ namespace Common
         }
 
         // Disallow empty segments
-        if (StringUtility::Contains<wstring>(question.Path, L"//"))
+        if (StringUtility::Contains<string>(question.Path, "//"))
         {
             Trace.WriteWarning(
                 Uri::TraceCategory,
@@ -247,8 +247,8 @@ namespace Common
         // List of reserved characters
         for (auto delimiterIt = ReservedTokenDelimiters->begin(); delimiterIt != ReservedTokenDelimiters->end(); ++delimiterIt)
         {
-            wstring delimiter = wformatString("{0}", *delimiterIt);
-            if (StringUtility::Contains<wstring>(question.Path, delimiter))
+            string delimiter = formatString.L("{0}", *delimiterIt);
+            if (StringUtility::Contains<string>(question.Path, delimiter))
             {
                 Trace.WriteWarning(
                     Uri::TraceCategory,
@@ -260,7 +260,7 @@ namespace Common
         }
 
         // Disallow trailing slash
-        if ((question.Path.size() > 0) && (question.Path[question.Path.size() - 1] == L'/'))
+        if ((question.Path.size() > 0) && (question.Path[question.Path.size() - 1] == '/'))
         {
             Trace.WriteWarning(
                 Uri::TraceCategory,
@@ -272,46 +272,46 @@ namespace Common
         return true;
     }
 
-    ErrorCode NamingUri::ValidateName(NamingUri const & uri, std::wstring const & uriString, bool allowFragment)
+    ErrorCode NamingUri::ValidateName(NamingUri const & uri, std::string const & uriString, bool allowFragment)
     {
         if (uri == NamingUri::RootNamingUri)
         {
             return ErrorCode(
                 ErrorCodeValue::AccessDenied,
-                wformatString(GET_COMMON_RC(InvalidOperationOnRootNameURI), uriString));
+                formatString(GET_COMMON_RC(InvalidOperationOnRootNameURI), uriString));
         }
 
         if (uriString.size() > static_cast<size_t>(CommonConfig::GetConfig().MaxNamingUriLength))
         {
             return ErrorCode(
                 ErrorCodeValue::InvalidNameUri,
-                wformatString(GET_COMMON_RC(InvalidNameExceedsMaxSize), uriString, uriString.size(), CommonConfig::GetConfig().MaxNamingUriLength));
+                formatString(GET_COMMON_RC(InvalidNameExceedsMaxSize), uriString, uriString.size(), CommonConfig::GetConfig().MaxNamingUriLength));
         }
 
         if (!uri.Query.empty())
         {
             return ErrorCode(
                 ErrorCodeValue::InvalidNameUri,
-                wformatString(GET_COMMON_RC(InvalidNameQueryCharacter), uriString));
+                formatString(GET_COMMON_RC(InvalidNameQueryCharacter), uriString));
         }
 
         if (allowFragment && !uri.Fragment.empty())
         {
             return ErrorCode(
                 ErrorCodeValue::InvalidNameUri,
-                wformatString(GET_COMMON_RC(InvalidNameServiceGroupCharacter), uriString));
+                formatString(GET_COMMON_RC(InvalidNameServiceGroupCharacter), uriString));
         }
 
         return ErrorCode::Success();
     }
 
-    bool NamingUri::TryCombine(std::wstring const & path, __out NamingUri & result) const
+    bool NamingUri::TryCombine(std::string const & path, __out NamingUri & result) const
     {
-        wstring temp(this->ToString());
+        string temp(this->ToString());
 
         if (!path.empty())
         {
-            temp.append(L"/");
+            temp.append("/");
             temp.append(path);
         }
 
@@ -325,7 +325,7 @@ namespace Common
         return false;
     }
 
-    NamingUri NamingUri::Combine(NamingUri const & name, wstring const & path)
+    NamingUri NamingUri::Combine(NamingUri const & name, string const & path)
     {
         NamingUri result;
         if (!name.TryCombine(path, result))
@@ -336,54 +336,54 @@ namespace Common
         return result;
     }
 
-    ErrorCode NamingUri::FabricNameToId(std::wstring const & name, __inout std::wstring &escapedId)
+    ErrorCode NamingUri::FabricNameToId(std::string const & name, __inout std::string &escapedId)
     {
-        std::wstring temp = name;
-        StringUtility::TrimLeading<std::wstring>(temp, NamingUri::RootNamingUriString);
-        StringUtility::TrimLeading<std::wstring>(temp, NamingUri::SegmentDelimiter);
+        std::string temp = name;
+        StringUtility::TrimLeading<std::string>(temp, NamingUri::RootNamingUriString);
+        StringUtility::TrimLeading<std::string>(temp, NamingUri::SegmentDelimiter);
 
         return EscapeString(temp, escapedId);
     }
 
-    ErrorCode NamingUri::FabricNameToId(std::wstring const & name, bool useDelimiter, __inout std::wstring &escapedId)
+    ErrorCode NamingUri::FabricNameToId(std::string const & name, bool useDelimiter, __inout std::string &escapedId)
     {
-        std::wstring temp = name;
-        std::wstring tempId;
+        std::string temp = name;
+        std::string tempId;
         NamingUri::FabricNameToId(temp, tempId);
         if (useDelimiter)
         {
-            StringUtility::Replace<std::wstring>(tempId, NamingUri::SegmentDelimiter, NamingUri::HierarchicalNameDelimiter);
+            StringUtility::Replace<std::string>(tempId, NamingUri::SegmentDelimiter, NamingUri::HierarchicalNameDelimiter);
         }
 
         return EscapeString(tempId, escapedId);
     }
 
-    ErrorCode NamingUri::IdToFabricName(std::wstring const& scheme, std::wstring const& id, __inout std::wstring &name)
+    ErrorCode NamingUri::IdToFabricName(std::string const& scheme, std::string const& id, __inout std::string &name)
     {
         ASSERT_IF(scheme.empty(), "IdToFabricName - scheme cannot be empty");
 
-        std::wstring escapedId;
+        std::string escapedId;
         auto error = UnescapeString(id, escapedId);
         if (!error.IsSuccess())
         {
             return error;
         }
 
-        StringUtility::Replace<std::wstring>(escapedId, NamingUri::HierarchicalNameDelimiter, NamingUri::SegmentDelimiter);
-        name = wformatString("{0}{1}{2}", scheme, *NamingUri::SegmentDelimiter, escapedId);
+        StringUtility::Replace<std::string>(escapedId, NamingUri::HierarchicalNameDelimiter, NamingUri::SegmentDelimiter);
+        name = formatString.L("{0}{1}{2}", scheme, *NamingUri::SegmentDelimiter, escapedId);
         return ErrorCode::Success();
     }
 
-    void NamingUri::ParseHost(std::wstring & input, std::wstring & host, std::wstring & remain)
+    void NamingUri::ParseHost(std::string & input, std::string & host, std::string & remain)
     {
         input = input.substr(1, std::string::npos);
-        std::size_t nextFound = remain.find(L"/");
+        std::size_t nextFound = remain.find("/");
         if (nextFound == std::string::npos)
         {
-            nextFound = remain.find(L"?");
+            nextFound = remain.find("?");
             if (nextFound == std::string::npos)
             {
-                nextFound = remain.find(L"#");
+                nextFound = remain.find("#");
                 if (nextFound == std::string::npos)
                 {
                     nextFound = input.length();
@@ -391,17 +391,17 @@ namespace Common
             }
         }
 
-        host = L"/";
+        host = "/";
         host = host + input.substr(0, nextFound);
         remain = input.substr(nextFound, std::string::npos);
     }
 
-    void NamingUri::ParsePath(std::wstring & input, std::wstring & path, std::wstring & remain)
+    void NamingUri::ParsePath(std::string & input, std::string & path, std::string & remain)
     {
-        std::size_t nextFound = remain.find(L"?");
+        std::size_t nextFound = remain.find("?");
         if (nextFound == std::string::npos)
         {
-            nextFound = remain.find(L"#");
+            nextFound = remain.find("#");
             if (nextFound == std::string::npos)
             {
                 nextFound = input.length();
@@ -412,10 +412,10 @@ namespace Common
         remain = input.substr(nextFound, std::string::npos);
     }
 
-    ErrorCode NamingUri::ParseUnsafeUri(std::wstring const & input, std::wstring & protocol, std::wstring & host, std::wstring & path, std::wstring & queryFragment)
+    ErrorCode NamingUri::ParseUnsafeUri(std::string const & input, std::string & protocol, std::string & host, std::string & path, std::string & queryFragment)
     {
-        std::size_t protocolFound = input.find(L":/");
-        std::wstring remain;
+        std::size_t protocolFound = input.find(":/");
+        std::string remain;
         if (protocolFound != std::string::npos)
         {
             protocol = input.substr(0, protocolFound + 2);
@@ -438,17 +438,17 @@ namespace Common
         return ErrorCodeValue::Success;
     }
 
-    ErrorCode NamingUri::EscapeString(std::wstring const & input, __inout std::wstring &output)
+    ErrorCode NamingUri::EscapeString(std::string const & input, __inout std::string &output)
     {
 #if defined(PLATFORM_UNIX)
-        std::wstring protocol;
-        std::wstring host;
-        std::wstring path;
-        std::wstring queryFragment;
+        std::string protocol;
+        std::string host;
+        std::string path;
+        std::string queryFragment;
         ErrorCode result = ParseUnsafeUri(input, protocol, host, path, queryFragment);
 
         std::string pathString;
-        StringUtility::Utf16ToUtf8(path, pathString);
+        Utf16ToUtf8NotNeeded2(path, pathString);
         static const char lookup[] = "0123456789ABCDEF";
         std::ostringstream out;
         for (std::string::size_type i = 0; i < pathString.length(); i++) {
@@ -476,19 +476,19 @@ namespace Common
                 out << c;
             }
         }
-        std::wstring pathEscape;
-        StringUtility::Utf8ToUtf16(out.str(), pathEscape);
+        std::string pathEscape;
+        Utf8ToUtf16NotNeeded2(out.str(), pathEscape);
         output = protocol + host + pathEscape + queryFragment;
 #else
         DWORD size = 1;
-        std::vector<WCHAR> buffer;
+        std::vector<CHAR> buffer;
         buffer.resize(size);
 
-        HRESULT hr = UrlEscape(const_cast<WCHAR*>(input.data()), buffer.data(), &size, URL_ESCAPE_AS_UTF8);
+        HRESULT hr = UrlEscape(const_cast<CHAR*>(input.data()), buffer.data(), &size, URL_ESCAPE_AS_UTF8);
         if (FAILED(hr) && hr == E_POINTER)
         {
             buffer.resize(size);
-            hr = UrlEscape(const_cast<WCHAR*>(input.data()), buffer.data(), &size, URL_ESCAPE_AS_UTF8);
+            hr = UrlEscape(const_cast<CHAR*>(input.data()), buffer.data(), &size, URL_ESCAPE_AS_UTF8);
             if (FAILED(hr))
             {
                 return ErrorCode::FromHResult(hr);
@@ -504,18 +504,18 @@ namespace Common
         return ErrorCodeValue::Success;
     }
 
-    ErrorCode NamingUri::UnescapeString(std::wstring const& input, __inout std::wstring& output)
+    ErrorCode NamingUri::UnescapeString(std::string const& input, __inout std::string& output)
     {
 #if defined(PLATFORM_UNIX)
-        std::wstring protocol;
-        std::wstring host;
-        std::wstring path;
-        std::wstring queryFragment;
+        std::string protocol;
+        std::string host;
+        std::string path;
+        std::string queryFragment;
         ErrorCode result = ParseUnsafeUri(input, protocol, host, path, queryFragment);
 
         std::ostringstream out;
         std::string pathString;
-        StringUtility::Utf16ToUtf8(path, pathString);
+        Utf16ToUtf8NotNeeded2(path, pathString);
         for (std::string::size_type i = 0; i < pathString.length(); i++) {
             if (pathString.at(i) == '%') {
                 std::string temp(pathString.substr(i + 1, 2));
@@ -529,19 +529,19 @@ namespace Common
                 out << pathString.at(i);
             }
         }
-        std::wstring pathUnescape;
-        StringUtility::Utf8ToUtf16(out.str(), pathUnescape);
+        std::string pathUnescape;
+        Utf8ToUtf16NotNeeded2(out.str(), pathUnescape);
         output = protocol + host + pathUnescape + queryFragment;
 #else
         DWORD size = 1;
-        std::vector<WCHAR> buffer;
+        std::vector<CHAR> buffer;
         buffer.resize(size);
 
-        HRESULT hr = UrlUnescape(const_cast<WCHAR*>(input.data()), buffer.data(), &size, URL_UNESCAPE_AS_UTF8);
+        HRESULT hr = UrlUnescape(const_cast<CHAR*>(input.data()), buffer.data(), &size, URL_UNESCAPE_AS_UTF8);
         if (FAILED(hr) && hr == E_POINTER)
         {
             buffer.resize(size);
-            hr = UrlUnescape(const_cast<WCHAR*>(input.data()), buffer.data(), &size, URL_UNESCAPE_AS_UTF8);
+            hr = UrlUnescape(const_cast<CHAR*>(input.data()), buffer.data(), &size, URL_UNESCAPE_AS_UTF8);
             if (FAILED(hr))
             {
                 return ErrorCodeValue::InvalidNameUri;
@@ -557,12 +557,12 @@ namespace Common
         return ErrorCode::Success();
     }
 
-    ErrorCode NamingUri::UrlEscapeString(std::wstring const & input, std::wstring & output)
+    ErrorCode NamingUri::UrlEscapeString(std::string const & input, std::string & output)
     {
         // Clear the output because we are appending to it.
         output.clear();
 
-        wstring basicEncodedStr;
+        string basicEncodedStr;
 
         // First call escape string
         auto error = NamingUri::EscapeString(input, basicEncodedStr);
@@ -595,91 +595,91 @@ namespace Common
         // caret("^")
         // space(" ")
         // percent ("%") is not encoded here because it cannot be encoded twice.
-        for (wchar_t c : basicEncodedStr)
+        for (char c : basicEncodedStr)
         {
-            if (c == L',')          // ,
+            if (c == ',')          // ,
             {
-                output += L"%2C";
+                output += "%2C";
             }
-            else if (c == L':')     // :
+            else if (c == ':')     // :
             {
-                output += L"%3A";
+                output += "%3A";
             }
-            else if (c == L'$')     // $
+            else if (c == '$')     // $
             {
-                output += L"%24";
+                output += "%24";
             }
-            else if (c == L'+')     // +
+            else if (c == '+')     // +
             {
-                output += L"%2B";
+                output += "%2B";
             }
-            else if (c == L';')     // ;
+            else if (c == ';')     // ;
             {
-                output += L"%3B";
+                output += "%3B";
             }
-            else if (c == L'=')     // =
+            else if (c == '=')     // =
             {
-                output += L"%3D";
+                output += "%3D";
             }
-            else if (c == L'@')     // @
+            else if (c == '@')     // @
             {
-                output += L"%40";
+                output += "%40";
             } // The following may never be called since EscapeString may have already taken care of them (OS dependent)
-            else if (c == L'&')     // &
+            else if (c == '&')     // &
             {
-                output += L"%26";
+                output += "%26";
             }
-            else if (c == L'/')     // / (forward slash)
+            else if (c == '/')     // / (forward slash)
             {
-                output += L"%2F";
+                output += "%2F";
             }
-            else if (c == L'\\')     // back slash
+            else if (c == '\\')     // back slash
             {
-                output += L"%5C";
+                output += "%5C";
             }
-            else if (c == L'?')     // ?
+            else if (c == '?')     // ?
             {
-                output += L"%3F";
+                output += "%3F";
             }
-            else if (c == L'#')     // #
+            else if (c == '#')     // #
             {
-                output += L"%23";
+                output += "%23";
             }
-            else if (c == L'<')     // <
+            else if (c == '<')     // <
             {
-                output += L"%3C";
+                output += "%3C";
             }
-            else if (c == L'>')     // >
+            else if (c == '>')     // >
             {
-                output += L"%3E";
+                output += "%3E";
             }
-            else if (c == L'[')     // [
+            else if (c == '[')     // [
             {
-                output += L"%5B";
+                output += "%5B";
             }
-            else if (c == L']')     // ]
+            else if (c == ']')     // ]
             {
-                output += L"%5D";
+                output += "%5D";
             }
-            else if (c == L'{')     // {
+            else if (c == '{')     // {
             {
-                output += L"%7B";
+                output += "%7B";
             }
-            else if (c == L'}')     // }
+            else if (c == '}')     // }
             {
-                output += L"%7D";
+                output += "%7D";
             }
-            else if (c == L'|')     // |
+            else if (c == '|')     // |
             {
-                output += L"%7C";
+                output += "%7C";
             }            
-            else if (c == L'^')     // ^
+            else if (c == '^')     // ^
             {
-                output += L"%5E";
+                output += "%5E";
             }
-            else if (c == L' ')     // space
+            else if (c == ' ')     // space
             {
-                output += L"%20";
+                output += "%20";
             }
             else
             {

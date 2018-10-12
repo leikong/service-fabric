@@ -43,8 +43,8 @@ namespace Common
 
 #define DEFINE_STRING_RESOURCE( TComponent, TResource, ComponentName, ResourceName ) \
     public: \
-        __declspec(property(get=get_##TResource)) std::wstring const & TResource; \
-        std::wstring const & get_##TResource() const \
+        __declspec(property(get=get_##TResource)) std::string const & TResource; \
+        std::string const & get_##TResource() const \
         { \
             { \
                 Common::AcquireReadLock lock(lock_); \
@@ -55,10 +55,10 @@ namespace Common
             return TResource##_; \
         } \
     private: \
-        mutable std::wstring TResource##_; \
+        mutable std::string TResource##_; \
 
     struct StringResource
     {
-        static std::wstring Get(uint);
+        static std::string Get(uint);
     };
 }

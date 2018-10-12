@@ -106,7 +106,7 @@ namespace Common
         struct WStringValue
         {
             size_t size_;
-            wchar_t const* buffer_;
+            char const* buffer_;
         };
 
         union Value
@@ -118,7 +118,7 @@ namespace Common
             Guid const* valueGuid_;
             double valueDouble_;
             char valueChar_;
-            wchar_t valueWChar_;
+            char valueWChar_;
             StringValue valueString_;
             WStringValue valueWString_;
             StringCollection const* valueStringCollection_;
@@ -154,16 +154,11 @@ namespace Common
         VariableArgument(StopwatchTime value);
         VariableArgument(TimeSpan value);
         VariableArgument(char value);
-        VariableArgument(wchar_t value);
         VariableArgument(char const* value);
         VariableArgument(_In_ char * value);
-        VariableArgument(wchar_t const* value);
-        VariableArgument(_In_ wchar_t * value);
         VariableArgument(std::string const & value);
-        VariableArgument(std::wstring const & value);
         VariableArgument(literal_holder<char> const & value);
-        VariableArgument(literal_holder<wchar_t> const & value);
-        VariableArgument(GlobalWString const & value);
+        VariableArgument(GlobalString const & value);
         VariableArgument(StringCollection const & value);
         VariableArgument(FABRIC_EPOCH const & value);
         VariableArgument(FABRIC_OPERATION_METADATA const & value);

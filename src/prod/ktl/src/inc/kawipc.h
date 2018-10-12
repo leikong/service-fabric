@@ -393,7 +393,7 @@ class KAWIpcSharedMemory : public KObject<KAWIpcSharedMemory>, public KShared<KA
             return(o);
         }
 
-        static WCHAR const * const _SharedMemoryNamePrefix;
+        static CHAR const * const _SharedMemoryNamePrefix;
         static CHAR const * const _SharedMemoryNamePrefixAnsi;
         
     private:
@@ -456,7 +456,7 @@ class KAWIpcEventWaiter : public KAsyncContextBase, public SystemThreadWorker<KA
         //     Name must be a unique name for the event
         //
         static NTSTATUS CreateEventWaiter(
-            __in_opt PWCHAR Name,
+            __in_opt PCHAR Name,
             __out EVENTHANDLEFD& EventHandleFd
             );
 

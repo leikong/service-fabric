@@ -1739,7 +1739,7 @@ class KtlLogManager abstract : public KAsyncServiceBase
             static const ULONG _DefaultMaximumNumberStreamsMin = 3 * 512;
             static const ULONG _DefaultMaximumNumberStreamsMax = 3 * 8192;
             
-            WCHAR Path[512];
+            CHAR Path[512];
             GUID DiskId;
             KtlLogContainerId LogContainerId;
             LONGLONG LogSize;

@@ -75,7 +75,7 @@ CreateTestFileOnVolume(
     __out KWString& TestDirName,
     __out KWString& TestFileName,
     __out KBlockFile::SPtr& File,
-    __in_opt LPCWSTR partialFileName = nullptr
+    __in_opt LPCSTR partialFileName = nullptr
 )
 {
     NTSTATUS status = STATUS_SUCCESS;
@@ -98,7 +98,7 @@ CreateTestFileOnVolume(
 #if !defined(PLATFORM_UNIX)    
     status = KVolumeNamespace::CreateFullyQualifiedRootDirectoryName(VolumeGuid, volumeName);
 #else
-    volumeName = L"/tmp";
+    volumeName = "/tmp";
     status = volumeName.Status();
 #endif
     if (!NT_SUCCESS(status)) {
@@ -106,7 +106,7 @@ CreateTestFileOnVolume(
         goto Finish;
     }    
 
-    testDirName = L"KBlockFileTestDirectory";
+    testDirName = "KBlockFileTestDirectory";
     status = testDirName.Status();
     if (!NT_SUCCESS(status)) {
         KTestPrintf("could not create test dir name %x\n", status);
@@ -133,7 +133,7 @@ CreateTestFileOnVolume(
         goto Finish;
     }
 
-    testFileName = partialFileName != nullptr ? partialFileName : L"TestFile";
+    testFileName = partialFileName != nullptr ? partialFileName : "TestFile";
     status = testFileName.Status();
     if (! NT_SUCCESS(status)) {
 
@@ -220,7 +220,7 @@ ktl::test::file::CreateTestFile(
     __out KWString& TestDirName,
     __out KWString& TestFileName,
     __out KBlockFile::SPtr& File,
-    __in_opt LPCWSTR partialFileName
+    __in_opt LPCSTR partialFileName
     )
 {
     NTSTATUS status = STATUS_SUCCESS;

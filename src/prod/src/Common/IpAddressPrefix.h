@@ -25,11 +25,11 @@ namespace Common {
             ) :
             address( address ),
             prefixLength( prefixLength ),
-            temp_str_(L"")
+            temp_str_("")
         {
             Sockets::Startup();
             this->address.GetIpString(temp_str_);
-            temp_str_.append(L"/" + Int32_ToString(prefixLength));
+            temp_str_.append("/" + Int32_ToString(prefixLength));
         }
 
         bool operator == ( IPPrefix const & rhs ) const;
@@ -97,7 +97,7 @@ namespace Common {
         //        p, less_IPPrefix() );
         //}
 
-        void ToString( std::wstring& buffer ) const ;
+        void ToString( std::string& buffer ) const ;
 
         void WriteTo(TextWriter & w, FormatOptions const &) const;
 
@@ -112,14 +112,14 @@ namespace Common {
             return this->address;
         }
 
-        void GetV4MaskAsString( std::wstring& buffer ) const;
+        void GetV4MaskAsString( std::string& buffer ) const;
 
         void AdjustFixedPrefixForTunnel(Common::Endpoint const & tunnelAddr, Common::IPPrefix const & v4Prefix);
 
         //
         // Zero out all the bits that are not part of the prefix
         // So for example:
-        // IPPrefix( Endpoint( L"fe80::1:2:3:4" ), 112 );
+        // IPPrefix( Endpoint( "fe80::1:2:3:4" ), 112 );
         // would have the address component equal
         // fe80::1:2:3:4.
         // However, after ZeroNonPrefixBits(), the address component
@@ -129,11 +129,11 @@ namespace Common {
         void ZeroNonPrefixBits ();
 
         // friend bool DoesAddressMatchPrefix( Endpoint const &, IPPrefix const & );
-        static std::wstring GetStringNotation(IPPrefix const & prefix){return prefix.temp_str_;}
-        static IPPrefix GetIPPrefix(std::wstring const & prefix)
+        static std::string GetStringNotation(IPPrefix const & prefix){return prefix.temp_str_;}
+        static IPPrefix GetIPPrefix(std::string const & prefix)
         {
-            std::wstring ipAddress, prefixLength;
-            auto index = prefix.find(L"/");
+            std::string ipAddress, prefixLength;
+            auto index = prefix.find("/");
             ipAddress = prefix.substr(0, index);
             prefixLength = prefix.substr(index + 1);
             return IPPrefix(Endpoint(ipAddress), Common::Int32_Parse(prefixLength));
@@ -143,16 +143,16 @@ namespace Common {
 
         
         ///TODO: temporary code.remove
-        inline std::wstring Int32_ToString(int value)
+        inline std::string Int32_ToString(int value)
         {
-            std::wstring result;
+            std::string result;
             StringWriter(result).Write(value);
             return result;
         }
         
         Endpoint address;
         ULONG prefixLength;
-        std::wstring temp_str_;
+        std::string temp_str_;
 
     }; // end class IPPrefix
 

@@ -310,8 +310,8 @@ MBInfoAccess::GenerateFileName(
     // CONSIDER: Remove use of alternate streams
     
     NTSTATUS status;
-    KStringView const fileName1Suffix(L".log:MBInfo");
-    KStringView const fileName2Suffix(L":MBInfo");
+    KStringView const fileName1Suffix(".log:MBInfo");
+    KStringView const fileName2Suffix(":MBInfo");
     KGuid logContainerGuid;
     KString::SPtr guidString;
     BOOLEAN b;
@@ -352,10 +352,10 @@ MBInfoAccess::GenerateFileName(
             return(STATUS_UNSUCCESSFUL);
         }   
 
-        FileName = L"\\GLOBAL??\\Volume";
-        FileName += static_cast<WCHAR*>(*guidString);
+        FileName = "\\GLOBAL??\\Volume";
+        FileName += static_cast<CHAR*>(*guidString);
 #else
-        FileName = L"";
+        FileName = "";
 #endif
 
         logContainerGuid = _ContainerId.GetReference();
@@ -373,11 +373,11 @@ MBInfoAccess::GenerateFileName(
         }   
 
 #if !defined(PLATFORM_UNIX)
-        FileName += L"\\RvdLog\\Log";
+        FileName += "\\RvdLog\\Log";
 #else
-        FileName += L"/RvdLog/Log";
+        FileName += "/RvdLog/Log";
 #endif
-        FileName += static_cast<WCHAR*>(*guidString);
+        FileName += static_cast<CHAR*>(*guidString);
         FileName += fileName1Suffix;
     }
         
@@ -3188,7 +3188,7 @@ SharedLCMBInfoAccess::AsyncAddEntryContext::AddEntryFSM(
                 KInvariant(_Alias->Length() <= KtlLogContainer::MaxAliasLength);
                 ULONG len = min(KtlLogContainer::MaxAliasLength, _Alias->Length());
                 
-                KMemCpySafe(entry->AliasName, sizeof(entry->AliasName), *_Alias, len*sizeof(WCHAR));
+                KMemCpySafe(entry->AliasName, sizeof(entry->AliasName), *_Alias, len*sizeof(CHAR));
                 entry->AliasName[len] = 0;
             } else {
                 *entry->AliasName = 0;
@@ -3201,9 +3201,9 @@ SharedLCMBInfoAccess::AsyncAddEntryContext::AddEntryFSM(
                 
                 KMemCpySafe(
                     entry->PathToDedicatedContainer, 
-                    KtlLogManager::MaxPathnameLengthInChar*sizeof(WCHAR),
+                    KtlLogManager::MaxPathnameLengthInChar*sizeof(CHAR),
                     *_DedicatedContainerPath, 
-                    len*sizeof(WCHAR));
+                    len*sizeof(CHAR));
 
                 entry->PathToDedicatedContainer[len] = 0;
             } else {
@@ -3520,7 +3520,7 @@ SharedLCMBInfoAccess::AsyncUpdateEntryContext::UpdateEntryFSM(
                 KInvariant(_Alias->Length() <= KtlLogContainer::MaxAliasLength);
                 ULONG len = min(KtlLogContainer::MaxAliasLength, _Alias->Length());
                 
-                KMemCpySafe(entry->AliasName, KtlLogManager::MaxPathnameLengthInChar*sizeof(WCHAR), *_Alias, len*sizeof(WCHAR));
+                KMemCpySafe(entry->AliasName, KtlLogManager::MaxPathnameLengthInChar*sizeof(CHAR), *_Alias, len*sizeof(CHAR));
                 entry->AliasName[len] = 0;
             }
 
@@ -3531,9 +3531,9 @@ SharedLCMBInfoAccess::AsyncUpdateEntryContext::UpdateEntryFSM(
                 
                 KMemCpySafe(
                     entry->PathToDedicatedContainer, 
-                    _DedicatedContainerPath->Length()*sizeof(WCHAR), 
+                    _DedicatedContainerPath->Length()*sizeof(CHAR), 
                     *_DedicatedContainerPath, 
-                    len*sizeof(WCHAR));
+                    len*sizeof(CHAR));
 
                 entry->PathToDedicatedContainer[len] = 0;
             }

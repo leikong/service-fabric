@@ -14,21 +14,21 @@ namespace Transport
     namespace ResolveOptions
     {
         _Use_decl_annotations_
-            bool TryParse(wstring const & input, Enum & result)
+            bool TryParse(string const & input, Enum & result)
         {
-            if (StringUtility::AreEqualCaseInsensitive(input, L"unspecified"))
+            if (StringUtility::AreEqualCaseInsensitive(input, "unspecified"))
             {
                 result = Enum::Unspecified;
                 return true;
             }
 
-            if (StringUtility::AreEqualCaseInsensitive(input, L"ipv4"))
+            if (StringUtility::AreEqualCaseInsensitive(input, "ipv4"))
             {
                 result = Enum::IPv4;
                 return true;
             }
 
-            if (StringUtility::AreEqualCaseInsensitive(input, L"ipv6"))
+            if (StringUtility::AreEqualCaseInsensitive(input, "ipv6"))
             {
                 result = Enum::IPv6;
                 return true;
@@ -41,9 +41,9 @@ namespace Transport
         {
             switch (e)
             {
-            case Unspecified: w << L"Unspecified"; return;
-            case IPv4: w << L"IPv4"; return;
-            case IPv6: w << L"IPv6"; return;
+            case Unspecified: w << "Unspecified"; return;
+            case IPv4: w << "IPv4"; return;
+            case IPv6: w << "IPv6"; return;
             }
 
             w << "ResolveOptions(" << static_cast<int>(e) << ')';
@@ -59,7 +59,7 @@ namespace Transport
     };
 }
 
-bool TcpTransportUtility::IsLoopbackAddress(wstring const & address)
+bool TcpTransportUtility::IsLoopbackAddress(string const & address)
 {
     Endpoint endpoint;
     if (TcpTransportUtility::TryParseEndpointString(address, endpoint).IsSuccess())
@@ -67,11 +67,11 @@ bool TcpTransportUtility::IsLoopbackAddress(wstring const & address)
         return endpoint.IsLoopback();
     }
 
-    const wstring localhost = L"localhost:";
+    const string localhost = "localhost:";
     return StringUtility::StartsWithCaseInsensitive(address, localhost);
 }
 
-ErrorCode TcpTransportUtility::GetLocalFqdn(std::wstring & hostname)
+ErrorCode TcpTransportUtility::GetLocalFqdn(std::string & hostname)
 {
     ADDRINFOW hint = {};
     hint.ai_flags = AI_CANONNAME;
@@ -79,7 +79,7 @@ ErrorCode TcpTransportUtility::GetLocalFqdn(std::wstring & hostname)
     PADDRINFOW results = nullptr;
 
     int error = ::GetAddrInfoW(
-        L"",
+        "",
         nullptr,
         &hint,
         &results);
@@ -100,9 +100,9 @@ ErrorCode TcpTransportUtility::GetLocalFqdn(std::wstring & hostname)
         if (results->ai_canonname)
         {
 #ifdef PLATFORM_UNIX
-            StringUtility::Utf8ToUtf16(results->ai_canonname, hostname);
+            Utf8ToUtf16NotNeeded2(results->ai_canonname, hostname);
 #else
-            hostname = wstring(results->ai_canonname);
+            hostname = string(results->ai_canonname);
 #endif
             return ErrorCodeValue::Success;
         }
@@ -116,12 +116,12 @@ ErrorCode TcpTransportUtility::GetLocalFqdn(std::wstring & hostname)
 
 _Use_decl_annotations_
 bool TcpTransportUtility::TryParseHostNameAddress(
-    wstring const & hostnameAddress,
-    wstring & hostnameResult,
+    string const & hostnameAddress,
+    string & hostnameResult,
     USHORT & portResult)
 {
-    size_t delimiterOffset = hostnameAddress.find(L":");
-    if (delimiterOffset == wstring::npos)
+    size_t delimiterOffset = hostnameAddress.find(":");
+    if (delimiterOffset == string::npos)
     {
         WriteError(
             Constants::TcpTrace,
@@ -130,8 +130,8 @@ bool TcpTransportUtility::TryParseHostNameAddress(
         return false;
     }
 
-    wstring hostname = hostnameAddress.substr(0, delimiterOffset);
-    wstring port = hostnameAddress.substr(delimiterOffset + 1);
+    string hostname = hostnameAddress.substr(0, delimiterOffset);
+    string port = hostnameAddress.substr(delimiterOffset + 1);
 
     if (!TryParsePortString(port, portResult))
     {
@@ -149,11 +149,11 @@ bool TcpTransportUtility::TryParseHostNameAddress(
 
 _Use_decl_annotations_
 ErrorCode TcpTransportUtility::TryResolveHostNameAddress(
-    wstring const & hostnameAddress,
+    string const & hostnameAddress,
     ResolveOptions::Enum addressType,
     std::vector<Endpoint> & endpoints)
 {
-    wstring hostname;
+    string hostname;
     USHORT portValue;
 
     if (!TryParseHostNameAddress(hostnameAddress, hostname, portValue))
@@ -202,7 +202,7 @@ bool TcpTransportUtility::IsLocalEndpoint(Common::Endpoint const & endpoint)
 }
 
 _Use_decl_annotations_
-ErrorCode TcpTransportUtility::ResolveToAddresses(wstring const & hostName, ResolveOptions::Enum options, vector<Endpoint> & addresses)
+ErrorCode TcpTransportUtility::ResolveToAddresses(string const & hostName, ResolveOptions::Enum options, vector<Endpoint> & addresses)
 {
     addresses.clear();
 
@@ -394,7 +394,7 @@ _Use_decl_annotations_ ErrorCode TcpTransportUtility::GetFirstLocalAddress(Endpo
     return ErrorCodeValue::InvalidAddress;
 }
 
-Endpoint TcpTransportUtility::ParseEndpointString(wstring const & address)
+Endpoint TcpTransportUtility::ParseEndpointString(string const & address)
 {
     Endpoint endpoint;
 
@@ -406,10 +406,10 @@ Endpoint TcpTransportUtility::ParseEndpointString(wstring const & address)
     Common::Assert::CodingError("Supplied ip address is invalid: {0}", address);
 }
 
-std::wstring TcpTransportUtility::ParseHostString(wstring const & address)
+std::string TcpTransportUtility::ParseHostString(string const & address)
 {
-    wstring host;
-    wstring port;
+    string host;
+    string port;
     if (TcpTransportUtility::TryParseHostPortString(address, host, port).IsSuccess())
     {
         return host;
@@ -418,10 +418,10 @@ std::wstring TcpTransportUtility::ParseHostString(wstring const & address)
     Common::Assert::CodingError("Supplied ip address is invalid: {0}", address);
 }
 
-USHORT TcpTransportUtility::ParsePortString(wstring const & address)
+USHORT TcpTransportUtility::ParsePortString(string const & address)
 {
-    wstring host;
-    wstring port;
+    string host;
+    string port;
     if (TcpTransportUtility::TryParseHostPortString(address, host, port).IsSuccess())
     { 
         USHORT clientConnectionPort = 0;
@@ -434,10 +434,10 @@ USHORT TcpTransportUtility::ParsePortString(wstring const & address)
     Common::Assert::CodingError("Supplied ip address is invalid: {0}", address);
 }
 
-ErrorCode TcpTransportUtility::TryParseEndpointString(std::wstring const & address, Common::Endpoint & endpoint)
+ErrorCode TcpTransportUtility::TryParseEndpointString(std::string const & address, Common::Endpoint & endpoint)
 {
-    wstring host;
-    wstring port;
+    string host;
+    string port;
 
     ErrorCode error = TryParseHostPortString(address, host, port);
     if (!error.IsSuccess())
@@ -465,26 +465,26 @@ ErrorCode TcpTransportUtility::TryParseEndpointString(std::wstring const & addre
     return ErrorCodeValue::Success;;
 }
 
-ErrorCode TcpTransportUtility::TryParseHostPortString(std::wstring const & address, std::wstring & host, std::wstring & port)
+ErrorCode TcpTransportUtility::TryParseHostPortString(std::string const & address, std::string & host, std::string & port)
 {
-    size_t startAddress = address.find(L"[");
+    size_t startAddress = address.find("[");
     size_t endAddress;
     size_t portAddress;
 
-    if (startAddress == wstring::npos) 
+    if (startAddress == string::npos) 
     {
         startAddress = 0;
-        endAddress = address.find(L":");
+        endAddress = address.find(":");
         portAddress = endAddress + 1;
     }
     else
     {
         ++startAddress;
-        endAddress = address.find(L"]:");
+        endAddress = address.find("]:");
         portAddress = endAddress + 2;
     }
 
-    if (endAddress == wstring::npos)
+    if (endAddress == string::npos)
     {
         return ErrorCodeValue::InvalidAddress;
     }
@@ -496,10 +496,10 @@ ErrorCode TcpTransportUtility::TryParseHostPortString(std::wstring const & addre
 }
 
 _Use_decl_annotations_
-bool TcpTransportUtility::TryParsePortString(std::wstring const & portString, USHORT & port)
+bool TcpTransportUtility::TryParsePortString(std::string const & portString, USHORT & port)
 {
     int portLong = 0;
-    if (!(wistringstream(portString) >> portLong))
+    if (!(istringstream(portString) >> portLong))
     {
         return false;
     }
@@ -508,7 +508,7 @@ bool TcpTransportUtility::TryParsePortString(std::wstring const & portString, US
     return (0 <= portLong) && (portLong <= numeric_limits<USHORT>::max());
 }
 
-bool TcpTransportUtility::IsValidEndpointString(std::wstring const & address)
+bool TcpTransportUtility::IsValidEndpointString(std::string const & address)
 {
     Endpoint endpoint;
     return TcpTransportUtility::TryParseEndpointString(address, endpoint).IsSuccess();
@@ -516,7 +516,7 @@ bool TcpTransportUtility::IsValidEndpointString(std::wstring const & address)
 
 void TcpTransportUtility::EnableTcpFastLoopbackIfNeeded(
     Socket & socket,
-    wstring const & traceId)
+    string const & traceId)
 {
     if (!TransportConfig::GetConfig().TcpFastLoopbackEnabled)
     {
@@ -528,8 +528,8 @@ void TcpTransportUtility::EnableTcpFastLoopbackIfNeeded(
     WriteInfo(Constants::TcpTrace, traceId, "enable TCP fast loopback: {0}", error);
 }
 
-wstring TcpTransportUtility::ConstructAddressString(
-    wstring const & ipAddressOrFQDN,
+string TcpTransportUtility::ConstructAddressString(
+    string const & ipAddressOrFQDN,
     uint port)
 {
     Endpoint endpoint;
@@ -537,7 +537,7 @@ wstring TcpTransportUtility::ConstructAddressString(
     if (!error.IsSuccess())
     {
         // domain is hostname
-        wstring result;
+        string result;
         StringWriter(result).Write("{0}:{1}", ipAddressOrFQDN, port);
         return result;
     }

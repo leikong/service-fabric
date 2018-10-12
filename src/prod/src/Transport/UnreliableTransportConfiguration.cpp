@@ -14,7 +14,7 @@ void UnreliableTransportConfiguration::Initialize()
     LoadConfiguration(config_);
 }
 
-TimeSpan UnreliableTransportConfiguration::GetDelay(std::wstring const & source, std::wstring const & destination, std::wstring const & action)
+TimeSpan UnreliableTransportConfiguration::GetDelay(std::string const & source, std::string const & destination, std::string const & action)
 {
     AcquireReadLock lock(specsTableLock_);
 
@@ -33,9 +33,9 @@ TimeSpan UnreliableTransportConfiguration::GetDelay(std::wstring const & source,
     return delay > MaxAllowedDelayInSeconds ? TimeSpan::MaxValue : delay;
 }
 
-TimeSpan ParseTimeSpan(wstring const & data)
+TimeSpan ParseTimeSpan(string const & data)
 {
-    if (StringUtility::AreEqualCaseInsensitive(data, L"Max"))
+    if (StringUtility::AreEqualCaseInsensitive(data, "Max"))
     {
         return TimeSpan::MaxValue;
     }
@@ -53,14 +53,14 @@ bool UnreliableTransportConfiguration::AddSpecification(UnreliableTransportSpeci
     return true;
 }
 
-bool UnreliableTransportConfiguration::AddSpecification(std::wstring const & name, std::wstring const & data)
+bool UnreliableTransportConfiguration::AddSpecification(std::string const & name, std::string const & data)
 {
     StringCollection params;
-    StringUtility::Split<wstring>(data, params, L" ");
+    StringUtility::Split<string>(data, params, " ");
 
-    wstring source = (params.size() > 0 ? params[0] : wstring());
-    wstring destination = (params.size() > 1 ? params[1] : wstring());
-    wstring action = (params.size() > 2 ? params[2] : wstring());
+    string source = (params.size() > 0 ? params[0] : string());
+    string destination = (params.size() > 1 ? params[1] : string());
+    string action = (params.size() > 2 ? params[2] : string());
     double probability = (params.size() > 3 ? Common::Double_Parse(params[3]) : 1.0);
     TimeSpan delay = (params.size() > 4 ? ParseTimeSpan(params[4]) : TimeSpan::MaxValue);
     TimeSpan delaySpan = (params.size() > 5 ? ParseTimeSpan(params[5]) : TimeSpan::Zero);
@@ -70,7 +70,7 @@ bool UnreliableTransportConfiguration::AddSpecification(std::wstring const & nam
     return AddSpecification(make_unique<UnreliableTransportSpecification>(name, source, destination, action, probability, delay, delaySpan, priority, applyCount));
 }
 
-bool UnreliableTransportConfiguration::RemoveSpecification(std::wstring const & name)
+bool UnreliableTransportConfiguration::RemoveSpecification(std::string const & name)
 {
     AcquireExclusiveLock lock(specsTableLock_);
     auto it = remove_if(specifications_.begin(), specifications_.end(),
@@ -87,14 +87,14 @@ bool UnreliableTransportConfiguration::RemoveSpecification(std::wstring const & 
 
 void UnreliableTransportConfiguration::LoadConfiguration(Config & config)
 {
-    wstring section(L"UnreliableTransport");
+    string section("UnreliableTransport");
     StringCollection specKeys;
     config.GetKeys(section, specKeys);
 
-    for(wstring const & key : specKeys)
+    for(string const & key : specKeys)
     {
         bool isEncrypted = false;
-        wstring value = config.ReadString(section, key, isEncrypted);
+        string value = config.ReadString(section, key, isEncrypted);
 
         ASSERT_IF(
             isEncrypted, 

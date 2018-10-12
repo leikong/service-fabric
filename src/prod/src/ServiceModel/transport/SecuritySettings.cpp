@@ -18,7 +18,7 @@ SecuritySettings::SecuritySettings()
 }
 
 _Use_decl_annotations_
-ErrorCode SecuritySettings::CreateNegotiateServer(wstring const & clientIdentity, SecuritySettings & object)
+ErrorCode SecuritySettings::CreateNegotiateServer(string const & clientIdentity, SecuritySettings & object)
 {
     object = SecuritySettings();
 
@@ -34,7 +34,7 @@ ErrorCode SecuritySettings::CreateNegotiateServer(wstring const & clientIdentity
     return ErrorCode::Success();
 }
 _Use_decl_annotations_
-ErrorCode SecuritySettings::CreateNegotiateClient(wstring const & serverIdentity, SecuritySettings & object)
+ErrorCode SecuritySettings::CreateNegotiateClient(string const & serverIdentity, SecuritySettings & object)
 {
     object = SecuritySettings();
 
@@ -49,9 +49,9 @@ ErrorCode SecuritySettings::CreateNegotiateClient(wstring const & serverIdentity
 
 _Use_decl_annotations_
 ErrorCode SecuritySettings::CreateNegotiate(
-wstring const & serverIdentity,
-wstring const & clientIdentities,
-wstring const & protectionLevel,
+string const & serverIdentity,
+string const & clientIdentities,
+string const & protectionLevel,
 SecuritySettings & object)
 {
     object = SecuritySettings();
@@ -59,8 +59,8 @@ SecuritySettings & object)
     object.securityProvider_ = SecurityProvider::Negotiate;
     object.remoteSpn_ = serverIdentity;
 
-    vector<wstring> remoteIdentities;
-    StringUtility::Split<wstring>(clientIdentities, remoteIdentities, L",", true);
+    vector<string> remoteIdentities;
+    StringUtility::Split<string>(clientIdentities, remoteIdentities, ",", true);
     object.remoteIdentities_.insert(remoteIdentities.cbegin(), remoteIdentities.cend());
 
     return ProtectionLevel::Parse(protectionLevel, object.protectionLevel_);
@@ -70,17 +70,17 @@ _Use_decl_annotations_
 ErrorCode SecuritySettings::GenerateClientCert(SecureString & certKey, CertContextUPtr & cert) const
 {
 #ifndef PLATFORM_UNIX
-    wstring commonName = Guid::NewGuid().ToString();
+    string commonName = Guid::NewGuid().ToString();
 
     auto error = CryptoUtility::GenerateExportableKey(
-        L"CN=" + commonName,
+        "CN=" + commonName,
         certKey);
 
     if (!error.IsSuccess()) { return error; }
 
     error = CryptoUtility::CreateSelfSignedCertificate(
-            L"CN=" + commonName,
-            L"CN=" + commonName,
+            "CN=" + commonName,
+            "CN=" + commonName,
             cert);
 
     if (!error.IsSuccess()) { return error; }
@@ -105,12 +105,12 @@ ErrorCode SecuritySettings::CreateSelfGeneratedCertSslServer(SecuritySettings & 
     object.securityProvider_ = SecurityProvider::None;
 #else
 
-    wstring commonName = Guid::NewGuid().ToString();
+    string commonName = Guid::NewGuid().ToString();
 
     CertContextUPtr cert;
     auto error = CryptoUtility::CreateSelfSignedCertificate(
-            L"CN=" + commonName,
-            L"CN=" + commonName,
+            "CN=" + commonName,
+            "CN=" + commonName,
             cert);
     object.certContext_ = make_shared<CertContextUPtr>(move(cert));
 
@@ -135,7 +135,7 @@ ErrorCode SecuritySettings::CreateSelfGeneratedCertSslServer(SecuritySettings & 
 _Use_decl_annotations_
 ErrorCode SecuritySettings::CreateSslClient(
     Common::CertContextUPtr & certContext,
-    wstring const & serverThumbprint,
+    string const & serverThumbprint,
     SecuritySettings & object)
 {
     object = SecuritySettings();
@@ -158,7 +158,7 @@ ErrorCode SecuritySettings::CreateSslClient(
 }
 
 ErrorCode SecuritySettings::CreateSslClient(
-    wstring const & serverThumbprint,
+    string const & serverThumbprint,
     _Out_ SecuritySettings & object)
 {
     object = SecuritySettings();
@@ -167,7 +167,7 @@ ErrorCode SecuritySettings::CreateSslClient(
     object.protectionLevel_ = ProtectionLevel::EncryptAndSign;
 
     object.x509StoreLocation_ = X509StoreLocation::CurrentUser;
-    object.x509StoreName_ = L"MY";
+    object.x509StoreName_ = "MY";
     X509FindValue::Create(X509FindType::FindByThumbprint, serverThumbprint, object.x509FindValue_);
 
     return object.remoteCertThumbprints_.Add(serverThumbprint);
@@ -175,9 +175,9 @@ ErrorCode SecuritySettings::CreateSslClient(
 
 _Use_decl_annotations_
 ErrorCode SecuritySettings::CreateKerberos(
-wstring const & remoteSpn,
-wstring const & clientIdentities,
-wstring const & protectionLevel,
+string const & remoteSpn,
+string const & clientIdentities,
+string const & protectionLevel,
 SecuritySettings & object)
 {
     object = SecuritySettings();
@@ -185,28 +185,28 @@ SecuritySettings & object)
     object.securityProvider_ = SecurityProvider::Kerberos;
     object.remoteSpn_ = remoteSpn;
 
-    vector<wstring> remoteIdentities;
-    StringUtility::Split<wstring>(clientIdentities, remoteIdentities, L",", true);
+    vector<string> remoteIdentities;
+    StringUtility::Split<string>(clientIdentities, remoteIdentities, ",", true);
     object.remoteIdentities_.insert(remoteIdentities.cbegin(), remoteIdentities.cend());
 
     return ProtectionLevel::Parse(protectionLevel, object.protectionLevel_);
 }
 
 _Use_decl_annotations_ ErrorCode SecuritySettings::FromConfiguration(
-    wstring const & credentialType,
-    wstring const & x509StoreName,
-    wstring const & x509StoreLocation,
-    wstring const & x509FindType,
-    wstring const & x509FindValue,
-    wstring const & x509FindValueSecondary,
-    wstring const & protectionLevel,
-    wstring const & remoteCertThumbprints,
+    string const & credentialType,
+    string const & x509StoreName,
+    string const & x509StoreLocation,
+    string const & x509FindType,
+    string const & x509FindValue,
+    string const & x509FindValueSecondary,
+    string const & protectionLevel,
+    string const & remoteCertThumbprints,
     SecurityConfig::X509NameMap const & remoteX509Names,
     SecurityConfig::IssuerStoreKeyValueMap const & remoteCertIssuers,
-    wstring const & remoteCertCommonNames,
-    wstring const & defaultRemoteCertIssuers,
-    wstring const & remoteSpn,
-    wstring const & clientIdentities,
+    string const & remoteCertCommonNames,
+    string const & defaultRemoteCertIssuers,
+    string const & remoteSpn,
+    string const & clientIdentities,
     SecuritySettings & object)
 {
     object = SecuritySettings();
@@ -263,8 +263,8 @@ _Use_decl_annotations_ ErrorCode SecuritySettings::FromConfiguration(
         return ErrorCodeValue::InvalidX509NameList;
     }
 
-    vector<wstring> remoteNamesIssuersUnspecified;
-    StringUtility::Split<wstring>(remoteCertCommonNames, remoteNamesIssuersUnspecified, L",", true);
+    vector<string> remoteNamesIssuersUnspecified;
+    StringUtility::Split<string>(remoteCertCommonNames, remoteNamesIssuersUnspecified, ",", true);
     for (auto const & name : remoteNamesIssuersUnspecified)
     {
         object.remoteX509Names_.Add(name, object.defaultX509IssuerThumbprints_);
@@ -304,11 +304,11 @@ _Use_decl_annotations_ ErrorCode SecuritySettings::FromConfiguration(
 
 _Use_decl_annotations_
 ErrorCode SecuritySettings::CreateClaimTokenClient(
-wstring const & localClaimToken,
-wstring const & serverCertThumbpints,
-wstring const & serverCertCommonNames,
-wstring const & serverCertIssuers,
-wstring const & protectionLevel,
+string const & localClaimToken,
+string const & serverCertThumbpints,
+string const & serverCertCommonNames,
+string const & serverCertIssuers,
+string const & protectionLevel,
 SecuritySettings & object)
 {
     object = SecuritySettings();
@@ -326,8 +326,8 @@ SecuritySettings & object)
     error = object.defaultX509IssuerThumbprints_.SetToThumbprints(serverCertIssuers);
     if (!error.IsSuccess()) return error;
 
-    vector<wstring> svrNames;
-    StringUtility::Split<wstring>(serverCertCommonNames, svrNames, L",", true);
+    vector<string> svrNames;
+    StringUtility::Split<string>(serverCertCommonNames, svrNames, ",", true);
     for (auto const & name : svrNames)
     {
         object.remoteX509Names_.Add(name, object.defaultX509IssuerThumbprints_);
@@ -501,7 +501,7 @@ SecuritySettings & object)
 
         for (ULONG i = 0; i < claimCredentials->IssuerThumbprintCount; ++i)
         {
-            LPCWSTR const& issuerThumbprint = claimCredentials->IssuerThumbprints[i];
+            LPCSTR const& issuerThumbprint = claimCredentials->IssuerThumbprints[i];
             error = object.defaultX509IssuerThumbprints_.AddThumbprint(issuerThumbprint);
             if (!error.IsSuccess())
             {
@@ -568,12 +568,12 @@ SecuritySettings & object)
         if (!error.IsSuccess()) { return error; }
 
         object.x509StoreLocation_ = X509Default::StoreLocation();
-        object.x509StoreName_ = wstring(x509SCredentials->CertLoadPath);
+        object.x509StoreName_ = string(x509SCredentials->CertLoadPath);
         // x509FindValue_ is left empty
 
         for (ULONG i = 0; i < x509SCredentials->RemoteCertThumbprintCount; ++i)
         {
-            LPCWSTR remoteCertThumbprint = x509SCredentials->RemoteCertThumbprints[i];
+            LPCSTR remoteCertThumbprint = x509SCredentials->RemoteCertThumbprints[i];
             error = object.remoteCertThumbprints_.Add(remoteCertThumbprint);
             if (!error.IsSuccess())
             {
@@ -629,7 +629,7 @@ SecuritySettings & object)
     error = X509StoreLocation::FromPublic(x509SCredentials->StoreLocation, object.x509StoreLocation_);
     if (!error.IsSuccess()) { return error; }
 
-    object.x509StoreName_ = wstring(x509SCredentials->StoreName);
+    object.x509StoreName_ = string(x509SCredentials->StoreName);
 #ifndef PLATFORM_UNIX
     if (object.x509StoreName_.empty()) { return ErrorCode(ErrorCodeValue::InvalidX509StoreName); }
 #endif
@@ -646,7 +646,7 @@ SecuritySettings & object)
 
     if (x509SCredentials->Reserved == nullptr)
     {
-        error = X509FindValue::Create(x509SCredentials->FindType, (LPCWSTR)x509SCredentials->FindValue, nullptr, object.x509FindValue_);
+        error = X509FindValue::Create(x509SCredentials->FindType, (LPCSTR)x509SCredentials->FindValue, nullptr, object.x509FindValue_);
         if (!error.IsSuccess()) WriteError(TraceType, "FromPublicApi: X509FindValue::Create(primary) failed: {0}", error);
         return error;
     }
@@ -654,7 +654,7 @@ SecuritySettings & object)
     FABRIC_X509_CREDENTIALS_EX1 const * x509Ex1 = (FABRIC_X509_CREDENTIALS_EX1 const *)(x509SCredentials->Reserved);
     for (ULONG i = 0; i < x509Ex1->IssuerThumbprintCount; ++i)
     {
-        LPCWSTR issuerThumbprint = x509Ex1->IssuerThumbprints[i];
+        LPCSTR issuerThumbprint = x509Ex1->IssuerThumbprints[i];
         error = object.defaultX509IssuerThumbprints_.AddThumbprint(issuerThumbprint);
         if (!error.IsSuccess())
         {
@@ -675,7 +675,7 @@ SecuritySettings & object)
 
     if (x509Ex1->Reserved == nullptr)
     {
-        error = X509FindValue::Create(x509SCredentials->FindType, (LPCWSTR)x509SCredentials->FindValue, nullptr, object.x509FindValue_);
+        error = X509FindValue::Create(x509SCredentials->FindType, (LPCSTR)x509SCredentials->FindValue, nullptr, object.x509FindValue_);
         if (!error.IsSuccess()) WriteError(TraceType, "FromPublicApi: X509FindValue::Create(primary) failed: {0}", error);
         return error;
     }
@@ -683,7 +683,7 @@ SecuritySettings & object)
     FABRIC_X509_CREDENTIALS_EX2 const * x509Ex2 = (FABRIC_X509_CREDENTIALS_EX2 const *)(x509Ex1->Reserved);
     for (ULONG i = 0; i < x509Ex2->RemoteCertThumbprintCount; ++i)
     {
-        LPCWSTR remoteCertThumbprint = x509Ex2->RemoteCertThumbprints[i];
+        LPCSTR remoteCertThumbprint = x509Ex2->RemoteCertThumbprints[i];
         error = object.remoteCertThumbprints_.Add(remoteCertThumbprint);
         if (!error.IsSuccess())
         {
@@ -757,7 +757,7 @@ void SecuritySettings::ToPublicApi(Common::ScopedHeap & heap, FABRIC_SECURITY_CR
             x509SCredentials->CertLoadPath = heap.AddString(x509StoreName_);
 
             x509SCredentials->RemoteCertThumbprintCount = (ULONG)remoteCertThumbprints_.Value().size();
-            auto remoteCertThumbprints = heap.AddArray<LPCWSTR>(remoteCertThumbprints_.Value().size());
+            auto remoteCertThumbprints = heap.AddArray<LPCSTR>(remoteCertThumbprints_.Value().size());
             ULONG index = 0;
             for (auto const & thumbprint : remoteCertThumbprints_.Value())
             {
@@ -811,7 +811,7 @@ void SecuritySettings::ToPublicApi(Common::ScopedHeap & heap, FABRIC_SECURITY_CR
         x509Ex2.Reserved = x509Ex3RPtr.GetRawPointer();
 
         x509Ex2.RemoteCertThumbprintCount = (ULONG)remoteCertThumbprints_.Value().size();
-        auto remoteCertThumbprints = heap.AddArray<LPCWSTR>(remoteCertThumbprints_.Value().size());
+        auto remoteCertThumbprints = heap.AddArray<LPCSTR>(remoteCertThumbprints_.Value().size());
         ULONG index = 0;
         for (auto const & thumbprint : remoteCertThumbprints_.Value())
         {
@@ -849,7 +849,7 @@ void SecuritySettings::ToPublicApi(Common::ScopedHeap & heap, FABRIC_SECURITY_CR
         windowsCredentials->RemoteSpn = heap.AddString(remoteSpn_);
 
         windowsCredentials->RemoteIdentityCount = (ULONG)(remoteIdentities_.size());
-        auto remoteIdentities = heap.AddArray<LPCWSTR>(remoteIdentities_.size());
+        auto remoteIdentities = heap.AddArray<LPCSTR>(remoteIdentities_.size());
         ULONG i = 0;
         for (auto iter = remoteIdentities_.cbegin(); iter != remoteIdentities_.cend(); ++iter, ++i)
         {
@@ -956,9 +956,9 @@ void SecuritySettings::Test_SetRawValues(SecurityProvider::Enum provider, Protec
     this->protectionLevel_ = protectionLevel;
 }
 
-wstring SecuritySettings::ToString() const
+string SecuritySettings::ToString() const
 {
-    wstring result;
+    string result;
     StringWriter(result).Write(*this);
     return result;
 }
@@ -982,19 +982,19 @@ SecuritySettings::IdentitySet const & SecuritySettings::AdminClientIdentities() 
     return adminClientIdentities_;
 }
 
-void SecuritySettings::EnableAdminRole(wstring const & adminClientIdList)
+void SecuritySettings::EnableAdminRole(string const & adminClientIdList)
 {
     isClientRoleInEffect_ = true;
-    vector<wstring> adminClientIdentities;
-    StringUtility::Split<wstring>(adminClientIdList, adminClientIdentities, L",", true);
+    vector<string> adminClientIdentities;
+    StringUtility::Split<string>(adminClientIdList, adminClientIdentities, ",", true);
     adminClientIdentities_.insert(adminClientIdentities.cbegin(), adminClientIdentities.cend());
     remoteIdentities_.insert(adminClientIdentities.cbegin(), adminClientIdentities.cend());
 }
 
 ErrorCode SecuritySettings::EnableAdminRole(
-    wstring const & adminClientCertThumbprints,
+    string const & adminClientCertThumbprints,
     SecurityConfig::X509NameMap const & adminClientX509Names,
-    wstring const & adminClientList)
+    string const & adminClientList)
 {
     isClientRoleInEffect_ = true;
 
@@ -1010,8 +1010,8 @@ ErrorCode SecuritySettings::EnableAdminRole(
     }
 
     adminClientX509Names_ = adminClientX509Names;
-    vector<wstring> adminClientCNs;
-    StringUtility::Split<wstring>(adminClientList, adminClientCNs, L",", true);
+    vector<string> adminClientCNs;
+    StringUtility::Split<string>(adminClientList, adminClientCNs, ",", true);
     for (auto const & name : adminClientCNs)
     {
         adminClientX509Names_.Add(name, defaultX509IssuerThumbprints_);
@@ -1032,7 +1032,7 @@ ErrorCode SecuritySettings::EnableAdminRole(
     return error;
 }
 
-void SecuritySettings::AddClientToAdminRole(std::wstring const & clientIdentity)
+void SecuritySettings::AddClientToAdminRole(std::string const & clientIdentity)
 {
     isClientRoleInEffect_ = true;
 
@@ -1074,7 +1074,7 @@ SecuritySettings::IdentitySet const & SecuritySettings::RemoteIdentities() const
     return remoteIdentities_;
 }
 
-void SecuritySettings::AddRemoteIdentity(std::wstring const & value)
+void SecuritySettings::AddRemoteIdentity(std::string const & value)
 {
     remoteIdentities_.insert(value);
 }
@@ -1094,7 +1094,7 @@ X509StoreLocation::Enum SecuritySettings::X509StoreLocation() const
     return x509StoreLocation_;
 }
 
-wstring const& SecuritySettings::X509StoreName() const
+string const& SecuritySettings::X509StoreName() const
 {
     return x509StoreName_;
 }
@@ -1109,32 +1109,32 @@ ProtectionLevel::Enum SecuritySettings::ProtectionLevel() const
     return protectionLevel_;
 }
 
-wstring const& SecuritySettings::RemoteSpn() const
+string const& SecuritySettings::RemoteSpn() const
 {
     return remoteSpn_;
 }
 
-void SecuritySettings::SetRemoteSpn(std::wstring const & remoteSpn)
+void SecuritySettings::SetRemoteSpn(std::string const & remoteSpn)
 {
     remoteSpn_ = remoteSpn;
 }
 
-wstring const & SecuritySettings::LocalClaimToken() const
+string const & SecuritySettings::LocalClaimToken() const
 {
     return localClaimToken_;
 }
 
-ErrorCode SecuritySettings::StringToRoleClaims(std::wstring const & inputString, RoleClaims & roleClaims)
+ErrorCode SecuritySettings::StringToRoleClaims(std::string const & inputString, RoleClaims & roleClaims)
 {
     // split "Claim && Claim && Claim ..."
-    vector<wstring> claimVector;
-    StringUtility::Split<wstring>(inputString, claimVector, L"&&", true);
+    vector<string> claimVector;
+    StringUtility::Split<string>(inputString, claimVector, "&&", true);
     if (claimVector.empty())
     {
         return ErrorCodeValue::InvalidArgument;
     }
 
-    for (wstring const & claim : claimVector)
+    for (string const & claim : claimVector)
     {
         if (!roleClaims.AddClaim(claim))
         {
@@ -1158,9 +1158,9 @@ bool SecuritySettings::ClaimListToRoleClaim(vector<ServiceModel::Claim> const& c
     return true;
 }
 
-ErrorCode SecuritySettings::StringToRoleClaimsOrList(std::wstring const & inputString, RoleClaimsOrList & roleClaimsOrList)
+ErrorCode SecuritySettings::StringToRoleClaimsOrList(std::string const & inputString, RoleClaimsOrList & roleClaimsOrList)
 {
-    wstring inputCopy = inputString;
+    string inputCopy = inputString;
     StringUtility::TrimWhitespaces(inputCopy);
     if (inputCopy.empty())
     {
@@ -1168,14 +1168,14 @@ ErrorCode SecuritySettings::StringToRoleClaimsOrList(std::wstring const & inputS
     }
 
     // split "RoleClaims || RoleClaims || RoleClaims ..."
-    vector<wstring> roleClaimsVector;
-    StringUtility::Split<wstring>(inputCopy, roleClaimsVector, L"||", true);
+    vector<string> roleClaimsVector;
+    StringUtility::Split<string>(inputCopy, roleClaimsVector, "||", true);
     if (roleClaimsVector.empty())
     {
         return ErrorCodeValue::InvalidArgument;
     }
 
-    for (wstring const & roleClaimsEntry : roleClaimsVector)
+    for (string const & roleClaimsEntry : roleClaimsVector)
     {
         RoleClaims newRoleClaimsEntry;
         auto error = StringToRoleClaims(roleClaimsEntry, newRoleClaimsEntry);
@@ -1190,7 +1190,7 @@ ErrorCode SecuritySettings::StringToRoleClaimsOrList(std::wstring const & inputS
     return ErrorCode();
 }
 
-ErrorCode SecuritySettings::EnableClaimBasedAuthOnClients(wstring const & clientClaimList, wstring const & adminClientClaimList)
+ErrorCode SecuritySettings::EnableClaimBasedAuthOnClients(string const & clientClaimList, string const & adminClientClaimList)
 {
     if (securityProvider_ != SecurityProvider::Ssl)
     {
@@ -1270,9 +1270,9 @@ void SecuritySettings::IdentitySet::WriteTo(Common::TextWriter & w, Common::Form
     }
 }
 
-wstring SecuritySettings::IdentitySet::ToString() const
+string SecuritySettings::IdentitySet::ToString() const
 {
-    wstring result;
+    string result;
     StringWriter(result).Write(*this);
     return result;
 }
@@ -1287,11 +1287,11 @@ SecuritySettings::RoleClaimsOrList const & SecuritySettings::AdminClientClaims()
     return adminClientClaims_;
 }
 
-bool SecuritySettings::RoleClaims::AddClaim(wstring const & claim)
+bool SecuritySettings::RoleClaims::AddClaim(string const & claim)
 {
     // split "ClaimType=ClaimValue"
-    vector<wstring> claimParts;
-    StringUtility::Split<wstring>(claim, claimParts, L"=", true);
+    vector<string> claimParts;
+    StringUtility::Split<string>(claim, claimParts, "=", true);
     if (claimParts.size() != 2)
     {
         return false;
@@ -1300,11 +1300,11 @@ bool SecuritySettings::RoleClaims::AddClaim(wstring const & claim)
     return AddClaim(claimParts.front(), claimParts.back());
 }
 
-bool SecuritySettings::RoleClaims::AddClaim(wstring const & claimType, wstring const & claimValue)
+bool SecuritySettings::RoleClaims::AddClaim(string const & claimType, string const & claimValue)
 {
-    wstring type = claimType;
+    string type = claimType;
     StringUtility::TrimWhitespaces(type);
-    wstring value = claimValue;
+    string value = claimValue;
     StringUtility::TrimWhitespaces(value);
     if (type.empty() || value.empty())
     {
@@ -1314,7 +1314,7 @@ bool SecuritySettings::RoleClaims::AddClaim(wstring const & claimType, wstring c
     auto iter = value_.find(type);
     if ((iter == value_.cend()) || !StringUtility::AreEqualCaseInsensitive(iter->second, value))
     {
-        value_.emplace(pair<wstring, wstring>(move(type), move(value)));
+        value_.emplace(pair<string, string>(move(type), move(value)));
     }
 
     return true;
@@ -1335,7 +1335,7 @@ bool SecuritySettings::RoleClaims::operator != (RoleClaims const & rhs) const
     return !(*this == rhs);
 }
 
-bool SecuritySettings::RoleClaims::Contains(std::wstring const & claimType, std::wstring const & claimValue) const
+bool SecuritySettings::RoleClaims::Contains(std::string const & claimType, std::string const & claimValue) const
 {
     for (auto iter = value_.lower_bound(claimType); iter != value_.upper_bound(claimType); ++iter)
     {
@@ -1375,7 +1375,7 @@ bool SecuritySettings::RoleClaims::IsInRole(RoleClaimsOrList const & roleClaimsO
     return false;
 }
 
-multimap<wstring, wstring, IsLessCaseInsensitiveComparer<wstring>> const & SecuritySettings::RoleClaims::Value() const
+multimap<string, string, IsLessCaseInsensitiveComparer<string>> const & SecuritySettings::RoleClaims::Value() const
 {
     return value_;
 }
@@ -1387,7 +1387,7 @@ void SecuritySettings::RoleClaims::WriteTo(Common::TextWriter & w, Common::Forma
     {
         if (outputGenerated)
         {
-            w.Write(L" && ");
+            w.Write(" && ");
         }
 
         w.Write("{0}={1}", claim.first, claim.second);
@@ -1395,9 +1395,9 @@ void SecuritySettings::RoleClaims::WriteTo(Common::TextWriter & w, Common::Forma
     }
 }
 
-wstring SecuritySettings::RoleClaims::ToString() const
+string SecuritySettings::RoleClaims::ToString() const
 {
-    wstring result;
+    string result;
     StringWriter(result).Write(*this);
     return result;
 }
@@ -1488,9 +1488,9 @@ void SecuritySettings::RoleClaimsOrList::WriteTo(TextWriter & w, FormatOptions c
     }
 }
 
-wstring SecuritySettings::RoleClaimsOrList::ToString() const
+string SecuritySettings::RoleClaimsOrList::ToString() const
 {
-    wstring result;
+    string result;
     StringWriter(result).Write(*this);
     return result;
 }
@@ -1500,7 +1500,7 @@ ThumbprintSet const & SecuritySettings::RemoteCertThumbprints() const
     return remoteCertThumbprints_;
 }
 
-ErrorCode SecuritySettings::SetRemoteCertThumbprints(std::wstring const & thumbprints)
+ErrorCode SecuritySettings::SetRemoteCertThumbprints(std::string const & thumbprints)
 {
     if ((securityProvider_ != SecurityProvider::Ssl) && (securityProvider_ != SecurityProvider::Claims))
     {
@@ -1630,7 +1630,7 @@ ErrorCode SecuritySettings::UpdateRemoteIssuersIfNeeded(SecuritySettings &object
 
 ErrorCode SecuritySettings::AddRemoteX509Name(PCCERT_CONTEXT certContext)
 {
-    wstring commonName;
+    string commonName;
     auto err = CryptoUtility::GetCertificateCommonName(certContext, commonName);
     if (!err.IsSuccess()) return err;
 
@@ -1644,7 +1644,7 @@ ErrorCode SecuritySettings::AddRemoteX509Name(PCCERT_CONTEXT certContext)
 
 ErrorCode SecuritySettings::AddAdminClientX509Name(PCCERT_CONTEXT certContext)
 {
-    wstring commonName;
+    string commonName;
     auto err = CryptoUtility::GetCertificateCommonName(certContext, commonName);
     if (!err.IsSuccess()) return err;
 

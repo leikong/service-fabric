@@ -14,7 +14,7 @@ ConfigSection::ConfigSection()
 {
 }
 
-ConfigSection::ConfigSection(std::wstring && name, ParametersMapType && parameters)
+ConfigSection::ConfigSection(std::string && name, ParametersMapType && parameters)
     : Name(move(name)),
     Parameters(move(parameters))
 {
@@ -122,7 +122,7 @@ void ConfigSection::ToPublicApi(__in ScopedHeap & heap, __out FABRIC_CONFIGURATI
 
 void ConfigSection::Set(ConfigParameter && parameter)
 {
-    wstring parameterName(parameter.Name);
+    string parameterName(parameter.Name);
 
     auto iter = this->Parameters.find(parameterName);
     if (iter != this->Parameters.end())

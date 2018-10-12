@@ -55,24 +55,9 @@ namespace Common
         fail_coding_error(message.c_str());
     }
 
-    __declspec(noreturn) void fail_coding_error(std::wstring const & message)
-    {
-        std::string ansiVersion;
-        try
-        {
-            StringUtility::UnicodeToAnsi(message, ansiVersion);
-        }
-        catch(std::exception const&)
-        {
-             // silently swallowing exceptions to ensure nothing interferes with final behavior
-        }
-
-        fail_coding_error(ansiVersion);
-    }
-
     void LogStackTraceText(StackTrace const & currentStack)
     {        
-        std::wstring stackText;
+        std::string stackText;
         StringWriter writer(stackText);
         writer << currentStack;
         Trace.WriteError(TraceType, "{0}", stackText);
@@ -98,21 +83,6 @@ namespace Common
     __declspec(noreturn) void throw_system_error(std::string const & message, std::error_code error)
     {
         throw_system_error(message.c_str(), error);
-    }
-
-    __declspec(noreturn) void throw_system_error(std::wstring const & message, std::error_code error)
-    {    
-        std::string ansiVersion;
-        try
-        {
-            StringUtility::UnicodeToAnsi(message, ansiVersion);
-        }
-        catch(std::exception const&)
-        {
-             // silently swallowing exceptions to ensure nothing interferes with final behavior
-        }
-
-        throw_system_error(ansiVersion, error);
     }
 
     __declspec(nothrow) void log_system_error(char const * message, std::error_code error)

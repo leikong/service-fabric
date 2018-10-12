@@ -34,7 +34,7 @@ namespace Common
         static void* PthreadFunc(void*);
 
         Common::RwLock lock_;
-        std::wstring id_;
+        std::string id_;
         int epfd_;
         pthread_t tid_;
         FdMap fdMap_;
@@ -46,7 +46,7 @@ namespace Common
     {
     public:
         EventLoopPool(
-            std::wstring const & tag = L"",
+            std::string const & tag = "",
             uint concurrency = 0);
 
         EventLoop& Assign();
@@ -60,7 +60,7 @@ namespace Common
         EventLoop* Assign_CallerHoldingLock();
 
         Common::RwLock lock_;
-        std::wstring id_;
+        std::string id_;
         std::vector<std::unique_ptr<EventLoop>> pool_;
         uint assignmentIndex_;
     };

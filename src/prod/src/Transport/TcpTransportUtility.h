@@ -19,17 +19,17 @@ namespace Transport
         };
 
         _Success_(return)
-        bool TryParse(std::wstring const & input, _Out_ Enum & output);
+        bool TryParse(std::string const & input, _Out_ Enum & output);
         void WriteToTextWriter(Common::TextWriter & w, Enum const & e);
     }
 
     class TcpTransportUtility : public Common::TextTraceComponent<Common::TraceTaskCodes::Transport>
     {
     public:
-        static Common::ErrorCode GetLocalFqdn(std::wstring & hostname);
+        static Common::ErrorCode GetLocalFqdn(std::string & hostname);
 
         static Common::ErrorCode ResolveToAddresses(
-            std::wstring const & hostName,
+            std::string const & hostName,
             ResolveOptions::Enum options,
             _Out_ std::vector<Common::Endpoint> & resolved);
 
@@ -41,43 +41,43 @@ namespace Transport
             _Out_ Common::Endpoint & localAddress,
             ResolveOptions::Enum options = ResolveOptions::Unspecified);
 
-        static bool IsValidEndpointString(std::wstring const & address);
+        static bool IsValidEndpointString(std::string const & address);
 
-        static Common::Endpoint ParseEndpointString(std::wstring const & address);
+        static Common::Endpoint ParseEndpointString(std::string const & address);
 
-        static std::wstring ParseHostString(std::wstring const & address);
+        static std::string ParseHostString(std::string const & address);
 
-        static USHORT ParsePortString(std::wstring const & address);
+        static USHORT ParsePortString(std::string const & address);
 
-        static Common::ErrorCode TryParseEndpointString(std::wstring const & address, Common::Endpoint & endpoint);
+        static Common::ErrorCode TryParseEndpointString(std::string const & address, Common::Endpoint & endpoint);
 
-        static Common::ErrorCode TryParseHostPortString(std::wstring const & address, std::wstring & host, std::wstring & port);
+        static Common::ErrorCode TryParseHostPortString(std::string const & address, std::string & host, std::string & port);
 
         _Success_(return)
-        static bool TryParsePortString(std::wstring const & portString, _Out_ USHORT & port);
+        static bool TryParsePortString(std::string const & portString, _Out_ USHORT & port);
 
-        static bool IsLoopbackAddress(std::wstring const & address);
+        static bool IsLoopbackAddress(std::string const & address);
 
         // Note: local != loopback
         static bool IsLocalEndpoint(Common::Endpoint const & endpoint);
 
         _Success_(return)
         static bool TryParseHostNameAddress(
-            std::wstring const & hostnameAddress,
-            _Out_ std::wstring & hostnameResult,
+            std::string const & hostnameAddress,
+            _Out_ std::string & hostnameResult,
             _Out_ USHORT & portResult);
 
         static Common::ErrorCode TryResolveHostNameAddress(
-            std::wstring const & hostnameAddress,
+            std::string const & hostnameAddress,
             ResolveOptions::Enum addressType,
             _Out_ std::vector<Common::Endpoint> & endpoints);
 
         static void EnableTcpFastLoopbackIfNeeded(
             Common::Socket & socket,
-            std::wstring const & traceId);
+            std::string const & traceId);
 
-        static std::wstring TcpTransportUtility::ConstructAddressString(
-            std::wstring const & ipAddressOrFQDN,
+        static std::string TcpTransportUtility::ConstructAddressString(
+            std::string const & ipAddressOrFQDN,
             uint port);
    };
 }

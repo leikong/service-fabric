@@ -10,24 +10,24 @@ namespace Transport
     struct NamedAddress
     {
         NamedAddress()
-            :   Address(L""),
-                Name(L"")
+            :   Address(""),
+                Name("")
         {
         }
 
-        NamedAddress(std::wstring const & address)
+        NamedAddress(std::string const & address)
             :   Address(address),
-                Name(L"")
+                Name("")
         {
         }
 
-        NamedAddress(std::wstring const & address, std::wstring const & name)
+        NamedAddress(std::string const & address, std::string const & name)
             :   Address(address),
                 Name(name)
         {
         }
 
-        std::wstring Address;
-        std::wstring Name;
+        std::string Address;
+        std::string Name;
     };
 }

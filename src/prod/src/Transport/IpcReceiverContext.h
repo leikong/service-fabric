@@ -18,8 +18,8 @@ namespace Transport
             ISendTarget::SPtr const & replyTargetSPtr,
             IDatagramTransportSPtr const & datagramTransport);
 
-        __declspec(property(get = getFrom)) std::wstring const & From;
-        std::wstring const & getFrom() const { return ipcHeader_.From; }
+        __declspec(property(get = getFrom)) std::string const & From;
+        std::string const & getFrom() const { return ipcHeader_.From; }
 
         __declspec(property(get = getFromProcessId)) DWORD FromProcessId;
         DWORD getFromProcessId() const { return ipcHeader_.FromProcessId; }

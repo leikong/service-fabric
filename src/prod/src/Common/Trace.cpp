@@ -13,14 +13,14 @@ namespace Common
 
     TextTraceComponent<TraceTaskCodes::General> Trace;
     
-    GlobalWString EtwTraceSection = make_global<wstring>(L"Trace/Etw");
-    GlobalWString FileTraceSection = make_global<wstring>(L"Trace/File");
-    GlobalWString ConsoleTraceSection = make_global<wstring>(L"Trace/Console");
+    GlobalString EtwTraceSection = make_global<string>("Trace/Etw");
+    GlobalString FileTraceSection = make_global<string>("Trace/File");
+    GlobalString ConsoleTraceSection = make_global<string>("Trace/Console");
 
 #if defined(PLATFORM_UNIX)
     // TODO - Following code will be removed once fully transitioned to structured traces in Linux
-    GlobalWString CommonSection = make_global<wstring>(L"Common");
-    GlobalWString LinuxStructuredTracesEnabled = make_global<wstring>(L"LinuxStructuredTracesEnabled");
+    GlobalString CommonSection = make_global<string>("Common");
+    GlobalString LinuxStructuredTracesEnabled = make_global<string>("LinuxStructuredTracesEnabled");
 #endif
 
     class TraceProvider::EventSource
@@ -248,7 +248,7 @@ namespace Common
 
     Guid TraceProvider::GetTraceGuid()
     {
-        return Guid(L"cbd93bc2-71e5-4566-b3a7-595d8eeca6e8");
+        return Guid("cbd93bc2-71e5-4566-b3a7-595d8eeca6e8");
     }
 
     TraceProvider* TraceProvider::StaticInit_Singleton()
@@ -287,7 +287,7 @@ namespace Common
 
     TraceProvider::TraceProvider(std::string const & name, std::string const & message, std::string const & symbol, Guid guid)
         :   name_(name),
-        traceId_(wformatString(name)),
+        traceId_(formatString(name)),
         message_(message),
         symbol_(symbol),
         guid_(guid),
@@ -455,7 +455,7 @@ namespace Common
         }
     }
 
-    bool TraceProvider::AddFilter(TraceSinkType::Enum sinkType, std::wstring const & filter)
+    bool TraceProvider::AddFilter(TraceSinkType::Enum sinkType, std::string const & filter)
     {
         AcquireWriteLock lock(lock_);
         {
@@ -470,23 +470,23 @@ namespace Common
         return true;
     }
 
-    bool TraceProvider::InternalAddFilter(TraceSinkType::Enum sinkType, wstring const & filter)
+    bool TraceProvider::InternalAddFilter(TraceSinkType::Enum sinkType, string const & filter)
     {
         size_t index = filter.find(':');
-        if (index == wstring::npos)
+        if (index == string::npos)
         {
             return false;
         }
 
-        wstring source = filter.substr(0, index);
-        wstring levelString = filter.substr(index + 1);
+        string source = filter.substr(0, index);
+        string levelString = filter.substr(index + 1);
         StringUtility::TrimWhitespaces(levelString);
 
         int samplingRatio = 0;
         index = levelString.find('#');
-        if (index != wstring::npos)
+        if (index != string::npos)
         {
-            wstring ratioString = levelString.substr(index + 1);
+            string ratioString = levelString.substr(index + 1);
             StringUtility::TrimWhitespaces(ratioString);
 
             samplingRatio = ConvertSamplingRatio(Double_Parse(ratioString));
@@ -500,10 +500,10 @@ namespace Common
             return false;
         }
 
-        wstring secondLevel;
+        string secondLevel;
 
         index = source.find('.');
-        if (index != wstring::npos)
+        if (index != string::npos)
         {
             secondLevel = source.substr(index + 1);
             StringUtility::TrimWhitespaces(secondLevel);
@@ -513,13 +513,7 @@ namespace Common
 
         StringUtility::TrimWhitespaces(source);
 
-        std::string taskName;
-        StringUtility::UnicodeToAnsi(source, taskName);
-
-        std::string eventName;
-        StringUtility::UnicodeToAnsi(secondLevel, eventName);
-
-        InternalAddFilter(sinkType, taskName, eventName, ConvertLevel(level), samplingRatio);
+        InternalAddFilter(sinkType, source, secondLevel, ConvertLevel(level), samplingRatio);
 
         return true;
     }
@@ -552,7 +546,7 @@ namespace Common
         return static_cast<int>(1.0 / ratio + 0.5);
     }
 
-    bool TraceProvider::OnUpdate(std::wstring const & section, std::wstring const &)
+    bool TraceProvider::OnUpdate(std::string const & section, std::string const &)
     {
         Config config;
         LoadConfiguration(config, section, true);
@@ -560,7 +554,7 @@ namespace Common
         return true;
     }
 
-    bool TraceProvider::CheckUpdate(std::wstring const & section, std::wstring const & key, std::wstring const & value, bool isEncrypted)
+    bool TraceProvider::CheckUpdate(std::string const & section, std::string const & key, std::string const & value, bool isEncrypted)
     {
         UNREFERENCED_PARAMETER(section);
         UNREFERENCED_PARAMETER(key);
@@ -581,7 +575,7 @@ namespace Common
             config.RegisterForUpdate(*ConsoleTraceSection, StaticInit_Singleton());
 
             StringCollection sections;
-            config.GetSections(sections, L"Trace");
+            config.GetSections(sections, "Trace");
             for (size_t i = 0; i < sections.size(); ++i)
             {
                 StaticInit_Singleton()->LoadConfiguration(config, sections[i], false);
@@ -609,24 +603,24 @@ namespace Common
     void TraceProvider::Test_ReloadConfiguration(Config & config)
     {
         StringCollection sections;
-        config.GetSections(sections, L"Trace");
+        config.GetSections(sections, "Trace");
         for (size_t i = 0; i < sections.size(); ++i)
         {
             StaticInit_Singleton()->LoadConfiguration(config, sections[i], true);
         }
     }
 
-    void TraceProvider::LoadConfiguration(Config & config, wstring const & section, bool isUpdate)
+    void TraceProvider::LoadConfiguration(Config & config, string const & section, bool isUpdate)
     {
 
 #if defined(PLATFORM_UNIX)
         // TODO - Following code will be removed once fully transitioned to structured traces in Linux
         if (section == CommonSection)
         {
-            std::wstring structuredTracesEnabled;
-            std::wstring defaultValue = L"false";
+            std::string structuredTracesEnabled;
+            std::string defaultValue = "false";
             config.ReadUnencryptedConfig(section, *LinuxStructuredTracesEnabled, structuredTracesEnabled, defaultValue);
-            bool enableLinuxStructuredTraces = structuredTracesEnabled == L"true" || structuredTracesEnabled == L"True";
+            bool enableLinuxStructuredTraces = structuredTracesEnabled == "true" || structuredTracesEnabled == "True";
             RefreshEnableLinuxStructuredTraces(enableLinuxStructuredTraces);
 
             return;
@@ -634,18 +628,18 @@ namespace Common
 #endif
 
         StringCollection filters;
-        config.ReadUnencryptedConfig<StringCollection>(section, L"Filters", filters, filters);
+        config.ReadUnencryptedConfig<StringCollection>(section, "Filters", filters, filters);
 
         TraceSinkType::Enum sinkType;
         if (section == FileTraceSection)
         {
             sinkType = TraceSinkType::TextFile;
 
-            std::wstring filePath;
-            config.ReadUnencryptedConfig<wstring>(section, L"Path", filePath, L"fabric.trace");
+            std::string filePath;
+            config.ReadUnencryptedConfig<string>(section, "Path", filePath, "fabric.trace");
 
-            std::wstring option;
-            config.ReadUnencryptedConfig<wstring>(section, L"Option", option, L"");
+            std::string option;
+            config.ReadUnencryptedConfig<string>(section, "Option", option, "");
 
             if (isUpdate || TraceTextFileSink::GetPath().empty())
             {
@@ -673,19 +667,19 @@ namespace Common
         AcquireWriteLock lock(lock_);
         {
             int sinkLevel;
-            config.ReadUnencryptedConfig<int>(section, L"Level", sinkLevel, LogLevel::Info);
+            config.ReadUnencryptedConfig<int>(section, "Level", sinkLevel, LogLevel::Info);
             filters_[sinkType].SetDefaultLevel(ConvertLevel(sinkLevel));
 
             if (sinkType == TraceSinkType::ETW)
             {
-                wstring sampling;
-                config.ReadUnencryptedConfig<wstring>(section, L"Sampling", sampling, L"0");
+                string sampling;
+                config.ReadUnencryptedConfig<string>(section, "Sampling", sampling, "0");
                 filters_[sinkType].SetDefaultSamplingRatio(ConvertSamplingRatio(Double_Parse(sampling)));
             }
 
             filters_[sinkType].ClearFilters();
 
-            for (wstring const & filter : filters)
+            for (string const & filter : filters)
             {
                 InternalAddFilter(sinkType, filter);
             }
@@ -727,7 +721,7 @@ namespace Common
                 {
                     StringLiteral keywordString = GetKeywordString(keyword);
                     keywordWriter << "          <keyword" << "\r\n";
-                    keywordWriter << "              mask=\"0x" << formatString("{0:x}", keyword) << "\"" << "\r\n";
+                    keywordWriter << "              mask=\"0x" << formatString.L("{0:x}", keyword) << "\"" << "\r\n";
                     keywordWriter << "              message=\"" << manifest.StringResource(keywordString) << "\"" << "\r\n";
                     keywordWriter << "              name=\"" << keywordString << "\"" << "\r\n";
                     keywordWriter << "              />\r\n";
@@ -757,13 +751,10 @@ namespace Common
         }
     }
 
-    void TraceProvider::GenerateManifest(std::wstring const & path, std::wstring const & targetFile)
+    void TraceProvider::GenerateManifest(std::string const & path, std::string const & targetFile)
     {
         TraceManifestGenerator manifest;
         Singleton->WriteManifest(manifest);
-
-        std::string asciiTargetFile;
-        StringUtility::UnicodeToAnsi(targetFile, asciiTargetFile);
 
         FileWriter writer;
         auto error = writer.TryOpen(path);
@@ -772,8 +763,7 @@ namespace Common
             Assert::CodingError("Failed to open {0} : error={1}", path, error);
         }
 
-        writer.WriteUnicodeBOM();
-        manifest.Write(writer, Singleton->guid_, Singleton->name_, Singleton->message_, Singleton->symbol_, asciiTargetFile);
+        manifest.Write(writer, Singleton->guid_, Singleton->name_, Singleton->message_, Singleton->symbol_, targetFile);
         writer.Close();
     }
 

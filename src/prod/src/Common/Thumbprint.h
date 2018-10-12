@@ -13,14 +13,14 @@ namespace Common
     public:
         typedef std::shared_ptr<Thumbprint> SPtr;
 
-        static ErrorCode Create(std::wstring const & str, _Out_ SPtr & result);
+        static ErrorCode Create(std::string const & str, _Out_ SPtr & result);
         static ErrorCode Create(PCCertContext certContext, _Out_ SPtr & result);
 
         Thumbprint();
         Thumbprint(Thumbprint const & other);
         Thumbprint(Thumbprint && other);
 
-        ErrorCode Initialize(std::wstring const & hashValue);
+        ErrorCode Initialize(std::string const & hashValue);
         ErrorCode Initialize(PCCertContext certContext);
 
         X509FindType::Enum Type() const override;

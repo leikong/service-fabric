@@ -13,13 +13,13 @@ namespace Transport
 
     public:
         IpcHeader();
-        IpcHeader(std::wstring const & from, DWORD fromProcessId);
+        IpcHeader(std::string const & from, DWORD fromProcessId);
         IpcHeader(IpcHeader && rhs);
 
         IpcHeader & operator=(IpcHeader && rhs);
 
-        __declspec(property(get=getFrom)) std::wstring const & From;
-        std::wstring const & getFrom() const { return from_; }
+        __declspec(property(get=getFrom)) std::string const & From;
+        std::string const & getFrom() const { return from_; }
 
         __declspec(property(get = getFromProcessId)) DWORD FromProcessId;
         DWORD getFromProcessId() const { return fromProcessId_; }
@@ -29,7 +29,7 @@ namespace Transport
         FABRIC_FIELDS_02(from_, fromProcessId_);
 
     private:
-        std::wstring from_;
+        std::string from_;
         DWORD fromProcessId_;
     };
 }

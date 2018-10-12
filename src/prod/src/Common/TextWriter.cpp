@@ -11,7 +11,7 @@
 
 namespace Common
 {
-    StringWriter::StringWriter(std::wstring& buffer, size_t size)
+    StringWriter::StringWriter(std::string& buffer, size_t size)
         : buffer_(buffer)
     {
         buffer_.reserve(size);
@@ -28,12 +28,12 @@ namespace Common
         // LATER: asciify properly
         for (size_t i = 0; i < ccLen; ++i) buffer_.push_back(buf[i]);
     }
-    void StringWriter::WriteUnicodeBuffer(wchar_t const * buf, size_t ccLen) 
+    void StringWriter::WriteUnicodeBuffer(char const * buf, size_t ccLen) 
     {
         buffer_.append(buf, ccLen); 
     }
 
-    void StringWriterA::WriteUnicodeBuffer(wchar_t const * buf, size_t ccLen)
+    void StringWriterA::WriteUnicodeBuffer(char const * buf, size_t ccLen)
     {
         // LATER: unicodize properly
         for (size_t i = 0; i < ccLen; ++i) buffer_.push_back((char)buf[i]);
@@ -290,7 +290,7 @@ namespace Common
 
 	namespace detail
 	{
-		std::string format_handler::operator () (
+		std::string format_handler::L(
 			StringLiteral format,
 			VariableArgument const & arg0,
 			VariableArgument const & arg1,
@@ -313,8 +313,8 @@ namespace Common
 			return result;
 		}
 
-		std::wstring wformat_handler::operator () (
-			StringLiteral format,
+		std::string format_handler::operator () (
+			std::string const & format,
 			VariableArgument const & arg0,
 			VariableArgument const & arg1,
 			VariableArgument const & arg2,
@@ -330,34 +330,9 @@ namespace Common
 			VariableArgument const & arg12,
 			VariableArgument const & arg13) const
 		{
-			std::wstring result;
-			result.reserve(64);
-			StringWriter(result).Write(format, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13);
-			return result;
-		}
-
-		std::wstring wformat_handler::operator () (
-			std::wstring const & wformat,
-			VariableArgument const & arg0,
-			VariableArgument const & arg1,
-			VariableArgument const & arg2,
-			VariableArgument const & arg3,
-			VariableArgument const & arg4,
-			VariableArgument const & arg5,
-			VariableArgument const & arg6,
-			VariableArgument const & arg7,
-			VariableArgument const & arg8,
-			VariableArgument const & arg9,
-			VariableArgument const & arg10,
-			VariableArgument const & arg11,
-			VariableArgument const & arg12,
-			VariableArgument const & arg13) const
-		{
-			std::string format;
-			StringUtility::Utf16ToUtf8(wformat, format);
 			StringLiteral lformat(format.c_str(), format.c_str() + format.size());
 
-			std::wstring result;
+			std::string result;
 			result.reserve(64);
 			StringWriter(result).Write(lformat, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13);
 			return result;

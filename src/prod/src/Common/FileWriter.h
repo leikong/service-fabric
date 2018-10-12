@@ -17,14 +17,12 @@ namespace Common
         {
         }
 
-        void WriteUnicodeBOM();
-
         virtual void WriteAsciiBuffer(__in_ecount(ccLen) char const * buf, size_t ccLen);
 
-        virtual void WriteUnicodeBuffer(__in_ecount(ccLen) wchar_t const * buf, size_t ccLen);
+        virtual void WriteUnicodeBuffer(__in_ecount(ccLen) char const * buf, size_t ccLen);
 
         Common::ErrorCode TryOpen(
-            std::wstring const& fileName,
+            std::string const& fileName,
             FileShare::Enum share = FileShare::None,
             FileAttributes::Enum attributes = FileAttributes::None);
 

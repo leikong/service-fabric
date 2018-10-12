@@ -11,10 +11,10 @@
 namespace Common
 {
 #define VERIFY(condition, debug) \
-    VERIFY_IS_TRUE(condition, wformatString("{0}", debug).c_str());
+    VERIFY_IS_TRUE(condition, formatString.L("{0}", debug).c_str());
 
 #define VERIFY2(condition, debug1, debug2) \
-    VERIFY_IS_TRUE(condition, wformatString("{0}, {1}", debug1, debug2).c_str());
+    VERIFY_IS_TRUE(condition, formatString.L("{0}, {1}", debug1, debug2).c_str());
 
 #define VERIFY_RANGE_COUNT( Vrc, Count ) \
     VERIFY(Count == Vrc.VersionRanges.size(), Vrc);
@@ -828,7 +828,7 @@ namespace Common
 
         Trace.WriteInfo(TestComponent, "*** Orig = {0} ({1})", stopwatch.Elapsed, vrc1.VersionRanges.size());
 
-        VERIFY(vrcOptimized == vrcOrig, wformatString("optimized={0} orig={1}", vrcOptimized.VersionRanges.size(), vrcOrig.VersionRanges.size()));
+        VERIFY(vrcOptimized == vrcOrig, formatString.L("optimized={0} orig={1}", vrcOptimized.VersionRanges.size(), vrcOrig.VersionRanges.size()));
     }
 
     BOOST_AUTO_TEST_CASE(TestContains)

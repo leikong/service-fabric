@@ -13,13 +13,13 @@ Common::StringLiteral const TraceType("FileLockTest");
 namespace Common
 {
     using std::string;
-    using std::wstring;
+    using std::string;
     using std::for_each;
 
     class AutoCleanedFile
     {
     public:
-        AutoCleanedFile(std::wstring const & path) : path_(path) { }
+        AutoCleanedFile(std::string const & path) : path_(path) { }
 
         ~AutoCleanedFile()
         {
@@ -47,7 +47,7 @@ namespace Common
         }
 
     private:
-        std::wstring path_;
+        std::string path_;
     };
 
     // Tests FileConfigStore
@@ -61,17 +61,17 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(TestReadLocksDontConflict)
     {
-        FileReaderLock lock1(L"Test");
+        FileReaderLock lock1("Test");
         VERIFY_IS_TRUE(lock1.Acquire().IsSuccess());
-        FileReaderLock lock2(L"Test");
+        FileReaderLock lock2("Test");
         VERIFY_IS_TRUE(lock2.Acquire().IsSuccess());
     }
 
     BOOST_AUTO_TEST_CASE(TestReadAndWriteLocksConflict)
     {
-        FileReaderLock lock1(L"Test");
+        FileReaderLock lock1("Test");
         VERIFY_IS_TRUE(lock1.Acquire().IsSuccess());
-        FileWriterLock lock2(L"Test");
+        FileWriterLock lock2("Test");
         VERIFY_IS_FALSE(lock2.Acquire().IsSuccess());
         lock1.Release();
         VERIFY_IS_TRUE(lock2.Acquire().IsSuccess());
@@ -79,9 +79,9 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(TestWriteAndReadLocksConflict)
     {
-        FileWriterLock lock1(L"Test");
+        FileWriterLock lock1("Test");
         VERIFY_IS_TRUE(lock1.Acquire().IsSuccess());
-        FileReaderLock lock2(L"Test");
+        FileReaderLock lock2("Test");
         VERIFY_IS_FALSE(lock2.Acquire().IsSuccess());
         lock1.Release();
         VERIFY_IS_TRUE(lock2.Acquire().IsSuccess());
@@ -89,9 +89,9 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(TestWriteAndWriteLocksConflict)
     {
-        FileWriterLock lock1(L"Test");
+        FileWriterLock lock1("Test");
         VERIFY_IS_TRUE(lock1.Acquire().IsSuccess());
-        FileWriterLock lock2(L"Test");
+        FileWriterLock lock2("Test");
         VERIFY_IS_FALSE(lock2.Acquire().IsSuccess());
         lock1.Release();
         VERIFY_IS_TRUE(lock2.Acquire().IsSuccess());
@@ -99,12 +99,12 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(TestAbandondenedWriteLockAndReadLocksConflict)
     {
-        wstring fileName(L"Test");
+        string fileName("Test");
 
 #ifdef PLATFORM_UNIX
         AutoCleanedFile file(FileWriterLock::Test_GetWriteInProgressMarkerPath(fileName));
 #else
-        AutoCleanedFile file(fileName + L".WriterLock");
+        AutoCleanedFile file(fileName + ".WriterLock");
 #endif
 
         VERIFY_IS_TRUE(file.Create());
@@ -114,7 +114,7 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(AccessWhileHoldingWriteLock)
     {
-        auto file = L"Test";
+        auto file = "Test";
         FileWriterLock lock(file);
         VERIFY_ARE_EQUAL2(lock.Acquire().ReadValue(), ErrorCodeValue::Success);
 

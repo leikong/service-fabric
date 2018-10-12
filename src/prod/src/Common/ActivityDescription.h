@@ -25,7 +25,7 @@ namespace Common
         Common::ActivityType::Enum const & get_ActivityType() const { return activityType_; }
 
         void WriteTo(TextWriter& w, FormatOptions const& f) const;
-        std::wstring ToString() const;
+        std::string ToString() const;
 
         static std::string AddField(TraceEvent & traceEvent, std::string const & name);
         void FillEventData(TraceEventContext & context) const;

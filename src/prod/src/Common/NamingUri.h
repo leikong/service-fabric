@@ -14,15 +14,15 @@ namespace Common
         // static initialization order issues since some of these
         // constants are interdependent.
         //
-        static Common::GlobalWString NameUriScheme;
-        static Common::GlobalWString RootAuthority;
-        static Common::GlobalWString RootNamingUriString;
-        static Common::GlobalWString InvalidRootNamingUriString;
-        static Common::GlobalWString NamingUriConcatenationReservedTokenDelimiter;
-        static Common::GlobalWString ReservedTokenDelimiters;
+        static Common::GlobalString NameUriScheme;
+        static Common::GlobalString RootAuthority;
+        static Common::GlobalString RootNamingUriString;
+        static Common::GlobalString InvalidRootNamingUriString;
+        static Common::GlobalString NamingUriConcatenationReservedTokenDelimiter;
+        static Common::GlobalString ReservedTokenDelimiters;
         static Common::Global<NamingUri> RootNamingUri;
-        static Common::GlobalWString SegmentDelimiter;
-        static Common::GlobalWString HierarchicalNameDelimiter;
+        static Common::GlobalString SegmentDelimiter;
+        static Common::GlobalString HierarchicalNameDelimiter;
 
         struct Hasher
         {
@@ -43,18 +43,18 @@ namespace Common
             }
         };
 
-        NamingUri() : Uri(NameUriScheme, L"")
+        NamingUri() : Uri(NameUriScheme, "")
         {
         }
 
-        explicit NamingUri(std::wstring const & path) : Uri(NameUriScheme, L"", path)
+        explicit NamingUri(std::string const & path) : Uri(NameUriScheme, "", path)
         {
             ASSERT_IFNOT(IsNamingUri(*this), "{0} does not make a valid NamingUri", *this);
         }
 
         // Returns actual name after stripping off query strings, etc.
-        __declspec(property(get=get_Name)) std::wstring Name;
-        std::wstring get_Name() const { return ToString(); }
+        __declspec(property(get=get_Name)) std::string Name;
+        std::string get_Name() const { return ToString(); }
 
         __declspec(property(get=get_IsRootNamingUri)) bool IsRootNamingUri;
         bool get_IsRootNamingUri() const { return *this == RootNamingUri; }
@@ -69,22 +69,22 @@ namespace Common
 
         size_t GetTrimQueryAndFragmentHash() const;
 
-        bool TryCombine(std::wstring const & path, __out NamingUri &) const;
+        bool TryCombine(std::string const & path, __out NamingUri &) const;
 
         // Validates that the name can be created or deleted in naming for user operations.
         // Names can't be root URI, or have reserved characters (?).
         // If validateNameFragment is true, the name should not have characters reserved for service groups (#).
         // The API takes the URI as well as the string representation of the URI, to optimize
         // the cases when the string is cached and should not be re-evaluated (see Naming StoreService operations).
-        static ErrorCode ValidateName(NamingUri const & uri, std::wstring const & uriString, bool allowFragment);
+        static ErrorCode ValidateName(NamingUri const & uri, std::string const & uriString, bool allowFragment);
 
-        static NamingUri Combine(NamingUri const &, std::wstring const & path);
+        static NamingUri Combine(NamingUri const &, std::string const & path);
 
         bool IsPrefixOf(NamingUri const &) const;
 
         static HRESULT TryParse(
             FABRIC_URI name,
-            std::wstring const & traceId,
+            std::string const & traceId,
             __out NamingUri & nameUri);
 
         static ErrorCode TryParse(
@@ -93,16 +93,16 @@ namespace Common
             __inout NamingUri & nameUri);
 
         static ErrorCode TryParse(
-            std::wstring const & nameText,
-            std::wstring const & traceId,
+            std::string const & nameText,
+            std::string const & traceId,
             __out NamingUri & nameUri);
 
-        static bool TryParse(std::wstring const & nameText, __out NamingUri & nameUri);
+        static bool TryParse(std::string const & nameText, __out NamingUri & nameUri);
 
-        // wstring has an implicit ctor that will get bound to if FABRIC_URI is nullptr,
+        // string has an implicit ctor that will get bound to if FABRIC_URI is nullptr,
         // resulting in an AV. The TryParse() functions that take an additional traceId/parameterName
         // for debugging are preferred, but create this overload to avoid binding to the
-        // TryParse(wstring const &, _out NamingUri const &) function above by accident.
+        // TryParse(string const &, _out NamingUri const &) function above by accident.
         //
         static bool TryParse(FABRIC_URI name, __out NamingUri & nameUri);
 
@@ -115,13 +115,13 @@ namespace Common
         // removes the scheme portion and replaces / with ~.
         //
 
-        static ErrorCode FabricNameToId(std::wstring const & name, __inout std::wstring & escapedId);
-        static ErrorCode FabricNameToId(std::wstring const & name, bool useDelimiter, __inout std::wstring & escapedId);
+        static ErrorCode FabricNameToId(std::string const & name, __inout std::string & escapedId);
+        static ErrorCode FabricNameToId(std::string const & name, bool useDelimiter, __inout std::string & escapedId);
 
-        static ErrorCode IdToFabricName(std::wstring const& scheme, std::wstring const& id, __inout std::wstring &name);
+        static ErrorCode IdToFabricName(std::string const& scheme, std::string const& id, __inout std::string &name);
 
-        static ErrorCode EscapeString(std::wstring const & input, __inout std::wstring & output);
-        static ErrorCode UnescapeString(std::wstring const & input, __inout std::wstring & output);
+        static ErrorCode EscapeString(std::string const & input, __inout std::string & output);
+        static ErrorCode UnescapeString(std::string const & input, __inout std::string & output);
 
         // This method calls EscapeString internally
         // Escape string converts all non ascii characters into %xx representations.
@@ -155,17 +155,17 @@ namespace Common
         //
         // To unescape this, use UnescapeString. EscapeString will not encode the characters above, but
         // the matching function will decode.
-        static ErrorCode UrlEscapeString(std::wstring const & input, __out std::wstring & output);
+        static ErrorCode UrlEscapeString(std::string const & input, __out std::string & output);
 
     private:
         NamingUri(
-            std::wstring const & scheme,
-            std::wstring const & authority,
-            std::wstring const & path,
-            std::wstring const & query,
-            std::wstring const & fragment);
-        static ErrorCode ParseUnsafeUri(std::wstring const & input, std::wstring & protocol, std::wstring & host, std::wstring & path, std::wstring & queryFragment);
-        static void ParseHost(std::wstring & input, std::wstring & host, std::wstring & remain);
-        static void ParsePath(std::wstring & input, std::wstring & path, std::wstring & remain);
+            std::string const & scheme,
+            std::string const & authority,
+            std::string const & path,
+            std::string const & query,
+            std::string const & fragment);
+        static ErrorCode ParseUnsafeUri(std::string const & input, std::string & protocol, std::string & host, std::string & path, std::string & queryFragment);
+        static void ParseHost(std::string & input, std::string & host, std::string & remain);
+        static void ParsePath(std::string & input, std::string & path, std::string & remain);
     };
 }

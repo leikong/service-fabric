@@ -146,22 +146,22 @@ namespace Common
         return address.LessPrefix( rhs.address, prefixLength );
     }
 
-    void IPPrefix::ToString( std::wstring& buffer ) const 
+    void IPPrefix::ToString( std::string& buffer ) const 
     {
         buffer.resize(INET6_ADDRSTRLEN + 5);
         address.ToString(buffer);
-        buffer.append(L"/");
-        buffer.append(std::to_wstring((int64)prefixLength ));
+        buffer.append("/");
+        buffer.append(std::to_string((int64)prefixLength ));
     }
 
     void IPPrefix::WriteTo(Common::TextWriter & w, FormatOptions const &) const 
     {
-        std::wstring temp;
+        std::string temp;
         ToString(temp);
         w.Write(temp);
     }
 
-    void IPPrefix::GetV4MaskAsString( std::wstring& buffer ) const
+    void IPPrefix::GetV4MaskAsString( std::string& buffer ) const
     {
         debug_assert(this->address.AddressFamily == AddressFamily::InterNetwork); //IPv4
         int mask = CreateMask(this->prefixLength);
@@ -205,7 +205,7 @@ namespace Common
             ///TODO: remove
             //for serialization (temporary)
             address.ToString(temp_str_);
-            temp_str_.append(L"/" + Int32_ToString(prefixLength));
+            temp_str_.append("/" + Int32_ToString(prefixLength));
         }
         else
         {
@@ -220,7 +220,7 @@ namespace Common
             ///TODO:remove
             //for serialization (temporary)
             address.ToString(temp_str_);
-            temp_str_.append(L"/" + Int32_ToString(prefixLength));
+            temp_str_.append("/" + Int32_ToString(prefixLength));
         }
     }
 #pragma prefast(pop)

@@ -9,7 +9,7 @@ using namespace std;
 
 namespace Common
 {
-    WStringLiteral const Extension(L".trace");
+    StringLiteral const Extension(".trace");
 
     int const TraceTextFileSink::DefaultMaxFilesToKeep = 3;
     int64 const TraceTextFileSink::DefaultSizeCheckIntervalInMinutes = 5;
@@ -27,14 +27,14 @@ namespace Common
 
     TraceTextFileSink::TraceTextFileSink()
         : enabled_(false),
-        processNameOption_(L"e"),
-        processIdOption_(L"p"),
-        instanceIdOption_(L"i"),
-        moduleOption_(L"m"),
-        segmentHoursOption_(L"hr"),
-        segmentMinutesOption_(L"min"),
-        fileCountOption_(L"f"),
-        segmentSizeOption_(L"sizemb"),
+        processNameOption_("e"),
+        processIdOption_("p"),
+        instanceIdOption_("i"),
+        moduleOption_("m"),
+        segmentHoursOption_("hr"),
+        segmentMinutesOption_("min"),
+        fileCountOption_("f"),
+        segmentSizeOption_("sizemb"),
         file_(),
         lock_(),
         files_(),
@@ -63,7 +63,7 @@ namespace Common
         return DateTime(ticks);
     }
 
-    void TraceTextFileSink::PrivateSetPath(std::wstring const & path)
+    void TraceTextFileSink::PrivateSetPath(std::string const & path)
     {
         AcquireWriteLock lock(lock_);
         if (path_ != path)
@@ -75,7 +75,7 @@ namespace Common
         }
     }
 
-    void TraceTextFileSink::PrivateSetOption(std::wstring const & option)
+    void TraceTextFileSink::PrivateSetOption(std::string const & option)
     {
         AcquireWriteLock lock(lock_);
         if (option_ != option)
@@ -100,8 +100,8 @@ namespace Common
             return;
         }
 
-        wstring fileName;
-        if (StringUtility::EndsWithCaseInsensitive(path_, wstring(Extension.begin(), Extension.end())))
+        string fileName;
+        if (StringUtility::EndsWithCaseInsensitive(path_, string(Extension.begin(), Extension.end())))
         {
             fileName = path_.substr(0, path_.size() - Extension.size());
         }
@@ -111,7 +111,7 @@ namespace Common
         }
 
         StringCollection options;
-        StringUtility::Split<wstring>(option_, options, L",");
+        StringUtility::Split<string>(option_, options, ",");
 
         bool foundSegmentOption = false;
         DateTime now = DateTime::Now();
@@ -120,43 +120,43 @@ namespace Common
         int maxFilesToKeep = DefaultMaxFilesToKeep;
         for (auto iter = options.begin(); iter != options.end(); iter++)
         {
-            wstring const& option = *iter;
+            string const& option = *iter;
             if (option == processNameOption_)
             {
-                wstring processPath;
+                string processPath;
                 Environment::GetExecutableFileName(processPath);
-                wstring processName = Path::GetFileName(processPath);
-                StringUtility::Replace<wstring>(processName, L".", L"_");
+                string processName = Path::GetFileName(processPath);
+                StringUtility::Replace<string>(processName, ".", "_");
 
-                fileName += wformatString("-{0}", processName);
+                fileName += formatString.L("-{0}", processName);
             }
 
             if (option == processIdOption_)
             {
                 DWORD pid = GetCurrentProcessId();
-                fileName += wformatString("-{0}", pid);
+                fileName += formatString.L("-{0}", pid);
             }
 
             if (option == instanceIdOption_)
             {
                 int64 ticks = DateTime::Now().Ticks;
-                fileName += wformatString("-{0}", ticks);
+                fileName += formatString.L("-{0}", ticks);
             }
 
             if (option == moduleOption_)
             {
-                std::wstring moduleFullName;
+                std::string moduleFullName;
                 Environment::GetCurrentModuleFileName(/*out*/moduleFullName);
-                std::wstring moduleName = Path::GetFileNameWithoutExtension(moduleFullName);
-                fileName.append(L"-");
+                std::string moduleName = Path::GetFileNameWithoutExtension(moduleFullName);
+                fileName.append("-");
                 fileName.append(moduleName);
             }
 
             if (StringUtility::StartsWith(option, fileCountOption_))
             {
-                if (option.size() > (fileCountOption_.size() + 1) && option[fileCountOption_.size()] == L':')
+                if (option.size() > (fileCountOption_.size() + 1) && option[fileCountOption_.size()] == ':')
                 {
-                    wstring fileCountString = option.substr(fileCountOption_.size() + 1, option.size() - (fileCountOption_.size() + 1));
+                    string fileCountString = option.substr(fileCountOption_.size() + 1, option.size() - (fileCountOption_.size() + 1));
                     maxFilesToKeep = Int32_Parse(fileCountString);
                 }
             }
@@ -164,9 +164,9 @@ namespace Common
             if (StringUtility::StartsWith(option, segmentHoursOption_))
             {
                 ASSERT_IF(foundSegmentOption, "Trace file is already segemented on time or size.");
-                if (option.size() > (segmentHoursOption_.size() + 1) && option[segmentHoursOption_.size()] == L':')
+                if (option.size() > (segmentHoursOption_.size() + 1) && option[segmentHoursOption_.size()] == ':')
                 {
-                    wstring segmentTimeStringInHours = option.substr(segmentHoursOption_.size() + 1, option.size() - (segmentHoursOption_.size() + 1));
+                    string segmentTimeStringInHours = option.substr(segmentHoursOption_.size() + 1, option.size() - (segmentHoursOption_.size() + 1));
                     int segmentTimeInHours = Int32_Parse(segmentTimeStringInHours);
                     foundSegmentOption = true;
                     segmentTime_ = CalculateCheckTime(now, segmentTimeInHours * 60);
@@ -176,9 +176,9 @@ namespace Common
             if (StringUtility::StartsWith(option, segmentMinutesOption_))
             {
                 ASSERT_IF(foundSegmentOption, "Trace file is already segemented on time or size.");
-                if (option.size() > (segmentMinutesOption_.size() + 1) && option[segmentMinutesOption_.size()] == L':')
+                if (option.size() > (segmentMinutesOption_.size() + 1) && option[segmentMinutesOption_.size()] == ':')
                 {
-                    wstring segmentTimeStringInMins = option.substr(segmentMinutesOption_.size() + 1, option.size() - (segmentMinutesOption_.size() + 1));
+                    string segmentTimeStringInMins = option.substr(segmentMinutesOption_.size() + 1, option.size() - (segmentMinutesOption_.size() + 1));
                     int segmentTimeInMins = Int32_Parse(segmentTimeStringInMins);
                     foundSegmentOption = true;
                     segmentTime_ = CalculateCheckTime(now, segmentTimeInMins);
@@ -189,11 +189,11 @@ namespace Common
             if (StringUtility::StartsWith(option, segmentSizeOption_))
             {
                 ASSERT_IF(foundSegmentOption, "Trace file is already segemented on time or size.");
-                if (option.size() > (segmentSizeOption_.size() + 1) && option[segmentSizeOption_.size()] == L':')
+                if (option.size() > (segmentSizeOption_.size() + 1) && option[segmentSizeOption_.size()] == ':')
                 {
                     Common::StringCollection sizeOptions;
-                    wstring sizeOptionsString = option.substr(segmentSizeOption_.size() + 1, option.size() - (segmentSizeOption_.size() + 1));
-                    StringUtility::Split<wstring>(sizeOptionsString, sizeOptions, L":");
+                    string sizeOptionsString = option.substr(segmentSizeOption_.size() + 1, option.size() - (segmentSizeOption_.size() + 1));
+                    StringUtility::Split<string>(sizeOptionsString, sizeOptions, ":");
                     
                     if (sizeOptions.size() > 0)
                     {
@@ -213,13 +213,13 @@ namespace Common
             }
         } // foreach options
 
-        fileName += wformatString("{0}", Extension);
+        fileName += formatString.L("{0}", Extension);
 
         auto error = file_.TryOpen(fileName, FileMode::Create, FileAccess::Write, FileShare::Read);
         if (!error.IsSuccess())
         {
-            TraceConsoleSink::Write(LogLevel::Error, wformatString("Unable to open text trace file '{0}': {1}", fileName, error));
-            throw runtime_error(formatString("Unable to open text trace file '{0}': {1}", fileName, error));
+            TraceConsoleSink::Write(LogLevel::Error, formatString.L("Unable to open text trace file '{0}': {1}", fileName, error));
+            throw runtime_error(formatString.L("Unable to open text trace file '{0}': {1}", fileName, error));
         }
 
         files_.push_back(fileName);
@@ -230,13 +230,13 @@ namespace Common
         }
     }
 
-    wstring TraceTextFileSink::TimeToFileNameSuffix(DateTime const & now)
+    string TraceTextFileSink::TimeToFileNameSuffix(DateTime const & now)
     {
-        wstring result = wformatString("-{0:local}", now);
-        return result.substr(0, 11) + L"-" + result.substr(12, 2) + L"-" + result.substr(15, 2);  
+        string result = formatString.L("-{0:local}", now);
+        return result.substr(0, 11) + "-" + result.substr(12, 2) + "-" + result.substr(15, 2);  
     }
 
-    void TraceTextFileSink::PrivateWrite(StringLiteral taskName, StringLiteral eventName, LogLevel::Enum level, std::wstring const & id, std::wstring const & data)
+    void TraceTextFileSink::PrivateWrite(StringLiteral taskName, StringLiteral eventName, LogLevel::Enum level, std::string const & id, std::string const & data)
     {
         DateTime now = DateTime::Now();
 

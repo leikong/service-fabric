@@ -283,7 +283,7 @@ class KCachedBlockFile : public KObject<KCachedBlockFile>, public KShared<KCache
             __in BOOLEAN NoCachingOnWrite = FALSE
             );
 
-        const WCHAR*
+        const CHAR*
         GetFileName(
             );
 

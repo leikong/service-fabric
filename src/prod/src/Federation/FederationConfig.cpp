@@ -12,7 +12,7 @@ namespace Federation
 
     DEFINE_SINGLETON_COMPONENT_CONFIG(FederationConfig)
 
-    VoteConfig::const_iterator VoteConfig::find(NodeId nodeId, wstring const & ringName) const
+    VoteConfig::const_iterator VoteConfig::find(NodeId nodeId, string const & ringName) const
     {
         for (auto it = begin(); it != end(); ++it)
         {
@@ -35,20 +35,20 @@ namespace Federation
         StringMap connectionStringsToKeyMap;
         for (auto entry = entries.begin(); entry != entries.end(); ++entry)
         {
-            wstring const & key = entry->first;
-            wstring const & value = entry->second;
-            size_t index = value.find(L',');
-            ASSERT_IF(index == wstring::npos, "VoteEntry for vote {0} is incorrectly formatted: {1}", key, value);
-            wstring type = value.substr(0, index);
-            wstring connectionString = value.substr(index + 1);
-            wstring ringName;
+            string const & key = entry->first;
+            string const & value = entry->second;
+            size_t index = value.find(',');
+            ASSERT_IF(index == string::npos, "VoteEntry for vote {0} is incorrectly formatted: {1}", key, value);
+            string type = value.substr(0, index);
+            string connectionString = value.substr(index + 1);
+            string ringName;
 
             NodeId nodeId;
             if (type ==  Constants::SeedNodeVoteType || type == Constants::WindowsAzureVoteType)
             {
-                wstring idString;
-                index = key.find(L'@');
-                if (index != wstring::npos)
+                string idString;
+                index = key.find('@');
+                if (index != string::npos)
                 {
                     ringName = key.substr(index + 1);
                     idString = key.substr(0, index);
@@ -62,7 +62,7 @@ namespace Federation
             }
             else if (type == Constants::SqlServerVoteType)
             {
-                ErrorCode errorCode = NodeIdGenerator::GenerateFromString(key, nodeId, L"", false, L"");
+                ErrorCode errorCode = NodeIdGenerator::GenerateFromString(key, nodeId, "", false, "");
                 ASSERT_IFNOT(errorCode.IsSuccess(), "NodeIdGenerator failed");
 
                 auto existing = connectionStringsToKeyMap.find(connectionString);
@@ -74,7 +74,7 @@ namespace Federation
                         existing->second);
                 }
 
-                connectionStringsToKeyMap.insert(pair<wstring, wstring>(connectionString, key));
+                connectionStringsToKeyMap.insert(pair<string, string>(connectionString, key));
             }
             else
             {
@@ -95,16 +95,16 @@ namespace Federation
             w.WriteLine("{0}:{1}{2},{3}",
                 it->Id,
                 it->Type,
-                it->RingName.empty() ? L"" : L"," + it->RingName,
+                it->RingName.empty() ? "" : "," + it->RingName,
                 it->ConnectionString);
         }
     }
 
-    bool ParseThresholds(vector<double> & thresholds, StringMap const & entries, wstring const & name, wstring const & defaultThresholds)
+    bool ParseThresholds(vector<double> & thresholds, StringMap const & entries, string const & name, string const & defaultThresholds)
     {
-        wstring data;
+        string data;
 
-        auto it = entries.find(name + L"Threshold");
+        auto it = entries.find(name + "Threshold");
         if (it != entries.end())
         {
             data = it->second;
@@ -118,12 +118,12 @@ namespace Federation
             data = defaultThresholds;
         }
 
-        vector<wstring> values;
-        StringUtility::Split<wstring>(data, values, L",");
+        vector<string> values;
+        StringUtility::Split<string>(data, values, ",");
 
         ASSERT_IF(values.size() > 3, "Too many thresholds configured: {0}", data);
         
-        for (wstring const & value : values)
+        for (string const & value : values)
         {
             double threshold;
             if (!Config::TryParse<double>(threshold, value))

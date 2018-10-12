@@ -7,7 +7,7 @@
     kstringview.cpp
 
     Description:
-      Kernel Tempate Library (KTL): KStringView - WCHAR types and Ansi types
+      Kernel Tempate Library (KTL): KStringView - CHAR types and Ansi types
 
       String manipulation & conversion utilities
 
@@ -24,6 +24,6 @@
 #include "./kstringview.proto.cpp"
 #undef K$AnsiStringTarget
 
-// Generate WCHAR source
+// Generate CHAR source
 #include "./kstringview.proto.cpp"
 

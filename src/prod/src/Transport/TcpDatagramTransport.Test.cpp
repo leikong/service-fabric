@@ -18,9 +18,9 @@ namespace Transport
     class TcpTransportTests
     {
     protected:
-        void SimpleTcpTest(std::wstring const & senderAddress, std::wstring const & receiverAddress);
+        void SimpleTcpTest(std::string const & senderAddress, std::string const & receiverAddress);
         void DrainTest(int messageSize, bool successExpected, Common::TimeSpan drainTimeout);
-        void ClientTcpTest(wstring const & serverAddress);
+        void ClientTcpTest(string const & serverAddress);
         void IdleTimeoutTest(bool idleTimeoutExpected, bool keepExternalSendTargetReference);
         void SendQueueExpirationTest(SecurityProvider::Enum provider);
 
@@ -32,11 +32,11 @@ namespace Transport
         static void TargetInstanceTestSendRequest(
             IDatagramTransportSPtr const & srcNode,
             ISendTarget::SPtr const & target,
-            wstring const & action);
+            string const & action);
 
         static void TargetInstanceTestCheckConnecitonCount(
             ISendTarget::SPtr const & target,
-            wstring const & connectionType,
+            string const & connectionType,
             size_t expected);
     };
 
@@ -51,7 +51,7 @@ namespace Transport
 
         auto server = TcpDatagramTransport::Create(TTestUtil::GetListenAddress());
 
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         auto messageReceived = make_shared<AutoResetEvent>(false);
         TTestUtil::SetMessageHandler(
             server,
@@ -145,7 +145,7 @@ namespace Transport
         vector<IDatagramTransportSPtr> servers;
         Common::atomic_bool connectionFaultOnFirstListener(false);
         AutoResetEvent connectionFaulted;
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         Common::atomic_long counter(0);
         AutoResetEvent receivedAllTracked;
         Common::atomic_long outgoingMsgTracked(0);
@@ -318,7 +318,7 @@ namespace Transport
 
         vector<IDatagramTransportSPtr> servers;
         AutoResetEvent connectionFaulted;
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         for (int i = 0; i < 5; ++i)
         {
             auto server = TcpDatagramTransport::Create(TTestUtil::GetListenAddress());
@@ -471,7 +471,7 @@ namespace Transport
 
         vector<IDatagramTransportSPtr> servers;
         AutoResetEvent connectionFaulted;
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         for (int i = 0; i < 5; ++i)
         {
             auto server = TcpDatagramTransport::Create(TTestUtil::GetListenAddress());
@@ -618,7 +618,7 @@ namespace Transport
             node2->SetInstance(20000);
 
             ISendTarget::SPtr inboundSendTarget;
-            wstring testAction = TTestUtil::GetGuidAction();
+            string testAction = TTestUtil::GetGuidAction();
             TTestUtil::SetMessageHandler(
                 node2,
                 testAction,
@@ -668,21 +668,21 @@ namespace Transport
             Trace.WriteInfo(TraceType, "wait for node1 getting ListenInstance from node2, which comes before reply");
             VERIFY_IS_TRUE(replyReceived.WaitOne(TimeSpan::FromSeconds(30)));
 
-            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, L"outbound", 1);
-            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, L"inbound", 1);
+            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, "outbound", 1);
+            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, "inbound", 1);
 
             Trace.WriteInfo(TraceType, "TargetDown with older instance will not work");
             inboundSendTarget->TargetDown(node1->Instance() - 1);
-            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, L"outbound", 1);
-            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, L"inbound", 1);
+            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, "outbound", 1);
+            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, "inbound", 1);
 
             Trace.WriteInfo(TraceType, "TargetDown with current instance should close the connection");
             inboundSendTarget->TargetDown(node1->Instance());
-            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, L"inbound", 0);
+            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, "inbound", 0);
 
             Trace.WriteInfo(TraceType, "Request after incrementing node1 instance");
             node1->SetInstance(node1->Instance() + 1);
-            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, L"outbound", 0);
+            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, "outbound", 0);
             TargetInstanceTestSendRequest(node1, outboundSendTarget, testAction);
             VERIFY_IS_TRUE(replyReceived.WaitOne(TimeSpan::FromSeconds(30)));
         }
@@ -696,7 +696,7 @@ namespace Transport
             node2->SetInstance(20000);
 
             ISendTarget::SPtr inboundSendTarget;
-            wstring testAction = TTestUtil::GetGuidAction();
+            string testAction = TTestUtil::GetGuidAction();
             TTestUtil::SetMessageHandler(
                 node2,
                 testAction,
@@ -746,21 +746,21 @@ namespace Transport
             Trace.WriteInfo(TraceType, "wait for node1 getting ListenInstance from node2, which comes before reply");
             VERIFY_IS_TRUE(replyReceived.WaitOne(TimeSpan::FromSeconds(30)));
 
-            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, L"outbound", 1);
-            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, L"inbound", 1);
+            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, "outbound", 1);
+            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, "inbound", 1);
 
             Trace.WriteInfo(TraceType, "TargetDown with older instance will not work");
             outboundSendTarget->TargetDown(node2->Instance() - 1);
-            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, L"outbound", 1);
-            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, L"inbound", 1);
+            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, "outbound", 1);
+            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, "inbound", 1);
 
             Trace.WriteInfo(TraceType, "TargetDown with newer instance should close the connection");
             outboundSendTarget->TargetDown(node2->Instance() + 1);
-            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, L"outbound", 0);
+            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, "outbound", 0);
 
             Trace.WriteInfo(TraceType, "Request after updating node2 instance to an even larger value");
             node2->SetInstance(node2->Instance() + 2);
-            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, L"inbound", 0);
+            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, "inbound", 0);
             TargetInstanceTestSendRequest(node1, outboundSendTarget, testAction);
             VERIFY_IS_TRUE(replyReceived.WaitOne(TimeSpan::FromSeconds(30)));
         }
@@ -774,7 +774,7 @@ namespace Transport
             node2->SetInstance(20000);
 
             ISendTarget::SPtr inboundSendTarget;
-            wstring testAction = TTestUtil::GetGuidAction();
+            string testAction = TTestUtil::GetGuidAction();
             TTestUtil::SetMessageHandler(
                 node2,
                 testAction,
@@ -824,27 +824,27 @@ namespace Transport
             Trace.WriteInfo(TraceType, "wait for node1 getting ListenInstance from node2, which comes before reply");
             VERIFY_IS_TRUE(replyReceived.WaitOne(TimeSpan::FromSeconds(30)));
 
-            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, L"outbound", 1);
-            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, L"inbound", 1);
+            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, "outbound", 1);
+            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, "inbound", 1);
 
             Trace.WriteInfo(TraceType, "resolve with older instance, the connections should be still up");
-            auto resolveWithOlderInstance = node1->ResolveTarget(node2->ListenAddress(), L"", node2->Instance() - 1);
-            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, L"inbound", 1);
-            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, L"outbound", 1);
+            auto resolveWithOlderInstance = node1->ResolveTarget(node2->ListenAddress(), "", node2->Instance() - 1);
+            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, "inbound", 1);
+            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, "outbound", 1);
 
             Trace.WriteInfo(TraceType, "resolve with current instance, the connections should be still up");
-            auto resolveWithCurrentInstance = node1->ResolveTarget(node2->ListenAddress(), L"", node2->Instance());
+            auto resolveWithCurrentInstance = node1->ResolveTarget(node2->ListenAddress(), "", node2->Instance());
 
-            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, L"inbound", 1);
-            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, L"outbound", 1);
+            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, "inbound", 1);
+            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, "outbound", 1);
 
             Trace.WriteInfo(TraceType, "resolve with newer instance, the connections should be down");
-            auto resolveWithNewerInstance = node1->ResolveTarget(node2->ListenAddress(), L"", node2->Instance() + 1);
-            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, L"outbound", 0);
+            auto resolveWithNewerInstance = node1->ResolveTarget(node2->ListenAddress(), "", node2->Instance() + 1);
+            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, "outbound", 0);
 
             Trace.WriteInfo(TraceType, "New request after incrementing node2 instance");
             node2->SetInstance(node2->Instance() + 1);
-            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, L"inbound", 0);
+            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, "inbound", 0);
             TargetInstanceTestSendRequest(node1, outboundSendTarget, testAction);
             VERIFY_IS_TRUE(replyReceived.WaitOne(TimeSpan::FromSeconds(30)));
         }
@@ -857,7 +857,7 @@ namespace Transport
             node2->SetInstance(20000);
 
             ISendTarget::SPtr inboundSendTarget;
-            wstring testAction = TTestUtil::GetGuidAction();
+            string testAction = TTestUtil::GetGuidAction();
             TTestUtil::SetMessageHandler(
                 node2,
                 testAction,
@@ -906,29 +906,29 @@ namespace Transport
             Trace.WriteInfo(TraceType, "wait for node1 getting ListenInstance from node2, which comes before reply");
             VERIFY_IS_TRUE(replyReceived.WaitOne(TimeSpan::FromSeconds(30)));
 
-            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, L"outbound", 1);
-            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, L"inbound", 1);
+            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, "outbound", 1);
+            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, "inbound", 1);
 
             Trace.WriteInfo(TraceType, "resolve with older instance, the connections should be still up");
-            auto resolveWithOlderInstance = node2->ResolveTarget(node1->ListenAddress(), L"", node1->Instance() - 1);
+            auto resolveWithOlderInstance = node2->ResolveTarget(node1->ListenAddress(), "", node1->Instance() - 1);
 
-            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, L"inbound", 1);
-            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, L"outbound", 1);
+            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, "inbound", 1);
+            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, "outbound", 1);
 
             Trace.WriteInfo(TraceType, "resolve with current instance, the connections should be still up");
             auto resolveWithCurrentInstance = node2->ResolveTarget(
-                node1->ListenAddress(), L"", node1->Instance());
+                node1->ListenAddress(), "", node1->Instance());
 
-            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, L"inbound", 1);
-            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, L"outbound", 1);
+            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, "inbound", 1);
+            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, "outbound", 1);
 
             Trace.WriteInfo(TraceType, "resolve with newer instance, the connections should be down");
-            auto resolveWithNewerInstance = node2->ResolveTarget(node1->ListenAddress(), L"", node1->Instance() + 1);
-            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, L"inbound", 0);
+            auto resolveWithNewerInstance = node2->ResolveTarget(node1->ListenAddress(), "", node1->Instance() + 1);
+            TargetInstanceTestCheckConnecitonCount(inboundSendTarget, "inbound", 0);
 
             Trace.WriteInfo(TraceType, "Request after updating node1 instance to an even larger value");
             node1->SetInstance(node1->Instance() + 1);
-            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, L"outbound", 0);
+            TargetInstanceTestCheckConnecitonCount(outboundSendTarget, "outbound", 0);
             TargetInstanceTestSendRequest(node1, outboundSendTarget, testAction);
             VERIFY_IS_TRUE(replyReceived.WaitOne(TimeSpan::FromSeconds(30)));
         }
@@ -965,12 +965,12 @@ namespace Transport
 
         TransportConfig & config = TransportConfig::GetConfig();
 
-        wstring resolveOptionSaved = config.ResolveOption;
-        config.ResolveOption = L"unspecified";
+        string resolveOptionSaved = config.ResolveOption;
+        config.ResolveOption = "unspecified";
         Trace.WriteInfo(TraceType, "test with resolve type {0}", config.ResolveOption);
 
         {
-            auto transport = TcpDatagramTransport::Create(L"127.0.0.1:0", L"");
+            auto transport = TcpDatagramTransport::Create("127.0.0.1:0", "");
             VERIFY_IS_TRUE(transport->Start().IsSuccess());
             vector<Endpoint> listenEndpoints = transport->Test_ListenEndpoints();
 
@@ -979,7 +979,7 @@ namespace Transport
         }
 
         {
-            auto transport = TcpDatagramTransport::Create(L"[::1]:0", L"");
+            auto transport = TcpDatagramTransport::Create("[::1]:0", "");
             VERIFY_IS_TRUE(transport->Start().IsSuccess());
             vector<Endpoint> listenEndpoints = transport->Test_ListenEndpoints();
 
@@ -988,7 +988,7 @@ namespace Transport
         }
 
         {
-            auto transport = TcpDatagramTransport::Create(L"localhost:0", L"");
+            auto transport = TcpDatagramTransport::Create("localhost:0", "");
             VERIFY_IS_TRUE(transport->Start().IsSuccess());
             vector<Endpoint> listenEndpoints = transport->Test_ListenEndpoints();
 
@@ -1003,11 +1003,11 @@ namespace Transport
             }
         }
 
-        wstring hostname;
+        string hostname;
         VERIFY_IS_TRUE(TcpTransportUtility::GetLocalFqdn(hostname).IsSuccess());
-        wstring hostnameAddress = hostname + L":0";
+        string hostnameAddress = hostname + ":0";
         {
-            auto transport = TcpDatagramTransport::Create(hostnameAddress, L"");
+            auto transport = TcpDatagramTransport::Create(hostnameAddress, "");
             VERIFY_IS_TRUE(transport->Start().IsSuccess());
             vector<Endpoint> listenEndpoints = transport->Test_ListenEndpoints();
 
@@ -1031,11 +1031,11 @@ namespace Transport
             }
         }
 
-        config.ResolveOption = L"ipv4";
+        config.ResolveOption = "ipv4";
         Trace.WriteInfo(TraceType, "test with resolve type {0}", config.ResolveOption);
 
         {
-            auto transport = TcpDatagramTransport::Create(L"127.0.0.1:0", L"");
+            auto transport = TcpDatagramTransport::Create("127.0.0.1:0", "");
             VERIFY_IS_TRUE(transport->Start().IsSuccess());
             vector<Endpoint> listenEndpoints = transport->Test_ListenEndpoints();
 
@@ -1045,7 +1045,7 @@ namespace Transport
         }
 
         {
-            auto transport = TcpDatagramTransport::Create(L"localhost:0", L"");
+            auto transport = TcpDatagramTransport::Create("localhost:0", "");
             VERIFY_IS_TRUE(transport->Start().IsSuccess());
             vector<Endpoint> listenEndpoints = transport->Test_ListenEndpoints();
 
@@ -1062,7 +1062,7 @@ namespace Transport
         }
 
         {
-            auto transport = TcpDatagramTransport::Create(hostnameAddress, L"");
+            auto transport = TcpDatagramTransport::Create(hostnameAddress, "");
             VERIFY_IS_TRUE(transport->Start().IsSuccess());
             vector<Endpoint> listenEndpoints = transport->Test_ListenEndpoints();
 
@@ -1078,11 +1078,11 @@ namespace Transport
             }
         }
 
-        config.ResolveOption = L"ipv6";
+        config.ResolveOption = "ipv6";
         Trace.WriteInfo(TraceType, "test with resolve type {0}", config.ResolveOption);
 
         {
-            auto transport = TcpDatagramTransport::Create(L"[::1]:0", L"");
+            auto transport = TcpDatagramTransport::Create("[::1]:0", "");
             VERIFY_IS_TRUE(transport->Start().IsSuccess());
             vector<Endpoint> listenEndpoints = transport->Test_ListenEndpoints();
 
@@ -1093,7 +1093,7 @@ namespace Transport
 
 #ifndef PLATFORM_UNIX //LINUXTODO Xubuntu maps ::1 to ipv6-localhost, need to check if this is true for other distros 
         {
-            auto transport = TcpDatagramTransport::Create(L"localhost:0", L"");
+            auto transport = TcpDatagramTransport::Create("localhost:0", "");
             VERIFY_IS_TRUE(transport->Start().IsSuccess());
             vector<Endpoint> listenEndpoints = transport->Test_ListenEndpoints();
 
@@ -1111,7 +1111,7 @@ namespace Transport
         }
 
         {
-            auto transport = TcpDatagramTransport::Create(hostnameAddress, L"");
+            auto transport = TcpDatagramTransport::Create(hostnameAddress, "");
             VERIFY_IS_TRUE(transport->Start().IsSuccess());
             vector<Endpoint> listenEndpoints = transport->Test_ListenEndpoints();
 
@@ -1163,29 +1163,29 @@ namespace Transport
         auto transport = TcpDatagramTransport::CreateClient();
         VERIFY_IS_TRUE(transport->Start().IsSuccess());
 
-        auto target1 = transport->ResolveTarget(L"localhost:20000", L"");
+        auto target1 = transport->ResolveTarget("localhost:20000", "");
         VERIFY_IS_TRUE(target1);
 
-        auto target2 = transport->ResolveTarget(L"localhost:20000", L"");
+        auto target2 = transport->ResolveTarget("localhost:20000", "");
         VERIFY_IS_TRUE(target2);
         VERIFY_IS_TRUE(target2 == target1);
 
-        auto target3 = transport->ResolveTarget(L"localhost:20000/blahblah", L"");
+        auto target3 = transport->ResolveTarget("localhost:20000/blahblah", "");
         VERIFY_IS_TRUE(target3);
         VERIFY_IS_TRUE(target3 == target1);
 
-        auto target4 = transport->ResolveTarget(L"localhost:20001", L"");
+        auto target4 = transport->ResolveTarget("localhost:20001", "");
         VERIFY_IS_TRUE(target4);
         VERIFY_IS_FALSE(target4 == target1);
 
-        auto target5 = transport->ResolveTarget(L"10.0.0.1:20000", L"");
+        auto target5 = transport->ResolveTarget("10.0.0.1:20000", "");
         VERIFY_IS_TRUE(target5);
         VERIFY_IS_FALSE(target5 == target1);
 
-        auto target6 = transport->ResolveTarget(L"www.bing.com:80", L"");
+        auto target6 = transport->ResolveTarget("www.bing.com:80", "");
         VERIFY_IS_TRUE(target6);
 
-        auto target7 = transport->ResolveTarget(L"WWW.Bing.com:80", L"");
+        auto target7 = transport->ResolveTarget("WWW.Bing.com:80", "");
         VERIFY_IS_TRUE(target7);
         VERIFY_IS_TRUE(target6 == target7);
 
@@ -1222,7 +1222,7 @@ namespace Transport
 
         auto server = TcpDatagramTransport::Create(TTestUtil::GetListenAddress());
 
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         AutoResetEvent messageReceived;
         TTestUtil::SetMessageHandler(
             server,
@@ -1279,7 +1279,7 @@ namespace Transport
 
         auto server = TcpDatagramTransport::Create(TTestUtil::GetListenAddress());
 
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         AutoResetEvent messageReceived;
         TTestUtil::SetMessageHandler(
             server,
@@ -1335,14 +1335,14 @@ namespace Transport
         ENTER;
         SimpleTcpTest(
             TTestUtil::GetListenAddress(ListenAddressType::LoopbackIpv6),
-            TTestUtil::GetListenAddress(L"[0:0:0:0:0:0:0:1]"));
+            TTestUtil::GetListenAddress("[0:0:0:0:0:0:0:1]"));
         LEAVE;
     }
 
     BOOST_AUTO_TEST_CASE(SimpleTcpTestWithLocalhost)
     {
         ENTER;
-        SimpleTcpTest(L"localhost:0", L"localhost:0"); // Test dynamic listen port
+        SimpleTcpTest("localhost:0", "localhost:0"); // Test dynamic listen port
         LEAVE;
     }
 
@@ -1356,7 +1356,7 @@ namespace Transport
     BOOST_AUTO_TEST_CASE(SimpleTcpTestWithLocalhost2)
     {
         ENTER;
-        SimpleTcpTest(L"localhost:0", L"127.0.0.1:0"); // Test dynamic listen port
+        SimpleTcpTest("localhost:0", "127.0.0.1:0"); // Test dynamic listen port
         LEAVE;
     }
 
@@ -1370,9 +1370,9 @@ namespace Transport
     BOOST_AUTO_TEST_CASE(SimpleTcpTestWithLocalFqdn)
     {
         ENTER;
-        wstring thisHost;
+        string thisHost;
         VERIFY_IS_TRUE(TcpTransportUtility::GetLocalFqdn(thisHost).IsSuccess());
-        thisHost += L":0";
+        thisHost += ":0";
         SimpleTcpTest(thisHost, thisHost);
         LEAVE;
     }
@@ -1381,8 +1381,8 @@ namespace Transport
     {
         ENTER;
         TransportConfig & config = TransportConfig::GetConfig();
-        wstring savedResolveOption = config.ResolveOption;
-        config.ResolveOption = L"ipv4";
+        string savedResolveOption = config.ResolveOption;
+        config.ResolveOption = "ipv4";
         KFinally([&] { config.ResolveOption = savedResolveOption; });
 
         SimpleTcpTest(TTestUtil::GetListenAddress(ListenAddressType::Fqdn), TTestUtil::GetListenAddress(ListenAddressType::Fqdn));
@@ -1396,8 +1396,8 @@ namespace Transport
     {
         ENTER;
         TransportConfig & config = TransportConfig::GetConfig();
-        wstring savedResolveOption = config.ResolveOption;
-        config.ResolveOption = L"ipv6";
+        string savedResolveOption = config.ResolveOption;
+        config.ResolveOption = "ipv6";
         KFinally([&] { config.ResolveOption = savedResolveOption; });
 
         SimpleTcpTest(TTestUtil::GetListenAddress(ListenAddressType::Fqdn), TTestUtil::GetListenAddress(ListenAddressType::Fqdn));
@@ -1409,28 +1409,28 @@ namespace Transport
     BOOST_AUTO_TEST_CASE(MixedAddressTestWithIPv4Receiver)
     {
         ENTER;
-        SimpleTcpTest(L"[::1]:0", L"127.0.0.1:0");
+        SimpleTcpTest("[::1]:0", "127.0.0.1:0");
         LEAVE;
     }
 
     BOOST_AUTO_TEST_CASE(MixedAddressTestWithIPv6Receiver)
     {
         ENTER;
-        SimpleTcpTest(L"127.0.0.1:0", L"[::1]:0");
+        SimpleTcpTest("127.0.0.1:0", "[::1]:0");
         LEAVE;
     }
 
     BOOST_AUTO_TEST_CASE(TestListenPort0WithIPv6)
     {
         ENTER;
-        SimpleTcpTest(L"[::1]:0", L"[::1]:0");
+        SimpleTcpTest("[::1]:0", "[::1]:0");
         LEAVE;
     }
 
     BOOST_AUTO_TEST_CASE(TestListenPort0WithIPv4)
     {
         ENTER;
-        SimpleTcpTest(L"127.0.0.1:0", L"127.0.0.1:0");
+        SimpleTcpTest("127.0.0.1:0", "127.0.0.1:0");
         LEAVE;
     }
 
@@ -1459,8 +1459,8 @@ namespace Transport
     {
         ENTER;
 
-        std::wstring ipv4Address = TTestUtil::GetListenAddress(ListenAddressType::LoopbackIpv4);
-        std::wstring ipv6Address = TTestUtil::GetListenAddress(ListenAddressType::LoopbackIpv6);
+        std::string ipv4Address = TTestUtil::GetListenAddress(ListenAddressType::LoopbackIpv4);
+        std::string ipv6Address = TTestUtil::GetListenAddress(ListenAddressType::LoopbackIpv6);
 
         auto ipv4Sender1 = TcpDatagramTransport::Create(ipv4Address);
         VERIFY_IS_TRUE(ipv4Sender1->Start().IsSuccess());
@@ -1513,7 +1513,7 @@ namespace Transport
 
         auto target = sender->ResolveTarget(receiver->ListenAddress());
 
-        TcpTestMessage body(L"Message message message message oh yeah");
+        TcpTestMessage body("Message message message message oh yeah");
         auto oneway(make_unique<Message>(body));
         sender->SendOneWay(target, std::move(oneway));
 
@@ -1538,7 +1538,7 @@ namespace Transport
 
         auto sender = TcpDatagramTransport::Create(TTestUtil::GetListenAddress());
         auto receiver = TcpDatagramTransport::Create(TTestUtil::GetListenAddress());
-        auto myString = std::wstring(L"Message message message message oh yeah");
+        auto myString = std::string("Message message message message oh yeah");
 
         AutoResetEvent replyReceived;
         sender->SetMessageHandler([&replyReceived](MessageUPtr &, ISendTarget::SPtr const &) -> void
@@ -1549,7 +1549,7 @@ namespace Transport
         });
 
         AutoResetEvent messageReceived;
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         TTestUtil::SetMessageHandler(
             receiver,
             testAction,
@@ -1606,7 +1606,7 @@ namespace Transport
                 VERIFY_IS_TRUE(buffers.size() == 1);
                 VERIFY_IS_TRUE(buffers[0].buf == (char *)myString.c_str());
 
-                std::wstring receiverString((wchar_t*)buffers[0].buf);
+                std::string receiverString((char*)buffers[0].buf);
 
                 VERIFY_IS_TRUE(receiverString == myString);
                 VERIFY_IS_TRUE(receiverString.c_str() != myString.c_str());
@@ -1747,7 +1747,7 @@ namespace Transport
 
         auto request = (make_unique<Message>(TestMessageBody()));
         request->Headers.Add(MessageIdHeader());
-        auto address = sender->ResolveTarget(L"www.bing.com:23", L"");
+        auto address = sender->ResolveTarget("www.bing.com:23", "");
 
         VERIFY_IS_TRUE(address != nullptr);
 
@@ -1830,7 +1830,7 @@ namespace Transport
         ENTER;
 
         auto faultyReceiver = TcpDatagramTransport::Create(TTestUtil::GetListenAddress());
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         TTestUtil::SetMessageHandler(
             faultyReceiver,
             testAction,
@@ -2076,7 +2076,7 @@ namespace Transport
         auto sender = TcpDatagramTransport::Create(TTestUtil::GetListenAddress());
 
         ManualResetEvent waitHandle(false);
-        std::wstring invalidAddress = TTestUtil::GetListenAddress();
+        std::string invalidAddress = TTestUtil::GetListenAddress();
         sender->SetConnectionFaultHandler(
             [&waitHandle, &invalidAddress](ISendTarget const & target, ErrorCode lastError) -> void
             {
@@ -2091,7 +2091,7 @@ namespace Transport
         auto target = sender->ResolveTarget(invalidAddress);
         VERIFY_IS_TRUE(target);
 
-        TcpTestMessage body(L"Message message message message oh yeah");
+        TcpTestMessage body("Message message message message oh yeah");
         auto oneway(make_unique<Message>(body));
         sender->SendOneWay(target, std::move(oneway));
 
@@ -2160,7 +2160,7 @@ namespace Transport
 
         for (LONG i = 0; i < TotalMessageCount; ++i)
         {
-            TcpTestMessage body(L"Message message message message oh yeah");
+            TcpTestMessage body("Message message message message oh yeah");
             auto oneway(make_unique<Message>(body));
             sender->SendOneWay(target, std::move(oneway));
         }
@@ -2203,7 +2203,7 @@ namespace Transport
             {
                 for (int i = 0; i < TotalMessageCount; ++i)
                 {
-                    TcpTestMessage body(L"Message message message message oh yeah");
+                    TcpTestMessage body("Message message message message oh yeah");
                     auto oneway(make_unique<Message>(body));
                     sender->SendOneWay(target, std::move(oneway));
                     Sleep(100);
@@ -2273,7 +2273,7 @@ namespace Transport
                 {
                     for (int j = 0; j < TotalClientCount; ++j)
                     {
-                        TcpTestMessage body(L"Message message message message oh yeah");
+                        TcpTestMessage body("Message message message message oh yeah");
                         auto oneway(make_unique<Message>(body));
                         clients[j]->SendOneWay(targets[j], std::move(oneway));
                     }
@@ -2344,7 +2344,7 @@ namespace Transport
                 sender->SetInstance(sender->Instance() + 1);
 
                 Trace.WriteInfo(TraceType, "[receiver] sending reply");
-                TcpTestMessage body(L"Message message message message oh yeah");
+                TcpTestMessage body("Message message message message oh yeah");
                 auto replyMessage(make_unique<Message>(body));
                 receiver->SendOneWay(replyTarget, std::move(replyMessage));
                 messageReceived.Set();
@@ -2358,7 +2358,7 @@ namespace Transport
         VERIFY_IS_TRUE(target);
 
         Trace.WriteInfo(TraceType, "[sender] sending request 1");
-        TcpTestMessage body(L"Message message message message oh yeah");
+        TcpTestMessage body("Message message message message oh yeah");
         auto testMessage(make_unique<Message>(body));
         sender->SendOneWay(target, std::move(testMessage));
 
@@ -2393,7 +2393,7 @@ namespace Transport
         receiver->SetInstance(receiver->Instance() + 1);
 
         Trace.WriteInfo(TraceType, "[sender] sending request 2");
-        TcpTestMessage body2(L"Message message message message oh yeah");
+        TcpTestMessage body2("Message message message message oh yeah");
         auto testMessage2 = make_unique<Message>(body2);
         sender->SendOneWay(target, std::move(testMessage2));
 
@@ -2675,10 +2675,10 @@ namespace Transport
     {
         ENTER;
 
-        auto sender = TcpDatagramTransport::Create(L"127.0.0.1:0");
+        auto sender = TcpDatagramTransport::Create("127.0.0.1:0");
         sender->DisableListenInstanceMessage();
         sender->SetBufferFactory(make_unique<LTBufferFactory>());
-        auto receiver = TcpDatagramTransport::Create(L"127.0.0.1:0");
+        auto receiver = TcpDatagramTransport::Create("127.0.0.1:0");
         receiver->DisableListenInstanceMessage();
         receiver->SetBufferFactory(make_unique<LTBufferFactory>());
 
@@ -2797,10 +2797,10 @@ namespace Transport
         ENTER;
 
         auto sender = TcpDatagramTransport::CreateClient();
-        auto receiver = TcpDatagramTransport::Create(L"127.0.0.1:0");
+        auto receiver = TcpDatagramTransport::Create("127.0.0.1:0");
 
         size_t toSend = 3;
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         AutoResetEvent messageReceived;
         atomic_uint64 receiveCount(0);
         TTestUtil::SetMessageHandler(
@@ -2881,7 +2881,7 @@ namespace Transport
 
         auto receiver = TcpDatagramTransport::Create(TTestUtil::GetListenAddress());
 
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         TTestUtil::SetMessageHandler(
             receiver,
             testAction,
@@ -2996,7 +2996,7 @@ namespace Transport
             VERIFY_IS_TRUE(receiver->SetSecurity(securitySettings).IsSuccess());
         }
 
-        wstring testAction = L"BlockMe";
+        string testAction = "BlockMe";
         AutoResetEvent blocker(false);
         TTestUtil::SetMessageHandler(
             receiver,
@@ -3014,7 +3014,7 @@ namespace Transport
         ISendTarget::SPtr target = sender->ResolveTarget(receiver->ListenAddress());
         VERIFY_IS_TRUE(target);
 
-        TcpTestMessage body(L"test message for receive thread deadlock detection");
+        TcpTestMessage body("test message for receive thread deadlock detection");
         auto oneway(make_unique<Message>(body));
         oneway->Headers.Add(MessageIdHeader());
         oneway->Headers.Add(ActorHeader(Actor::GenericTestActor));
@@ -3036,7 +3036,7 @@ namespace Transport
 
             if (totalWaitTime > TimeSpan::FromSeconds(60))
             {
-                VERIFY_IS_TRUE(false, L"Receive thread deadlock detection failed");
+                VERIFY_IS_TRUE(false, "Receive thread deadlock detection failed");
                 break;
             }
         }
@@ -3090,14 +3090,14 @@ namespace Transport
             idleTimeout + TimeSpan::FromSeconds(3));
     }
 
-    void TcpTransportTests::SimpleTcpTest(std::wstring const & senderAddress, std::wstring const & receiverAddress)
+    void TcpTransportTests::SimpleTcpTest(std::string const & senderAddress, std::string const & receiverAddress)
     {
         Trace.WriteInfo(TraceType, "senderAddress ={0},receiverAddress={1}", senderAddress, receiverAddress);
         auto sender = TcpDatagramTransport::Create(senderAddress);
         auto receiver = TcpDatagramTransport::Create(receiverAddress);
 
         AutoResetEvent replyReceived;
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         TTestUtil::SetMessageHandler(
             sender,
             testAction,
@@ -3137,7 +3137,7 @@ namespace Transport
         bool receivedReplyOne = replyReceived.WaitOne(TimeSpan::FromSeconds(1));
         VERIFY_IS_FALSE(receivedReplyOne);
 
-        TcpTestMessage body(L"Message message message message oh yeah");
+        TcpTestMessage body("Message message message message oh yeah");
         auto request(make_unique<Message>(body));
         request->Headers.Add(ActionHeader(testAction));
         request->Headers.Add(MessageIdHeader());
@@ -3208,7 +3208,7 @@ namespace Transport
         });
 
         auto sender = TcpDatagramTransport::CreateClient();
-        auto receiver = TcpDatagramTransport::Create(L"127.0.0.1:0");
+        auto receiver = TcpDatagramTransport::Create("127.0.0.1:0");
 
         AutoResetEvent receivedEnoughMessages;
 
@@ -3221,7 +3221,7 @@ namespace Transport
             (*bodyByteBlock)[i] = (i & 0xff); // set up pattern for receiving side to verify
         }
 
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         TTestUtil::SetMessageHandler(
             receiver,
             testAction,
@@ -3320,7 +3320,7 @@ namespace Transport
         receiver->Stop();
     }
 
-    void TcpTransportTests::ClientTcpTest(wstring const & serverAddress)
+    void TcpTransportTests::ClientTcpTest(string const & serverAddress)
     {
         auto sender = TcpDatagramTransport::CreateClient();
         auto receiver = TcpDatagramTransport::Create(serverAddress);
@@ -3352,7 +3352,7 @@ namespace Transport
         bool receivedReplyOne = replyReceived.WaitOne(TimeSpan::FromSeconds(1));
         VERIFY_IS_FALSE(receivedReplyOne);
             
-        TcpTestMessage body(L"Message message message message oh yeah");
+        TcpTestMessage body("Message message message message oh yeah");
         sender->SendOneWay(target, make_unique<Message>(body));
 
         bool receivedMessageOne = messageReceived.WaitOne(TimeSpan::FromSeconds(30));
@@ -3516,20 +3516,20 @@ namespace Transport
             TransportConfig::GetConfig().OutgoingMessageExpirationCheckInterval = savedCheckInterval;
         });
 
-        auto sender = TcpDatagramTransport::CreateClient(L"Sender", L"SendQueueExpirationTest");
+        auto sender = TcpDatagramTransport::CreateClient("Sender", "SendQueueExpirationTest");
         sender->SetOutgoingMessageExpiration(outgoingMessageExpiration);
 
         auto receiver = TcpDatagramTransport::Create(
             TTestUtil::GetListenAddress(),
-            L"Receiver",
-            L"SendQueueExpirationTest");
+            "Receiver",
+            "SendQueueExpirationTest");
 
         TimeSpan receiveBlockingTime = TimeSpan::FromMilliseconds(outgoingMessageExpiration.TotalMilliseconds() * 2.0);
         AutoResetEvent messageReceived(false);
         Common::atomic_bool firstReceiveCallback(true);
         DWORD lastReceivedMessageIndex;
 
-        wstring testAction = TTestUtil::GetGuidAction();
+        string testAction = TTestUtil::GetGuidAction();
         TTestUtil::SetMessageHandler(
             receiver,
             testAction,
@@ -3563,7 +3563,7 @@ namespace Transport
         VERIFY_IS_TRUE(receiver->Start().IsSuccess());
         VERIFY_IS_TRUE(sender->Start().IsSuccess());
 
-        ISendTarget::SPtr target = sender->ResolveTarget(receiver->ListenAddress(), L"", TransportSecurity().LocalWindowsIdentity());
+        ISendTarget::SPtr target = sender->ResolveTarget(receiver->ListenAddress(), "", TransportSecurity().LocalWindowsIdentity());
         VERIFY_IS_TRUE(target);
 
         auto firstMsg = make_unique<Message>();
@@ -3624,7 +3624,7 @@ namespace Transport
     void TcpTransportTests::TargetInstanceTestSendRequest(
         IDatagramTransportSPtr const & srcNode,
         ISendTarget::SPtr const & target,
-        wstring const & action)
+        string const & action)
     {
         auto request = make_unique<Message>();
         request->Headers.Add(ActionHeader(action));
@@ -3639,7 +3639,7 @@ namespace Transport
 
     void TcpTransportTests::TargetInstanceTestCheckConnecitonCount(
         ISendTarget::SPtr const & target,
-        wstring const & connectionType,
+        string const & connectionType,
         size_t expected)
     {
         size_t connectionCount = target->ConnectionCount();

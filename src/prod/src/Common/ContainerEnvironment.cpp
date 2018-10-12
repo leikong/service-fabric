@@ -6,13 +6,13 @@
 #include "stdafx.h"
 #include "Common/ContainerEnvironment.h"
 
-Common::GlobalWString Common::ContainerEnvironment::IsContainerHostEnvironmentVariableName = make_global<wstring>(L"Fabric_IsContainerHost");
-Common::GlobalWString Common::ContainerEnvironment::ContainertracePathEnvironmentVariableName = make_global<wstring>(L"FabricLogRoot");
-Common::GlobalWString Common::ContainerEnvironment::ContainerNetworkingModeEnvironmentVariable = make_global<wstring>(L"Fabric_NetworkingMode");
+Common::GlobalString Common::ContainerEnvironment::IsContainerHostEnvironmentVariableName = make_global<string>("Fabric_IsContainerHost");
+Common::GlobalString Common::ContainerEnvironment::ContainertracePathEnvironmentVariableName = make_global<string>("FabricLogRoot");
+Common::GlobalString Common::ContainerEnvironment::ContainerNetworkingModeEnvironmentVariable = make_global<string>("Fabric_NetworkingMode");
 
 bool Common::ContainerEnvironment::IsContainerHost()
 {
-    wstring envValue;
+    string envValue;
     bool envVarFound = Environment::GetEnvironmentVariable(ContainerEnvironment::IsContainerHostEnvironmentVariableName, envValue, Common::NOTHROW());
     bool isContainerHost = false;
     if (envVarFound)
@@ -26,21 +26,21 @@ bool Common::ContainerEnvironment::IsContainerHost()
     return false;
 }
 
-std::wstring Common::ContainerEnvironment::GetContainerTracePath()
+std::string Common::ContainerEnvironment::GetContainerTracePath()
 {
-    wstring envValue = L"";
+    string envValue = "";
     bool envVarFound = Environment::GetEnvironmentVariable(ContainerEnvironment::ContainertracePathEnvironmentVariableName, envValue, Common::NOTHROW());
     if (envVarFound)
     {
-        return Path::Combine(envValue, L"Traces");
+        return Path::Combine(envValue, "Traces");
     }
 
     return envValue;
 }
 
-std::wstring Common::ContainerEnvironment::GetContainerNetworkingMode()
+std::string Common::ContainerEnvironment::GetContainerNetworkingMode()
 {
-    wstring envValue = L"";
+    string envValue = "";
     Environment::GetEnvironmentVariable(ContainerEnvironment::ContainerNetworkingModeEnvironmentVariable, envValue, Common::NOTHROW());
     return envValue;
 }

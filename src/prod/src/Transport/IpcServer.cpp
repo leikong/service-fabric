@@ -16,9 +16,9 @@ namespace
 {
     IDatagramTransportSPtr CreateTransport(
         ComponentRoot const & root,
-        wstring const & transportListenAddress,
-        wstring const & serverId,
-        std::wstring const & owner,
+        string const & transportListenAddress,
+        string const & serverId,
+        std::string const & owner,
         bool useUnreliableTransport)
     {
         if (transportListenAddress.empty())
@@ -26,7 +26,7 @@ namespace
             return nullptr;
         }
 
-        auto transport = DatagramTransportFactory::CreateTcp(transportListenAddress, serverId, owner + L".IpcServer");
+        auto transport = DatagramTransportFactory::CreateTcp(transportListenAddress, serverId, owner + ".IpcServer");
 
         //Support for Unreliable transport for request reply over IPC
         if (useUnreliableTransport && TransportConfig::GetConfig().UseUnreliableForRequestReply)
@@ -43,32 +43,32 @@ class IpcServer::ClientTable
 {
     DENY_COPY(ClientTable);
 public:
-    ClientTable(wstring const & traceId);
+    ClientTable(string const & traceId);
 
-    void UpdateIfNeeded(wstring const & clientId, ISendTarget::SPtr const & sendTarget, DWORD clientProcessId);
-    bool Remove(wstring const & clientId);
-    ISendTarget::SPtr GetSendTarget(wstring const & clientId, _Out_ DWORD & clientProcessId);
+    void UpdateIfNeeded(string const & clientId, ISendTarget::SPtr const & sendTarget, DWORD clientProcessId);
+    bool Remove(string const & clientId);
+    ISendTarget::SPtr GetSendTarget(string const & clientId, _Out_ DWORD & clientProcessId);
 
     void Close();
 
 private:
-    wstring const traceId_;
+    string const traceId_;
     RwLock lock_;
-    unordered_map<wstring /* client ID */, pair<ISendTarget::SPtr, DWORD/*ClientProcessId*/>> clients_;
+    unordered_map<string /* client ID */, pair<ISendTarget::SPtr, DWORD/*ClientProcessId*/>> clients_;
 };
 
-IpcServer::ClientTable::ClientTable(wstring const & traceId) : traceId_(traceId)
+IpcServer::ClientTable::ClientTable(string const & traceId) : traceId_(traceId)
 {
 }
 
-void IpcServer::ClientTable::UpdateIfNeeded(wstring const & clientId, ISendTarget::SPtr const & sendTarget, DWORD clientProcessId)
+void IpcServer::ClientTable::UpdateIfNeeded(string const & clientId, ISendTarget::SPtr const & sendTarget, DWORD clientProcessId)
 {
     AcquireWriteLock lockInScope(lock_);
 
     auto iter = clients_.find(clientId);
     if (iter == clients_.end())
     {
-        clients_.emplace(pair<wstring, pair<ISendTarget::SPtr, DWORD>>(clientId, pair<ISendTarget::SPtr, DWORD>(sendTarget, clientProcessId)));
+        clients_.emplace(pair<string, pair<ISendTarget::SPtr, DWORD>>(clientId, pair<ISendTarget::SPtr, DWORD>(sendTarget, clientProcessId)));
     }
     else if ((sendTarget != iter->second.first) || (clientProcessId != iter->second.second))
     {
@@ -76,7 +76,7 @@ void IpcServer::ClientTable::UpdateIfNeeded(wstring const & clientId, ISendTarge
     }
 }
 
-bool IpcServer::ClientTable::Remove(wstring const & clientId)
+bool IpcServer::ClientTable::Remove(string const & clientId)
 {
     AcquireWriteLock lockInScope(lock_);
 
@@ -93,7 +93,7 @@ bool IpcServer::ClientTable::Remove(wstring const & clientId)
 }
 
 _Use_decl_annotations_
-ISendTarget::SPtr IpcServer::ClientTable::GetSendTarget(wstring const & clientId, DWORD & clientProcessId)
+ISendTarget::SPtr IpcServer::ClientTable::GetSendTarget(string const & clientId, DWORD & clientProcessId)
 {
     AcquireReadLock lockInScope(lock_);
 
@@ -117,10 +117,10 @@ void IpcServer::ClientTable::Close()
 IpcServer::TransportUnit::TransportUnit(
     IpcServer* ipcServer,
     Common::ComponentRoot const & root,
-    std::wstring const & listenAddress,
-    std::wstring const & serverId,
-    std::wstring const & owner,
-    std::wstring const & traceId,
+    std::string const & listenAddress,
+    std::string const & serverId,
+    std::string const & owner,
+    std::string const & traceId,
     bool useUnreliableTransport) :
     ipcServer_(ipcServer),
     listenAddress_(listenAddress),
@@ -199,13 +199,13 @@ void IpcServer::TransportUnit::Close()
 
 IpcServer::IpcServer(
     ComponentRoot const & root,
-    wstring const & listenAddress,
-    wstring const & listenAddressTls,
-    wstring const & serverId,
+    string const & listenAddress,
+    string const & listenAddressTls,
+    string const & serverId,
     bool useUnreliableTransport,
-    wstring const & owner) :
+    string const & owner) :
     serverId_(serverId),
-    traceId_(serverId.empty() ? wformatString("{0}", TextTraceThis) : wformatString("{0}-{1}", TextTraceThis, serverId)),
+    traceId_(serverId.empty() ? formatString.L("{0}", TextTraceThis) : formatString.L("{0}-{1}", TextTraceThis, serverId)),
     localUnit_(this, root, listenAddress, serverId, owner, traceId_, useUnreliableTransport),
     tlsUnit_(listenAddressTls.empty() ? nullptr : make_unique<TransportUnit>(this, root, listenAddressTls, serverId, owner, traceId_, useUnreliableTransport))
 {
@@ -214,10 +214,10 @@ IpcServer::IpcServer(
 
 IpcServer::IpcServer(
     Common::ComponentRoot const & root,
-    std::wstring const & transportListenAddress,
-    std::wstring const & serverId,
+    std::string const & transportListenAddress,
+    std::string const & serverId,
     bool useUnreliableTransport,
-    std::wstring const & owner) : IpcServer(root, transportListenAddress, L"", serverId, useUnreliableTransport, owner)
+    std::string const & owner) : IpcServer(root, transportListenAddress, "", serverId, useUnreliableTransport, owner)
 {
 }
 
@@ -322,7 +322,7 @@ void IpcServer::Cleanup()
 
 AsyncOperationSPtr IpcServer::BeginRequest(
     MessageUPtr && request,
-    wstring const & client,
+    string const & client,
     TimeSpan timeout,
     AsyncCallback const & callback,
     AsyncOperationSPtr const & parent)
@@ -361,7 +361,7 @@ ErrorCode IpcServer::EndRequest(AsyncOperationSPtr const & operation, MessageUPt
     return localUnit_.requestReply_.EndRequest(operation, reply);
 }
 
-Common::ErrorCode IpcServer::SendOneWay(wstring const & client, MessageUPtr && message, TimeSpan expiration)
+Common::ErrorCode IpcServer::SendOneWay(string const & client, MessageUPtr && message, TimeSpan expiration)
 {
     DWORD clientProcessId;
     ISendTarget::SPtr sendTarget = localUnit_.clientTable_->GetSendTarget(client, clientProcessId);
@@ -405,7 +405,7 @@ void IpcServer::OnSending(MessageUPtr & message) const
     }
 }
 
-void IpcServer::RemoveClient(wstring const & client)
+void IpcServer::RemoveClient(string const & client)
 {
     if (localUnit_.clientTable_->Remove(client)) return;
 

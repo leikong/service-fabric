@@ -37,13 +37,13 @@ Environment:
 #endif
 
 #if !defined(PLATFORM_UNIX)
-#define KU_NT_CONTROL_NAME          L"\\Device\\KmUnit"TESTNAME
-#define KU_DOS_CONTROL_NAME         L"\\DosDevices\\KmUnit"TESTNAME
-#define KU_CONTROL_NAME             L"\\\\.\\KmUnit"
+#define KU_NT_CONTROL_NAME          "\\Device\\KmUnit"TESTNAME
+#define KU_DOS_CONTROL_NAME         "\\DosDevices\\KmUnit"TESTNAME
+#define KU_CONTROL_NAME             "\\\\.\\KmUnit"
 #else
-#define KU_NT_CONTROL_NAME          L"\\Device\\KmUnit" TESTNAME
-#define KU_DOS_CONTROL_NAME         L"\\DosDevices\\KmUnit" TESTNAME
-#define KU_CONTROL_NAME             L"\\\\.\\KmUnit"
+#define KU_NT_CONTROL_NAME          "\\Device\\KmUnit" TESTNAME
+#define KU_DOS_CONTROL_NAME         "\\DosDevices\\KmUnit" TESTNAME
+#define KU_CONTROL_NAME             "\\\\.\\KmUnit"
 #endif
 
 //
@@ -98,9 +98,9 @@ typedef struct _KU_TEST_START {
 
 typedef struct _KU_TEST_ID {
     ULONG   Id;
-    WCHAR   Name[KU_TEST_NAME_LENGTH];
-    WCHAR   Categories[KU_MAX_PATH];
-    WCHAR   Help[KU_MAX_PATH];
+    CHAR   Name[KU_TEST_NAME_LENGTH];
+    CHAR   Categories[KU_MAX_PATH];
+    CHAR   Help[KU_MAX_PATH];
 } KU_TEST_ID, *PKU_TEST_ID;
 
 //
@@ -114,11 +114,11 @@ typedef struct _KU_TEST_ID_ARRAY {
 } KU_TEST_ID_ARRAY, *PKU_TEST_ID_ARRAY;
 
 typedef struct _TEST_PARAMS {
-    WCHAR    Id[KU_TEST_NAME_LENGTH];
+    CHAR    Id[KU_TEST_NAME_LENGTH];
     int      Count;
     BOOLEAN  HasRun;
-    WCHAR    Parameter[KU_MAX_PARAMETERS][KU_MAX_PATH];
-    WCHAR    PostOpCmd[KU_MAX_POST_OP_LENGTH];
+    CHAR    Parameter[KU_MAX_PARAMETERS][KU_MAX_PATH];
+    CHAR    PostOpCmd[KU_MAX_POST_OP_LENGTH];
 } TEST_PARAMS, *PTEST_PARAMS;
 
 typedef struct _TEST_PARAMS_ARRAY {

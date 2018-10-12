@@ -9,7 +9,7 @@ namespace Common
 {
     class FailPointContext
     {
-        typedef std::map<std::wstring, void*> ContextMap;
+        typedef std::map<std::string, void*> ContextMap;
 
     public:
         FailPointContext()
@@ -17,12 +17,12 @@ namespace Common
         {
         }
 
-        bool Contains(std::wstring const & key) const
+        bool Contains(std::string const & key) const
         {
             return properties_.find(key)!=properties_.end();
         }
 
-        void* GetProperty (std::wstring const & name)
+        void* GetProperty (std::string const & name)
         {
             if(Contains(name))
             {
@@ -34,7 +34,7 @@ namespace Common
             }
         }
 
-        void AddProperty(std::wstring const & name, void* value)
+        void AddProperty(std::string const & name, void* value)
         {
             properties_[name]=value;
         }

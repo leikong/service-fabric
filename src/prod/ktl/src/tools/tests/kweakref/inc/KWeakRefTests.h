@@ -27,5 +27,5 @@ Abstract:
 
 NTSTATUS
 KWeakRefTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     );

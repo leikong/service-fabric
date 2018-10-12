@@ -12,17 +12,17 @@ namespace Common
         DENY_COPY(TraceConsoleSink);
 
     public:
-        static void Write(LogLevel::Enum level, std::wstring const & data);
+        static void Write(LogLevel::Enum level, std::string const & data);
 
-        static void Write(DWORD color, std::wstring const & data);
+        static void Write(DWORD color, std::string const & data);
 
     private:
         static TraceConsoleSink* Singleton;
 
         TraceConsoleSink();
 
-        void PrivateWrite(std::wstring const & data);
-        void PrivateWrite(DWORD color, std::wstring const & data);
+        void PrivateWrite(std::string const & data);
+        void PrivateWrite(DWORD color, std::string const & data);
 
         RealConsole console_;
         DWORD color_;

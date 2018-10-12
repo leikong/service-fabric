@@ -133,8 +133,8 @@ class HLPalFunctions
 
         static
         NTSTATUS RenameFile(
-            __in PWCHAR FromPathName,
-            __in PWCHAR ToPathName,
+            __in PCHAR FromPathName,
+            __in PCHAR ToPathName,
             __in ULONG ToPathNameLength,
             __in BOOLEAN OverwriteIfExists,
             __in KAllocator& Allocator                                  

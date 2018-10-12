@@ -17,7 +17,7 @@ namespace Transport
         SecurityContext(
             IConnectionSPtr const & connection,
             TransportSecuritySPtr const & transportSecurity,
-            std::wstring const & targetName,
+            std::string const & targetName,
             ListenInstance localListenInstance);
 
         virtual ~SecurityContext() = 0;
@@ -25,7 +25,7 @@ namespace Transport
         static SecurityContextSPtr Create(
             IConnectionSPtr const & connection,
             TransportSecuritySPtr const & transportSecurity,
-            std::wstring const & targetName,
+            std::string const & targetName,
             ListenInstance localListenInstance);
 
         SECURITY_STATUS NegotiateSecurityContext(MessageUPtr const & input, _Out_ MessageUPtr & output);
@@ -57,7 +57,7 @@ namespace Transport
 
         virtual bool AuthenticateRemoteByClaims() const;
         virtual bool ShouldPerformClaimsRetrieval() const;
-        virtual void CompleteClaimsRetrieval(Common::ErrorCode const &, std::wstring const & localClaims) = 0;
+        virtual void CompleteClaimsRetrieval(Common::ErrorCode const &, std::string const & localClaims) = 0;
         virtual void CompleteClientAuth(Common::ErrorCode const & error, SecuritySettings::RoleClaims const & clientClaims, Common::TimeSpan expiration) = 0;
 
         virtual bool AccessCheck(AccessControl::FabricAcl const & acl, DWORD desiredAccess) const = 0;
@@ -81,7 +81,7 @@ namespace Transport
     protected:
         bool NegotiationStarted() const;
         SECURITY_STATUS QueryAttributes(ULONG ulAttribute, _Out_ void* pBuffer);
-        wchar_t* TargetName() const;
+        char* TargetName() const;
 
         MessageUPtr CreateSecurityNegoMessage(_In_ PSecBufferDesc pBuffers);
         static void FreeSecurityBuffers(std::vector<Common::const_buffer> const & buffers, void *);
@@ -92,7 +92,7 @@ namespace Transport
         PCtxtHandle IscInputContext();
         PCtxtHandle AscInputContext();
 
-        static void ReportSecurityApiSlow(wchar_t const* api, Common::TimeSpan duration, Common::TimeSpan threshold);
+        static void ReportSecurityApiSlow(char const* api, Common::TimeSpan duration, Common::TimeSpan threshold);
 
     private:
         void Initialize();
@@ -119,7 +119,7 @@ namespace Transport
 
     protected:
         const IConnectionWPtr connection_;
-        std::wstring const id_;
+        std::string const id_;
         TransportSecuritySPtr const transportSecurity_;
 
         const bool inbound_;
@@ -134,7 +134,7 @@ namespace Transport
         bool framingProtectionEnabled_ = Common::SecurityConfig::GetConfig().FramingProtectionEnabled;
 #endif
 
-        std::wstring const targetName_;
+        std::string const targetName_;
         ULONG securityRequirements_;
 
         CtxtHandle hSecurityContext_;
@@ -157,17 +157,17 @@ namespace Transport
     {
     public:
         ConnectionAuthMessage();
-        ConnectionAuthMessage(std::wstring const & errorMessage, RoleMask::Enum roleGranted = RoleMask::None);
+        ConnectionAuthMessage(std::string const & errorMessage, RoleMask::Enum roleGranted = RoleMask::None);
 
-        std::wstring const & ErrorMessage() const;
-        std::wstring && TakeMessage();
+        std::string const & ErrorMessage() const;
+        std::string && TakeMessage();
         RoleMask::Enum RoleGranted() const { return roleGranted_; }
         void WriteTo(Common::TextWriter & w, Common::FormatOptions const &) const;
 
         FABRIC_FIELDS_02(errorMessage_, roleGranted_);
 
     private:
-        std::wstring errorMessage_;
+        std::string errorMessage_;
         RoleMask::Enum roleGranted_ = RoleMask::None;
     };
 }

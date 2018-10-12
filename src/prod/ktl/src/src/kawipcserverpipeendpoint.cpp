@@ -256,7 +256,7 @@ VOID KAWIpcServerPipeEndpoint::ServerWorkerRoutine()
 
         if (createPipe)
         {
-            pipeHandle = CreateNamedPipe((PWCHAR)name,
+            pipeHandle = CreateNamedPipe((PCHAR)name,
                                   PIPE_ACCESS_DUPLEX | FILE_FLAG_OVERLAPPED |
                                   (firstInstance ? FILE_FLAG_FIRST_PIPE_INSTANCE : 0),
                                   PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_REJECT_REMOTE_CLIENTS,

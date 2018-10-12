@@ -26,7 +26,7 @@ class MonitoredConfigSettingsConfigStore::ChangeMonitor :
 
 public:
 
-    ChangeMonitor::ChangeMonitor(ConfigStoreSPtr const & owner, wstring const & storeLocation)
+    ChangeMonitor::ChangeMonitor(ConfigStoreSPtr const & owner, string const & storeLocation)
         : weak_owner_(owner),
         fileMonitor_(FileChangeMonitor2::Create(storeLocation))
     {
@@ -78,7 +78,7 @@ private:
     {
         fileMonitor_->Abort();
 
-        auto msg(wformatString("FileChangeMonitor failed with {0}", error));
+        auto msg(formatString.L("FileChangeMonitor failed with {0}", error));
         TraceError(
             TraceTaskCodes::Common,
             TraceType,
@@ -96,7 +96,7 @@ private:
 // MonitoredConfigSettingsConfigStore Implementation
 //
 MonitoredConfigSettingsConfigStore::MonitoredConfigSettingsConfigStore(
-     wstring const & fileToMonitor, 
+     string const & fileToMonitor, 
      ConfigSettingsConfigStore::Preprocessor const & preprocessor)
      : fileName_(fileToMonitor),
      preprocessor_(preprocessor),
@@ -119,7 +119,7 @@ void MonitoredConfigSettingsConfigStore::Initialize()
     }
     else
     {
-        auto msg(wformatString("Loading of configuration settings from {0} failed with {1}.",
+        auto msg(formatString.L("Loading of configuration settings from {0} failed with {1}.",
             fileName_,
             error));
         TraceError(
@@ -168,7 +168,7 @@ void MonitoredConfigSettingsConfigStore::OnFileChanged()
     }
     else
     {
-        auto msg(wformatString("Loading of configuration settings from {0} failed with {1}.",
+        auto msg(formatString.L("Loading of configuration settings from {0} failed with {1}.",
             fileName_,
             error));
         TraceError(

@@ -35,16 +35,16 @@ struct StaticTestCallback {
 };
 
 NTSTATUS
-KAsyncHelperTests(int argc, WCHAR* args[]);
+KAsyncHelperTests(int argc, CHAR* args[]);
 
 NTSTATUS
-KAsyncEventTest(int argc, WCHAR* args[]);
+KAsyncEventTest(int argc, CHAR* args[]);
 
 NTSTATUS
-KTimerTest(int argc, WCHAR* args[]);
+KTimerTest(int argc, CHAR* args[]);
 
 NTSTATUS
-KQuotaGateTest(int argc, WCHAR* args[]);
+KQuotaGateTest(int argc, CHAR* args[]);
 
 NTSTATUS
-KAsyncServiceTest(int argc, WCHAR* args[]);
+KAsyncServiceTest(int argc, CHAR* args[]);

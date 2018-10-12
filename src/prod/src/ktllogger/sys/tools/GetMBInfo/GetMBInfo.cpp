@@ -16,13 +16,13 @@
 #define VERIFY_IS_TRUE(cond) if (! (cond)) { printf("Failure in file %s at line %d\n",  __FILE__, __LINE__); ExitProcess(static_cast<UINT>(-1)); }
 
 #define CONVERT_TO_ARGS(argc, cargs) \
-    std::vector<WCHAR*> args_vec(argc);\
-    WCHAR** args = (WCHAR**)args_vec.data();\
-    std::vector<std::wstring> wargs(argc);\
+    std::vector<CHAR*> args_vec(argc);\
+    CHAR** args = (CHAR**)args_vec.data();\
+    std::vector<std::string> wargs(argc);\
     for (int iter = 0; iter < argc; iter++)\
     {\
         wargs[iter] = Utf8To16(cargs[iter]);\
-        args[iter] = (WCHAR*)(wargs[iter].data());\
+        args[iter] = (CHAR*)(wargs[iter].data());\
     }\
 
 static inline ULONG RoundUpTo4K(__in ULONG size)
@@ -47,47 +47,47 @@ void Usage()
 
 typedef struct
 {
-    PWCHAR InFileName;
-    PWCHAR OutFileName;
+    PCHAR InFileName;
+    PCHAR OutFileName;
 } COMMAND_OPTIONS, *PCOMMAND_OPTIONS;
 
-ULONG ParseCommandLine(__in int argc, __in wchar_t** args, __out PCOMMAND_OPTIONS Options)
+ULONG ParseCommandLine(__in int argc, __in char** args, __out PCOMMAND_OPTIONS Options)
 {
     Options->InFileName = NULL;
     Options->OutFileName = NULL;
 
-    WCHAR flag;
+    CHAR flag;
     size_t len;
-    PWCHAR arg;
+    PCHAR arg;
 
     for (int i = 1; i < argc; i++)
     {
         arg = args[i];
 
-        len = wcslen(arg);
+        len = strlen(arg);
         if (len < 3)
         {
             Usage();
             return(ERROR_INVALID_PARAMETER);
         }
 
-        if ((arg[0] != L'-') || (arg[2] != L':'))
+        if ((arg[0] != '-') || (arg[2] != ':'))
         {
             Usage();
             return(ERROR_INVALID_PARAMETER);
         }
 
-        flag = (WCHAR)tolower(arg[1]);
+        flag = (CHAR)tolower(arg[1]);
 
         switch (flag)
         {
-            case L'f':
+            case 'f':
             {
                 Options->InFileName = arg + 3;
                 break;
             }
 
-            case L'o':
+            case 'o':
             {
                 Options->OutFileName = arg + 3;
                 break;
@@ -127,10 +127,10 @@ ktl::Task ConsolidateTask(
     
     KWString inFileName(*g_Allocator);
 #if !defined(PLATFORM_UNIX)
-    inFileName = L"\\??\\";
+    inFileName = "\\??\\";
 #endif
     inFileName += Options.InFileName;
-    inFileName += L":MBInfo";
+    inFileName += ":MBInfo";
     VERIFY_IS_TRUE(NT_SUCCESS(inFileName.Status()));
     
     ULONG createOptions = static_cast<ULONG>(KBlockFile::eReadOnly) |
@@ -154,7 +154,7 @@ ktl::Task ConsolidateTask(
     //
     KWString outFileName(*g_Allocator);
 #if !defined(PLATFORM_UNIX)
-    outFileName = L"\\??\\";
+    outFileName = "\\??\\";
 #endif
     outFileName += Options.OutFileName; 
     VERIFY_IS_TRUE(NT_SUCCESS(outFileName.Status()));
@@ -295,7 +295,7 @@ VOID Cleanup(
 }
 
 int
-TheMain(__in int argc, __in wchar_t** args)
+TheMain(__in int argc, __in char** args)
 {
     ULONG error;
     COMMAND_OPTIONS options;
@@ -316,7 +316,7 @@ TheMain(__in int argc, __in wchar_t** args)
 
 #if !defined(PLATFORM_UNIX)
 int
-wmain(int argc, WCHAR* args[])
+wmain(int argc, CHAR* args[])
 {
     return TheMain(argc, args);
 }

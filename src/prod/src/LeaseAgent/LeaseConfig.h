@@ -11,7 +11,7 @@ namespace LeaseWrapper
     {
         DECLARE_SINGLETON_COMPONENT_CONFIG(LeaseConfig, "Lease")
 
-        TEST_CONFIG_ENTRY(bool, L"Lease", DebugLeaseDriverEnabled, false, Common::ConfigEntryUpgradePolicy::Static);
+        TEST_CONFIG_ENTRY(bool, "Lease", DebugLeaseDriverEnabled, false, Common::ConfigEntryUpgradePolicy::Static);
     };
 }
 

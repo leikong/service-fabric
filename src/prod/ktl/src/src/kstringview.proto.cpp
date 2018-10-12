@@ -39,11 +39,11 @@
 #define K$KString KString
 #define K$KBufferString KBufferString
 #define K$KSharedBufferString KSharedBufferString
-#define K$CHAR WCHAR
+#define K$CHAR char
 #define K$CHARSIZE 2
-#define K$LPCSTR LPCWSTR
-#define K$PCHAR PWCHAR
-#define K$STRING(s) L##s
+#define K$LPCSTR LPCSTR
+#define K$PCHAR PCHAR
+#define K$STRING(s) s
 #endif
 
 const ULONG K$KStringView::MaxIso8601DateTime;
@@ -669,8 +669,8 @@ KStringView::CompareNoCaseAnsi(
     //
     for (ULONG ix = 0; ix < CharsToCompare; ix++)
     {
-        WCHAR c1 = CharToUpper(_Buffer[ix]);
-        WCHAR c2 = CharToUpper(TestBuffer[ix]);
+        char c1 = CharToUpper(_Buffer[ix]);
+        char c2 = CharToUpper(TestBuffer[ix]);
         LONG Diff = c1 - c2;
         if (Diff > 0)
         {
@@ -834,7 +834,7 @@ K$KStringView::FromSystemTimeToIso8601(
     Tmp.FromULONG(st.wHour);
     Tmp.Length() == 2 ? 0 : Tmp.PrependChar('0');
     Concat(Tmp);
-    AppendChar(L':');
+    AppendChar(':');
 
     Tmp.FromULONG(st.wMinute);
     Tmp.Length() == 2 ? 0 : Tmp.PrependChar('0');
@@ -1052,7 +1052,7 @@ K$KStringView::ToTimeFromDuration(
         K$KStringView Match;
         Res = Field.MatchWhile(K$KStringView(K$STRING("0123456789")), Match);
         Field.ConsumeChars(Match.Length());
-        WCHAR Suffix = Field.PeekFirst();
+        char Suffix = Field.PeekFirst();
         Field.ConsumeChar();
 
         if (Suffix == 'H' && (Allowed & eHours))
@@ -1540,7 +1540,7 @@ KString::Create(
 
     if (BufferLengthInChars > 0)
     {
-        KStringView toCopy(static_cast<PWCHAR>(ToCopy.Buffer), ToCopy.Length / 2, ToCopy.Length / 2);
+        KStringView toCopy(static_cast<PCHAR>(ToCopy.Buffer), ToCopy.Length / 2, ToCopy.Length / 2);
         if (! Tmp->CopyFrom(toCopy, IncludeNullTerminator))
         {
             return STATUS_UNSUCCESSFUL;
@@ -1568,7 +1568,7 @@ KString::Create(
 
    // See if null terminator already present
 
-   PWCHAR NullProbe = PWCHAR(Src.Buffer) + (Src.Length/2);
+   PCHAR NullProbe = PCHAR(Src.Buffer) + (Src.Length/2);
    if (*NullProbe && IncludeNullTerminator)
    {
 		HRESULT hr;
@@ -1576,13 +1576,13 @@ KString::Create(
 		KInvariant(SUCCEEDED(hr));
    }
    KString::SPtr Tmp = _new (KTL_TAG_BUFFERED_STRINGVIEW, Alloc) KString;
-   Tmp->_Buffer =  _new (KTL_TAG_BUFFERED_STRINGVIEW, Alloc) WCHAR[Len];
+   Tmp->_Buffer =  _new (KTL_TAG_BUFFERED_STRINGVIEW, Alloc) char[Len];
    if (!Tmp->_Buffer)
    {
         return nullptr;
    }
    Tmp->_BufLenInChars = Len;
-   Tmp->CopyFrom(KStringView(PWCHAR(Src.Buffer), Len));
+   Tmp->CopyFrom(KStringView(PCHAR(Src.Buffer), Len));
    if (IncludeNullTerminator)
    {
        Tmp->SetNullTerminator();

@@ -26,12 +26,12 @@ namespace Federation
 
         __declspec (property(get=get_NodeId)) NodeId Id;
         NodeId get_NodeId() const;
-        __declspec (property(get=getIdString)) std::wstring const & IdString;
-        std::wstring const & getIdString() const;
+        __declspec (property(get=getIdString)) std::string const & IdString;
+        std::string const & getIdString() const;
         __declspec (property(get=get_NodeInstance)) NodeInstance const & Instance;
         NodeInstance const & get_NodeInstance() const;
-        __declspec (property(get=getRingName)) std::wstring const & RingName;
-        std::wstring const & getRingName() const;
+        __declspec (property(get=getRingName)) std::string const & RingName;
+        std::string const & getRingName() const;
         __declspec (property(get=get_Phase)) NodePhase::Enum Phase;
         NodePhase::Enum get_Phase() const;
         __declspec (property(get=get_IsRouting)) bool IsRouting;
@@ -96,7 +96,7 @@ namespace Federation
 
         RoutingToken GetRoutingTokenAndShutdownNodes(std::vector<NodeInstance>& shutdownNodes) const;
 
-        void SetShutdown(NodeInstance const & nodeInstance, std::wstring const & ringName);
+        void SetShutdown(NodeInstance const & nodeInstance, std::string const & ringName);
 
         int GetSeedNodes(std::vector<NodeId> & seedNodes) const;
 
@@ -129,7 +129,7 @@ namespace Federation
             Transport::MessageUPtr && message,
             NodeId nodeId,
             uint64 instance,
-            std::wstring const & toRing,
+            std::string const & toRing,
             bool useExactRouting,
             Common::TimeSpan retryTimeout,
             Common::TimeSpan timeout,
@@ -140,7 +140,7 @@ namespace Federation
             Transport::MessageUPtr && request,
             NodeId nodeId,
             uint64 instance,
-            std::wstring const & toRing,
+            std::string const & toRing,
             bool useExactRouting,
             Common::TimeSpan retryTimeout,
             Common::TimeSpan timeout,

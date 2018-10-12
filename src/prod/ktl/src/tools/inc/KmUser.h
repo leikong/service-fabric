@@ -15,7 +15,7 @@ DWORD QueryNumberOfTests(ULONG& numberOfTests);
 
 DWORD QueryTests(PKU_TEST_ID_ARRAY testIdArray, ULONG& testIdArraySize);
 
-NTSTATUS RunTest(PKU_TEST_ID testId, PVOID testParameters, ULONG& testParametersSize, int argc, __in_ecount(argc) WCHAR *args[]);
+NTSTATUS RunTest(PKU_TEST_ID testId, PVOID testParameters, ULONG& testParametersSize, int argc, __in_ecount(argc) CHAR *args[]);
 }
 #else
 namespace KmUser
@@ -27,7 +27,7 @@ namespace KmUser
 
       static DWORD QueryTests(PKU_TEST_ID_ARRAY testIdArray, ULONG& testIdArraySize);
 
-      static NTSTATUS RunTest(PKU_TEST_ID testId, PVOID testParameters, ULONG& testParametersSize, int argc, __in_ecount(argc) WCHAR *args[]);
+      static NTSTATUS RunTest(PKU_TEST_ID testId, PVOID testParameters, ULONG& testParametersSize, int argc, __in_ecount(argc) CHAR *args[]);
     };
 }
 #endif

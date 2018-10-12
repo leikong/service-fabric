@@ -458,7 +458,7 @@ KPerfCounterSet::AllocateAndMap()
 //
 NTSTATUS
 KPerfCounterSet::SpawnInstance(
-    __in  LPCWSTR InstanceName,
+    __in  LPCSTR InstanceName,
     __out KPerfCounterSetInstance::SPtr& NewInst
     )
 {
@@ -473,7 +473,7 @@ KPerfCounterSet::SpawnInstance(
         }
         else
         {
-            Tmp = L"<singleton>";
+            Tmp = "<singleton>";
         }
     }
     else

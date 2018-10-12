@@ -1035,7 +1035,7 @@ OverlayManager::CreateNewLogManagerPerfCounterSet(
 {
     NTSTATUS status;
 
-    status = _PerfCounterSetLogManager->SpawnInstance(L"LogManager", 
+    status = _PerfCounterSetLogManager->SpawnInstance("LogManager", 
                                                         PerfCounterSetInstance);
     if (! NT_SUCCESS(status))
     {
@@ -1397,7 +1397,7 @@ OverlayManager::MapPathToDiskId(
     ULONG l;
     BOOLEAN b = FALSE;
     UCHAR driveLetter;
-    PWCHAR p;
+    PCHAR p;
     ULONG len;
 
     DiskId = diskId;
@@ -1412,16 +1412,16 @@ OverlayManager::MapPathToDiskId(
     //   "\\Global??\\c:\\..."
     //   "\\??\\c:\\..."
     //
-    p = static_cast<PWCHAR>(Path);
+    p = static_cast<PCHAR>(Path);
     len = Path.Length();
 
     //
     // See if the path contains the guid itself (set A)
     //
-    Path.CompareNoCase(KStringView(L"\\??\\Volume"), l);
+    Path.CompareNoCase(KStringView("\\??\\Volume"), l);
     if (l != (strlen("\\??\\Volume")))
     {
-        Path.CompareNoCase(KStringView(L"\\Global??\\Volume"), l);
+        Path.CompareNoCase(KStringView("\\Global??\\Volume"), l);
     }
     
     if ((l == (strlen("\\??\\Volume"))) || (l == (strlen("\\Global??\\Volume"))))
@@ -1439,15 +1439,15 @@ OverlayManager::MapPathToDiskId(
     //
     // Otherwise see if the drive letter is there
     //
-    Path.CompareNoCase(KStringView(L"\\??\\"), l);
+    Path.CompareNoCase(KStringView("\\??\\"), l);
     if (l != (strlen("\\??\\")))
     {
-        Path.CompareNoCase(KStringView(L"\\Global??\\"), l);        
+        Path.CompareNoCase(KStringView("\\Global??\\"), l);        
     }
 
     if ((l == (strlen("\\??\\"))) || (l == (strlen("\\Global??\\"))))
     {
-        if ((len >= (l+2)) && (p[l+1] == L':'))
+        if ((len >= (l+2)) && (p[l+1] == ':'))
         {
             driveLetter = (UCHAR)KStringView::CharToUpper(p[l]);
             b = KVolumeNamespace::QueryVolumeIdFromDriveLetter(_VolumeList,

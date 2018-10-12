@@ -93,7 +93,7 @@ namespace Common
             AceValidationCallback const & validationCallback,
             __out DaclSPtr & dacl);
         static Common::ErrorCode ValidateSid(void * pAce, __out bool & isValid);
-        static Common::ErrorCode ContainsSid(void * pAce, std::vector<std::wstring> const & targetSids, __out bool & isContains);
+        static Common::ErrorCode ContainsSid(void * pAce, std::vector<std::string> const & targetSids, __out bool & isContains);
 
         Common::ByteBuffer const buffer_;
     };

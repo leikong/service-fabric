@@ -41,7 +41,7 @@ namespace Transport
 
         // todo: consider returning const & of actual header from these common header properties and add a "initialized" boolean flag for each.
         // also dicussed, have the base header class have a flag for default value so that tracing will print empty but using it requires explicit check
-        __declspec(property(get=get_Action)) std::wstring const & Action;
+        __declspec(property(get=get_Action)) std::string const & Action;
         __declspec(property(get=get_Actor)) Actor::Enum Actor;
         __declspec(property(get=get_MessageId)) Transport::MessageId const & MessageId;
         __declspec(property(get=get_RelatesTo)) Transport::MessageId const & RelatesTo;
@@ -54,7 +54,7 @@ namespace Transport
         __declspec(property(get=get_IsUncorrelatedReply)) bool IsUncorrelatedReply;
         __declspec(property(get=get_DeletedHeaderByteCount)) size_t DeletedHeaderByteCount;
 
-        std::wstring const & get_Action() const;
+        std::string const & get_Action() const;
         Actor::Enum get_Actor() const;
         Transport::MessageId const & get_MessageId() const;
         Transport::MessageId const & get_RelatesTo() const;
@@ -181,7 +181,7 @@ namespace Transport
         //which compacts if the byte count of all headers marked for deletion is beyond threshold
 
         void WriteTo(Common::TextWriter & w, Common::FormatOptions const &) const;
-        std::wstring ToString() const;
+        std::string ToString() const;
 
         void UpdateTraceId();
 
@@ -308,7 +308,7 @@ namespace Transport
         Transport::MessageId relatesTo_ {Common::Guid::Empty(), 0};
         Transport::MessageId traceId_ {messageId_};
 
-        std::wstring action_;
+        std::string action_;
         Actor::Enum actor_ =  Actor::Empty;
 
         bool expectsReply_ = false;
@@ -609,7 +609,7 @@ namespace Transport
         return !(*this == rhs);
     }
 
-    inline std::wstring const & MessageHeaders::get_Action() const
+    inline std::string const & MessageHeaders::get_Action() const
     {
         return action_;
     }

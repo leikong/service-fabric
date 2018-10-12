@@ -12,26 +12,26 @@ namespace Common
     public:
         static Common::ErrorCode UpdateFolderAcl(
             Common::SidSPtr const & sid,
-            std::wstring const & folderName,
+            std::string const & folderName,
             DWORD const accessMask,
             Common::TimeSpan const timeout);
 
         static Common::ErrorCode UpdateFolderAcl(
             std::vector<Common::SidSPtr> const & sids,
-            std::wstring const & folderName,
+            std::string const & folderName,
             DWORD const accessMask,
             Common::TimeSpan const timeout,
             bool removeInvalidSids = false);
 
         static Common::ErrorCode UpdateFolderAclWithStampFile(
-            std::wstring const & folderName,
+            std::string const & folderName,
             std::vector<std::pair<Common::SidSPtr, DWORD>> const & principalPermissions,
             bool removeInvalidSids,
             Common::TimeSpan const timeout);
 
         static Common::ErrorCode UpdateFileAcl(
             std::vector<Common::SidSPtr> const & sids,
-            std::wstring const & fileName, 
+            std::string const & fileName, 
             DWORD const accessMask,
             Common::TimeSpan const timeout);
 
@@ -47,49 +47,49 @@ namespace Common
 
         static Common::ErrorCode RemoveFolderAcl(
             Common::SidSPtr const & sid,
-            std::wstring const & folderName,
+            std::string const & folderName,
             bool const disableInheritence,            
             Common::TimeSpan const timeout);
 
         static Common::ErrorCode RemoveFileAcl(
             Common::SidSPtr const & sid,
-            std::wstring const & folderName,
+            std::string const & folderName,
             bool const disableInheritence,
             Common::TimeSpan const timeout);
 
         static Common::ErrorCode RemoveInvalidFolderAcls(
-            std::wstring const & folderName,
+            std::string const & folderName,
             Common::TimeSpan const timeout);
 
         static Common::ErrorCode RemoveInvalidFileAcls(
-            std::wstring const & fileName,
+            std::string const & fileName,
             Common::TimeSpan const timeout);
 
         static Common::ErrorCode EnsurePrivilege(
-            std::wstring const & privilege);
+            std::string const & privilege);
 
         static Common::ErrorCode GetCertificatePrivateKeyFile(
-            std::wstring const & x509FindValue,
-            std::wstring const & x509StoreName,
+            std::string const & x509FindValue,
+            std::string const & x509StoreName,
             X509FindType::Enum findType,
-            std::wstring & privateKeyFileName);
+            std::string & privateKeyFileName);
 
         static Common::ErrorCode GetCertificatePrivateKeyFile(
-            std::wstring const & x509FindValue,
-            std::wstring const & x509StoreName,
+            std::string const & x509FindValue,
+            std::string const & x509StoreName,
             X509FindType::Enum findType,
-            vector<std::wstring> & privateKeyFileNames);
+            vector<std::string> & privateKeyFileNames);
 
         static Common::ErrorCode SetCertificateAcls(
-            std::wstring const & x509FindValue,
-            std::wstring const & x509StoreName,
+            std::string const & x509FindValue,
+            std::string const & x509StoreName,
             X509FindType::Enum findType,
             std::vector<SidSPtr> const & sids,
             DWORD accessMask,
             Common::TimeSpan const & timeout);
 
         static Common::ErrorCode OverwriteFolderACL(
-            std::wstring const & folderName,
+            std::string const & folderName,
             std::vector<std::pair<SidSPtr, DWORD>> const & principalPermissions,
             bool disableInheritence,
             bool ignoreInheritence, 
@@ -97,35 +97,35 @@ namespace Common
 
        static Common::ErrorCode OverwriteFileAcl(
             vector<SidSPtr> const & sids,
-            wstring const & fileName,
+            string const & fileName,
             DWORD const accessMask,
             TimeSpan const timeout);
 
         static Common::ErrorCode UpdateRegistryKeyAcl(
             Common::SidSPtr const & sid,
-            std::wstring const & registryKeyName,
+            std::string const & registryKeyName,
             DWORD const accessMask,
             Common::TimeSpan const timeout);
 
 		static Common::ErrorCode GetRegistryKeyAcl(
 			Common::SidSPtr const & sid,
-			std::wstring const & registryKeyName,
+			std::string const & registryKeyName,
 			DWORD & accessMask);
 
         static Common::ErrorCode UpdateServiceAcl(
             Common::SidSPtr const & sid,
-            std::wstring const & serviceName,
+            std::string const & serviceName,
             DWORD const accessMask,
             Common::TimeSpan const timeout);
 
         static Common::ErrorCode ContainsACE(
-            std::wstring const & folderName,
+            std::string const & folderName,
             Common::SidSPtr const & sid,
             DWORD accessMask,
             bool & containsAce);
 
         static Common::ErrorCode CheckACE(
-            std::wstring const & folderName,
+            std::string const & folderName,
             std::vector<std::pair<Common::SidSPtr, DWORD>> const & principalPermissions,
             std::vector<std::pair<Common::SidSPtr, DWORD>> & nonExistentPrincipalPermissions);
 
@@ -141,13 +141,13 @@ namespace Common
             DWORD accessMask,
             TimeSpan const & timeout);
         static Common::ErrorCode InstallCoreFxCertificate(
-			std::wstring const & userName,
-            std::wstring const & x509FindValue,
-            std::wstring const & x509StoreName,
+			std::string const & userName,
+            std::string const & x509FindValue,
+            std::string const & x509StoreName,
             X509FindType::Enum findType);
 		static Common::ErrorCode SetCertificateAcls(
-			std::wstring const & x509FindValue,
-			std::wstring const & x509StoreName,
+			std::string const & x509FindValue,
+			std::string const & x509StoreName,
 			X509FindType::Enum findType,
 			std::vector<std::string> const & userNames, //List of usernames to acl certificates in there corefx directory
 			std::vector<SidSPtr> const & sids,
@@ -160,37 +160,37 @@ namespace Common
 #ifndef PLATFORM_UNIX
         static Common::ErrorCode UpdateAcl(
             SE_OBJECT_TYPE const objectType, 
-            std::wstring const & resourceName, 
+            std::string const & resourceName, 
             std::vector<std::pair<SidSPtr, DWORD>> const & principalPermissions,
             Common::TimeSpan const timeout,
             bool callerHoldsLock = false,
-            std::wstring const & lockFile = L"",
+            std::string const & lockFile = "",
             bool removeInvalidSids = false,
             bool overwriteAcl = false);
 
         static Common::ErrorCode UpdateAcl(
             SE_OBJECT_TYPE const objectType,
-            std::wstring const & resourceName,
+            std::string const & resourceName,
             std::vector<Dacl::ACEInfo> additionalACEs,
             bool removeInvalidSids = false);
 
        static Common::ErrorCode OverwriteAcl(
             SE_OBJECT_TYPE const objectType,
-            wstring const & objectName,
+            string const & objectName,
             vector<Dacl::ACEInfo> additionalACEs);
 
        static Common::ErrorCode SetPrivateKeyFileAcls(
-           wstring const & privateKeyFile,
+           string const & privateKeyFile,
            vector<SidSPtr> const & sids,
            DWORD accessMask,
            TimeSpan const & timeout);
 #endif
 
-        static Common::ErrorCode RemoveAcl(std::wstring const & resourceName, std::vector<Common::SidSPtr> const & removeACLsOn, bool const disableInheritence);
-        static Common::ErrorCode RemoveInvalidAcl(std::wstring const & resourceName);
-        static Common::ErrorCode IsDACLProtected(std::wstring const & resourceName, bool & isProtected);
-        static Common::ErrorCode WriteACLStampFile(std::wstring const & fileLocation);
-        static std::wstring const DaclLockFileName;
-        static std::wstring const DaclStampFileName;
+        static Common::ErrorCode RemoveAcl(std::string const & resourceName, std::vector<Common::SidSPtr> const & removeACLsOn, bool const disableInheritence);
+        static Common::ErrorCode RemoveInvalidAcl(std::string const & resourceName);
+        static Common::ErrorCode IsDACLProtected(std::string const & resourceName, bool & isProtected);
+        static Common::ErrorCode WriteACLStampFile(std::string const & fileLocation);
+        static std::string const DaclLockFileName;
+        static std::string const DaclStampFileName;
     };
 }

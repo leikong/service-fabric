@@ -45,11 +45,11 @@ Abstract:
 #define K$KString KString
 #define K$KBufferString KBufferString
 #define K$KSharedBufferString KSharedBufferString
-#define K$CHAR WCHAR
+#define K$CHAR CHAR
 #define K$CHARSIZE 2
-#define K$STRLEN wcslen
-#define K$LPCSTR LPCWSTR
-#define K$PCHAR PWCHAR
+#define K$STRLEN strlen
+#define K$LPCSTR LPCSTR
+#define K$PCHAR PCHAR
 #define K$STRING(s) L##s
 #define K$TestFunction(n) n
 #endif
@@ -1131,7 +1131,7 @@ NTSTATUS
 KWStringInterop()
 {
     K$KStringView v(K$STRING("ABCD"));
-    K$KStringView v2(PWCHAR(v), 3, 3);
+    K$KStringView v2(PCHAR(v), 3, 3);
 
     KWString tmp1(*g_Allocator);
     tmp1 = v;
@@ -1425,11 +1425,11 @@ K$TestFunction(KStringTests)()
         }
 
 #if !defined(K$AnsiStringTarget)
-        LPCWSTR constWideString = L"Another test string";
+        LPCSTR constWideString = "Another test string";
         UNICODE_STRING unicodeString;
-        unicodeString.Length = static_cast<USHORT>(wcslen(constWideString) * sizeof(WCHAR));
+        unicodeString.Length = static_cast<USHORT>(strlen(constWideString) * sizeof(CHAR));
         unicodeString.MaximumLength = unicodeString.Length;
-        unicodeString.Buffer = const_cast<PWCHAR>(constWideString);
+        unicodeString.Buffer = const_cast<PCHAR>(constWideString);
 
         status = KString::Create(str, *g_Allocator, unicodeString, TRUE);
         if (! NT_SUCCESS(status) || !str)
@@ -2028,8 +2028,8 @@ K$TestFunction(CompareEdgeTests)()
         KInvariant(testStr1.Compare(testStr2) == 1);
         KInvariant(testStr1.Compare(testStr3) == -1);
 
-        KStringView x(L"test_key_00003");
-        KStringView y(L"test_key_00001");
+        KStringView x("test_key_00003");
+        KStringView y("test_key_00001");
         KInvariant(x.Compare(y) == 1);
         KInvariant(y.Compare(x) == -1);
     }

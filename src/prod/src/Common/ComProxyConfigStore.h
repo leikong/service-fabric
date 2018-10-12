@@ -22,25 +22,25 @@ namespace Common
 
         virtual void SetIgnoreUpdateFailures(bool value);
 
-        virtual std::wstring ReadString(
-            std::wstring const & section,
-            std::wstring const & key,
+        virtual std::string ReadString(
+            std::string const & section,
+            std::string const & key,
             __out bool & isEncrypted) const; 
        
         virtual void GetSections(
             Common::StringCollection & sectionNames, 
-            std::wstring const & partialName = L"") const;
+            std::string const & partialName = "") const;
 
         virtual void GetKeys(
-            std::wstring const & section,
+            std::string const & section,
             Common::StringCollection & keyNames, 
-            std::wstring const & partialName = L"") const;
+            std::string const & partialName = "") const;
 
         static ConfigStoreSPtr Create(GetConfigStoreImpl const & getConfigStore);
 
     private:
-        bool DispatchUpdate(std::wstring const & section, std::wstring const & key);
-        bool DispatchCheckUpdate(std::wstring const & section, std::wstring const & key, std::wstring const & value, bool isEncrypted);
+        bool DispatchUpdate(std::string const & section, std::string const & key);
+        bool DispatchCheckUpdate(std::string const & section, std::string const & key, std::string const & value, bool isEncrypted);
     
     private:
         class ComConfigStoreUpdateHandler;

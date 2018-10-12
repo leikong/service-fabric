@@ -28,7 +28,7 @@ namespace KtlLogger
                 __in BOOLEAN UseInprocLogger,
                 __in KtlLogManager::MemoryThrottleLimits& MemoryLimits,
                 __in KtlLogManager::SharedLogContainerSettings& SharedLogSettings,
-                __in LPCWSTR NodeWorkDirectory,
+                __in LPCSTR NodeWorkDirectory,
                 __in_opt KAsyncContextBase* const ParentAsyncContext,
                 __in_opt KAsyncContextBase::CompletionCallback CallbackPtr);
 
@@ -91,7 +91,7 @@ namespace KtlLogger
             BOOLEAN _UseInprocLogger;
             KtlLogManager::MemoryThrottleLimits _MemoryLimits;
             KtlLogManager::SharedLogContainerSettings _SharedLogSettings;
-            WCHAR _NodeWorkDirectory[MAX_PATH];
+            CHAR _NodeWorkDirectory[MAX_PATH];
 
             //
             // Members needed for functionality

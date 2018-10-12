@@ -113,9 +113,9 @@ bool VoteManager::LoadConfig(bool isUpdate)
         for (VoteEntryConfig const & vote : votes)
         {
             auto voteId = vote.Id;
-            wstring const & type = vote.Type;
-            wstring const & connectionString = vote.ConnectionString;
-            wstring const & ringName = vote.RingName;
+            string const & type = vote.Type;
+            string const & connectionString = vote.ConnectionString;
+            string const & ringName = vote.RingName;
 
             WriteInfo(TraceConfig, "load vote: {0} {1} {2} {3}", voteId, ringName, type, connectionString);
 
@@ -169,7 +169,7 @@ bool VoteManager::LoadConfig(bool isUpdate)
             VoteProxySPtr proxy;
             if (type == Constants::SeedNodeVoteType)
             {
-                proxy = make_shared<SeedNodeProxy>(NodeConfig(voteId, connectionString, L"", siteNode_.WorkingDir, ringName), siteNode_.Id);
+                proxy = make_shared<SeedNodeProxy>(NodeConfig(voteId, connectionString, "", siteNode_.WorkingDir, ringName), siteNode_.Id);
             }
 /*
             else if (type == Constants::SqlServerVoteType)
@@ -385,7 +385,7 @@ void VoteManager::UpdateGlobalLeaseExpirationCallerHoldingLock()
     globalLeaseExpiration_ = expirations[expirations.size() - quorumCount_];
     VoteManagerEventSource::Events->TTL(
         siteNode_.Id,
-        wformatString(globalLeaseExpiration_),
+        formatString(globalLeaseExpiration_),
         quorumCount_,
         expirations.size());
 
@@ -1129,7 +1129,7 @@ void VoteManager::TicketGapRequestHandler(__in Message & message, RequestReceive
 bool VoteManager::CheckGapRecovery(NodeIdRange const & range, vector<NodeId> & pendingVotes)
 {
     vector<TimeRange> effectiveGaps;
-	wstring gaps;
+	string gaps;
 	StringWriter w(gaps);
 
     AcquireExclusiveLock grab(lock_);
@@ -1303,7 +1303,7 @@ int VoteManager::GetSeedNodesCallerHoldingLock(vector<NodeId> & seedNodes) const
     return count_;
 }
 
-bool VoteManager::IsSeedNode(NodeId nodeId, wstring const & ringName)
+bool VoteManager::IsSeedNode(NodeId nodeId, string const & ringName)
 {
     auto votes = FederationConfig::GetConfig().Votes;
     for (auto it = votes.begin(); it != votes.end(); ++it)

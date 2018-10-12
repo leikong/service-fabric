@@ -19,9 +19,9 @@ SecurityConfig::IssuerStoreKeyValueMap SecurityConfig::IssuerStoreKeyValueMap::P
 
     for (auto const & entry : entries)
     {
-        vector<wstring> storeNamesVector;
-        StringUtility::Split<wstring>(entry.second, storeNamesVector, L",", true);
-        set<wstring, X509IssuerStoreNameIsLess> storeNamesSet(storeNamesVector.begin(), storeNamesVector.end());
+        vector<string> storeNamesVector;
+        StringUtility::Split<string>(entry.second, storeNamesVector, ",", true);
+        set<string, X509IssuerStoreNameIsLess> storeNamesSet(storeNamesVector.begin(), storeNamesVector.end());
         result.Add(entry.first, storeNamesSet);
     }
 
@@ -93,12 +93,12 @@ bool SecurityConfig::IssuerStoreKeyValueMap::operator != (IssuerStoreKeyValueMap
     return !(rhs == *this);
 }
 
-void SecurityConfig::IssuerStoreKeyValueMap::Add(std::wstring const & name, std::set<std::wstring, X509IssuerStoreNameIsLess> const & issuerStores)
+void SecurityConfig::IssuerStoreKeyValueMap::Add(std::string const & name, std::set<std::string, X509IssuerStoreNameIsLess> const & issuerStores)
 {
     auto iter = find(name);
     if (iter == cend())
     {
-        emplace(pair<std::wstring, std::set<wstring, X509IssuerStoreNameIsLess>>(name, issuerStores));
+        emplace(pair<std::string, std::set<string, X509IssuerStoreNameIsLess>>(name, issuerStores));
     }
     else
     {
@@ -107,14 +107,14 @@ void SecurityConfig::IssuerStoreKeyValueMap::Add(std::wstring const & name, std:
 
 }
 
-void SecurityConfig::IssuerStoreKeyValueMap::Add(std::wstring const & name, std::wstring const & issuerStore)
+void SecurityConfig::IssuerStoreKeyValueMap::Add(std::string const & name, std::string const & issuerStore)
 {
     auto iter = find(name);
     if (iter == cend())
     {
-        std::set<wstring, X509IssuerStoreNameIsLess> issuerStores;
+        std::set<string, X509IssuerStoreNameIsLess> issuerStores;
         issuerStores.insert(issuerStore);
-        emplace(pair<std::wstring, std::set<wstring, X509IssuerStoreNameIsLess>>(name, issuerStores));
+        emplace(pair<std::string, std::set<string, X509IssuerStoreNameIsLess>>(name, issuerStores));
     }
     else
     {
@@ -132,7 +132,7 @@ void SecurityConfig::IssuerStoreKeyValueMap::AddIssuerEntries(PCFABRIC_X509_ISSU
         {
             if (x509Issuers[i].Name == NULL)
             {
-                Add(L"", x509Issuers[i].IssuerStores[j]);
+                Add("", x509Issuers[i].IssuerStores[j]);
             }
             else
             {
@@ -150,7 +150,7 @@ void SecurityConfig::IssuerStoreKeyValueMap::ToPublicApi(Common::ScopedHeap & he
     for (auto const & entry : *this)
     {
         remoteCertIssuerArray[i].Name = heap.AddString(entry.first, true);
-        auto remoteCertIssuerStoresArray = heap.AddArray<LPCWSTR>(entry.second.size());
+        auto remoteCertIssuerStoresArray = heap.AddArray<LPCSTR>(entry.second.size());
         j = 0;
         for (auto const & issuerStore : entry.second)
         {
@@ -170,12 +170,12 @@ ErrorCode SecurityConfig::IssuerStoreKeyValueMap::GetPublicKeys(X509IdentitySet 
         std::shared_ptr<Common::X509FindValue> findValue;
         if (!entry.first.empty())
         {
-            wstring commonName(entry.first);
+            string commonName(entry.first);
             StringUtility::TrimWhitespaces(commonName);
             X509FindValue::Create(X509FindType::FindBySubjectName, commonName, findValue);
         }
 
-        for (wstring storeName : entry.second)
+        for (string storeName : entry.second)
         {
             StringUtility::TrimWhitespaces(storeName);
             CertContexts certs;
@@ -233,7 +233,7 @@ SecurityConfig::X509NameMap SecurityConfig::X509NameMap::Parse(StringMap const &
         result.parseError_ = certIssuers.SetToThumbprints(entry.second).ReadValue();
         if (result.parseError_ != ErrorCodeValue::Success) return result;
 
-        result.emplace(pair<wstring, X509IdentitySet>(entry.first, move(certIssuers)));
+        result.emplace(pair<string, X509IdentitySet>(entry.first, move(certIssuers)));
     }
 
     return result;
@@ -246,11 +246,11 @@ ErrorCode SecurityConfig::X509NameMap::AddNames(PCFABRIC_X509_NAME x509Names, UL
         if (x509Names[i].Name == nullptr)
             return parseError_ = ErrorCodeValue::InvalidX509NameList;
 
-        wstring name(x509Names[i].Name);
+        string name(x509Names[i].Name);
         if (name.empty())
             return parseError_ = ErrorCodeValue::InvalidX509NameList;
 
-        if (StringUtility::StartsWith<wstring>(name, L" ") || StringUtility::EndsWith<wstring>(name, L" "))
+        if (StringUtility::StartsWith<string>(name, " ") || StringUtility::EndsWith<string>(name, " "))
         {
             Trace.WriteWarning(TraceX509NameMap, "X509Name '{0}' has leading/trailing space, probably unintended", name); 
         }
@@ -266,7 +266,7 @@ ErrorCode SecurityConfig::X509NameMap::AddNames(PCFABRIC_X509_NAME x509Names, UL
         auto iter = find(x509Names[i].Name);
         if (iter == cend())
         {
-            emplace(pair<wstring, X509IdentitySet>(move(name), move(issuers)));
+            emplace(pair<string, X509IdentitySet>(move(name), move(issuers)));
             continue;
         }
 
@@ -321,9 +321,9 @@ bool SecurityConfig::X509NameMap::operator != (X509NameMap const & rhs) const
     return !(rhs == *this);
 }
 
-void SecurityConfig::X509NameMap::Add(std::wstring const & name, X509IdentitySet const & certIssuers, bool overwrite)
+void SecurityConfig::X509NameMap::Add(std::string const & name, X509IdentitySet const & certIssuers, bool overwrite)
 {
-    if (StringUtility::StartsWith<wstring>(name, L" ") || StringUtility::EndsWith<wstring>(name, L" "))
+    if (StringUtility::StartsWith<string>(name, " ") || StringUtility::EndsWith<string>(name, " "))
     {
         Trace.WriteWarning(TraceX509NameMap, "X509Name '{0}' has leading/trailing space, probably unintended", name); 
     }
@@ -331,7 +331,7 @@ void SecurityConfig::X509NameMap::Add(std::wstring const & name, X509IdentitySet
     auto iter = find(name);
     if (iter == cend())
     {
-        emplace(pair<wstring, X509IdentitySet>(name, certIssuers));
+        emplace(pair<string, X509IdentitySet>(name, certIssuers));
         return;
     }
 
@@ -375,7 +375,7 @@ void SecurityConfig::X509NameMap::Add(std::wstring const & name, X509IdentitySet
     iter->second.Add(certIssuers);
 }
 
-ErrorCode SecurityConfig::X509NameMap::Add(wstring const & name, wstring const & issuerCertThumbprints)
+ErrorCode SecurityConfig::X509NameMap::Add(string const & name, string const & issuerCertThumbprints)
 {
     X509IdentitySet issuers;
     auto error = issuers.SetToThumbprints(issuerCertThumbprints);
@@ -385,7 +385,7 @@ ErrorCode SecurityConfig::X509NameMap::Add(wstring const & name, wstring const &
     return error;
 }
 
-void SecurityConfig::X509NameMap::Add(std::wstring const & name, X509Identity::SPtr const & issuerId)
+void SecurityConfig::X509NameMap::Add(std::string const & name, X509Identity::SPtr const & issuerId)
 {
     X509IdentitySet issuers;
     issuers.Add(issuerId);
@@ -400,10 +400,10 @@ void SecurityConfig::X509NameMap::Add(X509NameMap const & rhs)
     }
 }
 
-ErrorCode SecurityConfig::X509NameMap::AddNames(wstring const & names, wstring const & issuerCertThumbprints)
+ErrorCode SecurityConfig::X509NameMap::AddNames(string const & names, string const & issuerCertThumbprints)
 {
-    vector<wstring> nameList;
-    StringUtility::Split<wstring>(names, nameList, L",", true);
+    vector<string> nameList;
+    StringUtility::Split<string>(names, nameList, ",", true);
     ErrorCode error;
     for (auto const & name : nameList)
     {
@@ -436,7 +436,7 @@ bool SecurityConfig::X509NameMap::MatchIssuer(
 
 
 _Use_decl_annotations_ bool SecurityConfig::X509NameMap::Match(
-    wstring const & name,
+    string const & name,
     X509Identity::SPtr const & issuerId,
     X509NameMapBase::const_iterator & matched) const
 {
@@ -445,7 +445,7 @@ _Use_decl_annotations_ bool SecurityConfig::X509NameMap::Match(
 }
 
 _Use_decl_annotations_ bool SecurityConfig::X509NameMap::Match(
-    wstring const & name,
+    string const & name,
     X509Identity::SPtr const & issuerId1,
     X509Identity::SPtr const & issuerId2,
     X509NameMap::const_iterator & matched) const
@@ -491,28 +491,28 @@ ErrorCode SecurityConfig::X509NameMap::SetDefaultIssuers(X509IdentitySet const &
     return ErrorCodeValue::Success;
 }
 
-vector<pair<wstring, wstring>> SecurityConfig::X509NameMap::ToVector() const
+vector<pair<string, string>> SecurityConfig::X509NameMap::ToVector() const
 {
-    vector<pair<wstring, wstring>> nameList;
+    vector<pair<string, string>> nameList;
 
     for (auto const & name : *this)
     {
         if (name.second.IsEmpty())
         {
-            nameList.emplace_back(pair<wstring, wstring>(name.first, L""));
+            nameList.emplace_back(pair<string, string>(name.first, ""));
             continue;
         }
 
-        vector<wstring> thumbprints = name.second.ToStrings();
+        vector<string> thumbprints = name.second.ToStrings();
         if (thumbprints.empty())
         {
-            nameList.emplace_back(pair<wstring, wstring>(name.first, L""));
+            nameList.emplace_back(pair<string, string>(name.first, ""));
         }
         else
         {
             for (auto const & thumbprint : thumbprints)
             {
-                nameList.emplace_back(pair<wstring, wstring>(name.first, thumbprint));
+                nameList.emplace_back(pair<string, string>(name.first, thumbprint));
             }
         }
     }
@@ -526,9 +526,9 @@ vector<pair<wstring, wstring>> SecurityConfig::X509NameMap::ToVector() const
 #define ADD_CONFIG_MAP_ENTRY( ConfigName ) \
     ADD_CONFIG_MAP(ConfigName, GetConfig().ConfigName) \
 
-map<wstring, wstring> SecurityConfig::GetDefaultAzureActiveDirectoryConfigurations()
+map<string, string> SecurityConfig::GetDefaultAzureActiveDirectoryConfigurations()
 {
-    map<wstring, wstring> configs;
+    map<string, string> configs;
 
     ADD_CONFIG_MAP_ENTRY( AADTenantId )
     ADD_CONFIG_MAP_ENTRY( AADClusterApplication )
@@ -540,7 +540,7 @@ map<wstring, wstring> SecurityConfig::GetDefaultAzureActiveDirectoryConfiguratio
     ADD_CONFIG_MAP_ENTRY( AADRoleClaimKey )
     ADD_CONFIG_MAP_ENTRY( AADAdminRoleClaimValue )
     ADD_CONFIG_MAP_ENTRY( AADUserRoleClaimValue )
-    ADD_CONFIG_MAP( AADSigningCertRolloverCheckInterval, wformatString("{0}", GetConfig().AADSigningCertRolloverCheckInterval.TotalSeconds()) )
+    ADD_CONFIG_MAP( AADSigningCertRolloverCheckInterval, formatString.L("{0}", GetConfig().AADSigningCertRolloverCheckInterval.TotalSeconds()) )
 
     for (auto const & config : configs)
     {

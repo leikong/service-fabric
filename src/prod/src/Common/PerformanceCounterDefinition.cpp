@@ -7,7 +7,7 @@
 
 using namespace Common;
 
-PerformanceCounterDefinition::PerformanceCounterDefinition(PerformanceCounterId identifier, PerformanceCounterType::Enum type, std::wstring const & name, std::wstring const & description) :
+PerformanceCounterDefinition::PerformanceCounterDefinition(PerformanceCounterId identifier, PerformanceCounterType::Enum type, std::string const & name, std::string const & description) :
     identifier_(identifier),
     baseIdentifier_((PerformanceCounterId)(-1)),
     counterType_(type),
@@ -16,7 +16,7 @@ PerformanceCounterDefinition::PerformanceCounterDefinition(PerformanceCounterId 
 {
 }
 
-PerformanceCounterDefinition::PerformanceCounterDefinition(PerformanceCounterId identifier, PerformanceCounterId baseIdentifier, PerformanceCounterType::Enum type, std::wstring const & name, std::wstring const & description) :
+PerformanceCounterDefinition::PerformanceCounterDefinition(PerformanceCounterId identifier, PerformanceCounterId baseIdentifier, PerformanceCounterType::Enum type, std::string const & name, std::string const & description) :
     identifier_(identifier),
     baseIdentifier_(baseIdentifier),
     counterType_(type),

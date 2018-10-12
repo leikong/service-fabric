@@ -26,7 +26,7 @@ namespace Common
 
         void WriteTo(TextWriter& w, FormatOptions const &) const;
 
-        std::wstring ToString() const;
+        std::string ToString() const;
 
     private:
         int frameCount;

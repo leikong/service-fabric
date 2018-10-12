@@ -108,7 +108,7 @@
 *  accessible amount.
 * 
 *  <> : No buffer size is given. If the type specifies the buffer size (such
-*  as with LPSTR and LPWSTR), that amount is used. Otherwise, the buffer is
+*  as with LPSTR and LPSTR), that amount is used. Otherwise, the buffer is
 *  one element long. Must be used with _in, _out, or _inout.
 *
 *  _ecount : The buffer size is an explicit element count.
@@ -121,7 +121,7 @@
 *  initialized by the caller.
 * 
 *  <> : The type specifies how much is initialized. For instance, a function
-*  initializing an LPWSTR must NULL-terminate the string.
+*  initializing an LPSTR must NULL-terminate the string.
 *
 *  _full : The function initializes the entire buffer.
 *
@@ -612,12 +612,12 @@
 *  PathCanonicalizeA(__out_ecount(MAX_PATH) LPSTR pszBuf, LPCSTR pszPath);
 *  //  pszBuf is only guaranteed to be null-terminated when TRUE is returned.
 * 
-*  // Initialized LPWSTRs are null-terminated strings.
-*  typedef __nullterminated WCHAR* LPWSTR;
+*  // Initialized LPSTRs are null-terminated strings.
+*  typedef __nullterminated CHAR* LPSTR;
 * 
-*  __out_ecount(cch) __typefix(LPWSTR) void *psz;
-*  // psz is a buffer parameter which will be a null-terminated WCHAR string 
-*  // at exit, and which initially contains cch WCHARs.
+*  __out_ecount(cch) __typefix(LPSTR) void *psz;
+*  // psz is a buffer parameter which will be a null-terminated CHAR string 
+*  // at exit, and which initially contains cch CHARs.
 * 
 ************************************************************************/
 #define _At_(expr, annotes)      __allowed(on_parameter_or_return)

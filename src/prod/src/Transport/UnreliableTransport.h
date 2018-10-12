@@ -18,7 +18,7 @@ namespace Transport
         friend class DatagramTransportFactory;
 
     public:
-        std::wstring const & get_IdString() const override;
+        std::string const & get_IdString() const override;
 
         UnreliableTransport(Common::ComponentRoot const & root, std::shared_ptr<IDatagramTransport> innerTransport);
         ~UnreliableTransport() override;
@@ -27,7 +27,7 @@ namespace Transport
         Common::ErrorCode CompleteStart() override;
         void Stop(Common::TimeSpan timeout = Common::TimeSpan::Zero) override;
 
-        std::wstring const & TraceId() const override; 
+        std::string const & TraceId() const override; 
 
         TransportSecuritySPtr Security() const override;
 
@@ -44,7 +44,7 @@ namespace Transport
             Common::TimeSpan expiration = Common::TimeSpan::MaxValue,
             TransportPriority::Enum = TransportPriority::Normal) override;
 
-        std::wstring const & ListenAddress() const override;
+        std::string const & ListenAddress() const override;
 
         void SetConnectionAcceptedHandler(ConnectionAcceptedHandler const &) override;
         void RemoveConnectionAcceptedHandler() override;
@@ -106,9 +106,9 @@ namespace Transport
 
     private:
         ISendTarget::SPtr Resolve(
-            std::wstring const & address,
-            std::wstring const & targetId,
-            std::wstring const & sspiTarget,
+            std::string const & address,
+            std::string const & targetId,
+            std::string const & sspiTarget,
             uint64 instance) override;
 
         std::shared_ptr<IDatagramTransport> innerTransport_;

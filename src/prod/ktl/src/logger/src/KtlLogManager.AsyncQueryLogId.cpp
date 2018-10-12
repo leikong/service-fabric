@@ -110,8 +110,8 @@ RvdLogManagerImp::AsyncQueryLogIdImp::StartQueryLogId(
 VOID
 RvdLogManagerImp::AsyncQueryLogIdImp::OnReuse()
 {
-    _FullyQualifiedLogFilename = L"";
-    _RelativePath = L"";
+    _FullyQualifiedLogFilename = "";
+    _RelativePath = "";
 }
 
 VOID 

@@ -96,7 +96,7 @@ namespace FederationUnitTests
     BOOST_AUTO_TEST_SUITE_END()
 
 //#pragma region Helper Methods
-//        const wstring prefix = L"addr_";
+//        const string prefix = "addr_";
 //
 //        NodeConfig CreateNodeConfig(size_t low)
 //        {

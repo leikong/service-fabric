@@ -12,22 +12,22 @@ namespace Common
         DENY_COPY(TraceTextFileSink);
 
     public:
-        static std::wstring GetPath()
+        static std::string GetPath()
         {
             return Singleton->path_;
         }
 
-        static void SetPath(std::wstring const & path)
+        static void SetPath(std::string const & path)
         {
             Singleton->PrivateSetPath(path);
         }
 
-        static void SetOption(std::wstring const & option)
+        static void SetOption(std::string const & option)
         {
             Singleton->PrivateSetOption(option);
         }
 
-        static void Write(StringLiteral taskName, StringLiteral eventName, LogLevel::Enum level, std::wstring const & id, std::wstring const & data)
+        static void Write(StringLiteral taskName, StringLiteral eventName, LogLevel::Enum level, std::string const & id, std::string const & data)
         {
             Singleton->PrivateWrite(taskName, eventName, level, id, data);
         }
@@ -56,30 +56,30 @@ namespace Common
         DateTime CalculateCheckTime(DateTime now, int64 minutes);
         void CloseFile();
         void OpenFile();
-        void PrivateSetPath(std::wstring const & path);
-        void PrivateSetOption(std::wstring const & option);
-        void PrivateWrite(StringLiteral taskName, StringLiteral eventName, LogLevel::Enum level, std::wstring const & id, std::wstring const & data);
+        void PrivateSetPath(std::string const & path);
+        void PrivateSetOption(std::string const & option);
+        void PrivateWrite(StringLiteral taskName, StringLiteral eventName, LogLevel::Enum level, std::string const & id, std::string const & data);
         void Disable();
-        static std::wstring TimeToFileNameSuffix(DateTime const & now);
+        static std::string TimeToFileNameSuffix(DateTime const & now);
 
         File file_;
         RwLock lock_;
-        std::vector<std::wstring> files_;
-        std::wstring path_;
-        std::wstring option_;
+        std::vector<std::string> files_;
+        std::string path_;
+        std::string option_;
         DateTime segmentTime_;
         DateTime sizeCheckTime_;
         int64 maxSize_;
         int64 sizeCheckIntervalInMinutes_;
         bool enabled_;
 
-        std::wstring const processNameOption_;
-        std::wstring const processIdOption_;
-        std::wstring const instanceIdOption_;
-        std::wstring const moduleOption_;
-        std::wstring const segmentHoursOption_;
-        std::wstring const segmentMinutesOption_;
-        std::wstring const fileCountOption_;
-        std::wstring const segmentSizeOption_;
+        std::string const processNameOption_;
+        std::string const processIdOption_;
+        std::string const instanceIdOption_;
+        std::string const moduleOption_;
+        std::string const segmentHoursOption_;
+        std::string const segmentMinutesOption_;
+        std::string const fileCountOption_;
+        std::string const segmentSizeOption_;
     };
 }

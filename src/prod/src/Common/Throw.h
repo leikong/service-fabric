@@ -21,11 +21,11 @@ namespace Common
     //
     __declspec(noreturn) void fail_coding_error(char const * message);
     __declspec(noreturn) void fail_coding_error(std::string const & message);
-    __declspec(noreturn) void fail_coding_error(std::wstring const & message);
+    __declspec(noreturn) void fail_coding_error(std::string const & message);
 
     __declspec(noreturn) void throw_system_error(char const * message);
     __declspec(noreturn) void throw_system_error(std::string const & message, std::error_code error);
-    __declspec(noreturn) void throw_system_error(std::wstring const & message, std::error_code error);
+    __declspec(noreturn) void throw_system_error(std::string const & message, std::error_code error);
 
     __declspec(nothrow) void log_system_error(char const *message, std::error_code error);
 
@@ -51,7 +51,7 @@ namespace Common
 
 #   define FAIL_CODING_ERROR_FMT(str , ...)                                         \
     {                                                                               \
-        std::wstring finalMessage;                                                  \
+        std::string finalMessage;                                                  \
         Common::StringWriter sw(finalMessage);                                         \
         sw.Write(str, __VA_ARGS__);                                                 \
         sw.Write(" {0}:{1}:{2}" , __FILE__, __FUNCTION__, COMMON_STRINGIFY(__LINE__ ));\
@@ -60,7 +60,7 @@ namespace Common
 
 #   define THROW_SYSTEM_ERROR_FMT(ec, str , ...)                              \
     {                                                                               \
-        std::wstring finalMessage;                                                  \
+        std::string finalMessage;                                                  \
         Common::StringWriter sw(finalMessage);                                         \
         sw.Write(str, __VA_ARGS__);                                                 \
         sw.Write(" {0}:{1}:{2}" , __FILE__, __FUNCTION__, COMMON_STRINGIFY(__LINE__)); \

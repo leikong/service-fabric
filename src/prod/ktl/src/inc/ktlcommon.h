@@ -149,7 +149,7 @@ extern KInvariantCalloutType KInvariantCallout;
 
 #if KTL_USER_MODE
 #define KFatal(_exp)     ( ((!(_exp)) && (KInvariantCallout(#_exp, __FILE__, __LINE__)))  ? \
-        (__annotation(L"Debug", L"AssertFail", L ## #_exp), \
+        (__annotation("Debug", "AssertFail", L ## #_exp), \
 	DbgRaiseAssertionFailure(), FALSE) : \
 	TRUE)
 #else

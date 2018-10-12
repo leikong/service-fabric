@@ -61,13 +61,13 @@ namespace Common
     } \
     void ClassName::WriteTo(__in Common::TextWriter& writer, Common::FormatOptions const&) const \
     { \
-        if (this->IsEmptyFlags()) { writer << L"-"; return; } \
+        if (this->IsEmptyFlags()) { writer << "-"; return; } \
         bool isFirstMatch = true; \
         for (T f = FirstFlag; f <= LastFlag; f = (f << 1)) \
         { \
             if ((**this & f) != 0) \
             { \
-                if (!isFirstMatch) { writer << L"|"; } \
+                if (!isFirstMatch) { writer << "|"; } \
                 writer << FlagToString( f ); \
                 isFirstMatch = false; \
             } \
@@ -102,7 +102,7 @@ namespace Common
         DEFINE_FLAG_VALUE( Name, Name )
 
 #define END_DEFINE_FLAG_CLASS( ) \
-        default: return Common::formatString("{0:x}", flag); \
+        default: return Common::formatString.L("{0:x}", flag); \
         } \
     } \
 

@@ -372,8 +372,8 @@ class EventTestThread : public TestThread
             ULONG Counter;
             ULONG Wakeups;
 #if ! defined(PLATFORM_UNIX)
-            PWCHAR WaitName;
-            PWCHAR KickName;
+            PCHAR WaitName;
+            PCHAR KickName;
 #else
             int WaitEventFd;
             int KickEventFd;
@@ -1524,8 +1524,8 @@ KAWIpcEventTests()
         //
         EVENTHANDLEFD wait;
         EVENTHANDLEFD kick;
-        static const PWCHAR WaitNameText = L"AWIpcTestWaitEvent";
-        static const PWCHAR KickNameText = L"AWIpcTestKickEvent";
+        static const PCHAR WaitNameText = "AWIpcTestWaitEvent";
+        static const PCHAR KickNameText = "AWIpcTestKickEvent";
 
         status = KAWIpcEventWaiter::CreateEventWaiter(KickNameText, kick);
         VERIFY_IS_TRUE(NT_SUCCESS(status));
@@ -1608,7 +1608,7 @@ KAWIpcEventTests()
         EVENTHANDLEFD wait;
         KSynchronizer sync2;
             
-        static const PWCHAR WaitNameText = L"AWIpcTestWaitEvent";
+        static const PCHAR WaitNameText = "AWIpcTestWaitEvent";
         
         status = KAWIpcEventWaiter::CreateEventWaiter(WaitNameText, wait);
         VERIFY_IS_TRUE(NT_SUCCESS(status));
@@ -2852,7 +2852,7 @@ VOID CreateCPRingPair(
     __in KAWIpcSharedMemory& MessageSharedMemoryC,
     __in KAWIpcSharedMemory& MessageSharedMemoryP,
     __in ULONG RingSharedMemorySize,
-    __in PWCHAR EfdhText,
+    __in PCHAR EfdhText,
     __out ULONG& RingCount,
     __out KAWIpcRingConsumer::SPtr& ConsumerRing,
     __out KAWIpcRingProducer::SPtr& ProducerRing,
@@ -2937,7 +2937,7 @@ VOID CreateCPPair(
     __in LONG OwnerIdP,
     __in ULONG MessageSharedMemorySize,
     __in ULONG RingSharedMemorySize,
-    __in PWCHAR EfdhText,
+    __in PCHAR EfdhText,
     __out ULONG& Count64,
     __out ULONG& Count1024,
     __out ULONG& Count4096,
@@ -3016,7 +3016,7 @@ VOID CreateGuidText(
 {
 
     NTSTATUS status = STATUS_SUCCESS;
-    KStringView prefix(L"KAWIpcTest_");
+    KStringView prefix("KAWIpcTest_");
     BOOLEAN b;
     KGuid guid;
     
@@ -3496,7 +3496,7 @@ KAWIpcCPRingTests()
 
         CreateCPPair(ownerIdC, ownerIdP,
                      messageSharedMemorySize, ringSharedMemorySize,
-                     (PWCHAR)efdhText,
+                     (PCHAR)efdhText,
                      count64, count1024, count4096, count64k, ringCount,
                      mallocC, mallocP,
                      consumerRing, producerRing,
@@ -5099,7 +5099,7 @@ TestSequence()
 
 NTSTATUS
 KAWIpcTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     UNREFERENCED_PARAMETER(argc);
@@ -5140,18 +5140,18 @@ KAWIpcTest(
 #if CONSOLE_TEST
 int
 #if !defined(PLATFORM_UNIX)
-main(int argc, WCHAR* args[])
+main(int argc, CHAR* args[])
 {
 #else
 main(int argc, char* cargs[])
 {
-    std::vector<WCHAR*> args_vec(argc);
-    WCHAR** args = (WCHAR**)args_vec.data();
-    std::vector<std::wstring> wargs(argc);
+    std::vector<CHAR*> args_vec(argc);
+    CHAR** args = (CHAR**)args_vec.data();
+    std::vector<std::string> wargs(argc);
     for (int iter = 0; iter < argc; iter++)
     {
         wargs[iter] = Utf8To16(cargs[iter]);
-        args[iter] = (WCHAR*)(wargs[iter].data());
+        args[iter] = (CHAR*)(wargs[iter].data());
     }
 #endif
     KAWIpcTest(argc, args);

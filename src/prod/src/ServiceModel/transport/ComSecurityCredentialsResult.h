@@ -9,23 +9,23 @@ namespace Transport
 {
     namespace SecuritySettingsNames
     {
-        std::wstring const CredentialType = L"CredentialType";
+        std::string const CredentialType = "CredentialType";
 
-        std::wstring const AllowedCommonNames = L"AllowedCommonNames";
-        std::wstring const IssuerThumbprints = L"IssuerThumbprints";
-        std::wstring const RemoteCertThumbprints = L"RemoteCertThumbprints";
-        std::wstring const FindType = L"FindType";
-        std::wstring const FindValue = L"FindValue";
-        std::wstring const FindValueSecondary = L"FindValueSecondary";
-        std::wstring const StoreLocation = L"StoreLocation";
-        std::wstring const StoreName = L"StoreName";
-        std::wstring const ProtectionLevel = L"ProtectionLevel";
+        std::string const AllowedCommonNames = "AllowedCommonNames";
+        std::string const IssuerThumbprints = "IssuerThumbprints";
+        std::string const RemoteCertThumbprints = "RemoteCertThumbprints";
+        std::string const FindType = "FindType";
+        std::string const FindValue = "FindValue";
+        std::string const FindValueSecondary = "FindValueSecondary";
+        std::string const StoreLocation = "StoreLocation";
+        std::string const StoreName = "StoreName";
+        std::string const ProtectionLevel = "ProtectionLevel";
 
         // Kerberos transport security settings:
-        std::wstring const ServicePrincipalName = L"ServicePrincipalName"; // Service principal name of all replication listeners for this service group
-        std::wstring const WindowsIdentities = L"WindowsIdentities"; // Used to authorize incoming replication connections for this service group
+        std::string const ServicePrincipalName = "ServicePrincipalName"; // Service principal name of all replication listeners for this service group
+        std::string const WindowsIdentities = "WindowsIdentities"; // Used to authorize incoming replication connections for this service group
 
-        std::wstring const ApplicationIssuerStorePrefix = L"ApplicationIssuerStore/";
+        std::string const ApplicationIssuerStorePrefix = "ApplicationIssuerStore/";
     }
 
     class ComSecurityCredentialsResult
@@ -43,8 +43,8 @@ namespace Transport
     public:
         static HRESULT FromConfig(
             __in Common::ComPointer<IFabricCodePackageActivationContext> codePackageActivationContextCPtr,
-            __in std::wstring const & configurationPackageName,
-            __in std::wstring const & sectionName,
+            __in std::string const & configurationPackageName,
+            __in std::string const & sectionName,
             __out IFabricSecurityCredentialsResult ** securityCredentialsResult);
 
         static HRESULT ClusterSecuritySettingsFromConfig(

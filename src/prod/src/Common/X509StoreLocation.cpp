@@ -58,22 +58,22 @@ namespace Common
         {
             switch (e)
             {
-                case CurrentUser: w << L"CurrentUser"; return;
-                case LocalMachine: w << L"LocalMachine"; return;
+                case CurrentUser: w << "CurrentUser"; return;
+                case LocalMachine: w << "LocalMachine"; return;
             }
 
             w << "X509StoreLocation(" << static_cast<int>(e) << ')';
         }
 
-        Common::ErrorCode Parse(std::wstring const & inputString, __out Enum & result)
+        Common::ErrorCode Parse(std::string const & inputString, __out Enum & result)
         {
-            if (Common::StringUtility::AreEqualCaseInsensitive(inputString, L"CurrentUser"))
+            if (Common::StringUtility::AreEqualCaseInsensitive(inputString, "CurrentUser"))
             {
                 result = Enum::CurrentUser;
                 return PlatformValidate(result); 
             }
 
-            if (Common::StringUtility::AreEqualCaseInsensitive(inputString, L"LocalMachine"))
+            if (Common::StringUtility::AreEqualCaseInsensitive(inputString, "LocalMachine"))
             {
                 result = Enum::LocalMachine;
                 return Common::ErrorCode::Success();

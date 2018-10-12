@@ -7,15 +7,15 @@
 // 
 
 #include "string.h"
-extern "C" _Check_return_ _CRTIMP int __cdecl _wtoi(_In_z_ const wchar_t *_Str);
+extern "C" _Check_return_ _CRTIMP int __cdecl _wtoi(_In_z_ const char *_Str);
 
 
 #undef iswspace
 #undef iswalpha
 #undef iswalnum
-#define iswspace(c)  (c == L' ' || c == L'\t' || c == L'\r' || c == '\n')
-#define iswalpha(c)  ((c >= L'a'  && c <= L'z') || (c >= L'A'  && c <= L'Z') || c == L'_')
-#define iswalnum(c)  (iswalpha(c) || (c >= L'0' && c <= L'9'))
+#define iswspace(c)  (c == ' ' || c == '\t' || c == '\r' || c == '\n')
+#define iswalpha(c)  ((c >= 'a'  && c <= 'z') || (c >= 'A'  && c <= 'Z') || c == '_')
+#define iswalnum(c)  (iswalpha(c) || (c >= '0' && c <= '9'))
 
 
 static const ULONG MaxParameterNameLength  = 32;
@@ -29,9 +29,9 @@ class Parameter
     K_DENY_COPY(Parameter);
 
 public:
-    wchar_t  _Name[MaxParameterNameLength+1];
+    char  _Name[MaxParameterNameLength+1];
     ULONG    _ValueCount;
-    LPCWSTR  _Values[MaxValuesPerParam];
+    LPCSTR  _Values[MaxValuesPerParam];
 
     Parameter(KAllocator& Allocator) 
         :   _Allocator(Allocator)
@@ -52,7 +52,7 @@ public:
         }
     }
 
-    void InsertValue(LPCWSTR Token);
+    void InsertValue(LPCSTR Token);
 
 private:
     Parameter();
@@ -68,10 +68,10 @@ class CmdLineParser
 public:
     CmdLineParser(KAllocator& Allocator);
     ~CmdLineParser();
-    BOOLEAN Parse(int Argc, __in_ecount(Argc ) wchar_t* Argv[]);
-    BOOLEAN Parse(__in_opt LPWSTR RawString);
+    BOOLEAN Parse(int Argc, __in_ecount(Argc ) char* Argv[]);
+    BOOLEAN Parse(__in_opt LPSTR RawString);
     void Reset();
-    BOOLEAN GetErrorInfo(ULONG *CharPos, __out LPWSTR* Message);
+    BOOLEAN GetErrorInfo(ULONG *CharPos, __out LPSTR* Message);
     ULONG ParameterCount();
     Parameter* GetParam(ULONG Index);
 
@@ -79,33 +79,33 @@ private:
     CmdLineParser();
 
 private:
-    static const wchar_t* _Msg_InvalidSwitchIdent;
-    static const wchar_t* _Msg_ExpectingSwitch;
-    static const wchar_t* _Msg_MissingSwitchIdent;
-    static const wchar_t* _Msg_UnterminatedString;
-    static const wchar_t* _Msg_NullString;
-    static const wchar_t* _Msg_TooManyParameters;
-    static const wchar_t* _Msg_TooManyValues;
-    static const wchar_t* _Msg_ParameterNameTooLong;
-    static const wchar_t* _Msg_ValueTooLong;
+    static const char* _Msg_InvalidSwitchIdent;
+    static const char* _Msg_ExpectingSwitch;
+    static const char* _Msg_MissingSwitchIdent;
+    static const char* _Msg_UnterminatedString;
+    static const char* _Msg_NullString;
+    static const char* _Msg_TooManyParameters;
+    static const char* _Msg_TooManyValues;
+    static const char* _Msg_ParameterNameTooLong;
+    static const char* _Msg_ValueTooLong;
     
     KAllocator& _Allocator;
-    LPWSTR    _Src;
-    LPWSTR    _ErrorMsg;
+    LPSTR    _Src;
+    LPSTR    _ErrorMsg;
     ULONG     _CharPos;
     Parameter* _Params[MaxParameters];
     ULONG      _ParamCount;
-    wchar_t   _TokenBuffer[MaxTokenBuffer];
+    char   _TokenBuffer[MaxTokenBuffer];
     ULONG     _TokenBufferPos;
 
-    wchar_t   PeekChar();
+    char   PeekChar();
     BOOLEAN   EndOfInput();
-    wchar_t*  CurrentLoc();
+    char*  CurrentLoc();
     BOOLEAN EmitParam();
     void Cleanup();
     void Zero();
-    void AppendValue(wchar_t c);
+    void AppendValue(char c);
     BOOLEAN EmitValue();
-    wchar_t NextChar();
+    char NextChar();
     void ResetValueAccumulator();
 };

@@ -28,12 +28,12 @@ namespace TransportUnitTest
     public:
         TestMessageBody() {}
 
-        TestMessageBody(wstring&& str) 
+        TestMessageBody(string&& str) 
             : str_(std::move(str))
         {
         }
 
-        wstring const & Value() const 
+        string const & Value() const 
         { 
             return str_; 
         }
@@ -41,37 +41,37 @@ namespace TransportUnitTest
         FABRIC_FIELDS_01(str_);
 
     private:
-        wstring str_;
+        string str_;
     };
 
     struct TestHeader : MessageHeader<MessageHeaderId::MulticastTest_TargetSpecificHeader>, public Serialization::FabricSerializable
     {
         TestHeader() {}
 
-        TestHeader(std::wstring && key, std::wstring && value)
+        TestHeader(std::string && key, std::string && value)
             : key_(std::move(key)), value_(std::move(value)) {}
         
         FABRIC_FIELDS_02(key_, value_);
 
-        std::wstring const & Key() const { return key_; }
-        std::wstring const & Value() const { return value_; }
+        std::string const & Key() const { return key_; }
+        std::string const & Value() const { return value_; }
 
     private:
-        std::wstring key_;
-        std::wstring value_;
+        std::string key_;
+        std::string value_;
     };
 
     struct Utility
     {
-        static IDatagramTransportSPtr CreateTransport(wstring const & address);
+        static IDatagramTransportSPtr CreateTransport(string const & address);
 
         static void CreateReceivers(
             size_t numReceivers, 
-            __out shared_ptr<vector<wstring>> & addresses, 
+            __out shared_ptr<vector<string>> & addresses, 
             __out shared_ptr<vector<ReceiverSPtr>> & receivers,
             bool verifyContent);
 
-        static MulticastSenderSPtr CreateMulticastSender(__in shared_ptr<vector<wstring>> const & receiverAddresses);
+        static MulticastSenderSPtr CreateMulticastSender(__in shared_ptr<vector<string>> const & receiverAddresses);
 
         static void VerifySent(int numExpected, MulticastSenderSPtr const & sender);
 
@@ -111,15 +111,15 @@ namespace TransportUnitTest
         __declspec(property(get=get_TestBody)) TestMessageBody const & TestBody;
         __declspec(property(get=get_TestHeaders)) MessageHeadersCollection & TestHeaders;
 
-        MulticastSender(wstring const & myaddress, shared_ptr<vector<wstring>> const & targets)
+        MulticastSender(string const & myaddress, shared_ptr<vector<string>> const & targets)
             :   transport_(Utility::CreateTransport(myaddress)),
                 sender_(make_shared<MulticastDatagramSender>(transport_)),
                 sentMessageCount_(0),
-                testBody_((wstring)L"This is a test message."),
+                testBody_((string)L"This is a test message."),
                 testHeaders_((size_t)(targets->end() - targets->begin()))
         {
             vector<NamedAddress> namedTargets;
-            for(wstring const & target : *targets)
+            for(string const & target : *targets)
             {
                 namedTargets.push_back(NamedAddress(target));
             }
@@ -139,7 +139,7 @@ namespace TransportUnitTest
 
         void SendMessage_Headers()
         {
-            wstring str = L"This is a test message.";
+            string str = "This is a test message.";
             TestMessageBody body(std::move(str));
             auto message = make_unique<Message>(body);
 
@@ -160,7 +160,7 @@ namespace TransportUnitTest
 
         void SendMessage_NoHeaders()
         {
-            wstring str = L"This is a test message.";
+            string str = "This is a test message.";
             TestMessageBody body(std::move(str));
             sender_->Send(
                 target_, 
@@ -198,14 +198,14 @@ namespace TransportUnitTest
 
         void AddCommonHeaders(MessageHeaders & headers)
         {
-            headers.Add(ActionHeader(L"Test Action"));
+            headers.Add(ActionHeader("Test Action"));
         }
 
         void AddTargetSpecificHeaders(MessageHeadersCollection & targetHeaders)
         {
             for(size_t i = 0; i < targetHeaders.size(); i ++)
             {
-                targetHeaders[i].Add(TestHeader(wformatString("Key{0}",i), wformatString("Value{0}",i)));
+                targetHeaders[i].Add(TestHeader(formatString.L("Key{0}",i), formatString.L("Value{0}",i)));
             }
         }
     };
@@ -215,12 +215,12 @@ namespace TransportUnitTest
         DENY_COPY(Receiver)
 
     public:
-        __declspec(property(get=get_Address)) wstring const & Address;
+        __declspec(property(get=get_Address)) string const & Address;
         __declspec(property(get=get_Index)) size_t Index;
         __declspec(property(get=get_ReceivedMessageCount)) LONG ReceivedMessageCount;
         __declspec(property(get=get_ReceivedMessages)) vector<MessageUPtr> const & ReceivedMessages;
 
-        Receiver(wstring const & address, size_t index = 0, bool storeMessages = false)
+        Receiver(string const & address, size_t index = 0, bool storeMessages = false)
             : address_(address),
             index_(index),
             storeMessages_(storeMessages),
@@ -248,7 +248,7 @@ namespace TransportUnitTest
             return receivedMessageCount_.load();
         }
 
-        wstring const & get_Address() const
+        string const & get_Address() const
         {
             return address_;
         }
@@ -269,7 +269,7 @@ namespace TransportUnitTest
         }
 
     private:
-        wstring address_;
+        string address_;
         size_t index_;
         bool storeMessages_;
         IDatagramTransportSPtr transport_;
@@ -280,7 +280,7 @@ namespace TransportUnitTest
     //
     // Utility Implementation
     // 
-    IDatagramTransportSPtr Utility::CreateTransport(wstring const & address)
+    IDatagramTransportSPtr Utility::CreateTransport(string const & address)
     {
         auto transport = DatagramTransportFactory::CreateMem(address);
 
@@ -292,26 +292,26 @@ namespace TransportUnitTest
 
     void Utility::CreateReceivers(
             size_t numReceivers, 
-            __out shared_ptr<vector<wstring>> & addresses, 
+            __out shared_ptr<vector<string>> & addresses, 
             __out shared_ptr<vector<ReceiverSPtr>> & receivers,
             bool verifyContent)
     {
         Trace.WriteInfo(TraceType, "Creating {0} Receivers", numReceivers);
 
-        addresses = make_shared<vector<wstring>>(numReceivers);
+        addresses = make_shared<vector<string>>(numReceivers);
         receivers = make_shared<vector<ReceiverSPtr>>(numReceivers);
 
         for(size_t i = 0; i < numReceivers; i++)
         {
-            (*addresses)[i] = Common::wformatString("MemoryTransport.Receiver#{0}", i);
+            (*addresses)[i] = Common::formatString.L("MemoryTransport.Receiver#{0}", i);
             (*receivers)[i] = make_shared<Receiver>((*addresses)[i], i, verifyContent);
         }
     }
 
-    MulticastSenderSPtr Utility::CreateMulticastSender(__in shared_ptr<vector<wstring>> const & receiverAddresses)
+    MulticastSenderSPtr Utility::CreateMulticastSender(__in shared_ptr<vector<string>> const & receiverAddresses)
     {
         Trace.WriteInfo(TraceType, "Creating a MulticastSender.");
-        return make_shared<MulticastSender>(L"MemoryTransport/MulticastSender", receiverAddresses);
+        return make_shared<MulticastSender>("MemoryTransport/MulticastSender", receiverAddresses);
     }
 
     void Utility::VerifySent(int numExpected, MulticastSenderSPtr const & sender)
@@ -407,7 +407,7 @@ namespace TransportUnitTest
     {
         Trace.WriteInfo(TraceType, "Testing multicast one-way messages: NumReceivers {0}, NumMessages {1}", numReceivers, numMessages);
 
-        shared_ptr<vector<wstring>> receiverAddresses;
+        shared_ptr<vector<string>> receiverAddresses;
         shared_ptr<vector<ReceiverSPtr>> receivers;
 
         // Create two receivers

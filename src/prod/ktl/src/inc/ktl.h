@@ -88,24 +88,6 @@ namespace KtlIfExistsUtil
 #define abstract
 #define sealed
 
-inline std::wstring Utf8To16(const char *str)
-{
-    std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> conv;
-    std::u16string u16str = conv.from_bytes(str);
-    std::basic_string<wchar_t> result;
-    for(int index = 0; index < u16str.length(); index++)
-    {
-        result.push_back((wchar_t)u16str[index]);
-    }
-    return result;
-}
-
-inline std::string Utf16To8(const wchar_t *wstr)
-{
-    std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> conv;
-    return conv.to_bytes((const char16_t *) wstr);
-}
-
 #include "paldef.h"
 
 #else // PLATFORM_UNIX
@@ -289,24 +271,6 @@ namespace Ktl
     struct enable_if<true, T> { typedef T type; };
 }
 
-// Ktl::Remove*::type - type conversions to remove type modifiers
-//
-namespace Ktl
-{
-    // Remove outer "const"
-    template<typename T>
-    struct RemoveConst         // non-const normalization
-    {
-        typedef T type;
-    };
-
-    template<typename T>
-    struct RemoveConst<const T>
-    {
-        typedef T type;
-    };
-}
-
 #include <kpointer.h>
 #include <krtt.h>
 
@@ -463,19 +427,19 @@ public:
 
     virtual NTSTATUS
     RegisterGlobalObject(
-        __in_z const WCHAR* ObjectName,
+        __in_z const char* ObjectName,
         __inout KSharedBase& Object) = 0;
 
     virtual VOID
-    UnregisterGlobalObject(__in_z const WCHAR* ObjectName) = 0;
+    UnregisterGlobalObject(__in_z const char* ObjectName) = 0;
 
     virtual
     KSharedBase::SPtr
-    GetGlobalObjectSharedBase(__in_z const WCHAR* ObjectName) = 0;
+    GetGlobalObjectSharedBase(__in_z const char* ObjectName) = 0;
 
     template <class T>
     KSharedPtr<T>
-    GetGlobalObject(__in_z const WCHAR* ObjectName)
+    GetGlobalObject(__in_z const char* ObjectName)
     {
         KSharedPtr<KSharedBase> object = GetGlobalObjectSharedBase(ObjectName);
         return (T*) (object.RawPtr());
@@ -575,6 +539,24 @@ struct KMemRef : public _KMemRef
         // Never delete the memory
     }
 };
+
+// Ktl::Remove*::type - type conversions to remove type modifiers
+//
+namespace Ktl
+{
+    // Remove outer "const"
+    template<typename T>
+    struct RemoveConst         // non-const normalization
+    {
+        typedef T type;
+    };
+
+    template<typename T>
+    struct RemoveConst<const T>
+    {
+        typedef T type;
+    };
+}
 
 #include <knt.h>
 

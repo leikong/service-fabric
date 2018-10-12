@@ -10,7 +10,7 @@ namespace Common
     class FabricVersion : public Serialization::FabricSerializable
     {
     public:
-        static GlobalWString Delimiter;
+        static GlobalString Delimiter;
 
         // following are defined in FabricVersionConstants.cpp
         static Global<FabricVersion> Baseline;
@@ -43,9 +43,9 @@ namespace Common
 
         void WriteTo(TextWriter&, FormatOptions const &) const;
 
-        std::wstring ToString() const;
-        static ErrorCode FromString(std::wstring const & fabricVersionString, __out FabricVersion & fabricVersion);
-        static bool TryParse(std::wstring const & input, __out FabricVersion & fabricVersion);
+        std::string ToString() const;
+        static ErrorCode FromString(std::string const & fabricVersionString, __out FabricVersion & fabricVersion);
+        static bool TryParse(std::string const & input, __out FabricVersion & fabricVersion);
 
         FABRIC_FIELDS_02(codeVersion_, configVersion_);
 

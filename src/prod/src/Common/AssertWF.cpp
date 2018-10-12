@@ -104,19 +104,19 @@ bool Assert::IsStackTraceCaptureEnabled()
 void Assert::LoadConfiguration(Config & config)
 {
     bool debugBreakEnabled = true;
-    if (config.ReadUnencryptedConfig<bool>(L"Common", L"DebugBreakEnabled", debugBreakEnabled, true))
+    if (config.ReadUnencryptedConfig<bool>("Common", "DebugBreakEnabled", debugBreakEnabled, true))
     {
         Assert::set_DebugBreakEnabled(debugBreakEnabled);
     }
     
     bool testAssertEnabled = false;
-    if (config.ReadUnencryptedConfig<bool>(L"Common", L"TestAssertEnabled", testAssertEnabled, false))
+    if (config.ReadUnencryptedConfig<bool>("Common", "TestAssertEnabled", testAssertEnabled, false))
     {
         Assert::set_TestAssertEnabled(testAssertEnabled);
     }
 
     bool stackTraceCaptureEnabled = true;
-    if (config.ReadUnencryptedConfig<bool>(L"Common", L"StackTraceCaptureEnabled", stackTraceCaptureEnabled, true))
+    if (config.ReadUnencryptedConfig<bool>("Common", "StackTraceCaptureEnabled", stackTraceCaptureEnabled, true))
     {
         Assert::set_StackTraceCaptureEnabled(stackTraceCaptureEnabled);
     }
@@ -172,9 +172,9 @@ void Assert::DoFailFast(string const & message)
     }
 }
 
-wstring Assert::TryCaptureStackTrace()
+string Assert::TryCaptureStackTrace()
 {
-    wstring stackTraceMessage = L"Stack trace capture disabled. Enable using StackTraceCaptureEnabled configuration";
+    string stackTraceMessage = "Stack trace capture disabled. Enable using StackTraceCaptureEnabled configuration";
 
     if (Assert::IsStackTraceCaptureEnabled())
     {

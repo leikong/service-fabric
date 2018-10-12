@@ -11,32 +11,32 @@ using namespace Common;
 
 namespace Federation
 {
-    bool TestNodeInfo::Create(std::wstring string, __out TestNodeInfo & testNode)
+    bool TestNodeInfo::Create(std::string string, __out TestNodeInfo & testNode)
     {
         StringCollection nodeInfo;
-        StringUtility::Split<std::wstring>(string, nodeInfo, L":");
+        StringUtility::Split<std::string>(string, nodeInfo, ":");
         if (!NodeId::TryParse(nodeInfo[0], testNode.nodeId_))
         {
             return false;
         }
 
-        if (nodeInfo[1] == L"B")
+        if (nodeInfo[1] == "B")
         {
             testNode.phase_ = NodePhase::Booting;
         }
-        else if (nodeInfo[1] == L"I")
+        else if (nodeInfo[1] == "I")
         {
             testNode.phase_  = NodePhase::Inserting;
         }
-        else if (nodeInfo[1] == L"J")
+        else if (nodeInfo[1] == "J")
         {
             testNode.phase_  = NodePhase::Joining;
         }
-        else if (nodeInfo[1] == L"R")
+        else if (nodeInfo[1] == "R")
         {
             testNode.phase_  = NodePhase::Routing;
         }
-        else if (nodeInfo[1] == L"S")
+        else if (nodeInfo[1] == "S")
         {
             testNode.phase_  = NodePhase::Shutdown;
         }
@@ -47,15 +47,15 @@ namespace Federation
         return true;
     }
 
-    std::wstring TestNodeInfo::ToString()
+    std::string TestNodeInfo::ToString()
     {
-        return wformatString("{0}:{1}", nodeId_, phase_);
+        return formatString.L("{0}:{1}", nodeId_, phase_);
     }
 
-    bool TestVoteInfo::Create(std::wstring string, __out TestVoteInfo & testVote)
+    bool TestVoteInfo::Create(std::string string, __out TestVoteInfo & testVote)
     {
         StringCollection voteInfo;
-        StringUtility::Split<std::wstring>(string, voteInfo, L":");
+        StringUtility::Split<std::string>(string, voteInfo, ":");
         if (!NodeId::TryParse(voteInfo[0], testVote.voteId_))
         {
             return false;
@@ -63,11 +63,11 @@ namespace Federation
 
         if (voteInfo.size() > 1)
         {
-            if (voteInfo[1] == L"T")
+            if (voteInfo[1] == "T")
             {
                 testVote.superTicket_ = Stopwatch::Now() + TimeSpan::FromMinutes(2);
             }
-            else if (voteInfo[1] == L"F")
+            else if (voteInfo[1] == "F")
             {
                 testVote.superTicket_ = StopwatchTime::Zero;
             }
@@ -83,11 +83,11 @@ namespace Federation
 
         if (voteInfo.size() > 2)
         {
-            if (voteInfo[2] == L"T")
+            if (voteInfo[2] == "T")
             {
                 testVote.globalTicket_ = Stopwatch::Now() + TimeSpan::FromMinutes(2);
             }
-            else if (voteInfo[2] == L"F")
+            else if (voteInfo[2] == "F")
             {
                 testVote.globalTicket_ = StopwatchTime::Zero;
             }
@@ -103,8 +103,8 @@ namespace Federation
         return true;
     }
 
-    std::wstring TestVoteInfo::ToString()
+    std::string TestVoteInfo::ToString()
     {
-        return wformatString("{0}:{1}:{2}", voteId_, superTicket_, globalTicket_);
+        return formatString.L("{0}:{1}:{2}", voteId_, superTicket_, globalTicket_);
     }
 }

@@ -60,17 +60,17 @@ public:
 
     // Function pointer definition used for calling EEConfig::GetConfigValueCallback .
     typedef HRESULT (* GetConfigValueFunction)
-        (__in_z LPCWSTR /*pKey*/, __deref_out_opt LPCWSTR* /*value*/, BOOL /*systemOnly*/, BOOL /*applicationFirst*/);
+        (__in_z LPCSTR /*pKey*/, __deref_out_opt LPCSTR* /*value*/, BOOL /*systemOnly*/, BOOL /*applicationFirst*/);
 
     // Function pointer definition used for calling PerformanceDefaults::LookupConfigValue
     typedef BOOL (* GetPerformanceDefaultValueFunction)
-        (LPCWSTR /*name*/, DWORD* /*pValue*/);
+        (LPCSTR /*name*/, DWORD* /*pValue*/);
 
     // Struct used to store information about where/how to find a Config DWORD.
     // NOTE: Please do NOT create instances of this struct. Use the macros in file:CLRConfigValues.h instead.
     typedef struct ConfigDWORDInfo 
     {
-        LPCWSTR name;
+        LPCSTR name;
         DWORD defaultValue;
         LookupOptions options;
     } ConfigDWORDInfo;
@@ -79,7 +79,7 @@ public:
     // NOTE: Please do NOT create instances of this struct. Use the macros in file:CLRConfigValues.h instead.
     typedef struct ConfigStringInfo
     {
-        LPCWSTR name;
+        LPCSTR name;
         LookupOptions options;
     } ConfigStringInfo;
     
@@ -103,9 +103,9 @@ public:
     // moved over to CLRConfig yet. Once all accesses have been moved, these macros (and corresponding
     // instantiations in file:../utilcode/CLRConfig.cpp) should be removed.
     #define RETAIL_CONFIG_DWORD_INFO_DIRECT_ACCESS(symbol, name, description) \
-        static const LPCWSTR symbol;
+        static const LPCSTR symbol;
     #define RETAIL_CONFIG_STRING_INFO_DIRECT_ACCESS(symbol, name, description) \
-        static const LPCWSTR symbol;        
+        static const LPCSTR symbol;        
 
     // 
     // Debug versions of the macros
@@ -120,9 +120,9 @@ public:
     #define CONFIG_STRING_INFO_EX(symbol, name, description, lookupOptions) \
         static const ConfigStringInfo symbol;
     #define CONFIG_DWORD_INFO_DIRECT_ACCESS(symbol, name, description) \
-        static const LPCWSTR symbol;
+        static const LPCSTR symbol;
     #define CONFIG_STRING_INFO_DIRECT_ACCESS(symbol, name, description) \
-        static const LPCWSTR symbol;
+        static const LPCSTR symbol;
 #else
     #define CONFIG_DWORD_INFO(symbol, name, defaultValue, description) 
     #define CONFIG_DWORD_INFO_EX(symbol, name, defaultValue, description, lookupOptions) 
@@ -151,7 +151,7 @@ public:
     // Methods to do config value (DWORD and String) lookups.
     // 
 #ifdef FEATURE_WIN_DB_APPCOMPAT    
-    static HRESULT getQuirkEnabledAndValueFromWinDB(LPCWSTR wszQuirkName, BOOL* isEnabled, CPT_QUIRK_DATA* quirkData);
+    static HRESULT getQuirkEnabledAndValueFromWinDB(LPCSTR wszQuirkName, BOOL* isEnabled, CPT_QUIRK_DATA* quirkData);
 #endif
     static BOOL IsConfigEnabled(const ConfigDWORDInfo & info);
 
@@ -160,12 +160,12 @@ public:
     
     // Look up a string config value.
     // You own the string that's returned.
-    static LPWSTR GetConfigValue(const ConfigStringInfo & info);
+    static LPSTR GetConfigValue(const ConfigStringInfo & info);
     
     // Look up a string config value, passing it out through a pointer reference. Reports out of memory
     // errors (HRESULT E_OUTOFMEMORY). 
     // You own the string that's returned.
-    static HRESULT GetConfigValue(const ConfigStringInfo & info, __deref_out_z LPWSTR * outVal);
+    static HRESULT GetConfigValue(const ConfigStringInfo & info, __deref_out_z LPSTR * outVal);
 
     //
     // Check whether an option is specified (e.g. explicitly listed) in any of the CLRConfig
@@ -173,10 +173,10 @@ public:
     // The result is therefore a conservative approximation (some settings do not actually
     // take effect everywhere and no setting is valid both with and without COMPLUS_)
     //
-    static BOOL IsConfigOptionSpecified(LPCWSTR name);
+    static BOOL IsConfigOptionSpecified(LPCSTR name);
 
     // Free a string returned by GetConfigValue
-    static void   FreeConfigString(__in __in_z LPWSTR name);
+    static void   FreeConfigString(__in __in_z LPSTR name);
 
     // Register EEConfig's GetConfigValueCallback function so CLRConfig can look in config files. 
     static void RegisterGetConfigValueCallback(GetConfigValueFunction func);
@@ -229,7 +229,7 @@ private:
         return ((infoOptions & optionToCheck) == optionToCheck) ? TRUE : FALSE;
     }
 
-    static HRESULT TrimWhiteSpace(LPCWSTR wszOrig, __deref_out_z LPWSTR * pwszTrimmed);
+    static HRESULT TrimWhiteSpace(LPCSTR wszOrig, __deref_out_z LPSTR * pwszTrimmed);
 };
 
 inline CLRConfig::LookupOptions operator|(CLRConfig::LookupOptions lhs, CLRConfig::LookupOptions rhs)
@@ -237,6 +237,6 @@ inline CLRConfig::LookupOptions operator|(CLRConfig::LookupOptions lhs, CLRConfi
     return static_cast<CLRConfig::LookupOptions>(static_cast<DWORD>(lhs) | static_cast<DWORD>(rhs));
 }
 
-typedef Wrapper<LPWSTR, DoNothing, CLRConfig::FreeConfigString, NULL> CLRConfigStringHolder;
+typedef Wrapper<LPSTR, DoNothing, CLRConfig::FreeConfigString, NULL> CLRConfigStringHolder;
 
 #endif //__CLRConfig_h__

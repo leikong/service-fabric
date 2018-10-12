@@ -154,8 +154,8 @@ NTSTATUS FindDiskIdForDriveLetter(
     {
         CHAR systemDrive[32];
         ULONG result = ExpandEnvironmentStringsA("%SYSTEMDRIVE%", (LPSTR)systemDrive, 32);
-        VERIFY_ARE_NOT_EQUAL((ULONG)0, result, L"Failed to get systemdrive");
-        VERIFY_IS_TRUE(result <= 32, L"Failed to get systemdrive");
+        VERIFY_ARE_NOT_EQUAL((ULONG)0, result, "Failed to get systemdrive");
+        VERIFY_IS_TRUE(result <= 32, "Failed to get systemdrive");
 
         DriveLetter = systemDrive[0];
     }
@@ -164,14 +164,14 @@ NTSTATUS FindDiskIdForDriveLetter(
     status = KVolumeNamespace::QueryVolumeListEx(volInfo, *g_Allocator, sync);
     if (!K_ASYNC_SUCCESS(status))
     {
-        VERIFY_IS_TRUE(NT_SUCCESS(status) ? true : false, L"KVolumeNamespace::QueryVolumeListEx Failed");
+        VERIFY_IS_TRUE(NT_SUCCESS(status) ? true : false, "KVolumeNamespace::QueryVolumeListEx Failed");
         return status;
     }
     status = sync.WaitForCompletion();
 
     if (!NT_SUCCESS(status))
     {
-        VERIFY_IS_TRUE(NT_SUCCESS(status) ? true : false, L"KVolumeNamespace::QueryVolumeListEx Failed");
+        VERIFY_IS_TRUE(NT_SUCCESS(status) ? true : false, "KVolumeNamespace::QueryVolumeListEx Failed");
         return(status);
     }
 
@@ -473,7 +473,7 @@ NTSTATUS ExtendReservation(
     KSynchronizer sync;
 
     status = logStream->CreateAsyncReservationContext(reservationContext);
-    VERIFY_IS_TRUE(NT_SUCCESS(status) ? true : false, L"CreateAsyncReservationContext failed");
+    VERIFY_IS_TRUE(NT_SUCCESS(status) ? true : false, "CreateAsyncReservationContext failed");
 
     reservationContext->StartExtendReservation(ReservationSize,
                                                nullptr,
@@ -493,7 +493,7 @@ NTSTATUS ContractReservation(
     KSynchronizer sync;
 
     status = logStream->CreateAsyncReservationContext(reservationContext);
-    VERIFY_IS_TRUE(NT_SUCCESS(status) ? true : false, L"CreateAsyncReservationContext failed");
+    VERIFY_IS_TRUE(NT_SUCCESS(status) ? true : false, "CreateAsyncReservationContext failed");
 
     reservationContext->StartContractReservation(ReservationSize,
                                                nullptr,
@@ -670,7 +670,7 @@ CorruptedLCMBInfoTest(
     NTSTATUS status;
     ContainerCloseSynchronizer closeSync;
     KString::SPtr containerFullPathName;
-    KStringView containerName(L"\\??\\C:\\savelogs\\{438319b8-4f8f-45bd-a59b-1228faddb956}\\{84ac856c-320e-482b-b998-73c2b7432c9b}.LogContainer");
+    KStringView containerName("\\??\\C:\\savelogs\\{438319b8-4f8f-45bd-a59b-1228faddb956}\\{84ac856c-320e-482b-b998-73c2b7432c9b}.LogContainer");
     GUID nullGUID = { 0 };
     BOOLEAN b;
     KtlLogContainerId logContainerId = nullGUID;
@@ -715,7 +715,7 @@ CorruptedLCMBInfoTest(
     KString::SPtr containerPath;
     KString::SPtr containerFile;
     KString::SPtr containerFullPathName;
-    WCHAR drive[7];
+    CHAR drive[7];
     KWString fileName(*g_Allocator);
     KSynchronizer sync;
 
@@ -732,12 +732,12 @@ CorruptedLCMBInfoTest(
     VERIFY_IS_TRUE((containerFullPathName != nullptr) ? true : false);
 
 #if ! defined(PLATFORM_UNIX)    
-    drive[0] = L'\\';
-    drive[1] = L'?';
-    drive[2] = L'?';
-    drive[3] = L'\\';
-    drive[4] = (WCHAR)driveLetter;
-    drive[5] = L':';
+    drive[0] = '\\';
+    drive[1] = '?';
+    drive[2] = '?';
+    drive[3] = '\\';
+    drive[4] = (CHAR)driveLetter;
+    drive[5] = ':';
     drive[6] = 0;
 #else
     drive[0] = 0;
@@ -762,7 +762,7 @@ CorruptedLCMBInfoTest(
     b = containerPath->Concat(*directoryString, TRUE);
     VERIFY_IS_TRUE(b ? true : false);
 
-    KWString dirc(*g_Allocator, (WCHAR*)*containerPath);
+    KWString dirc(*g_Allocator, (CHAR*)*containerPath);
     VERIFY_IS_TRUE(NT_SUCCESS(dirc.Status()));
     status = KVolumeNamespace::DeleteFileOrDirectory(dirc,
                                                *g_Allocator,
@@ -780,7 +780,7 @@ CorruptedLCMBInfoTest(
     b = containerFile->FromGUID(logContainerGuid);
     VERIFY_IS_TRUE(b ? true : false);
 
-    b = containerFile->Concat(KStringView(L".LogContainer"));
+    b = containerFile->Concat(KStringView(".LogContainer"));
     VERIFY_IS_TRUE(b ? true : false);
 
     b = containerFullPathName->CopyFrom(*containerPath);
@@ -853,8 +853,8 @@ CorruptedLCMBInfoTest(
     {
         KBlockFile::SPtr blockfile;
 
-        fileName = (PWCHAR)(*containerFullPathName);
-        fileName += L":MBInfo";
+        fileName = (PCHAR)(*containerFullPathName);
+        fileName += ":MBInfo";
         VERIFY_IS_TRUE(NT_SUCCESS(fileName.Status()));
         
         status = KBlockFile::Create(fileName,
@@ -914,7 +914,7 @@ CorruptedLCMBInfoTest(
     // Delete the log container
     //
     {
-        fileName = (PWCHAR)(*containerFullPathName);
+        fileName = (PCHAR)(*containerFullPathName);
         VERIFY_IS_TRUE(NT_SUCCESS(fileName.Status()));
 
         status = KVolumeNamespace::DeleteFileOrDirectory(fileName, *g_Allocator, sync);
@@ -940,7 +940,7 @@ CreateStreamAndContainerPathnames(
     KString::SPtr containerFile;
     KString::SPtr streamPath;
     KString::SPtr streamFile;
-    WCHAR drive[7];
+    CHAR drive[7];
     KGuid logStreamGuid;
     KGuid logContainerGuid;
     BOOLEAN b;
@@ -974,12 +974,12 @@ CreateStreamAndContainerPathnames(
     //
     // Build up container and stream paths
     //
-    drive[0] = L'\\';
-    drive[1] = L'?';
-    drive[2] = L'?';
-    drive[3] = L'\\';
-    drive[4] = (WCHAR)DriveLetter;
-    drive[5] = L':';
+    drive[0] = '\\';
+    drive[1] = '?';
+    drive[2] = '?';
+    drive[3] = '\\';
+    drive[4] = (CHAR)DriveLetter;
+    drive[5] = ':';
     drive[6] = 0;
 #else
     drive[0] = 0;
@@ -990,10 +990,10 @@ CreateStreamAndContainerPathnames(
 
     b = containerPath->Concat(KStringView(KVolumeNamespace::PathSeparator), TRUE);
     VERIFY_IS_TRUE(b ? true : FALSE);
-    b = containerPath->Concat(KStringView(L"AlternateContainerPath"), TRUE);
+    b = containerPath->Concat(KStringView("AlternateContainerPath"), TRUE);
     VERIFY_IS_TRUE(b ? true : FALSE);
 
-    KWString dirc(*g_Allocator, (WCHAR*)*containerPath);
+    KWString dirc(*g_Allocator, (CHAR*)*containerPath);
     VERIFY_IS_TRUE(NT_SUCCESS(dirc.Status()));
     status = KVolumeNamespace::CreateDirectory(dirc,
         *g_Allocator,
@@ -1009,10 +1009,10 @@ CreateStreamAndContainerPathnames(
 
     b = streamPath->Concat(KStringView(KVolumeNamespace::PathSeparator), TRUE);
     VERIFY_IS_TRUE(b ? true : FALSE);
-    b = streamPath->Concat(KStringView(L"AlternateStreamPath"), TRUE);
+    b = streamPath->Concat(KStringView("AlternateStreamPath"), TRUE);
     VERIFY_IS_TRUE(b ? true : FALSE);
 
-    KWString dirs(*g_Allocator, (WCHAR*)*streamPath);
+    KWString dirs(*g_Allocator, (CHAR*)*streamPath);
     VERIFY_IS_TRUE(NT_SUCCESS(dirs.Status()));
     status = KVolumeNamespace::CreateDirectory(dirs,
         *g_Allocator,
@@ -1029,7 +1029,7 @@ CreateStreamAndContainerPathnames(
     b = containerFile->FromGUID(logContainerGuid);
     VERIFY_IS_TRUE(b ? true : FALSE);
 
-    b = containerFile->Concat(KStringView(L".LogContainer"));
+    b = containerFile->Concat(KStringView(".LogContainer"));
     VERIFY_IS_TRUE(b ? true : FALSE);
 
     b = containerFullPathName->CopyFrom(*containerPath);
@@ -1050,7 +1050,7 @@ CreateStreamAndContainerPathnames(
     b = streamFile->FromGUID(logStreamGuid);
     VERIFY_IS_TRUE(b ? true : FALSE);
 
-    b = streamFile->Concat(KStringView(L".LogStream"));
+    b = streamFile->Concat(KStringView(".LogStream"));
     VERIFY_IS_TRUE(b ? true : FALSE);
 
     b = streamFullPathName->CopyFrom(*streamPath);
@@ -1150,9 +1150,9 @@ ConfiguredMappedLogTest(
                               logStreamIdX
                               );
 
-    KWString pathMap(*g_Allocator, (PWCHAR)*containerNameMap);
-    KWString pathOther(*g_Allocator, (PWCHAR)*containerNameOther);
-    KWString pathOther2(*g_Allocator, (PWCHAR)*containerNameOther2);
+    KWString pathMap(*g_Allocator, (PCHAR)*containerNameMap);
+    KWString pathOther(*g_Allocator, (PCHAR)*containerNameOther);
+    KWString pathOther2(*g_Allocator, (PCHAR)*containerNameOther2);
     KBlockFile::SPtr file;
     KArray<KBlockFile::AllocatedRange> allocations(*g_Allocator);
     ULONGLONG fileLength;
@@ -1232,7 +1232,7 @@ ConfiguredMappedLogTest(
     //
     settings = (KtlLogManager::SharedLogContainerSettings*)inBuffer->GetBuffer();
     settings->DiskId = guidNull;
-    hr = StringCchCopy(settings->Path, sizeof(settings->Path) / sizeof(WCHAR), (LPCWSTR)(*containerNameMap));
+    hr = StringCchCopy(settings->Path, sizeof(settings->Path) / sizeof(CHAR), (LPCSTR)(*containerNameMap));
     VERIFY_IS_TRUE(SUCCEEDED(hr));
     settings->LogContainerId = logContainerIdMap;
     settings->LogSize = 1024 * 1024 * 1024;
@@ -1465,11 +1465,11 @@ SetConfigurationTest(
     ULONG result;
 
 #if !defined(PLATFORM_UNIX)                     
-        static const PWCHAR randomLogName = L"\\??\\c:\\abcde\\xyz.log";
-        static const PWCHAR badLogName = L"c:\\abcde\\xyz.log";
+        static const PCHAR randomLogName = "\\??\\c:\\abcde\\xyz.log";
+        static const PCHAR badLogName = "c:\\abcde\\xyz.log";
 #else
-        static const PWCHAR randomLogName = L"/abcde/xyz.log";
-        static const PWCHAR badLogName = L"\\fred";
+        static const PCHAR randomLogName = "/abcde/xyz.log";
+        static const PCHAR badLogName = "\\fred";
 #endif
     
     status = logManager->CreateAsyncConfigureContext(configureContext);
@@ -2264,7 +2264,7 @@ SetConfigurationTest(
     // Test 10: Positive - configure settings
     //
     {
-        hr = StringCchCopy(settings->Path, sizeof(settings->Path) / sizeof(WCHAR), randomLogName);
+        hr = StringCchCopy(settings->Path, sizeof(settings->Path) / sizeof(CHAR), randomLogName);
         VERIFY_IS_TRUE(SUCCEEDED(hr));
 
         KGuid randomGuid;
@@ -2311,7 +2311,7 @@ SetConfigurationTest(
     {
         configureContext->Reuse();
 
-        hr = StringCchCopy(settings->Path, sizeof(settings->Path) / sizeof(WCHAR), badLogName);
+        hr = StringCchCopy(settings->Path, sizeof(settings->Path) / sizeof(CHAR), badLogName);
         VERIFY_IS_TRUE(SUCCEEDED(hr));
 
         KGuid randomGuid;
@@ -2338,7 +2338,7 @@ SetConfigurationTest(
     // Test 13: LogSize < KtlLogManager::SharedLogContainerSettings::_DefaultLogSizeMin
     //
     {
-        hr = StringCchCopy(settings->Path, sizeof(settings->Path) / sizeof(WCHAR), randomLogName);
+        hr = StringCchCopy(settings->Path, sizeof(settings->Path) / sizeof(CHAR), randomLogName);
         VERIFY_IS_TRUE(SUCCEEDED(hr));
 
         KGuid randomGuid;
@@ -2393,7 +2393,7 @@ SetConfigurationTest(
     // Test 14: MaximumNumberStreams < KtlLogManager::SharedLogContainerSettings::_DefaultMaximumNumberStreamsMin
     //
     {
-        hr = StringCchCopy(settings->Path, sizeof(settings->Path) / sizeof(WCHAR), randomLogName);
+        hr = StringCchCopy(settings->Path, sizeof(settings->Path) / sizeof(CHAR), randomLogName);
         VERIFY_IS_TRUE(SUCCEEDED(hr));
 
         KGuid randomGuid;
@@ -2448,7 +2448,7 @@ SetConfigurationTest(
     // Test 15: MaximumNumberStreams > KtlLogManager::SharedLogContainerSettings::_DefaultMaximumNumberStreamsMa
     //
     {
-        hr = StringCchCopy(settings->Path, sizeof(settings->Path) / sizeof(WCHAR), randomLogName);
+        hr = StringCchCopy(settings->Path, sizeof(settings->Path) / sizeof(CHAR), randomLogName);
         VERIFY_IS_TRUE(SUCCEEDED(hr));
 
         KGuid randomGuid;
@@ -2503,7 +2503,7 @@ SetConfigurationTest(
     // Test 16: Negative - MaximumRecordSize != 0
     //
     {
-        hr = StringCchCopy(settings->Path, sizeof(settings->Path) / sizeof(WCHAR), randomLogName);
+        hr = StringCchCopy(settings->Path, sizeof(settings->Path) / sizeof(CHAR), randomLogName);
         VERIFY_IS_TRUE(SUCCEEDED(hr));
 
         KGuid randomGuid;
@@ -2546,7 +2546,7 @@ SetConfigurationTest(
     // Test 17:  (Flags != 0 ) && (Flags != KtlLogManager::FlagSparseFile)
     //
     {
-        hr = StringCchCopy(settings->Path, sizeof(settings->Path) / sizeof(WCHAR), randomLogName);
+        hr = StringCchCopy(settings->Path, sizeof(settings->Path) / sizeof(CHAR), randomLogName);
         VERIFY_IS_TRUE(SUCCEEDED(hr));
 
         KGuid randomGuid;
@@ -2601,7 +2601,7 @@ SetConfigurationTest(
     // Test 18:  (settings->DiskId != guidNull) && (*settings->Path != 0)
     //
     {
-        hr = StringCchCopy(settings->Path, sizeof(settings->Path) / sizeof(WCHAR), randomLogName);
+        hr = StringCchCopy(settings->Path, sizeof(settings->Path) / sizeof(CHAR), randomLogName);
         VERIFY_IS_TRUE(SUCCEEDED(hr));
 
         KGuid randomGuid;
@@ -2658,7 +2658,7 @@ SetConfigurationTest(
     // Test 19:  (settings->LogContainerId.Get() == guidNull) && (*settings->Path != 0)
     //
     {
-        hr = StringCchCopy(settings->Path, sizeof(settings->Path) / sizeof(WCHAR), randomLogName);
+        hr = StringCchCopy(settings->Path, sizeof(settings->Path) / sizeof(CHAR), randomLogName);
         VERIFY_IS_TRUE(SUCCEEDED(hr));
 
         KGuid randomGuid;
@@ -2982,14 +2982,14 @@ MissingStreamFileTest(
     KtlLogStreamId logStreamId2;
     KtlLogStreamId logStreamIdLong;
     ULONG metadataLength = 0x10000;
-    WCHAR drive[7];
+    CHAR drive[7];
     KString::SPtr containerPath;
     KString::SPtr containerFile;
     KString::SPtr containerFullPathName;
     KString::SPtr streamPath;
     KString::SPtr streamFile;
     KString::SPtr streamFullPathName;
-    WCHAR longString[KtlLogManager::MaxPathnameLengthInChar+3];
+    CHAR longString[KtlLogManager::MaxPathnameLengthInChar+3];
     BOOLEAN b;
 
     //
@@ -3021,7 +3021,7 @@ MissingStreamFileTest(
 
     for (ULONG i = 0; i < KtlLogManager::MaxPathnameLengthInChar+3; i++)
     {
-        longString[i] = L'x';
+        longString[i] = 'x';
     }
     longString[KtlLogManager::MaxPathnameLengthInChar+2] = 0;
 
@@ -3029,15 +3029,15 @@ MissingStreamFileTest(
     //
     // Build up container and stream paths
     //
-    drive[0] = L'\\';
-    drive[1] = L'?';
-    drive[2] = L'?';
-    drive[3] = L'\\';
-    drive[4] = (WCHAR)driveLetter;
-    drive[5] = L':';
+    drive[0] = '\\';
+    drive[1] = '?';
+    drive[2] = '?';
+    drive[3] = '\\';
+    drive[4] = (CHAR)driveLetter;
+    drive[5] = ':';
     drive[6] = 0;
 #else
-    drive[0] = L'/';
+    drive[0] = '/';
     drive[1] = 0;
 #endif
     
@@ -3054,13 +3054,13 @@ MissingStreamFileTest(
     b = directoryString->FromGUID(directoryGuid);
     VERIFY_IS_TRUE(b ? true : false);
 
-    b = containerPath->Concat(KStringView(L"\\"));
+    b = containerPath->Concat(KStringView("\\"));
     VERIFY_IS_TRUE(b ? true : false);
 
     b = containerPath->Concat(*directoryString, TRUE);
     VERIFY_IS_TRUE(b ? true : false);
 
-    KWString dirc(*g_Allocator, (WCHAR*)*containerPath);
+    KWString dirc(*g_Allocator, (CHAR*)*containerPath);
     VERIFY_IS_TRUE(NT_SUCCESS(dirc.Status()));
     status = KVolumeNamespace::DeleteFileOrDirectory(dirc,
                                                *g_Allocator,
@@ -3074,7 +3074,7 @@ MissingStreamFileTest(
     b = streamPath->CopyFrom(drive, TRUE);
     VERIFY_IS_TRUE(b ? true : false);
 
-    b = streamPath->Concat(KStringView(L"\\"));
+    b = streamPath->Concat(KStringView("\\"));
     VERIFY_IS_TRUE(b ? true : false);
 
     b = streamPath->Concat(*directoryString, TRUE);
@@ -3089,13 +3089,13 @@ MissingStreamFileTest(
     b = containerFile->FromGUID(logContainerGuid);
     VERIFY_IS_TRUE(b ? true : false);
 
-    b = containerFile->Concat(KStringView(L".LogContainer"));
+    b = containerFile->Concat(KStringView(".LogContainer"));
     VERIFY_IS_TRUE(b ? true : false);
 
     b = containerFullPathName->CopyFrom(*containerPath);
     VERIFY_IS_TRUE(b ? true : false);
 
-    b = containerFullPathName->Concat(KStringView(L"\\"));
+    b = containerFullPathName->Concat(KStringView("\\"));
     VERIFY_IS_TRUE(b ? true : false);
 
     b = containerFullPathName->Concat(*containerFile);
@@ -3111,13 +3111,13 @@ MissingStreamFileTest(
     b = streamFile->FromGUID(logStreamGuid);
     VERIFY_IS_TRUE(b ? true : false);
 
-    b = streamFile->Concat(KStringView(L".LogStream"));
+    b = streamFile->Concat(KStringView(".LogStream"));
     VERIFY_IS_TRUE(b ? true : false);
 
     b = streamFullPathName->CopyFrom(*streamPath);
     VERIFY_IS_TRUE(b ? true : false);
 
-    b = streamFullPathName->Concat(KStringView(L"\\"));
+    b = streamFullPathName->Concat(KStringView("\\"));
     VERIFY_IS_TRUE(b ? true : false);
 
     b = streamFullPathName->Concat(*streamFile);
@@ -3199,7 +3199,7 @@ MissingStreamFileTest(
                 b = streamFullPathNameX->CopyFrom(*streamPath);
                 VERIFY_IS_TRUE(b ? true : FALSE);
 
-                b = streamFullPathNameX->Concat(KStringView(L"\\"));
+                b = streamFullPathNameX->Concat(KStringView("\\"));
                 VERIFY_IS_TRUE(b ? true : FALSE);
 
                 b = streamNameX->FromGUID(logStreamXGuid);
@@ -3208,7 +3208,7 @@ MissingStreamFileTest(
                 b = streamFullPathNameX->Concat(*streamNameX);
                 VERIFY_IS_TRUE(b ? true : FALSE);
 
-                b = streamFullPathNameX->Concat(KStringView(L".XtraLogStream"));
+                b = streamFullPathNameX->Concat(KStringView(".XtraLogStream"));
                 VERIFY_IS_TRUE(b ? true : FALSE);
 
                 KString::CSPtr streamFullPathNameXConst = streamFullPathNameX.RawPtr();
@@ -3246,7 +3246,7 @@ MissingStreamFileTest(
     //
     // Delete the file backing one of the streams
     //
-    KWString s(*g_Allocator, (WCHAR*)*streamFullPathName);
+    KWString s(*g_Allocator, (CHAR*)*streamFullPathName);
     status = KVolumeNamespace::DeleteFileOrDirectory(s,
                                                *g_Allocator,
                                                sync,
@@ -3423,11 +3423,11 @@ PartialContainerCreateTest(
     KGuid logContainerGuid;
     KtlLogContainerId logContainerId;
 
-    WCHAR drive[7];
+    CHAR drive[7];
     KString::SPtr containerPath;
     KString::SPtr containerFile;
     KString::SPtr containerFullPathName;
-    WCHAR longString[KtlLogManager::MaxPathnameLengthInChar+3];
+    CHAR longString[KtlLogManager::MaxPathnameLengthInChar+3];
     BOOLEAN b;
 
     //
@@ -3448,7 +3448,7 @@ PartialContainerCreateTest(
 
     for (ULONG i = 0; i < KtlLogManager::MaxPathnameLengthInChar+3; i++)
     {
-        longString[i] = L'x';
+        longString[i] = 'x';
     }
     longString[KtlLogManager::MaxPathnameLengthInChar+2] = 0;
 
@@ -3456,12 +3456,12 @@ PartialContainerCreateTest(
     // Build up container and stream paths
     //
 #if ! defined(PLATFORM_UNIX)    
-    drive[0] = L'\\';
-    drive[1] = L'?';
-    drive[2] = L'?';
-    drive[3] = L'\\';
-    drive[4] = (WCHAR)driveLetter;
-    drive[5] = L':';
+    drive[0] = '\\';
+    drive[1] = '?';
+    drive[2] = '?';
+    drive[3] = '\\';
+    drive[4] = (CHAR)driveLetter;
+    drive[5] = ':';
     drive[6] = 0;
 #else
     drive[0] = 0;
@@ -3486,7 +3486,7 @@ PartialContainerCreateTest(
     b = containerPath->Concat(*directoryString, TRUE);
     VERIFY_IS_TRUE(b ? true : false);
 
-    KWString dirc(*g_Allocator, (WCHAR*)*containerPath);
+    KWString dirc(*g_Allocator, (CHAR*)*containerPath);
     VERIFY_IS_TRUE(NT_SUCCESS(dirc.Status()));
     status = KVolumeNamespace::DeleteFileOrDirectory(dirc,
                                                *g_Allocator,
@@ -3506,7 +3506,7 @@ PartialContainerCreateTest(
     b = containerFile->FromGUID(logContainerGuid);
     VERIFY_IS_TRUE(b ? true : false);
 
-    b = containerFile->Concat(KStringView(L".LogContainer"));
+    b = containerFile->Concat(KStringView(".LogContainer"));
     VERIFY_IS_TRUE(b ? true : false);
 
     b = containerFullPathName->CopyFrom(*containerPath);
@@ -3521,16 +3521,16 @@ PartialContainerCreateTest(
     //
     // Build some handy filenames
     //
-    KWString fileName(*g_Allocator, (WCHAR*)*containerFullPathName);
-    KWString mbinfoName(*g_Allocator, (WCHAR*)*containerFullPathName);
-    mbinfoName += L":MBInfo";
+    KWString fileName(*g_Allocator, (CHAR*)*containerFullPathName);
+    KWString mbinfoName(*g_Allocator, (CHAR*)*containerFullPathName);
+    mbinfoName += ":MBInfo";
     VERIFY_IS_TRUE(NT_SUCCESS(fileName.Status()));
     VERIFY_IS_TRUE(NT_SUCCESS(mbinfoName.Status()));
 
-    KWString fileNameTemp(*g_Allocator, (WCHAR*)*containerFullPathName);
-    fileNameTemp += L".temp";
-    KWString mbinfoNameTemp(*g_Allocator, (WCHAR*)fileNameTemp);
-    mbinfoNameTemp += L":MBInfo";
+    KWString fileNameTemp(*g_Allocator, (CHAR*)*containerFullPathName);
+    fileNameTemp += ".temp";
+    KWString mbinfoNameTemp(*g_Allocator, (CHAR*)fileNameTemp);
+    mbinfoNameTemp += ":MBInfo";
     VERIFY_IS_TRUE(NT_SUCCESS(fileName.Status()));
     VERIFY_IS_TRUE(NT_SUCCESS(mbinfoName.Status()));
     
@@ -3908,14 +3908,14 @@ ContainerWithPathTest(
     KtlLogStreamId logStreamId2;
     KtlLogStreamId logStreamIdLong;
     ULONG metadataLength = 0x10000;
-    WCHAR drive[7];
+    CHAR drive[7];
     KString::SPtr containerPath;
     KString::SPtr containerFile;
     KString::SPtr containerFullPathName;
     KString::SPtr streamPath;
     KString::SPtr streamFile;
     KString::SPtr streamFullPathName;
-    WCHAR longString[KtlLogManager::MaxPathnameLengthInChar+3];
+    CHAR longString[KtlLogManager::MaxPathnameLengthInChar+3];
     BOOLEAN b;
     ULONG len, lenLeft;
     GUID nullGUID = { 0 };
@@ -3950,7 +3950,7 @@ ContainerWithPathTest(
 
     for (ULONG i = 0; i < KtlLogManager::MaxPathnameLengthInChar+3; i++)
     {
-        longString[i] = L'x';
+        longString[i] = 'x';
     }
     longString[KtlLogManager::MaxPathnameLengthInChar+2] = 0;
 
@@ -3958,12 +3958,12 @@ ContainerWithPathTest(
     // Build up container and stream paths
     //
 #if ! defined(PLATFORM_UNIX)    
-    drive[0] = L'\\';
-    drive[1] = L'?';
-    drive[2] = L'?';
-    drive[3] = L'\\';
-    drive[4] = (WCHAR)driveLetter;
-    drive[5] = L':';
+    drive[0] = '\\';
+    drive[1] = '?';
+    drive[2] = '?';
+    drive[3] = '\\';
+    drive[4] = (CHAR)driveLetter;
+    drive[5] = ':';
     drive[6] = 0;
 #else
     drive[0] = 0;
@@ -3988,7 +3988,7 @@ ContainerWithPathTest(
     b = containerPath->Concat(*directoryString, TRUE);
     VERIFY_IS_TRUE(b ? true : false);
 
-    KWString dirc(*g_Allocator, (WCHAR*)*containerPath);
+    KWString dirc(*g_Allocator, (CHAR*)*containerPath);
     VERIFY_IS_TRUE(NT_SUCCESS(dirc.Status()));
     status = KVolumeNamespace::DeleteFileOrDirectory(dirc,
                                                *g_Allocator,
@@ -4017,7 +4017,7 @@ ContainerWithPathTest(
     b = containerFile->FromGUID(logContainerGuid);
     VERIFY_IS_TRUE(b ? true : false);
 
-    b = containerFile->Concat(KStringView(L".LogContainer"));
+    b = containerFile->Concat(KStringView(".LogContainer"));
     VERIFY_IS_TRUE(b ? true : false);
 
     b = containerFullPathName->CopyFrom(*containerPath);
@@ -4035,7 +4035,7 @@ ContainerWithPathTest(
     longString[lenLeft] = 0;
     b = containerFullPathName->Concat(KStringView(longString));
     VERIFY_IS_TRUE(b ? true : false);
-    longString[lenLeft] = L'x';
+    longString[lenLeft] = 'x';
 
     status = CreateLogContainerByFilename(logContainer, logManager, logContainerId, containerFullPathName);
     VERIFY_IS_TRUE(status == STATUS_INVALID_PARAMETER);
@@ -4049,7 +4049,7 @@ ContainerWithPathTest(
     b = containerFile->FromGUID(logContainerGuid);
     VERIFY_IS_TRUE(b ? true : false);
 
-    b = containerFile->Concat(KStringView(L".LogContainer"));
+    b = containerFile->Concat(KStringView(".LogContainer"));
     VERIFY_IS_TRUE(b ? true : false);
 
     b = containerFullPathName->CopyFrom(*containerPath);
@@ -4071,7 +4071,7 @@ ContainerWithPathTest(
     b = streamFile->FromGUID(logStreamGuid);
     VERIFY_IS_TRUE(b ? true : false);
 
-    b = streamFile->Concat(KStringView(L".LogStream"));
+    b = streamFile->Concat(KStringView(".LogStream"));
     VERIFY_IS_TRUE(b ? true : false);
 
     b = streamFullPathName->CopyFrom(*streamPath);
@@ -4153,7 +4153,7 @@ ContainerWithPathTest(
 
             b = streamLongPathName->Concat(KStringView(longString));
             VERIFY_IS_TRUE(b ? true : FALSE);
-            longString[lenLeft] = L'x';
+            longString[lenLeft] = 'x';
             
             KString::CSPtr streamLongPathNameConst = streamLongPathName.RawPtr();
 
@@ -4238,7 +4238,7 @@ ContainerWithPathTest(
                 b = streamFullPathNameX->Concat(*streamNameX);
                 VERIFY_IS_TRUE(b ? true : FALSE);
 
-                b = streamFullPathNameX->Concat(KStringView(L".XtraLogStream"));
+                b = streamFullPathNameX->Concat(KStringView(".XtraLogStream"));
                 VERIFY_IS_TRUE(b ? true : FALSE);
                 
                 KString::CSPtr streamFullPathNameXConst = streamFullPathNameX.RawPtr();
@@ -4499,9 +4499,9 @@ ContainerWithPathTest(
         KString::SPtr containerPath2;
         KString::SPtr streamPath2;
         KString::SPtr guidString;
-        KStringView prefix(L"\\??\\Volume");
-        KStringView prefixGlobal(L"\\Global??\\Volume");
-        KStringView volume(L"Volume");
+        KStringView prefix("\\??\\Volume");
+        KStringView prefixGlobal("\\Global??\\Volume");
+        KStringView volume("Volume");
         GUID volumeGuid;
 
         //
@@ -4511,14 +4511,14 @@ ContainerWithPathTest(
         status = KVolumeNamespace::QueryVolumeListEx(volInfo, *g_Allocator, sync);
         if (!K_ASYNC_SUCCESS(status))
         {
-            VERIFY_IS_TRUE(NT_SUCCESS(status) ? true : false, L"KVolumeNamespace::QueryVolumeListEx Failed");
+            VERIFY_IS_TRUE(NT_SUCCESS(status) ? true : false, "KVolumeNamespace::QueryVolumeListEx Failed");
             return;
         }
         status = sync.WaitForCompletion();
 
         if (!NT_SUCCESS(status))
         {
-            VERIFY_IS_TRUE(NT_SUCCESS(status) ? true : false, L"KVolumeNamespace::QueryVolumeListEx Failed");
+            VERIFY_IS_TRUE(NT_SUCCESS(status) ? true : false, "KVolumeNamespace::QueryVolumeListEx Failed");
             return;
         }
 
@@ -4566,13 +4566,13 @@ ContainerWithPathTest(
         b = containerPath2->Concat(*guidString);
         VERIFY_IS_TRUE(b ? true : false);
 
-        b = containerPath2->Concat(KStringView(L"\\"), TRUE);
+        b = containerPath2->Concat(KStringView("\\"), TRUE);
         VERIFY_IS_TRUE(b ? true : false);
 
-        b = containerPath2->Concat(KStringView(L"AlternateContainerPath"), TRUE);
+        b = containerPath2->Concat(KStringView("AlternateContainerPath"), TRUE);
         VERIFY_IS_TRUE(b ? true : false);
 
-        b = containerPath2->Concat(KStringView(L"\\"), TRUE);
+        b = containerPath2->Concat(KStringView("\\"), TRUE);
         VERIFY_IS_TRUE(b ? true : false);
 
         b = guidString->FromGUID(logContainerGuid);
@@ -4581,7 +4581,7 @@ ContainerWithPathTest(
         b = containerPath2->Concat(*guidString);
         VERIFY_IS_TRUE(b ? true : false);
 
-        b = containerPath2->Concat(KStringView(L".LogContainer"), TRUE);
+        b = containerPath2->Concat(KStringView(".LogContainer"), TRUE);
         VERIFY_IS_TRUE(b ? true : false);
 
         //
@@ -4620,13 +4620,13 @@ ContainerWithPathTest(
         b = streamPath2->Concat(*guidString);
         VERIFY_IS_TRUE(b ? true : false);
 
-        b = streamPath2->Concat(KStringView(L"\\"), TRUE);
+        b = streamPath2->Concat(KStringView("\\"), TRUE);
         VERIFY_IS_TRUE(b ? true : false);
 
-        b = streamPath2->Concat(KStringView(L"AlternateStreamPath"), TRUE);
+        b = streamPath2->Concat(KStringView("AlternateStreamPath"), TRUE);
         VERIFY_IS_TRUE(b ? true : false);
 
-        b = streamPath2->Concat(KStringView(L"\\"), TRUE);
+        b = streamPath2->Concat(KStringView("\\"), TRUE);
         VERIFY_IS_TRUE(b ? true : false);
 
         b = guidString->FromGUID(logStreamGuid);
@@ -4635,7 +4635,7 @@ ContainerWithPathTest(
         b = streamPath2->Concat(*guidString);
         VERIFY_IS_TRUE(b ? true : false);
 
-        b = streamPath2->Concat(KStringView(L".LogStream"), TRUE);
+        b = streamPath2->Concat(KStringView(".LogStream"), TRUE);
         VERIFY_IS_TRUE(b ? true : false);
         
         KString::CSPtr streamPathConst = streamPath2.RawPtr();
@@ -4690,13 +4690,13 @@ ContainerWithPathTest(
         b = containerPath2->Concat(*guidString);
         VERIFY_IS_TRUE(b ? true : false);
 
-        b = containerPath2->Concat(KStringView(L"\\"), TRUE);
+        b = containerPath2->Concat(KStringView("\\"), TRUE);
         VERIFY_IS_TRUE(b ? true : false);
 
-        b = containerPath2->Concat(KStringView(L"AlternateContainerPath"), TRUE);
+        b = containerPath2->Concat(KStringView("AlternateContainerPath"), TRUE);
         VERIFY_IS_TRUE(b ? true : false);
 
-        b = containerPath2->Concat(KStringView(L"\\"), TRUE);
+        b = containerPath2->Concat(KStringView("\\"), TRUE);
         VERIFY_IS_TRUE(b ? true : false);
 
         b = guidString->FromGUID(logContainerGuid);
@@ -4705,7 +4705,7 @@ ContainerWithPathTest(
         b = containerPath2->Concat(*guidString);
         VERIFY_IS_TRUE(b ? true : false);
 
-        b = containerPath2->Concat(KStringView(L".LogContainer"), TRUE);
+        b = containerPath2->Concat(KStringView(".LogContainer"), TRUE);
         VERIFY_IS_TRUE(b ? true : false);
 
 
@@ -4785,7 +4785,7 @@ ContainerWithPathTest(
         b = containerPath->CopyFrom(drive, TRUE);
         VERIFY_IS_TRUE(b ? true : false);
 
-        wchar_t const* dirName = &RvdDiskLogConstants::DirectoryName();
+        char const* dirName = &RvdDiskLogConstants::DirectoryName();
         b = containerPath->Concat(KStringView(dirName), TRUE);
         VERIFY_IS_TRUE(b ? true : false);
 
@@ -4795,7 +4795,7 @@ ContainerWithPathTest(
         b = containerPath->Concat(*guidString);
         VERIFY_IS_TRUE(b ? true : false);
 
-        b = containerPath->Concat(KStringView(L".LogContainer"), TRUE);
+        b = containerPath->Concat(KStringView(".LogContainer"), TRUE);
         VERIFY_IS_TRUE(b ? true : false);
 
         //
@@ -7116,7 +7116,7 @@ AliasTest(
     logStreamGuid.CreateNew();
     logStreamId = static_cast<KtlLogStreamId>(logStreamGuid);
 
-    KString::SPtr persistedAlias = KString::Create(L"PersistedAliasIsInMyHead",
+    KString::SPtr persistedAlias = KString::Create("PersistedAliasIsInMyHead",
                                    *g_Allocator);
     KString::CSPtr persistedAliasConst = persistedAlias.RawPtr();
                                    
@@ -7216,7 +7216,7 @@ AliasTest(
             KGuid logStreamGuid2;
             logStreamGuid2.CreateNew();
             logStreamId2 = static_cast<KtlLogStreamId>(logStreamGuid2);
-            KString::SPtr aliasTooLong = KString::Create(L"01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789",
+            KString::SPtr aliasTooLong = KString::Create("01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789",
                                                    *g_Allocator);
             KAssert(aliasTooLong != nullptr);
             KString::CSPtr aliasTooLongConst = aliasTooLong.RawPtr();
@@ -7247,7 +7247,7 @@ AliasTest(
             KtlLogContainer::AsyncRemoveAliasContext::SPtr removeAsync;
             KtlLogStreamId resolvedLogStreamId;
 
-            KString::SPtr string = KString::Create(L"AliasIsInMyHead",
+            KString::SPtr string = KString::Create("AliasIsInMyHead",
                                                    *g_Allocator);
             KAssert(string != nullptr);
             
@@ -7299,7 +7299,7 @@ AliasTest(
             //
             // Use max name length string
             //
-            KString::SPtr aliasMaxLength = KString::Create(L"01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567",
+            KString::SPtr aliasMaxLength = KString::Create("01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567",
                                                    *g_Allocator);
             KAssert(aliasMaxLength != nullptr);
             
@@ -7330,7 +7330,7 @@ AliasTest(
             //
             // try with a name too long
             //
-            KString::SPtr aliasTooLong = KString::Create(L"01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789",
+            KString::SPtr aliasTooLong = KString::Create("01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789",
                                                    *g_Allocator);
             KAssert(aliasTooLong != nullptr);
             
@@ -7348,7 +7348,7 @@ AliasTest(
             //
             // Remove a non existant alias
             //
-            KString::SPtr aliasDontExist = KString::Create(L"ThisAliasDoesntExist",
+            KString::SPtr aliasDontExist = KString::Create("ThisAliasDoesntExist",
                                                    *g_Allocator);
             KAssert(aliasTooLong != nullptr);
             
@@ -7459,7 +7459,7 @@ AliasTest(
         //
         // Verify removed alias is gone
         //
-        KString::SPtr string = KString::Create(L"AliasIsInMyHead",
+        KString::SPtr string = KString::Create("AliasIsInMyHead",
                                                *g_Allocator);
         KAssert(string != nullptr);
         
@@ -7491,7 +7491,7 @@ AliasTest(
             logStreamGuid2.CreateNew();
             logStreamId2 = static_cast<KtlLogStreamId>(logStreamGuid2);
 
-            KString::SPtr aliasName = KString::Create(L"AliasName",
+            KString::SPtr aliasName = KString::Create("AliasName",
                                                    *g_Allocator);
             KAssert(aliasName != nullptr);
             
@@ -9153,7 +9153,7 @@ VerifyTrimmedCorrectly(
     //
     KBlockFile::SPtr file;
     KArray<KBlockFile::AllocatedRange> allocations(*g_Allocator);
-    KWString path(*g_Allocator, (PWCHAR)*streamName);
+    KWString path(*g_Allocator, (PCHAR)*streamName);
     ULONGLONG fileLength;
 
     status = KBlockFile::CreateSparseFile(path, TRUE, KBlockFile::eOpenExisting, file, sync, NULL, *g_Allocator);
@@ -9956,7 +9956,7 @@ WriteTruncateAndRecoverTest(
         PUCHAR buffer;
         PVOID p;
         KBlockFile::SPtr file;
-        KWString streamNameString(*g_Allocator, (PWCHAR)*streamName);
+        KWString streamNameString(*g_Allocator, (PCHAR)*streamName);
 
         status = KIoBuffer::CreateSimple(512 * 1024, zeroIoBuffer, p, *g_Allocator);
         VERIFY_IS_TRUE(NT_SUCCESS(status));
@@ -10207,7 +10207,7 @@ WriteTruncateAndRecoverTest(
         PUCHAR buffer;
         PVOID p;
         KBlockFile::SPtr file;
-        KWString streamNameString(*g_Allocator, (PWCHAR)*streamName);
+        KWString streamNameString(*g_Allocator, (PCHAR)*streamName);
 
         status = KIoBuffer::CreateSimple(512 * 1024, zeroIoBuffer, p, *g_Allocator);
         VERIFY_IS_TRUE(NT_SUCCESS(status));
@@ -10381,7 +10381,7 @@ WriteTruncateAndRecoverTest(
 
             KBlockFile::SPtr file;
             KArray<KBlockFile::AllocatedRange> allocations(*g_Allocator);
-            KWString path(*g_Allocator, (PWCHAR)*streamName);
+            KWString path(*g_Allocator, (PCHAR)*streamName);
             ULONGLONG fileLength;
 
             status = KBlockFile::CreateSparseFile(path, TRUE, KBlockFile::eOpenExisting, file, sync, NULL, *g_Allocator);
@@ -11756,7 +11756,7 @@ ReservationsTest(
         //
         {
             ULONGLONG reservationSpace = logStream->QueryReservationSpace();
-            VERIFY_IS_TRUE(reservationSpace == 0, L"Expect initial reservation space to be 0");
+            VERIFY_IS_TRUE(reservationSpace == 0, "Expect initial reservation space to be 0");
         }
 
         //
@@ -11772,10 +11772,10 @@ ReservationsTest(
                                  0x1000,       // block size
                                  0x1000);      // reservation
             VERIFY_IS_TRUE(status == K_STATUS_LOG_RESERVE_TOO_SMALL,
-                           L"Expect failure when trying to use reservation space that is not held");
+                           "Expect failure when trying to use reservation space that is not held");
 
             ULONGLONG reservationSpace = logStream->QueryReservationSpace();
-            VERIFY_IS_TRUE(reservationSpace == 0, L"Expect reservation space to be 0");
+            VERIFY_IS_TRUE(reservationSpace == 0, "Expect reservation space to be 0");
         }
 
         //
@@ -11785,7 +11785,7 @@ ReservationsTest(
         {
             status = ExtendReservation(logStream,
                                        0x800);
-            VERIFY_IS_TRUE(NT_SUCCESS(status) ? true : false, L"ExtendReservation to 0x800 failed");
+            VERIFY_IS_TRUE(NT_SUCCESS(status) ? true : false, "ExtendReservation to 0x800 failed");
 
             asn = 2;
             status = WriteRecord(logStream,
@@ -11795,10 +11795,10 @@ ReservationsTest(
                                  0x1000,       // block size
                                  0x1000);      // reservation
             VERIFY_IS_TRUE(status == K_STATUS_LOG_RESERVE_TOO_SMALL,
-                           L"Expect failure when trying to use reservation space that is not held");
+                           "Expect failure when trying to use reservation space that is not held");
 
             ULONGLONG reservationSpace = logStream->QueryReservationSpace();
-            VERIFY_IS_TRUE(reservationSpace == 0x800, L"Expect reservation space to be 0x800");
+            VERIFY_IS_TRUE(reservationSpace == 0x800, "Expect reservation space to be 0x800");
         }
 
         //
@@ -11808,7 +11808,7 @@ ReservationsTest(
         {
             status = ExtendReservation(logStream,
                                        0x800);
-            VERIFY_IS_TRUE(NT_SUCCESS(status) ? true : false, L"Expect ExtendReservation to 0x1000 to pass");
+            VERIFY_IS_TRUE(NT_SUCCESS(status) ? true : false, "Expect ExtendReservation to 0x1000 to pass");
 
             asn = 3;
             status = WriteRecord(logStream,
@@ -11818,10 +11818,10 @@ ReservationsTest(
                                  0x1000,       // block size
                                  0x1000);      // reservation
             VERIFY_IS_TRUE(NT_SUCCESS(status) ? true : false,
-                           L"Expect succcess when trying to use reservation space that is held");
+                           "Expect succcess when trying to use reservation space that is held");
 
             ULONGLONG reservationSpace = logStream->QueryReservationSpace();
-            VERIFY_IS_TRUE(reservationSpace == 0, L"Expect reservation space to be 0");
+            VERIFY_IS_TRUE(reservationSpace == 0, "Expect reservation space to be 0");
         }
 
         //
@@ -11834,10 +11834,10 @@ ReservationsTest(
                 status = ExtendReservation(logStream,
                                            0x10);
                 VERIFY_IS_TRUE(NT_SUCCESS(status) ? true : false,
-                               L"Expect ExtendReservation to succeed");
+                               "Expect ExtendReservation to succeed");
 
                 ULONGLONG reservationSpace = logStream->QueryReservationSpace();
-                VERIFY_IS_TRUE(reservationSpace == (i + 0x10), L"Expect reservation space");
+                VERIFY_IS_TRUE(reservationSpace == (i + 0x10), "Expect reservation space");
             }
 
             asn = 4;
@@ -11848,10 +11848,10 @@ ReservationsTest(
                                  0x1000,       // block size
                                  0x1000);      // reservation
             VERIFY_IS_TRUE(status == K_STATUS_LOG_RESERVE_TOO_SMALL ? true : false,
-                           L"Expect failure when trying to use reservation space that is not held");
+                           "Expect failure when trying to use reservation space that is not held");
 
             ULONGLONG reservationSpace = logStream->QueryReservationSpace();
-            VERIFY_IS_TRUE(reservationSpace == 0x800, L"Expect reservation space to be 0x800");
+            VERIFY_IS_TRUE(reservationSpace == 0x800, "Expect reservation space to be 0x800");
         }
 
         //
@@ -11862,20 +11862,20 @@ ReservationsTest(
             status = ExtendReservation(logStream,
                                        0x1000);
             VERIFY_IS_TRUE(NT_SUCCESS(status) ? true : false,
-                           L"ExtendReservation 0x1000");
+                           "ExtendReservation 0x1000");
 
             ULONGLONG reservationSpace = logStream->QueryReservationSpace();
-            VERIFY_IS_TRUE(reservationSpace == 0x1800, L"Expect reservation space");
+            VERIFY_IS_TRUE(reservationSpace == 0x1800, "Expect reservation space");
 
             for (ULONG i = 0; i < 0x800; i = i + 0x10)
             {
                 status = ContractReservation(logStream,
                                              0x10);
                 VERIFY_IS_TRUE(NT_SUCCESS(status) ? true : false,
-                               L"ExtendReservation");
+                               "ExtendReservation");
 
                 reservationSpace = logStream->QueryReservationSpace();
-                VERIFY_IS_TRUE(reservationSpace == (0x1800 - (i + 0x10)), L"Expect reservation space");
+                VERIFY_IS_TRUE(reservationSpace == (0x1800 - (i + 0x10)), "Expect reservation space");
             }
 
             asn = 5;
@@ -11886,10 +11886,10 @@ ReservationsTest(
                                  0x1000,       // block size
                                  0x1000);      // reservation
             VERIFY_IS_TRUE(NT_SUCCESS(status) ? true : false,
-                           L"Expect success when trying to use reservation space that is held");
+                           "Expect success when trying to use reservation space that is held");
 
             reservationSpace = logStream->QueryReservationSpace();
-            VERIFY_IS_TRUE(reservationSpace == 0, L"Expect reservation space to be 0");
+            VERIFY_IS_TRUE(reservationSpace == 0, "Expect reservation space to be 0");
         }
 
         //
@@ -11900,18 +11900,18 @@ ReservationsTest(
             status = ExtendReservation(logStream,
                                        0x1000);
             VERIFY_IS_TRUE(NT_SUCCESS(status) ? true : false,
-                           L"ExtendReservation 0x1000");
+                           "ExtendReservation 0x1000");
 
             ULONGLONG reservationSpace = logStream->QueryReservationSpace();
-            VERIFY_IS_TRUE(reservationSpace == 0x1000, L"Expect reservation space");
+            VERIFY_IS_TRUE(reservationSpace == 0x1000, "Expect reservation space");
 
             status = ContractReservation(logStream,
                                          0x2000);
             VERIFY_IS_TRUE(status == K_STATUS_LOG_RESERVE_TOO_SMALL ? true : false,
-                           L"Expect ContractReservation 0x2000 should fail");
+                           "Expect ContractReservation 0x2000 should fail");
 
             reservationSpace = logStream->QueryReservationSpace();
-            VERIFY_IS_TRUE(reservationSpace == 0x1000, L"Expect reservation space 0x1000");
+            VERIFY_IS_TRUE(reservationSpace == 0x1000, "Expect reservation space 0x1000");
         }
 
         //
@@ -11928,18 +11928,18 @@ ReservationsTest(
                                  0x1000,       // block size
                                  0x2000);      // reservation
             VERIFY_IS_TRUE(status == K_STATUS_LOG_RESERVE_TOO_SMALL ? true : false,
-                           L"Expect failure when trying to use reservation space that is not held");
+                           "Expect failure when trying to use reservation space that is not held");
 
             ULONGLONG reservationSpace = logStream->QueryReservationSpace();
-            VERIFY_IS_TRUE(reservationSpace == 0x1000, L"Expect reservation space to be 0x1000");
+            VERIFY_IS_TRUE(reservationSpace == 0x1000, "Expect reservation space to be 0x1000");
 
             status = ContractReservation(logStream,
                                          0x1000);
             VERIFY_IS_TRUE(NT_SUCCESS(status) ? true : false,
-                           L"ContractReservation 0x1000 should succeed");
+                           "ContractReservation 0x1000 should succeed");
 
             reservationSpace = logStream->QueryReservationSpace();
-            VERIFY_IS_TRUE(reservationSpace == 0, L"Expect reservation space 0");
+            VERIFY_IS_TRUE(reservationSpace == 0, "Expect reservation space 0");
         }
 
         //
@@ -11959,19 +11959,19 @@ ReservationsTest(
                                      0);      // reservation
 
                 if (! ((status == STATUS_LOG_FULL) || NT_SUCCESS(status))) VERIFY_IS_TRUE((status == STATUS_LOG_FULL) || NT_SUCCESS(status) ? true : false,
-                               L"Fill log");
+                               "Fill log");
 
             } while (NT_SUCCESS(status));
 
-            VERIFY_IS_TRUE(status == STATUS_LOG_FULL ? true : false, L"Log file should be full");
+            VERIFY_IS_TRUE(status == STATUS_LOG_FULL ? true : false, "Log file should be full");
 
             status = ExtendReservation(logStream,
                                        0x200000);     // has 0x2038000 Free now
             VERIFY_IS_TRUE(status == STATUS_LOG_FULL ? true : false,
-                           L"Expect ExtendReservation to 0x200000 should fail on full log");
+                           "Expect ExtendReservation to 0x200000 should fail on full log");
 
             ULONGLONG reservationSpace = logStream->QueryReservationSpace();
-            VERIFY_IS_TRUE(reservationSpace == 0, L"Expect reservation space 0");
+            VERIFY_IS_TRUE(reservationSpace == 0, "Expect reservation space 0");
 
 
             //
@@ -11985,7 +11985,7 @@ ReservationsTest(
             status = TruncateStream(logStream,
                                     asn.Get()-10);
             VERIFY_IS_TRUE(NT_SUCCESS(status) ? true : false,
-                           L"Truncate should succeed");
+                           "Truncate should succeed");
 
             //
             // Wait to ensure truncation occurs
@@ -12001,10 +12001,10 @@ ReservationsTest(
             status = ExtendReservation(logStream,
                                        0x200000);
             VERIFY_IS_TRUE(NT_SUCCESS(status) ? true : false,
-                           L"ExtendReservation 0x200000");
+                           "ExtendReservation 0x200000");
 
             ULONGLONG reservationSpace = logStream->QueryReservationSpace();
-            VERIFY_IS_TRUE(reservationSpace == 0x200000, L"Expect reservation space 0x20000");
+            VERIFY_IS_TRUE(reservationSpace == 0x200000, "Expect reservation space 0x20000");
 
             ULONG i = 90000;
             do
@@ -12017,11 +12017,11 @@ ReservationsTest(
                                      0x10000,       // block size
                                      0);      // reservation
                 VERIFY_IS_TRUE((status == STATUS_LOG_FULL) || NT_SUCCESS(status) ? true : false,
-                               L"Fill log");
+                               "Fill log");
 
             } while (NT_SUCCESS(status));
 
-            VERIFY_IS_TRUE(status == STATUS_LOG_FULL ? true : false, L"Log file should be full");
+            VERIFY_IS_TRUE(status == STATUS_LOG_FULL ? true : false, "Log file should be full");
 
             asn = 100000;
             status = WriteRecord(logStream,
@@ -12031,10 +12031,10 @@ ReservationsTest(
                                  0x20000,       // block size
                                  0x200000);      // reservation
             VERIFY_IS_TRUE(NT_SUCCESS(status) ? true : false,
-                           L"Expect reserved write to succeed on full log");
+                           "Expect reserved write to succeed on full log");
 
             reservationSpace = logStream->QueryReservationSpace();
-            VERIFY_IS_TRUE(reservationSpace == 0, L"Expect reservation space 0");
+            VERIFY_IS_TRUE(reservationSpace == 0, "Expect reservation space 0");
         }
 
         logStream->StartClose(NULL,
@@ -12516,7 +12516,7 @@ CloseTestVerifyContainerClosed(
         logStreamGuid.CreateNew();
         logStreamId = static_cast<KtlLogStreamId>(logStreamGuid);
 
-        KString::SPtr string = KString::Create(L"AliasIsInMyHead",
+        KString::SPtr string = KString::Create("AliasIsInMyHead",
                                                *g_Allocator);
         VERIFY_IS_TRUE(string ? TRUE : FALSE);
         
@@ -12653,7 +12653,7 @@ CloseTestVerifyContainerOpened(
         logStreamGuid.CreateNew();
         logStreamId = static_cast<KtlLogStreamId>(logStreamGuid);
 
-        KString::SPtr string = KString::Create(L"AliasIsInMyHead",
+        KString::SPtr string = KString::Create("AliasIsInMyHead",
                                                *g_Allocator);
         VERIFY_IS_TRUE(string ? TRUE : FALSE);
         
@@ -13209,7 +13209,7 @@ Close2Test(
         KtlLogStreamId logStreamId;
         KtlLogStreamId resolvedLogStreamId;
 
-        KString::SPtr string = KString::Create(L"AliasIsInMyHead",
+        KString::SPtr string = KString::Create("AliasIsInMyHead",
                                                *g_Allocator);
         VERIFY_IS_TRUE((string != nullptr) ? true : false);
         
@@ -13964,7 +13964,7 @@ ThresholdTest(
                                          0x10000,       // block size
                                          0);      // reservation
                     VERIFY_IS_TRUE((status == STATUS_LOG_FULL) || NT_SUCCESS(status) ? true : false,
-                                   L"Fill log");
+                                   "Fill log");
 
                     if (status == STATUS_LOG_FULL)
                     {
@@ -14009,7 +14009,7 @@ ThresholdTest(
 
             } while (NT_SUCCESS(status));
 
-            VERIFY_IS_TRUE(status == STATUS_LOG_FULL ? true : false, L"Log file should be full");
+            VERIFY_IS_TRUE(status == STATUS_LOG_FULL ? true : false, "Log file should be full");
 
             for (; thresholdIndex < 50; thresholdIndex++)
             {
@@ -19495,11 +19495,11 @@ VOID DeleteAllContainersOnDisk(
     KWString rootPath(*g_Allocator);
 
 #if ! defined(PLATFORM_UNIX)
-    rootPath = L"\\Global??\\Volume";
+    rootPath = "\\Global??\\Volume";
     rootPath += diskId;
-    rootPath += L"\\RvdLog";
+    rootPath += "\\RvdLog";
 #else
-    rootPath = L"/RvdLog";
+    rootPath = "/RvdLog";
 #endif
     VERIFY_IS_TRUE(NT_SUCCESS(rootPath.Status()));
 
@@ -19910,14 +19910,14 @@ DeletedDedicatedLogTest(
     // Now deleted the dedicated log for the unlucky logStream2
     //
 #if !defined(PLATFORM_UNIX) 
-    KWString rootPath(*g_Allocator, L"\\Global??\\Volume");
+    KWString rootPath(*g_Allocator, "\\Global??\\Volume");
     rootPath += diskId;
-    rootPath += L"\\RvdLog\\Log";
+    rootPath += "\\RvdLog\\Log";
 #else
-    KWString rootPath(*g_Allocator, L"/RvdLog/Log");
+    KWString rootPath(*g_Allocator, "/RvdLog/Log");
 #endif
     rootPath += logStreamGuid2;
-    rootPath += L".log";
+    rootPath += ".log";
     VERIFY_IS_TRUE(NT_SUCCESS(rootPath.Status()));
 
     status = KVolumeNamespace::DeleteFileOrDirectory(rootPath, *g_Allocator, sync);
@@ -20285,7 +20285,7 @@ DLogReservationTest(
             ULONGLONG throughput = (bytesWritten / ( (endTime - startTime) / 1000)) / 0x400;
 
 #if !defined(PLATFORM_UNIX)
-            LOG_OUTPUT(L"Aggregate throughput: %ld KB/sec", throughput);
+            LOG_OUTPUT("Aggregate throughput: %ld KB/sec", throughput);
 #endif
 
             VERIFY_IS_TRUE(status == STATUS_LOG_FULL);
@@ -20670,7 +20670,7 @@ OpenSpecificStreamTest(
     NTSTATUS status;
 
     KGuid logContainerGuid1(0x01cf395e,0xde32,0xc53e,0x08,0x07,0x06,0x05,0x04,0x03,0x02,0x01);
-    KString::SPtr logContainerPath1 = KString::Create(L"\\??\\C:\\ProgramData\\Windows Fabric\\Public5\\Fabric\\work\\Applications\\StateManagerTestServiceApplication_App0\\work\\Shared_d3566658-153a-4c04-b7b8-d91a3c0c5e0d_01cf395e-de32-c53e-0807-060504030201.log", *g_Allocator, TRUE);
+    KString::SPtr logContainerPath1 = KString::Create("\\??\\C:\\ProgramData\\Windows Fabric\\Public5\\Fabric\\work\\Applications\\StateManagerTestServiceApplication_App0\\work\\Shared_d3566658-153a-4c04-b7b8-d91a3c0c5e0d_01cf395e-de32-c53e-0807-060504030201.log", *g_Allocator, TRUE);
 
     KString::SPtr logContainerPath;
     KtlLogContainerId logContainerId;
@@ -21379,7 +21379,7 @@ VOID CreateLogContainerWithBadPathTest(
     ContainerCloseSynchronizer closeContainerSync;
     KString::SPtr containerPath;
     BOOLEAN b;
-    WCHAR drive[7];
+    CHAR drive[7];
 
     //
     // Create a log manager and then try to create a container with a
@@ -21411,18 +21411,18 @@ VOID CreateLogContainerWithBadPathTest(
     //
     // Build up container and stream paths
     //
-    drive[0] = L'\\';
-    drive[1] = L'?';
-    drive[2] = L'?';
-    drive[3] = L'\\';
-    drive[4] = (WCHAR)driveLetter;
+    drive[0] = '\\';
+    drive[1] = '?';
+    drive[2] = '?';
+    drive[3] = '\\';
+    drive[4] = (CHAR)driveLetter;
     drive[5] = 0;
     drive[6] = 0;
 
     b = containerPath->CopyFrom(drive, TRUE);
     VERIFY_IS_TRUE(b ? true : FALSE);
 
-    b = containerPath->Concat(KStringView(L"\\PathThatShouldNotExist\\Filename.log"), TRUE);
+    b = containerPath->Concat(KStringView("\\PathThatShouldNotExist\\Filename.log"), TRUE);
     VERIFY_IS_TRUE(b ? true : FALSE);
     
     KtlLogManager::AsyncCreateLogContainer::SPtr createContainerAsync;
@@ -22908,7 +22908,7 @@ protected:
                 }
 
                 KString::SPtr alias;
-                Status = KString::Create(alias, *g_Allocator, L"foo");
+                Status = KString::Create(alias, *g_Allocator, "foo");
                 if (!NT_SUCCESS(Status))
                 {
                     KTraceFailedAsyncRequest(Status, this, _State, 0);

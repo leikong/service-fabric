@@ -56,7 +56,7 @@ Return Value:
 typedef VOID
 (WINAPI *LEASING_APPLICATION_LEASE_ESTABLISHED_CALLBACK)(
     __in HANDLE Lease,
-    __in LPCWSTR RemoteLeasingApplicationIdentifier,
+    __in LPCSTR RemoteLeasingApplicationIdentifier,
     __in PVOID Context
     );
 
@@ -81,7 +81,7 @@ Return Value:
 --*/
 typedef VOID
 (WINAPI *REMOTE_LEASING_APPLICATION_EXPIRED_CALLBACK)(
-    __in LPCWSTR RemoteLeasingApplicationIdentifier,
+    __in LPCSTR RemoteLeasingApplicationIdentifier,
     __in PVOID Context
     );
 
@@ -136,7 +136,7 @@ typedef VOID
     __in LONGLONG monitorLeaseInstance,
     __in LONGLONG subjectLeaseInstance,
     __in LONG remoteArbitrationDurationUpperBound,
-    __in LPCWSTR RemoteLeasingApplicationIdentifier,
+    __in LPCSTR RemoteLeasingApplicationIdentifier,
     __in PVOID context
     );
 
@@ -174,8 +174,8 @@ typedef VOID
 typedef VOID
 (WINAPI *HEALTH_REPORT_CALLBACK)(
     __in int reportCode,
-    __in LPCWSTR dynamicProperty,
-    __in LPCWSTR extraDescription,
+    __in LPCSTR dynamicProperty,
+    __in LPCSTR extraDescription,
     __in PVOID Context
     );
 
@@ -218,7 +218,7 @@ Return Value:
 HANDLE WINAPI 
 RegisterLeasingApplication(
     __in PTRANSPORT_LISTEN_ENDPOINT SocketAddress,
-    __in LPCWSTR LeasingApplicationIdentifier,
+    __in LPCSTR LeasingApplicationIdentifier,
     __in PLEASE_CONFIG_DURATIONS leaseConfigDurations,
     __in LONG LeaseSuspendDurationMilliseconds,
     __in LONG ArbitrationDurationMilliseconds,
@@ -238,7 +238,7 @@ RegisterLeasingApplication(
 HANDLE WINAPI 
 RegisterLeasingApplication(
     __in PTRANSPORT_LISTEN_ENDPOINT SocketAddress,
-    __in LPCWSTR LeasingApplicationIdentifier,
+    __in LPCSTR LeasingApplicationIdentifier,
     __in PLEASE_CONFIG_DURATIONS leaseConfigDurations,
     __in LONG LeaseSuspendDurationMilliseconds,
     __in LONG ArbitrationDurationMilliseconds,
@@ -246,7 +246,7 @@ RegisterLeasingApplication(
     __in LONG StartOfLeaseRetry,
     __in LONG SecurityType,
     __in_bcount(SHA1_LENGTH) PBYTE CertHash,
-    __in LPCWSTR CertHashStoreName,
+    __in LPCSTR CertHashStoreName,
     __in LONG SessionExpirationTimeoutMilliseconds,
     __in LONG LeasingApplicationExpiryTimeoutMilliseconds,
     __in LEASING_APPLICATION_EXPIRED_CALLBACK LeasingApplicationExpired,
@@ -315,7 +315,7 @@ __success(return != NULL)
 HANDLE WINAPI 
 EstablishLease(
     __in HANDLE LeasingApplication,
-    __in LPCWSTR RemoteApplicationIdentifier,
+    __in LPCSTR RemoteApplicationIdentifier,
     __in PTRANSPORT_LISTEN_ENDPOINT RemoteSocketAddress,
     __in LONGLONG RemoteLeaseAgentInstance,
     __in LEASE_DURATION_TYPE LeaseDurationType,
@@ -342,7 +342,7 @@ BOOL WINAPI
 TerminateLease(
     __in HANDLE LeasingApplication,
     __in HANDLE Lease,
-    __in LPCWSTR RemoteApplicationIdentifier
+    __in LPCSTR RemoteApplicationIdentifier
     );
  
 /*++
@@ -401,7 +401,7 @@ __success(return == TRUE)
 BOOL WINAPI
 GetRemoteLeaseExpirationTime(
     __in HANDLE LeasingApplication,
-    __in LPCWSTR RemoteApplicationIdentifier,
+    __in LPCSTR RemoteApplicationIdentifier,
     __out PLONG MonitorExpireTTL,
     __out PLONG SubjectExpireTTL
     );
@@ -554,7 +554,7 @@ BOOL WINAPI
 UpdateCertificate(
     __in HANDLE LeasingApplication,
     __in_bcount(SHA1_LENGTH) PBYTE CertHash,
-    __in LPCWSTR CertHashStoreName
+    __in LPCSTR CertHashStoreName
     );
 #endif
 
@@ -600,7 +600,7 @@ BlockLeaseConnection(
 
 BOOL WINAPI
 ClearTransportBehavior(
-__in std::wstring Alias
+__in std::string Alias
 );
 
 BOOL WINAPI
@@ -610,7 +610,7 @@ __in BOOL FromAny,
 __in PTRANSPORT_LISTEN_ENDPOINT RemoteSocketAddress,
 __in BOOL ToAny,
 __in LEASE_BLOCKING_ACTION_TYPE BlockingType,
-__in std::wstring Alias
+__in std::string Alias
 );
 
 /*++
@@ -638,7 +638,7 @@ addLeaseBehavior(
     __in PTRANSPORT_LISTEN_ENDPOINT RemoteSocketAddress,
     __in BOOL ToAny,
     __in LEASE_BLOCKING_ACTION_TYPE BlockingType,
-    __in std::wstring Alias
+    __in std::string Alias
 );
 
 /*++
@@ -656,7 +656,7 @@ Return Value:
 --*/
 BOOL WINAPI
 removeLeaseBehavior(
-    __in std::wstring Alias
+    __in std::string Alias
 );
 
 /*++

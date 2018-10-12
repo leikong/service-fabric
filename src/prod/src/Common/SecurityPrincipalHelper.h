@@ -11,33 +11,33 @@ namespace Common
     {
     public:
 
-        static Common::ErrorCode AddMemberToLocalGroup(std::wstring const & parentGroupAccountName, std::wstring const & memberToAddAccountName);
-        static Common::ErrorCode RemoveMemberFromLocalGroup(std::wstring const & parentGroupAccountName, std::wstring const & memberToAddAccountName);
-        static Common::ErrorCode SetLocalGroupMembers(std::wstring const & parentGroupAccountName, std::vector<PSID> const & membersToSet);
+        static Common::ErrorCode AddMemberToLocalGroup(std::string const & parentGroupAccountName, std::string const & memberToAddAccountName);
+        static Common::ErrorCode RemoveMemberFromLocalGroup(std::string const & parentGroupAccountName, std::string const & memberToAddAccountName);
+        static Common::ErrorCode SetLocalGroupMembers(std::string const & parentGroupAccountName, std::vector<PSID> const & membersToSet);
 
-        static Common::ErrorCode CreateUserAccount(std::wstring const & accountName, std::wstring const & password, std::wstring const & comment);
-        static Common::ErrorCode CreateGroupAccount(std::wstring const & groupName, std::wstring const & comment);
+        static Common::ErrorCode CreateUserAccount(std::string const & accountName, std::string const & password, std::string const & comment);
+        static Common::ErrorCode CreateGroupAccount(std::string const & groupName, std::string const & comment);
 
-        static Common::ErrorCode DeleteUserProfile(std::wstring const & accountName, Common::SidSPtr const& sid = Common::SidSPtr());
-        static Common::ErrorCode DeleteUserAccount(std::wstring const & accountName);
-        static Common::ErrorCode DeleteUserAccountIgnoreDeleteProfileError(std::wstring const & accountName, Common::SidSPtr const& sid = Common::SidSPtr());
+        static Common::ErrorCode DeleteUserProfile(std::string const & accountName, Common::SidSPtr const& sid = Common::SidSPtr());
+        static Common::ErrorCode DeleteUserAccount(std::string const & accountName);
+        static Common::ErrorCode DeleteUserAccountIgnoreDeleteProfileError(std::string const & accountName, Common::SidSPtr const& sid = Common::SidSPtr());
 
-        static Common::ErrorCode DeleteGroupAccount(std::wstring const & groupName);
+        static Common::ErrorCode DeleteGroupAccount(std::string const & groupName);
 
-        static Common::ErrorCode DeleteUsersWithCommentPrefix(std::wstring const & commentPrefix);
-        static Common::ErrorCode DeleteGroupWithCommentPrefix(std::wstring const & commentPrefix);
+        static Common::ErrorCode DeleteUsersWithCommentPrefix(std::string const & commentPrefix);
+        static Common::ErrorCode DeleteGroupWithCommentPrefix(std::string const & commentPrefix);
 
-        static Common::ErrorCode GetMembership(std::wstring const & accountName, __out std::vector<std::wstring> & memberOf);
-        static Common::ErrorCode GetMembers(std::wstring const & accountName, __out std::vector<std::wstring> & members);
+        static Common::ErrorCode GetMembership(std::string const & accountName, __out std::vector<std::string> & memberOf);
+        static Common::ErrorCode GetMembers(std::string const & accountName, __out std::vector<std::string> & members);
 
-        static Common::ErrorCode GetGroupComment(std::wstring const & accountName, __out std::wstring & comment);
-        static Common::ErrorCode GetUserComment(std::wstring const & accountName, __out std::wstring & comment);
+        static Common::ErrorCode GetGroupComment(std::string const & accountName, __out std::string & comment);
+        static Common::ErrorCode GetUserComment(std::string const & accountName, __out std::string & comment);
 
-        static Common::ErrorCode UpdateGroupComment(std::wstring const & accountName, std::wstring const& comment);
-        static Common::ErrorCode UpdateUserComment(std::wstring const & accountName, std::wstring const& comment);
+        static Common::ErrorCode UpdateGroupComment(std::string const & accountName, std::string const& comment);
+        static Common::ErrorCode UpdateUserComment(std::string const & accountName, std::string const& comment);
 
-        static std::wstring GetMembershipString(std::vector<std::wstring> const& membership);
+        static std::string GetMembershipString(std::vector<std::string> const& membership);
 
-        static Common::ErrorCode AcquireMutex(std::wstring const& mutexName, __out Common::MutexHandleUPtr & mutex);
+        static Common::ErrorCode AcquireMutex(std::string const& mutexName, __out Common::MutexHandleUPtr & mutex);
     };
 }

@@ -13,7 +13,7 @@ namespace Common
         DENY_COPY(JobQueue);
 
     public:
-        JobQueue(std::wstring const & name, R & root, bool forceEnqueue = false, int maxThreads = 0, JobQueuePerfCountersSPtr perfCounters = nullptr, uint64 maxQueueSize = UINT64_MAX, DequePolicy dequePolicy = DequePolicy::FifoLifo)
+        JobQueue(std::string const & name, R & root, bool forceEnqueue = false, int maxThreads = 0, JobQueuePerfCountersSPtr perfCounters = nullptr, uint64 maxQueueSize = UINT64_MAX, DequePolicy dequePolicy = DequePolicy::FifoLifo)
             :   name_(name),
                 root_(root),
                 maxThreads_(maxThreads),
@@ -156,7 +156,7 @@ namespace Common
             isClosed_ = true;
             if (activeThreads_ == 0)
             {
-                CompleteClose(L"Close()");
+                CompleteClose("Close()");
             }
             else
             {
@@ -205,7 +205,7 @@ namespace Common
 
             if (completeClose)
             {
-                CompleteClose(L"CancelReserve()");
+                CompleteClose("CancelReserve()");
             }
         }
 
@@ -246,7 +246,7 @@ namespace Common
 
             if (completeClose)
             {
-                CompleteClose(L"CompleteAsyncJob()");
+                CompleteClose("CompleteAsyncJob()");
             }
         }
 
@@ -293,8 +293,8 @@ namespace Common
             return !isSync;
         }
 
-        __declspec (property(get=get_Name)) std::wstring const & Name;
-        std::wstring const & get_Name() { return name_; }
+        __declspec (property(get=get_Name)) std::string const & Name;
+        std::string const & get_Name() { return name_; }
 
         __declspec (property(get=get_HighestThreads)) int Test_HighestActiveThreads;
         int get_HighestThreads() { return highestActiveThreads_; }
@@ -472,7 +472,7 @@ namespace Common
 
             if (completeClose)
             {
-                CompleteClose(L"Process()");
+                CompleteClose("Process()");
             }
         }
         
@@ -678,7 +678,7 @@ namespace Common
             });
         }
 
-        void CompleteClose(wstring const & caller)
+        void CompleteClose(string const & caller)
         {
             Trace.WriteInfo("JobQueue", name_, "Root reset during {0}", caller);
 
@@ -703,7 +703,7 @@ namespace Common
         bool throttled_;
         // If enabled, traces information about queue state at the time of enqueue. Disabled by default.
         bool extraTracingEnabled_;
-        std::wstring name_;
+        std::string name_;
         JobQueuePerfCountersSPtr perfCounters_;
         uint64 maxQueueSize_;
         RWLOCK(JobQueue, lock_);
@@ -923,7 +923,7 @@ namespace Common
     class CommonJobQueue : public JobQueue<std::unique_ptr<JobItem<R>>, R>
     {
     public:
-        CommonJobQueue(std::wstring const & name, R & root, bool forceEnqueue = false, int maxThreads = 0, JobQueuePerfCountersSPtr perfCounters = nullptr, uint64 queueSize = UINT64_MAX, DequePolicy dequePolicy = DequePolicy::FifoLifo)
+        CommonJobQueue(std::string const & name, R & root, bool forceEnqueue = false, int maxThreads = 0, JobQueuePerfCountersSPtr perfCounters = nullptr, uint64 queueSize = UINT64_MAX, DequePolicy dequePolicy = DequePolicy::FifoLifo)
             : JobQueue<std::unique_ptr<JobItem<R>>, R>(name, root, forceEnqueue, maxThreads, perfCounters, queueSize, dequePolicy)
         {
         }
@@ -933,7 +933,7 @@ namespace Common
     class CommonTimedJobQueue : public JobQueue<std::unique_ptr<CommonTimedJobItem<R>>, R>
     {
     public:
-        CommonTimedJobQueue(std::wstring const & name, R & root, bool forceEnqueue = false, int maxThreads = 0, JobQueuePerfCountersSPtr perfCounters = nullptr, uint64 queueSize = UINT64_MAX, DequePolicy dequePolicy = DequePolicy::FifoLifo)
+        CommonTimedJobQueue(std::string const & name, R & root, bool forceEnqueue = false, int maxThreads = 0, JobQueuePerfCountersSPtr perfCounters = nullptr, uint64 queueSize = UINT64_MAX, DequePolicy dequePolicy = DequePolicy::FifoLifo)
             : JobQueue<std::unique_ptr<CommonTimedJobItem<R>>, R>(name, root, forceEnqueue, maxThreads, perfCounters, queueSize, dequePolicy)
         {
         }
@@ -943,7 +943,7 @@ namespace Common
     class DefaultJobQueue : public JobQueue<DefaultJobItem<R>, R>
     {
     public:
-        DefaultJobQueue(std::wstring const & name, R & root, bool forceEnqueue = false, int maxThreads = 0, JobQueuePerfCountersSPtr perfCounters = nullptr, uint64 queueSize = UINT64_MAX, DequePolicy dequePolicy = DequePolicy::FifoLifo)
+        DefaultJobQueue(std::string const & name, R & root, bool forceEnqueue = false, int maxThreads = 0, JobQueuePerfCountersSPtr perfCounters = nullptr, uint64 queueSize = UINT64_MAX, DequePolicy dequePolicy = DequePolicy::FifoLifo)
             : JobQueue<DefaultJobItem<R>, R>(name, root, forceEnqueue, maxThreads, perfCounters, queueSize, dequePolicy)
         {
         }
@@ -953,7 +953,7 @@ namespace Common
     class DefaultTimedJobQueue : public JobQueue<std::unique_ptr<DefaultTimedJobItem<R>>, R>
     {
     public:
-        DefaultTimedJobQueue(std::wstring const & name, R & root, bool forceEnqueue = false, int maxThreads = 0, JobQueuePerfCountersSPtr perfCounters = nullptr, uint64 queueSize = UINT64_MAX, DequePolicy dequePolicy = DequePolicy::FifoLifo)
+        DefaultTimedJobQueue(std::string const & name, R & root, bool forceEnqueue = false, int maxThreads = 0, JobQueuePerfCountersSPtr perfCounters = nullptr, uint64 queueSize = UINT64_MAX, DequePolicy dequePolicy = DequePolicy::FifoLifo)
             : JobQueue<std::unique_ptr<DefaultTimedJobItem<R>>, R>(name, root, forceEnqueue, maxThreads, perfCounters, queueSize, dequePolicy)
         {
         }

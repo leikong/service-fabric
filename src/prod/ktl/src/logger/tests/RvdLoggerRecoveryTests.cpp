@@ -747,7 +747,7 @@ public:
 //      Test10: Prove recovered (empty) streams can be written to, closed, and recovered
 //
 NTSTATUS
-BasicLogRecoveryTests(WCHAR OnDrive, KAllocator& Allocator)
+BasicLogRecoveryTests(CHAR OnDrive, KAllocator& Allocator)
 {
     static GUID const   testLogIdGuid = {3, 0, 0, {0, 0, 0, 0, 0, 0, 0, 3}};
     static GUID const   testStreamTypeGuid = {4, 0, 0, {0, 0, 0, 0, 0, 0, 0, 2}};
@@ -855,7 +855,7 @@ BasicLogRecoveryTests(WCHAR OnDrive, KAllocator& Allocator)
     {
         RvdLog::SPtr            log;
 
-        KWString logType(KtlSystem::GlobalNonPagedAllocator(), L"RvdLog");
+        KWString logType(KtlSystem::GlobalNonPagedAllocator(), "RvdLog");
         KInvariant(NT_SUCCESS(logType.Status()));
     
         createLogOp->StartCreateLog(
@@ -975,7 +975,7 @@ BasicLogRecoveryTests(WCHAR OnDrive, KAllocator& Allocator)
     {
         RvdLog::SPtr                            log;
 
-        KWString logType(KtlSystem::GlobalNonPagedAllocator(), L"RvdLog");
+        KWString logType(KtlSystem::GlobalNonPagedAllocator(), "RvdLog");
         KInvariant(NT_SUCCESS(logType.Status()));
     
         createLogOp->StartCreateLog(
@@ -1329,7 +1329,7 @@ BasicLogRecoveryTests(WCHAR OnDrive, KAllocator& Allocator)
     {
         RvdLog::SPtr            log;
 
-        KWString logType(KtlSystem::GlobalNonPagedAllocator(), L"RvdLog");
+        KWString logType(KtlSystem::GlobalNonPagedAllocator(), "RvdLog");
         KInvariant(NT_SUCCESS(logType.Status()));
     
         createLogOp->StartCreateLog(
@@ -2012,7 +2012,7 @@ BasicLogRecoveryTests(WCHAR OnDrive, KAllocator& Allocator)
 //      Test4: Delete remaining streams from Test3; prove log recovered down to max free space
 //
 NTSTATUS
-LogFullRecoveryTests(WCHAR OnDrive, KAllocator& Allocator)
+LogFullRecoveryTests(CHAR OnDrive, KAllocator& Allocator)
 {
     static GUID const   testLogIdGuid = {3, 0, 0, {0, 0, 0, 0, 0, 0, 0, 3}};
     static GUID const   testStreamTypeGuid = {4, 0, 0, {0, 0, 0, 0, 0, 0, 0, 2}};
@@ -2094,7 +2094,7 @@ LogFullRecoveryTests(WCHAR OnDrive, KAllocator& Allocator)
 
         RvdLog::SPtr            log;
 
-        KWString logType(KtlSystem::GlobalNonPagedAllocator(), L"RvdLog");
+        KWString logType(KtlSystem::GlobalNonPagedAllocator(), "RvdLog");
         KInvariant(NT_SUCCESS(logType.Status()));
     
         createLogOp->StartCreateLog(
@@ -2952,7 +2952,7 @@ LogFullRecoveryTests(WCHAR OnDrive, KAllocator& Allocator)
 //
 NTSTATUS
 ExtendedRecoveryTests(
-    WCHAR OnDrive,
+    CHAR OnDrive,
     KAllocator& Allocator,
     ULONG DurationInSecs,
     ULONG RandomSeed = 0)
@@ -3040,7 +3040,7 @@ ExtendedRecoveryTests(
 
         RvdLog::SPtr            log;
 
-        KWString logType(KtlSystem::GlobalNonPagedAllocator(), L"RvdLog");
+        KWString logType(KtlSystem::GlobalNonPagedAllocator(), "RvdLog");
         KInvariant(NT_SUCCESS(logType.Status()));
     
         createLogOp->StartCreateLog(
@@ -3478,7 +3478,7 @@ ExtendedRecoveryTests(
 //* Test that generates multi-segment stream checkpoint records and proves their recovery
 NTSTATUS
 LogLargeCheckpointRecoveryTest(
-    WCHAR OnDrive,
+    CHAR OnDrive,
     KAllocator& Allocator)
 {
     static GUID const   testLogIdGuid = {3, 0, 0, {0, 0, 0, 0, 0, 0, 0, 3}};
@@ -3564,7 +3564,7 @@ LogLargeCheckpointRecoveryTest(
         RvdLogStreamId          testStreamId(testStreamIdGuid);
 
         {
-            KWString logType(KtlSystem::GlobalNonPagedAllocator(), L"RvdLog");
+            KWString logType(KtlSystem::GlobalNonPagedAllocator(), "RvdLog");
             KInvariant(NT_SUCCESS(logType.Status()));
 
             createLogOp->StartCreateLog(
@@ -3804,7 +3804,7 @@ LogLargeCheckpointRecoveryTest(
 //
 NTSTATUS
 DoFailureInjectedRecoveryTest(
-    WCHAR OnDrive,
+    CHAR OnDrive,
     KAllocator& Allocator)
 {
     static GUID const           testLogIdGuid = {3, 0, 0, {0, 0, 0, 0, 0, 0, 0, 3}};
@@ -3883,7 +3883,7 @@ DoFailureInjectedRecoveryTest(
                 return status;
             }
 
-            KWString logType(KtlSystem::GlobalNonPagedAllocator(), L"RvdLog");
+            KWString logType(KtlSystem::GlobalNonPagedAllocator(), "RvdLog");
             KInvariant(NT_SUCCESS(logType.Status()));
     
             createLogOp->StartCreateLog(
@@ -4454,7 +4454,7 @@ DoFailureInjectedRecoveryTest(
 //* Temp recovery
 NTSTATUS
 DoRecovery(
-    WCHAR OnDrive,
+    CHAR OnDrive,
     KAllocator& Allocator)
 {
 //    ULONG const         MaxRecordIoBlks = 50;   // Delme
@@ -4540,7 +4540,7 @@ DoRecovery(
 
 //** Main Test Entry Point: RvdLoggerRecoveryTests
 NTSTATUS
-RvdLoggerRecoveryTests(__in int argc, __in_ecount(argc) WCHAR* args[])
+RvdLoggerRecoveryTests(__in int argc, __in_ecount(argc) CHAR* args[])
 {
     KDbgPrintf("RvdLoggerRecoveryTests: Starting\n");
 

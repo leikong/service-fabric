@@ -45,12 +45,12 @@ namespace Common
         }
         else
         {
-            wstringstream portString;
+            stringstream portString;
             portString << port_;
             
             uri = Uri(
                 scheme_,
-                host_ + L":" + portString.str(),
+                host_ + ":" + portString.str(),
                 path_,
                 query_,
                 fragment_);

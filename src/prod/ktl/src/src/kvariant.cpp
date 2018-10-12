@@ -410,7 +410,7 @@ KVariant::_Construct(
                 return Res;
             }
 
-            KStringView Overlay(PWCHAR(Tmp->GetBuffer()), Size);
+            KStringView Overlay(PCHAR(Tmp->GetBuffer()), Size);
             Overlay.SetNullTerminator();
             Target._Type = Type_KIMutableDomNode_SPtr;
             Target.GetSPtr() =  reinterpret_cast<KSharedUntyped::SPtr&>(Tmp);
@@ -419,22 +419,22 @@ KVariant::_Construct(
 
         case Type_BOOLEAN:
         {
-            if (Src.CompareNoCase(KStringView(L"TRUE")) == 0)
+            if (Src.CompareNoCase(KStringView("TRUE")) == 0)
             {
                 Target = BOOLEAN(TRUE);
                 return STATUS_SUCCESS;
             }
-            else if (Src.CompareNoCase(KStringView(L"FALSE")) == 0)
+            else if (Src.CompareNoCase(KStringView("FALSE")) == 0)
             {
                 Target = BOOLEAN(FALSE);
                 return STATUS_SUCCESS;
             }
-            else if (Src.Compare(KStringView(L"1")) == 0)
+            else if (Src.Compare(KStringView("1")) == 0)
             {
                 Target = BOOLEAN(TRUE);
                 return STATUS_SUCCESS;
             }
-            else if (Src.Compare(KStringView(L"0")) == 0)
+            else if (Src.Compare(KStringView("0")) == 0)
             {
                 Target = BOOLEAN(FALSE);
                 return STATUS_SUCCESS;
@@ -467,7 +467,7 @@ KVariant::ToString(
     {
         case Type_ERROR:
         {
-            KString::SPtr Tmp = KString::Create(L"!ERROR!", Allocator, TRUE);
+            KString::SPtr Tmp = KString::Create("!ERROR!", Allocator, TRUE);
             if (!Tmp)
             {
                 _Value._Status = STATUS_INSUFFICIENT_RESOURCES;
@@ -554,11 +554,11 @@ KVariant::ToString(
             }
             if (_Value._BOOLEAN_Val == TRUE)
             {
-                Tmp->CopyFrom(KStringView(L"TRUE"));
+                Tmp->CopyFrom(KStringView("TRUE"));
             }
             else
             {
-                Tmp->CopyFrom(KStringView(L"FALSE"));
+                Tmp->CopyFrom(KStringView("FALSE"));
             }
             Tmp->SetNullTerminator();
             Stringized = Tmp;
@@ -981,7 +981,7 @@ KVariant::Convert(
         return FALSE;
     }
 
-    KStringView Overlay(PWCHAR(Buffer->GetBuffer()), Size/2);
+    KStringView Overlay(PCHAR(Buffer->GetBuffer()), Size/2);
     Overlay.CopyFrom(*Tmp);
 
     if (IncludeNull)

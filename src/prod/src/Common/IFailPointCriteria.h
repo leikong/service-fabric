@@ -11,6 +11,6 @@ namespace Common
     {
     public:
         virtual bool Match(FailPointContext & context) =0; 
-        virtual std::wstring ToString()=0;
+        virtual std::string ToString()=0;
     };
 }

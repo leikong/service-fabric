@@ -16,7 +16,7 @@ static const Global<ThumbprintSet> emptyThumbprintSet = make_global<ThumbprintSe
 SecurityContextSsl::SecurityContextSsl(
     IConnectionSPtr const & connection,
     TransportSecuritySPtr const & transportSecurity,
-    wstring const & targetName,
+    string const & targetName,
     ListenInstance localListenInstance)
     : SecurityContext(connection, transportSecurity, targetName, localListenInstance)
 {
@@ -93,7 +93,7 @@ bool SecurityContextSsl::ShouldPerformClaimsRetrieval() const
     return (transportSecurity_->ClaimsRetrievalHandlerFunc() != nullptr && transportSecurity_->SecurityProvider != SecurityProvider::Ssl);
 }
 
-void SecurityContextSsl::CompleteClaimsRetrieval(ErrorCode const & error, std::wstring const & claimsToken)
+void SecurityContextSsl::CompleteClaimsRetrieval(ErrorCode const & error, std::string const & claimsToken)
 {
     auto owner = connection_.lock();
     if (!owner)
@@ -275,8 +275,8 @@ SECURITY_STATUS SecurityContextSsl::OnNegotiateSecurityContext(
             SecurityConfig::GetConfig().SlowApiThreshold,
             TraceType,
             id_,
-            L"AcceptSecurityContext",
-            [] (const wchar_t* api, TimeSpan duration, TimeSpan threshold) { ReportSecurityApiSlow(api, duration, threshold); });
+            "AcceptSecurityContext",
+            [] (const char* api, TimeSpan duration, TimeSpan threshold) { ReportSecurityApiSlow(api, duration, threshold); });
     }
     else
     {
@@ -302,8 +302,8 @@ SECURITY_STATUS SecurityContextSsl::OnNegotiateSecurityContext(
             SecurityConfig::GetConfig().SlowApiThreshold,
             TraceType,
             id_,
-            L"InitializeSecurityContext",
-            [] (const wchar_t* api, TimeSpan duration, TimeSpan threshold) { ReportSecurityApiSlow(api, duration, threshold); });
+            "InitializeSecurityContext",
+            [] (const char* api, TimeSpan duration, TimeSpan threshold) { ReportSecurityApiSlow(api, duration, threshold); });
     }
 
     contextExpiration_ = DateTime((FILETIME const&)timestamp); // Schannel returns expiration in UTC
@@ -1125,14 +1125,14 @@ SECURITY_STATUS SecurityContextSsl::AuthorizeRemoteEnd()
 }
 
 void SecurityContextSsl::TraceCertificate(
-    wstring const & id,
+    string const & id,
     PCCERT_CONTEXT certContext,
     Thumbprint const & issuerCertThumbprint)
 {
     const DWORD nameType = CERT_X500_NAME_STR|CERT_NAME_STR_NO_PLUS_FLAG;
     const DWORD nameCapacity = 512;
-    wchar_t subject[nameCapacity];
-    wchar_t issuer[nameCapacity];
+    char subject[nameCapacity];
+    char issuer[nameCapacity];
     subject[0] = 0;
     issuer[0] = 0;
 
@@ -1168,8 +1168,8 @@ void SecurityContextSsl::TraceCertificate(
         TraceType, id,
         "incoming cert: thumbprint = {0}, subject='{1}', issuer='{2}', issuerCertThumbprint={3}, NotBefore={4}, NotAfter={5}",
         certThumbprint,
-        WStringLiteral(subject, subject + subjectNameLen - 1),
-        WStringLiteral(issuer, issuer + issuerNameLen - 1),
+        StringLiteral(subject, subject + subjectNameLen - 1),
+        StringLiteral(issuer, issuer + issuerNameLen - 1),
         issuerCertThumbprint,
         DateTime(certContext->pCertInfo->NotBefore),
         DateTime(certContext->pCertInfo->NotAfter));
@@ -1177,7 +1177,7 @@ void SecurityContextSsl::TraceCertificate(
 
 _Use_decl_annotations_
 SECURITY_STATUS SecurityContextSsl::GetCertChainContext(
-    wstring const & id,
+    string const & id,
     PCCERT_CONTEXT certContext,
     LPSTR usage,
     DWORD certChainFlags,
@@ -1218,8 +1218,8 @@ SECURITY_STATUS SecurityContextSsl::GetCertChainContext(
         SecurityConfig::GetConfig().SlowApiThreshold,
         TraceType,
         id,
-        L"CertGetCertificateChain",
-        [] (const wchar_t* api, TimeSpan duration, TimeSpan threshold) { ReportSecurityApiSlow(api, duration, threshold); });
+        "CertGetCertificateChain",
+        [] (const char* api, TimeSpan duration, TimeSpan threshold) { ReportSecurityApiSlow(api, duration, threshold); });
 
     if (!retval)
     {
@@ -1283,7 +1283,7 @@ SECURITY_STATUS SecurityContextSsl::GetCertChainContext(
 }
 
 SECURITY_STATUS SecurityContextSsl::TryMatchCertThumbprint(
-    wstring const & id,
+    string const & id,
     PCCERT_CONTEXT certContext,
     Thumbprint const & incoming,
     SECURITY_STATUS certChainErrorStatus,
@@ -1313,7 +1313,7 @@ SECURITY_STATUS SecurityContextSsl::TryMatchCertThumbprint(
 }
 
 _Use_decl_annotations_ SECURITY_STATUS SecurityContextSsl::VerifyAsServerAuthCert(
-    wstring const & id,
+    string const & id,
     PCCERT_CONTEXT certContext,
     PCCERT_CHAIN_CONTEXT certChainContext,
     Common::Thumbprint const & certThumbprint,
@@ -1323,7 +1323,7 @@ _Use_decl_annotations_ SECURITY_STATUS SecurityContextSsl::VerifyAsServerAuthCer
     DWORD certChainFlags,
     bool shouldIgnoreCrlOffline,
     bool onlyCrlOfflineEncountered,
-    wstring * nameMatched)
+    string * nameMatched)
 {
     CERT_CHAIN_POLICY_STATUS policyStatus = { 0 };
     policyStatus.cbSize = sizeof(policyStatus);
@@ -1348,7 +1348,7 @@ _Use_decl_annotations_ SECURITY_STATUS SecurityContextSsl::VerifyAsServerAuthCer
             policyInput.dwFlags = CERT_CHAIN_POLICY_ALLOW_UNKNOWN_CA_FLAG;
         }
 
-        extraPolicyPara.pwszServerName = const_cast<wchar_t*>(matchTarget->first.c_str());
+        extraPolicyPara.pwszServerName = const_cast<char*>(matchTarget->first.c_str());
         BOOL retval = FALSE;
         auto api = [&]
         {
@@ -1364,8 +1364,8 @@ _Use_decl_annotations_ SECURITY_STATUS SecurityContextSsl::VerifyAsServerAuthCer
             SecurityConfig::GetConfig().SlowApiThreshold,
             TraceType,
             id,
-            L"CertVerifyCertificateChainPolicy",
-            [] (const wchar_t* api, TimeSpan duration, TimeSpan threshold) { ReportSecurityApiSlow(api, duration, threshold); });
+            "CertVerifyCertificateChainPolicy",
+            [] (const char* api, TimeSpan duration, TimeSpan threshold) { ReportSecurityApiSlow(api, duration, threshold); });
 
         if (!retval)
         {
@@ -1428,12 +1428,12 @@ _Use_decl_annotations_ SECURITY_STATUS SecurityContextSsl::VerifyAsServerAuthCer
 }
 
 _Use_decl_annotations_
-SECURITY_STATUS SecurityContextSsl::Test_VerifyCertificate(PCCERT_CONTEXT certContext, std::wstring const & commonNameToMatch)
+SECURITY_STATUS SecurityContextSsl::Test_VerifyCertificate(PCCERT_CONTEXT certContext, std::string const & commonNameToMatch)
 {
     SecurityConfig::X509NameMap names;
     names.Add(commonNameToMatch);
     return VerifyCertificate(
-        L"test",
+        "test",
         certContext,
         SecurityConfig::GetConfig().CrlCheckingFlag,
         false,
@@ -1445,7 +1445,7 @@ SECURITY_STATUS SecurityContextSsl::Test_VerifyCertificate(PCCERT_CONTEXT certCo
 
 _Use_decl_annotations_
 SECURITY_STATUS SecurityContextSsl::VerifyCertificate(
-    wstring const & id,
+    string const & id,
     const PCCERT_CONTEXT certContext,
     DWORD inputCertChainFlags,
     bool shouldIgnoreCrlOffline,
@@ -1453,7 +1453,7 @@ SECURITY_STATUS SecurityContextSsl::VerifyCertificate(
     ThumbprintSet const & certThumbprintsToMatch,
     SecurityConfig::X509NameMap const & x509NamesToMatch,
     bool traceCert,
-    wstring * commonNameMatched)
+    string * commonNameMatched)
 {
     Thumbprint certThumbprint;
     auto error = certThumbprint.Initialize(certContext);
@@ -1470,8 +1470,8 @@ SECURITY_STATUS SecurityContextSsl::VerifyCertificate(
         "VerifyCertificate: remoteAuthenticatedAsPeer = {0}, incoming: tp='{1}', against: certThumbprintsToMatch='{2}', x509NamesToMatch='{3}', certChainFlags=0x{4:x}, maskedFlags=0x{5:x} shouldIgnoreCrlOffline={6}",
         remoteAuthenticatedAsPeer,
         certThumbprint,
-        (certThumbprintsToMatch.Value().size() < 100) ? certThumbprintsToMatch.ToString() : L"...",
-        (x509NamesToMatch.Size() < 100) ? wformatString(x509NamesToMatch) : L"...",
+        (certThumbprintsToMatch.Value().size() < 100) ? certThumbprintsToMatch.ToString() : "...",
+        (x509NamesToMatch.Size() < 100) ? formatString(x509NamesToMatch) : "...",
         inputCertChainFlags,
         certChainFlags,
         shouldIgnoreCrlOffline);
@@ -1537,7 +1537,7 @@ SECURITY_STATUS SecurityContextSsl::VerifyCertificate(
             return certChainStatus;
         }
 
-        wstring clientAuthCertCN;
+        string clientAuthCertCN;
         error = CryptoUtility::GetCertificateCommonName(certContext, clientAuthCertCN);
         if (!error.IsSuccess())
         {
@@ -1645,7 +1645,7 @@ SECURITY_STATUS SecurityContextSsl::VerifyCertificate(
 }
 
 SECURITY_STATUS SecurityContextSsl::VerifySslCertChain(
-    wstring const & id,
+    string const & id,
     PCCERT_CHAIN_CONTEXT certChainContext,
     DWORD authType,
     DWORD certChainFlags,
@@ -1682,8 +1682,8 @@ SECURITY_STATUS SecurityContextSsl::VerifySslCertChain(
         SecurityConfig::GetConfig().SlowApiThreshold,
         TraceType,
         id,
-        L"CertVerifyCertificateChainPolicy",
-        [] (const wchar_t* api, TimeSpan duration, TimeSpan threshold) { ReportSecurityApiSlow(api, duration, threshold); });
+        "CertVerifyCertificateChainPolicy",
+        [] (const char* api, TimeSpan duration, TimeSpan threshold) { ReportSecurityApiSlow(api, duration, threshold); });
 
     if (!retval)
     {
@@ -1716,20 +1716,20 @@ SECURITY_STATUS SecurityContextSsl::VerifySslCertChain(
 }
 
 _Use_decl_annotations_
-bool SecurityContextSsl::IsClientAuthenticationCertificate(wstring const & id, PCCERT_CONTEXT certContext)
+bool SecurityContextSsl::IsClientAuthenticationCertificate(string const & id, PCCERT_CONTEXT certContext)
 {
     return CertCheckEnhancedKeyUsage(id, certContext, szOID_PKIX_KP_CLIENT_AUTH);
 }
 
 _Use_decl_annotations_
-bool SecurityContextSsl::IsServerAuthenticationCertificate(wstring const & id, PCCERT_CONTEXT certContext)
+bool SecurityContextSsl::IsServerAuthenticationCertificate(string const & id, PCCERT_CONTEXT certContext)
 {
     return CertCheckEnhancedKeyUsage(id, certContext, szOID_PKIX_KP_SERVER_AUTH);
 }
 
 _Use_decl_annotations_
 bool SecurityContextSsl::CertCheckEnhancedKeyUsage(
-    wstring const & id,
+    string const & id,
     PCCERT_CONTEXT certContext,
     LPCSTR usageIdentifier)
 {

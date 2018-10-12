@@ -67,7 +67,7 @@ namespace Federation
             Common::DateTime expireTime_;
         };
 
-        SharableProxy(std::shared_ptr<Store::ILocalStore> && store, std::wstring const & ringName, NodeId voteId, NodeId proxyId);
+        SharableProxy(std::shared_ptr<Store::ILocalStore> && store, std::string const & ringName, NodeId voteId, NodeId proxyId);
         ~SharableProxy();
 
     protected:
@@ -75,7 +75,7 @@ namespace Federation
         Common::ErrorCode OnClose();
         void OnAbort();
 
-        virtual std::wstring const& GetRingName() const { return ringName_; }
+        virtual std::string const& GetRingName() const { return ringName_; }
 
         virtual Common::ErrorCode OnAcquire(__inout NodeConfig & ownerConfig,
             Common::TimeSpan ttl,
@@ -263,7 +263,7 @@ namespace Federation
         Common::ErrorCode SetVoteOwnerData(VoteOwnerData const & data, Store::ILocalStore::TransactionSPtr const & trans, _int64 sequenceNumber);
 
         std::shared_ptr<Store::ILocalStore> store_;
-        std::wstring ringName_;
+        std::string ringName_;
     };
 }
 

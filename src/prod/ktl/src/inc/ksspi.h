@@ -63,7 +63,7 @@ public:
         _Out_ SPtr & credential,
         KAllocator & alloc,
         UCHAR const* certHashValue,
-        WCHAR const* certStoreName,
+        CHAR const* certStoreName,
         size_t cbCertStoreNameLength,
         ULONG credentialUse);
 
@@ -77,7 +77,7 @@ public:
     static SECURITY_STATUS AcquireNegotiate(
         _Out_ SPtr & credential,
         _In_ KAllocator & alloc,
-        _In_opt_ LPWSTR principal,
+        _In_opt_ LPSTR principal,
         unsigned long credentialUse,
         _In_opt_ void * logonId = nullptr,
         _In_opt_ void * authData = nullptr,
@@ -87,7 +87,7 @@ public:
     static SECURITY_STATUS AcquireKerberos(
         _Out_ SPtr & credential,
         _In_ KAllocator & alloc,
-        _In_opt_ LPWSTR principal,
+        _In_opt_ LPSTR principal,
         unsigned long credentialUse,
         _In_opt_ void * logonId = nullptr,
         _In_opt_ void * authData = nullptr,
@@ -281,7 +281,7 @@ public:
     AuthorizationContext* ServerAuthContext();
 
     #if KTL_USER_MODE
-    LPWSTR SspiPackageName() { return _sspiPackageName.Buffer; }
+    LPSTR SspiPackageName() { return _sspiPackageName.Buffer; }
     #else
     PSECURITY_STRING SspiPackageName() { return &_sspiPackageName; }
     #endif

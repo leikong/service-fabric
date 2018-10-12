@@ -14,11 +14,11 @@ namespace Common
         ConfigParameter();
         
         ConfigParameter(
-            std::wstring && name,
-            std::wstring && value,
+            std::string && name,
+            std::string && value,
             bool mustOverride,
             bool isEncrypted,
-            std::wstring && type);
+            std::string && type);
 
         ConfigParameter(ConfigParameter const & other);
         ConfigParameter(ConfigParameter && other);
@@ -35,11 +35,11 @@ namespace Common
 
         void clear();
     public:
-        std::wstring Name;
-        std::wstring Value;
+        std::string Name;
+        std::string Value;
         bool MustOverride;
         bool IsEncrypted;
-        std::wstring Type;
+        std::string Type;
 
     private:
     };

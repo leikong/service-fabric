@@ -17,19 +17,19 @@ namespace FederationUnitTests
     using namespace Federation;
     using namespace Transport;
 
-    const wstring TestSource = L"SiteNode.Test";
+    const string TestSource = "SiteNode.Test";
 
     class SiteNodeTests
     {
     public:
-        void MisconfigurationTestHelper(wstring host, wstring port)
+        void MisconfigurationTestHelper(string host, string port)
         {
             FederationConfig::Test_Reset();
 
             NodeId seedNodeId(LargeInteger(0, 0));
 
             VoteConfig seedNodes;
-            seedNodes.push_back(VoteEntryConfig(seedNodeId, Federation::Constants::SeedNodeVoteType, host + L":" + port));
+            seedNodes.push_back(VoteEntryConfig(seedNodeId, Federation::Constants::SeedNodeVoteType, host + ":" + port));
 
             FederationConfig::GetConfig().Votes = seedNodes;
 
@@ -50,11 +50,11 @@ namespace FederationUnitTests
 
         ManualResetEvent stopper(false);
 
-        wstring host = SiteNodeHelper::GetLoopbackAddress();
-        wstring port = SiteNodeHelper::GetFederationPort();
+        string host = SiteNodeHelper::GetLoopbackAddress();
+        string port = SiteNodeHelper::GetFederationPort();
 
         VoteConfig seedNodes;
-        seedNodes.push_back(VoteEntryConfig(NodeId::MinNodeId, Federation::Constants::SeedNodeVoteType, host + L":" + port));
+        seedNodes.push_back(VoteEntryConfig(NodeId::MinNodeId, Federation::Constants::SeedNodeVoteType, host + ":" + port));
 
         FederationConfig::GetConfig().Votes = seedNodes;
 
@@ -95,11 +95,11 @@ namespace FederationUnitTests
 
         ManualResetEvent stopper(false);
 
-        wstring host = SiteNodeHelper::GetLoopbackAddress();
-        wstring port = SiteNodeHelper::GetFederationPort();
+        string host = SiteNodeHelper::GetLoopbackAddress();
+        string port = SiteNodeHelper::GetFederationPort();
 
         VoteConfig seedNodes;
-        seedNodes.push_back(VoteEntryConfig(NodeId::MinNodeId, Federation::Constants::SeedNodeVoteType, host + L":" + port));
+        seedNodes.push_back(VoteEntryConfig(NodeId::MinNodeId, Federation::Constants::SeedNodeVoteType, host + ":" + port));
 
         FederationConfig::GetConfig().Votes = seedNodes;
 
@@ -156,19 +156,19 @@ namespace FederationUnitTests
     BOOST_AUTO_TEST_CASE(MisconfiguredHost) //, microsoft::windows_error::assertion_failure)
     {
         Assert::DisableDebugBreakInThisScope disableDebugBreakInThisScope;
-        VERIFY_THROWS(MisconfigurationTestHelper(L"137.0.0.1", L"12345"), std::system_error);
+        VERIFY_THROWS(MisconfigurationTestHelper("137.0.0.1", "12345"), std::system_error);
     }
 
     BOOST_AUTO_TEST_CASE(MisconfiguredPort) //, microsoft::windows_error::assertion_failure)
     {
         Assert::DisableDebugBreakInThisScope disableDebugBreakInThisScope;
-        VERIFY_THROWS(MisconfigurationTestHelper(L"127.0.0.1", L"22345"), std::system_error);
+        VERIFY_THROWS(MisconfigurationTestHelper("127.0.0.1", "22345"), std::system_error);
     }
 
     BOOST_AUTO_TEST_CASE(MisconfiguredSmallPort) //, microsoft::windows_error::assertion_failure)
     {
         Assert::DisableDebugBreakInThisScope disableDebugBreakInThisScope;
-        VERIFY_THROWS(MisconfigurationTestHelper(L"127.0.0.1", L"2345"), std::system_error);
+        VERIFY_THROWS(MisconfigurationTestHelper("127.0.0.1", "2345"), std::system_error);
     }
 
     BOOST_AUTO_TEST_SUITE_END()

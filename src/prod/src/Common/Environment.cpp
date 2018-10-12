@@ -29,9 +29,9 @@ namespace Common
 
     StringLiteral TraceType_Environment = "Environment";
 
-    wstring const Environment::NewLine = L"\r\n";
+    string const Environment::NewLine = "\r\n";
 
-    void Environment::GetEnvironmentVariable(wstring const & name, wstring& outValue, NOCLEAR)
+    void Environment::GetEnvironmentVariable(string const & name, string& outValue, NOCLEAR)
     {
         size_t pos = outValue.size();
         ULONG valueLen = 16; // first shot
@@ -62,7 +62,7 @@ namespace Common
         }
     }
 
-    bool Environment::GetEnvironmentVariable(wstring const & name, wstring& outValue, NOTHROW)
+    bool Environment::GetEnvironmentVariable(string const & name, string& outValue, NOTHROW)
     {
         int valueLen = 16; // first shot
         outValue.resize(valueLen);
@@ -88,7 +88,7 @@ namespace Common
     }
 
     void Environment::GetEnvironmentVariable(
-        wstring const & name, wstring& outValue, wstring const & defaultValue)
+        string const & name, string& outValue, string const & defaultValue)
     {
         if (!GetEnvironmentVariable(name, outValue, NOTHROW()))
         {
@@ -96,20 +96,20 @@ namespace Common
         }
     }
 
-    void Environment::GetEnvironmentVariable(wstring const & name, wstring& outValue)
+    void Environment::GetEnvironmentVariable(string const & name, string& outValue)
     {
         outValue.clear();
         GetEnvironmentVariable(name, outValue, NOCLEAR());
     }
 
-    wstring Environment::GetEnvironmentVariable ( wstring const & name )
+    string Environment::GetEnvironmentVariable ( string const & name )
     {
-        wstring variable;
+        string variable;
         GetEnvironmentVariable( name, variable, NOCLEAR() );
         return variable;
     }
 
-    bool Environment::SetEnvironmentVariable(wstring const & name, wstring const& value)
+    bool Environment::SetEnvironmentVariable(string const & name, string const& value)
     {
         BOOL result = ::SetEnvironmentVariableW( 
             name.c_str(), 
@@ -117,7 +117,7 @@ namespace Common
         return result ? true : false;
     }
 
-    void Environment::GetMachineName( wstring& buffer)
+    void Environment::GetMachineName( string& buffer)
     {
         DWORD ccLen = DNS_MAX_LABEL_BUFFER_LENGTH;
         buffer.resize( ccLen );
@@ -125,7 +125,7 @@ namespace Common
         buffer.resize( ccLen );
     }
 
-    void Environment::GetMachineFQDN( wstring& buffer)
+    void Environment::GetMachineFQDN( string& buffer)
     {
         DWORD ccLen = DNS_MAX_NAME_BUFFER_LENGTH;
         buffer.resize( ccLen );
@@ -133,26 +133,26 @@ namespace Common
         buffer.resize( ccLen );
     }
 
-    void Environment::GetUserName(wstring & buffer)
+    void Environment::GetUserName(string & buffer)
     {
-        Environment::GetEnvironmentVariable( L"USERNAME", buffer );
+        Environment::GetEnvironmentVariable( "USERNAME", buffer );
     }
 
-    void Environment::GetExecutablePath(wstring & buffer)
+    void Environment::GetExecutablePath(string & buffer)
     {
         GetExecutableFileName(buffer);
         buffer = Path::GetDirectoryName(buffer);
     }
 
-    wstring Environment::GetExecutablePath()
+    string Environment::GetExecutablePath()
     {
-        wstring path;
+        string path;
         GetExecutablePath(path);
         return path;
     }
 
     // Returns the name of the dll/exe that linked this Common.lib instance.
-    void Environment::GetCurrentModuleFileName(wstring & buffer)
+    void Environment::GetCurrentModuleFileName(string & buffer)
     {
         // See http://msdn.microsoft.com/en-us/library/ms683200(v=VS.85).aspx
         // The second parameter of GetModuleHandleEx can be a pointer to any
@@ -191,17 +191,17 @@ namespace Common
         if (len > 0)
         {
             exeName[len] = 0;
-            buffer = StringUtility::Utf8ToUtf16(exeName);
+            buffer = Utf8ToUtf16NotNeeded(exeName);
         }
 #endif
     }
 
-    void Environment::GetExecutableFileName(wstring & buffer)
+    void Environment::GetExecutableFileName(string & buffer)
     {
         GetModuleFileName(NULL, buffer);
     }
 
-    void Environment::GetModuleFileName(HMODULE module, wstring & buffer)
+    void Environment::GetModuleFileName(HMODULE module, string & buffer)
     {
         const int MaximumSaneStringLength = 10000; // if exceed this, something is terribly wrong
         const int InitialStringLength = 256;
@@ -231,9 +231,9 @@ namespace Common
         }
     }
 
-    wstring Environment::GetExecutableFileName()
+    string Environment::GetExecutableFileName()
     {
-        wstring result;
+        string result;
         GetExecutableFileName(result);
         return result;
     }
@@ -286,7 +286,7 @@ namespace Common
 #endif
     }
 
-    ErrorCode Environment::Expand(wstring const & str, __out wstring & expandedStr)
+    ErrorCode Environment::Expand(string const & str, __out string & expandedStr)
     {
         if (str.length() == 0) { return ErrorCode(ErrorCodeValue::Success); }
 
@@ -300,7 +300,7 @@ namespace Common
                 error);
             return error;
         }
-        vector<wchar_t> buffer(length);
+        vector<char> buffer(length);
 
         length = ::ExpandEnvironmentStringsW(str.c_str(), &(buffer.front()), length);
         if (length == 0)
@@ -324,9 +324,9 @@ namespace Common
         return ErrorCode(ErrorCodeValue::Success);
     }
 
-    wstring Environment::Expand(wstring const & str)
+    string Environment::Expand(string const & str)
     {
-        wstring expandedStr(L"");
+        string expandedStr("");
         auto error = Environment::Expand(str, expandedStr);
         if (!error.IsSuccess())
         {
@@ -339,7 +339,7 @@ namespace Common
         return expandedStr;
     }
 
-    bool Environment::ExpandEnvironmentStrings(wstring const & str, __out wstring & expandedStr)
+    bool Environment::ExpandEnvironmentStrings(string const & str, __out string & expandedStr)
     {
         return Environment::Expand(str, expandedStr).IsSuccess();
     }
@@ -398,13 +398,13 @@ namespace Common
         while (env)
         {
             std::string temp(env);
-            std::wstring tempW;
-            StringUtility::Utf8ToUtf16(temp, tempW);
-            size_t pos = tempW.find(L'=');
+            std::string tempW;
+            Utf8ToUtf16NotNeeded2(temp, tempW);
+            size_t pos = tempW.find('=');
             if (pos != string::npos)
             {
-                wstring key = tempW.substr(0, pos);
-                wstring value = tempW.substr(pos + 1);
+                string key = tempW.substr(0, pos);
+                string value = tempW.substr(pos + 1);
                 envMap.insert(make_pair(key, value));
             }
             
@@ -451,33 +451,33 @@ namespace Common
         __out EnvironmentMap & envMap)
     {
         envMap.clear();
-        LPWSTR lpszVariable = (LPWSTR) envBlock;
+        LPSTR lpszVariable = (LPSTR) envBlock;
 
         while (*lpszVariable)
         {
             // ignore the variables that starts with '='
-            if (*lpszVariable == L'=')
+            if (*lpszVariable == '=')
             {
-                lpszVariable += wcslen(lpszVariable) + 1;
+                lpszVariable += strlen(lpszVariable) + 1;
                 continue;
             }
 
-            wstring variable(lpszVariable);
-            size_t pos = variable.find(L'=');
+            string variable(lpszVariable);
+            size_t pos = variable.find('=');
             if (pos != string::npos)
             {
-                wstring key = variable.substr(0, pos);
-                wstring value = variable.substr(pos + 1);
+                string key = variable.substr(0, pos);
+                string value = variable.substr(pos + 1);
                 envMap.insert(make_pair(key, value));
             }
 
-            lpszVariable += wcslen(lpszVariable) + 1;
+            lpszVariable += strlen(lpszVariable) + 1;
         }
     }
 
     void Environment::ToEnvironmentBlock(
         Common::EnvironmentMap const & envMap,
-        __out vector<wchar_t> & envBlock)
+        __out vector<char> & envBlock)
     {
         envBlock.resize(0);
 
@@ -490,7 +490,7 @@ namespace Common
             }
 
             // push =
-            envBlock.push_back(L'=');
+            envBlock.push_back('=');
 
             // push value
             for(auto it = iter->second.begin(); it != iter->second.end(); it++)
@@ -499,30 +499,30 @@ namespace Common
             }
 
             // null char
-            envBlock.push_back(L'\0');
+            envBlock.push_back('\0');
         }
 
-        envBlock.push_back(L'\0');
+        envBlock.push_back('\0');
     }
 
-    wstring Environment::ToString(EnvironmentMap const & envMap)
+    string Environment::ToString(EnvironmentMap const & envMap)
     {
-        wstring result;
-        result.append(L"{");
+        string result;
+        result.append("{");
         for(auto iter = envMap.cbegin(); iter != envMap.cend(); ++iter)
         {
-            result.append(L"{");
+            result.append("{");
             result.append(iter->first);
-            result.append(L"=");
+            result.append("=");
             result.append(iter->second);
-            result.append(L"},");
+            result.append("},");
         }
-        result.append(L"}");
+        result.append("}");
 
         return result;
     }
 
-    ErrorCode Environment::GetModuleFileName2(HMODULE module, __out wstring & moduleFileName)
+    ErrorCode Environment::GetModuleFileName2(HMODULE module, __out string & moduleFileName)
     {
         moduleFileName.resize(MAX_PATH);
         auto length = ::GetModuleFileName(module, &moduleFileName[0], MAX_PATH);
@@ -540,7 +540,7 @@ namespace Common
         return ErrorCode(ErrorCodeValue::Success);
     }
 
-    ErrorCode Environment::GetCurrentModuleFileName2(__out wstring & moduleFileName)
+    ErrorCode Environment::GetCurrentModuleFileName2(__out string & moduleFileName)
     {
         static int staticInThisModule2 = 0;
 
@@ -566,7 +566,7 @@ namespace Common
     }
 
 #if !defined(PLATFORM_UNIX)
-    ErrorCode Environment::GetFileVersion2(__in wstring const & fileName, __out wstring & fileVersion)
+    ErrorCode Environment::GetFileVersion2(__in string const & fileName, __out string & fileVersion)
     {
         auto dwSize = ::GetFileVersionInfoSize(fileName.c_str(), NULL);
         if (dwSize == 0)
@@ -611,13 +611,13 @@ namespace Common
         int revision = HIWORD(verInfo->dwProductVersionLS);
         int build = LOWORD(verInfo->dwProductVersionLS);
 
-        fileVersion = wformatString("{0}.{1}.{2}.{3}", major, minor, revision, build);
+        fileVersion = formatString.L("{0}.{1}.{2}.{3}", major, minor, revision, build);
         return ErrorCode(ErrorCodeValue::Success);
     }
 
-    ErrorCode Environment::GetCurrentModuleFileVersion2(__out wstring & fileVersion)
+    ErrorCode Environment::GetCurrentModuleFileVersion2(__out string & fileVersion)
     {
-        wstring currentModuleName;
+        string currentModuleName;
         auto error = Environment::GetCurrentModuleFileName2(currentModuleName);
         if (!error.IsSuccess()) { return error; }
 
@@ -625,13 +625,13 @@ namespace Common
     }
 #endif
 
-    EnvironmentVariable & EnvironmentVariable::operator = (const std::wstring & newValue)
+    EnvironmentVariable & EnvironmentVariable::operator = (const std::string & newValue)
     {
 #if defined(PLATFORM_UNIX)
         std::string tempKey;
-        StringUtility::Utf16ToUtf8(name, tempKey);
+        Utf16ToUtf8NotNeeded2(name, tempKey);
         std::string tempVal;
-        StringUtility::Utf16ToUtf8(newValue, tempVal);
+        Utf16ToUtf8NotNeeded2(newValue, tempVal);
         Common::AcquireWriteLock grab(*envLock);
         setenv(tempKey.c_str(), tempVal.empty() ? 0 : tempVal.c_str(), 1);
 #else
@@ -661,20 +661,20 @@ namespace Common
         return string(user->pw_dir);
     }
 
-    wstring Environment::GetHomeFolderW()
+    string Environment::GetHomeFolderW()
     {
         auto home = GetHomeFolder();
-        wstring homew;
-        StringUtility::Utf8ToUtf16(home, homew);
+        string homew;
+        Utf8ToUtf16NotNeeded2(home, homew);
         return homew;
     }
 
-    std::wstring Environment::GetObjectFolder()
+    std::string Environment::GetObjectFolder()
     {
         auto objFolder = CommonConfig::GetConfig().ObjectFolder;
         if (!objFolder.empty()) return objFolder;
 
-        auto base = L"/tmp";
+        auto base = "/tmp";
         objFolder = Path::Combine(base, ObjectFolderDefaultW);
         Invariant(!objFolder.empty());
         return objFolder;

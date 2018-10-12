@@ -177,7 +177,7 @@ KtlLogContainerUser::AsyncCreateLogStreamContextUser::LogStreamCreated(
             return;             
         }
 
-        KStringView prefix(L"UserWrite");
+        KStringView prefix("UserWrite");
         status = _LogStream->_InstrumentedComponent->SetComponentName(prefix, _LogStreamId.Get());
         if (! NT_SUCCESS(status))
         {
@@ -794,7 +794,7 @@ KtlLogContainerUser::AsyncOpenLogStreamContextUser::LogStreamOpened(
             return;             
         }
 
-        KStringView prefix(L"UserWrite");
+        KStringView prefix("UserWrite");
         status = _LogStream->_InstrumentedComponent->SetComponentName(prefix, _LogStreamId.Get());
         if (! NT_SUCCESS(status))
         {

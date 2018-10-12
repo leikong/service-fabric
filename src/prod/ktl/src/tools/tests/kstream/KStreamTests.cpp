@@ -118,7 +118,7 @@ NTSTATUS SimpleCreateTestFile(
     __in KAllocator& Allocator,
     __in BOOLEAN IsSparse,
     __in BOOLEAN IsWriteThrough,
-    __in LPCWSTR partialFileName,
+    __in LPCSTR partialFileName,
     __out KBlockFile::SPtr& File,
     __in_opt ULONGLONG fileSize = TestFileSize)
 {
@@ -166,7 +166,7 @@ VOID TestLargeReadOffsets(KAllocator& allocator)
         allocator,
         TRUE,
         TRUE,
-        L"test_readoffset",
+        "test_readoffset",
         file,
         ULONG_MAX + static_cast<ULONGLONG>(1024));
     KInvariant(NT_SUCCESS(status));
@@ -1804,7 +1804,7 @@ NTSTATUS ProveKBlockFileEOFBehavior(KAllocator& Allocator)
         Allocator,
         FALSE,
         FALSE,
-        L"testfileforeof",
+        "testfileforeof",
         file);
     VERIFY_SUCCESS(status);
 
@@ -1955,7 +1955,7 @@ NTSTATUS ProveKBlockFileEOFBehavior(KAllocator& Allocator)
 NTSTATUS
 KStreamTest(
     __in int argc,
-    __in_ecount(argc) WCHAR* args[])
+    __in_ecount(argc) CHAR* args[])
 {
     UNREFERENCED_PARAMETER(argc);
     UNREFERENCED_PARAMETER(args);
@@ -1982,7 +1982,7 @@ KStreamTest(
     VERIFY_SUCCESS(status);
 
     KBlockFile::SPtr nonSparse;
-    status = SimpleCreateTestFile(allocator, FALSE, FALSE, L"TestFileNonSparse_NoWritethrough", nonSparse);
+    status = SimpleCreateTestFile(allocator, FALSE, FALSE, "TestFileNonSparse_NoWritethrough", nonSparse);
     VERIFY_SUCCESS(status);
     KTestPrintf("Testing with a nonsparse file, no writethrough, initial size = %llu\n", TestFileSize);
     status = KFileStreamTest(*nonSparse, allocator);
@@ -1990,7 +1990,7 @@ KStreamTest(
     nonSparse->Close();
     nonSparse = nullptr;
 
-    status = SimpleCreateTestFile(allocator, FALSE, TRUE, L"TestFileNonSparse_Writethrough", nonSparse);
+    status = SimpleCreateTestFile(allocator, FALSE, TRUE, "TestFileNonSparse_Writethrough", nonSparse);
     VERIFY_SUCCESS(status);
     KTestPrintf("Testing with a nonsparse file, writethrough, initial size = %llu\n", TestFileSize);
     status = KFileStreamTest(*nonSparse, allocator);
@@ -1999,7 +1999,7 @@ KStreamTest(
     nonSparse = nullptr;
 
     KBlockFile::SPtr nonSparseEmpty;
-    status = SimpleCreateTestFile(allocator, FALSE, FALSE, L"TestFileNonSparse_InitiallyEmpty_NoWritethrough", nonSparseEmpty, 0);
+    status = SimpleCreateTestFile(allocator, FALSE, FALSE, "TestFileNonSparse_InitiallyEmpty_NoWritethrough", nonSparseEmpty, 0);
     VERIFY_SUCCESS(status);
     KTestPrintf("Testing with a nonsparse file, no writethrough, initial size = %llu\n", 0);
     status = KFileStreamTest(*nonSparseEmpty, allocator);
@@ -2007,7 +2007,7 @@ KStreamTest(
     nonSparseEmpty->Close();
     nonSparseEmpty = nullptr;
 
-    status = SimpleCreateTestFile(allocator, FALSE, TRUE, L"TestFileNonSparse_InitiallyEmpty_Writethrough", nonSparseEmpty, 0);
+    status = SimpleCreateTestFile(allocator, FALSE, TRUE, "TestFileNonSparse_InitiallyEmpty_Writethrough", nonSparseEmpty, 0);
     VERIFY_SUCCESS(status);
     KTestPrintf("Testing with a nonsparse file, writethrough, initial size = %llu\n", 0);
     status = KFileStreamTest(*nonSparseEmpty, allocator);
@@ -2016,7 +2016,7 @@ KStreamTest(
     nonSparseEmpty = nullptr;
 
     KBlockFile::SPtr sparse;
-    status = SimpleCreateTestFile(allocator, TRUE, FALSE, L"TestFileSparse_NoWritethrough", sparse);
+    status = SimpleCreateTestFile(allocator, TRUE, FALSE, "TestFileSparse_NoWritethrough", sparse);
     VERIFY_SUCCESS(status);
     KTestPrintf("Testing with a sparse file, no writethrough, initial size = %llu\n", TestFileSize);
     status = KFileStreamTest(*sparse, allocator);
@@ -2024,7 +2024,7 @@ KStreamTest(
     sparse->Close();
     sparse = nullptr;
 
-    status = SimpleCreateTestFile(allocator, TRUE, TRUE, L"TestFileSparse_Writethrough", sparse);
+    status = SimpleCreateTestFile(allocator, TRUE, TRUE, "TestFileSparse_Writethrough", sparse);
     VERIFY_SUCCESS(status);
     KTestPrintf("Testing with a sparse file, writethrough, initial size = %llu\n", TestFileSize);
     status = KFileStreamTest(*sparse, allocator);
@@ -2033,7 +2033,7 @@ KStreamTest(
     sparse = nullptr;
 
     KBlockFile::SPtr sparseEmpty;
-    status = SimpleCreateTestFile(allocator, TRUE, FALSE, L"TestFileSparse_InitiallyEmpty_NoWritethrough", sparseEmpty, 0);
+    status = SimpleCreateTestFile(allocator, TRUE, FALSE, "TestFileSparse_InitiallyEmpty_NoWritethrough", sparseEmpty, 0);
     VERIFY_SUCCESS(status);
     KTestPrintf("Testing with a sparse file, no writethrough, initial size = %llu\n", 0);
     status = KFileStreamTest(*sparseEmpty, allocator);
@@ -2041,7 +2041,7 @@ KStreamTest(
     sparseEmpty->Close();
     sparseEmpty = nullptr;
 
-    status = SimpleCreateTestFile(allocator, TRUE, TRUE, L"TestFileSparse_InitiallyEmpty_Writethrough", sparseEmpty, 0);
+    status = SimpleCreateTestFile(allocator, TRUE, TRUE, "TestFileSparse_InitiallyEmpty_Writethrough", sparseEmpty, 0);
     VERIFY_SUCCESS(status);
     KTestPrintf("Testing with a sparse file, writethrough, initial size = %llu\n", 0);
     status = KFileStreamTest(*sparseEmpty, allocator);
@@ -2072,7 +2072,7 @@ KStreamTest(
 int __cdecl
 wmain(
     __in int argc,
-    __in_ecount(argc) WCHAR* args[]
+    __in_ecount(argc) CHAR* args[]
 )
 #else
 int main(int argc, char* args[])

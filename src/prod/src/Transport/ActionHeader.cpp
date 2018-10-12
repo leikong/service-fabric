@@ -11,11 +11,11 @@ ActionHeader::ActionHeader()
 {
 }
 
-ActionHeader::ActionHeader(std::wstring const & action) : action_(action)
+ActionHeader::ActionHeader(std::string const & action) : action_(action)
 {
 }
 
-ActionHeader::ActionHeader(std::wstring && action) : action_(std::move(action))
+ActionHeader::ActionHeader(std::string && action) : action_(std::move(action))
 {
 }
 
@@ -27,7 +27,7 @@ ActionHeader::ActionHeader(ActionHeader && rhs) : action_(std::move(rhs.action_)
 {
 }
 
-std::wstring const & ActionHeader::get_Action() const
+std::string const & ActionHeader::get_Action() const
 {
     return action_;
 }

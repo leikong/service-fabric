@@ -85,7 +85,7 @@ typedef LONGLONG FABRIC_REPLICA_ID;
 
 typedef LONGLONG FABRIC_ATOMIC_GROUP_ID;
 
-typedef LPCWSTR FABRIC_URI;
+typedef LPCSTR FABRIC_URI;
 
 typedef ULONGLONG FABRIC_NODE_INSTANCE_ID;
 
@@ -109,7 +109,7 @@ typedef LONGLONG FABRIC_HOST_PROCESS_ID;
 
 #define	FABRIC_HEALTH_REPORT_INFINITE_TTL	( 0 )
 
-#define	FABRIC_SYSTEM_APPLICATION	( L"fabric:/System" )
+#define	FABRIC_SYSTEM_APPLICATION	( "fabric:/System" )
 
 #define	FABRIC_INFINITE_DURATION	( 0xffffffff )
 
@@ -1562,7 +1562,7 @@ typedef struct FABRIC_OPERATION_DATA_BUFFER
 
 typedef struct FABRIC_SERVICE_LOAD_METRIC_DESCRIPTION
     {
-    LPCWSTR Name;
+    LPCSTR Name;
     FABRIC_SERVICE_LOAD_METRIC_WEIGHT Weight;
     ULONG PrimaryDefaultLoad;
     ULONG SecondaryDefaultLoad;
@@ -1573,7 +1573,7 @@ typedef struct FABRIC_PARTITION_SELECTOR
     {
     FABRIC_URI ServiceName;
     FABRIC_PARTITION_SELECTOR_TYPE PartitionSelectorType;
-    LPCWSTR PartitionKey;
+    LPCSTR PartitionKey;
     void *Reserved;
     } 	FABRIC_PARTITION_SELECTOR;
 
@@ -1646,13 +1646,13 @@ typedef struct FABRIC_ORCHESTRATION_UPGRADE_PROGRESS
 
 typedef struct FABRIC_ORCHESTRATION_UPGRADE_PROGRESS_EX1
     {
-    LPCWSTR ConfigVersion;
+    LPCSTR ConfigVersion;
     void *Reserved;
     } 	FABRIC_ORCHESTRATION_UPGRADE_PROGRESS_EX1;
 
 typedef struct FABRIC_ORCHESTRATION_UPGRADE_PROGRESS_EX2
     {
-    LPCWSTR Details;
+    LPCSTR Details;
     void *Reserved;
     } 	FABRIC_ORCHESTRATION_UPGRADE_PROGRESS_EX2;
 
@@ -1706,7 +1706,7 @@ typedef struct TEST_COMMAND_QUERY_RESULT_LIST
 
 typedef struct FABRIC_NODE_RESULT
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_NODE_INSTANCE_ID NodeInstance;
     void *Reserved;
     } 	FABRIC_NODE_RESULT;
@@ -1777,7 +1777,7 @@ typedef struct FABRIC_SERVICE_SCALING_POLICY
 
 typedef struct FABRIC_SCALING_TRIGGER_AVERAGE_PARTITION_LOAD
     {
-    LPCWSTR MetricName;
+    LPCSTR MetricName;
     DOUBLE LowerLoadThreshold;
     DOUBLE UpperLoadThreshold;
     DWORD ScaleIntervalInSeconds;
@@ -1786,7 +1786,7 @@ typedef struct FABRIC_SCALING_TRIGGER_AVERAGE_PARTITION_LOAD
 
 typedef struct FABRIC_SCALING_TRIGGER_AVERAGE_SERVICE_LOAD
     {
-    LPCWSTR MetricName;
+    LPCSTR MetricName;
     DOUBLE LowerLoadThreshold;
     DOUBLE UpperLoadThreshold;
     DWORD ScaleIntervalInSeconds;
@@ -1817,19 +1817,19 @@ typedef struct FABRIC_SCALING_MECHANISM_ADD_REMOVE_INCREMENTAL_NAMED_PARTITION
 
 typedef struct FABRIC_PLACEMENT_POLICY_INVALID_DOMAIN_DESCRIPTION
     {
-    LPCWSTR InvalidFaultDomain;
+    LPCSTR InvalidFaultDomain;
     void *Reserved;
     } 	FABRIC_PLACEMENT_POLICY_INVALID_DOMAIN_DESCRIPTION;
 
 typedef struct FABRIC_PLACEMENT_POLICY_REQUIRED_DOMAIN_DESCRIPTION
     {
-    LPCWSTR RequiredFaultDomain;
+    LPCSTR RequiredFaultDomain;
     void *Reserved;
     } 	FABRIC_PLACEMENT_POLICY_REQUIRED_DOMAIN_DESCRIPTION;
 
 typedef struct FABRIC_PLACEMENT_POLICY_PREFERRED_PRIMARY_DOMAIN_DESCRIPTION
     {
-    LPCWSTR PreferredPrimaryFaultDomain;
+    LPCSTR PreferredPrimaryFaultDomain;
     void *Reserved;
     } 	FABRIC_PLACEMENT_POLICY_PREFERRED_PRIMARY_DOMAIN_DESCRIPTION;
 
@@ -1878,7 +1878,7 @@ typedef struct FABRIC_INT64_RANGE_PARTITION_INFORMATION
 typedef struct FABRIC_NAMED_PARTITION_INFORMATION
     {
     FABRIC_PARTITION_ID Id;
-    LPCWSTR Name;
+    LPCSTR Name;
     void *Reserved;
     } 	FABRIC_NAMED_PARTITION_INFORMATION;
 
@@ -1890,16 +1890,16 @@ typedef struct FABRIC_CODE_PACKAGE_ENTRY_POINT_DESCRIPTION
 
 typedef struct FABRIC_CONTAINERHOST_ENTRY_POINT_DESCRIPTION
     {
-    LPCWSTR ImageName;
-    LPCWSTR Commands;
-    LPCWSTR EntryPoint;
+    LPCSTR ImageName;
+    LPCSTR Commands;
+    LPCSTR EntryPoint;
     void *Reserved;
     } 	FABRIC_CONTAINERHOST_ENTRY_POINT_DESCRIPTION;
 
 typedef struct FABRIC_EXEHOST_ENTRY_POINT_DESCRIPTION
     {
-    LPCWSTR Program;
-    LPCWSTR Arguments;
+    LPCSTR Program;
+    LPCSTR Arguments;
     FABRIC_EXEHOST_WORKING_FOLDER WorkingFolder;
     void *Reserved;
     } 	FABRIC_EXEHOST_ENTRY_POINT_DESCRIPTION;
@@ -1927,13 +1927,13 @@ typedef struct FABRIC_DLLHOST_HOSTED_DLL_DESCRIPTION
 
 typedef struct FABRIC_DLLHOST_HOSTED_UNMANAGED_DLL_DESCRIPTION
     {
-    LPCWSTR DllName;
+    LPCSTR DllName;
     void *Reserved;
     } 	FABRIC_DLLHOST_HOSTED_UNMANAGED_DLL_DESCRIPTION;
 
 typedef struct FABRIC_DLLHOST_HOSTED_MANAGED_DLL_DESCRIPTION
     {
-    LPCWSTR AssemblyName;
+    LPCSTR AssemblyName;
     void *Reserved;
     } 	FABRIC_DLLHOST_HOSTED_MANAGED_DLL_DESCRIPTION;
 
@@ -1952,10 +1952,10 @@ typedef struct FABRIC_DLLHOST_ENTRY_POINT_DESCRIPTION
 
 typedef struct FABRIC_CODE_PACKAGE_DESCRIPTION
     {
-    LPCWSTR Name;
-    LPCWSTR Version;
-    LPCWSTR ServiceManifestName;
-    LPCWSTR ServiceManifestVersion;
+    LPCSTR Name;
+    LPCSTR Version;
+    LPCSTR ServiceManifestName;
+    LPCSTR ServiceManifestVersion;
     BOOLEAN IsShared;
     FABRIC_EXEHOST_ENTRY_POINT_DESCRIPTION *SetupEntryPoint;
     FABRIC_CODE_PACKAGE_ENTRY_POINT_DESCRIPTION *EntryPoint;
@@ -1964,25 +1964,25 @@ typedef struct FABRIC_CODE_PACKAGE_DESCRIPTION
 
 typedef struct FABRIC_RUNAS_POLICY_DESCRIPTION
     {
-    LPCWSTR UserName;
+    LPCSTR UserName;
     void *Reserved;
     } 	FABRIC_RUNAS_POLICY_DESCRIPTION;
 
 typedef struct FABRIC_CONFIGURATION_PACKAGE_DESCRIPTION
     {
-    LPCWSTR Name;
-    LPCWSTR Version;
-    LPCWSTR ServiceManifestName;
-    LPCWSTR ServiceManifestVersion;
+    LPCSTR Name;
+    LPCSTR Version;
+    LPCSTR ServiceManifestName;
+    LPCSTR ServiceManifestVersion;
     void *Reserved;
     } 	FABRIC_CONFIGURATION_PACKAGE_DESCRIPTION;
 
 typedef struct FABRIC_DATA_PACKAGE_DESCRIPTION
     {
-    LPCWSTR Name;
-    LPCWSTR Version;
-    LPCWSTR ServiceManifestName;
-    LPCWSTR ServiceManifestVersion;
+    LPCSTR Name;
+    LPCSTR Version;
+    LPCSTR ServiceManifestName;
+    LPCSTR ServiceManifestVersion;
     void *Reserved;
     } 	FABRIC_DATA_PACKAGE_DESCRIPTION;
 
@@ -2000,8 +2000,8 @@ typedef struct FABRIC_SERVICE_TYPE_DESCRIPTION_LIST
 
 typedef struct FABRIC_SERVICE_TYPE_DESCRIPTION_EXTENSION
     {
-    LPCWSTR Name;
-    LPCWSTR Value;
+    LPCSTR Name;
+    LPCSTR Value;
     void *Reserved;
     } 	FABRIC_SERVICE_TYPE_DESCRIPTION_EXTENSION;
 
@@ -2013,8 +2013,8 @@ typedef struct FABRIC_SERVICE_TYPE_DESCRIPTION_EXTENSION_LIST
 
 typedef struct FABRIC_STATELESS_SERVICE_TYPE_DESCRIPTION
     {
-    LPCWSTR ServiceTypeName;
-    LPCWSTR PlacementConstraints;
+    LPCSTR ServiceTypeName;
+    LPCSTR PlacementConstraints;
     const FABRIC_SERVICE_LOAD_METRIC_DESCRIPTION_LIST *LoadMetrics;
     const FABRIC_SERVICE_TYPE_DESCRIPTION_EXTENSION_LIST *Extensions;
     BOOLEAN UseImplicitHost;
@@ -2029,8 +2029,8 @@ typedef struct FABRIC_STATELESS_SERVICE_TYPE_DESCRIPTION_EX1
 
 typedef struct FABRIC_STATEFUL_SERVICE_TYPE_DESCRIPTION
     {
-    LPCWSTR ServiceTypeName;
-    LPCWSTR PlacementConstraints;
+    LPCSTR ServiceTypeName;
+    LPCSTR PlacementConstraints;
     const FABRIC_SERVICE_LOAD_METRIC_DESCRIPTION_LIST *LoadMetrics;
     const FABRIC_SERVICE_TYPE_DESCRIPTION_EXTENSION_LIST *Extensions;
     BOOLEAN HasPersistedState;
@@ -2045,7 +2045,7 @@ typedef struct FABRIC_STATEFUL_SERVICE_TYPE_DESCRIPTION_EX1
 
 typedef struct FABRIC_SERVICE_GROUP_TYPE_MEMBER_DESCRIPTION
     {
-    LPCWSTR ServiceTypeName;
+    LPCSTR ServiceTypeName;
     const FABRIC_SERVICE_LOAD_METRIC_DESCRIPTION_LIST *LoadMetrics;
     void *Reserved;
     } 	FABRIC_SERVICE_GROUP_TYPE_MEMBER_DESCRIPTION;
@@ -2072,25 +2072,25 @@ typedef struct FABRIC_SERVICE_GROUP_TYPE_DESCRIPTION_LIST
 
 typedef struct FABRIC_ENDPOINT_RESOURCE_DESCRIPTION
     {
-    LPCWSTR Name;
-    LPCWSTR Protocol;
-    LPCWSTR Type;
+    LPCSTR Name;
+    LPCSTR Protocol;
+    LPCSTR Type;
     ULONG Port;
-    LPCWSTR CertificateName;
+    LPCSTR CertificateName;
     void *Reserved;
     } 	FABRIC_ENDPOINT_RESOURCE_DESCRIPTION;
 
 typedef struct FABRIC_ENDPOINT_RESOURCE_DESCRIPTION_EX1
     {
-    LPCWSTR UriScheme;
-    LPCWSTR PathSuffix;
+    LPCSTR UriScheme;
+    LPCSTR PathSuffix;
     void *Reserved;
     } 	FABRIC_ENDPOINT_RESOURCE_DESCRIPTION_EX1;
 
 typedef struct FABRIC_ENDPOINT_RESOURCE_DESCRIPTION_EX2
     {
-    LPCWSTR CodePackageName;
-    LPCWSTR IpAddressOrFqdn;
+    LPCSTR CodePackageName;
+    LPCSTR IpAddressOrFqdn;
     void *Reserved;
     } 	FABRIC_ENDPOINT_RESOURCE_DESCRIPTION_EX2;
 
@@ -2120,8 +2120,8 @@ typedef struct FABRIC_DATA_PACKAGE_DESCRIPTION_LIST
 
 typedef struct FABRIC_CONFIGURATION_PARAMETER
     {
-    LPCWSTR Name;
-    LPCWSTR Value;
+    LPCSTR Name;
+    LPCSTR Value;
     BOOLEAN MustOverride;
     BOOLEAN IsEncrypted;
     void *Reserved;
@@ -2129,7 +2129,7 @@ typedef struct FABRIC_CONFIGURATION_PARAMETER
 
 typedef struct FABRIC_CONFIGURATION_PARAMETER_EX1
     {
-    LPCWSTR Type;
+    LPCSTR Type;
     void *Reserved;
     } 	FABRIC_CONFIGURATION_PARAMETER_EX1;
 
@@ -2141,7 +2141,7 @@ typedef struct FABRIC_CONFIGURATION_PARAMETER_LIST
 
 typedef struct FABRIC_CONFIGURATION_SECTION
     {
-    LPCWSTR Name;
+    LPCSTR Name;
     const FABRIC_CONFIGURATION_PARAMETER_LIST *Parameters;
     void *Reserved;
     } 	FABRIC_CONFIGURATION_SECTION;
@@ -2161,7 +2161,7 @@ typedef struct FABRIC_CONFIGURATION_SETTINGS
 typedef struct FABRIC_STRING_LIST
     {
     ULONG Count;
-    /* [size_is] */ const LPCWSTR *Items;
+    /* [size_is] */ const LPCSTR *Items;
     } 	FABRIC_STRING_LIST;
 
 typedef struct FABRIC_EPOCH
@@ -2184,7 +2184,7 @@ typedef struct FABRIC_REPLICA_INFORMATION
     FABRIC_REPLICA_ID Id;
     FABRIC_REPLICA_ROLE Role;
     FABRIC_REPLICA_STATUS Status;
-    LPCWSTR ReplicatorAddress;
+    LPCSTR ReplicatorAddress;
     FABRIC_SEQUENCE_NUMBER CurrentProgress;
     FABRIC_SEQUENCE_NUMBER CatchUpCapability;
     void *Reserved;
@@ -2206,7 +2206,7 @@ typedef struct FABRIC_REPLICA_SET_CONFIGURATION
 
 typedef struct FABRIC_LOAD_METRIC
     {
-    LPCWSTR Name;
+    LPCSTR Name;
     ULONG Value;
     void *Reserved;
     } 	FABRIC_LOAD_METRIC;
@@ -2222,7 +2222,7 @@ typedef struct FABRIC_REPLICATOR_SETTINGS
     DWORD Flags;
     DWORD RetryIntervalMilliseconds;
     DWORD BatchAcknowledgementIntervalMilliseconds;
-    LPCWSTR ReplicatorAddress;
+    LPCSTR ReplicatorAddress;
     BOOLEAN RequireServiceAck;
     DWORD InitialReplicationQueueSize;
     DWORD MaxReplicationQueueSize;
@@ -2260,14 +2260,14 @@ typedef struct FABRIC_REPLICATOR_SETTINGS_EX3
 
 typedef struct FABRIC_REPLICATOR_SETTINGS_EX4
     {
-    LPCWSTR ReplicatorListenAddress;
-    LPCWSTR ReplicatorPublishAddress;
+    LPCSTR ReplicatorListenAddress;
+    LPCSTR ReplicatorPublishAddress;
     void *Reserved;
     } 	FABRIC_REPLICATOR_SETTINGS_EX4;
 
 typedef struct FABRIC_NAMED_PROPERTY_METADATA
     {
-    LPCWSTR PropertyName;
+    LPCSTR PropertyName;
     FABRIC_PROPERTY_TYPE_ID TypeId;
     LONG ValueSize;
     FABRIC_SEQUENCE_NUMBER SequenceNumber;
@@ -2278,7 +2278,7 @@ typedef struct FABRIC_NAMED_PROPERTY_METADATA
 
 typedef struct FABRIC_NAMED_PROPERTY_METADATA_EX1
     {
-    LPCWSTR CustomTypeId;
+    LPCSTR CustomTypeId;
     void *Reserved;
     } 	FABRIC_NAMED_PROPERTY_METADATA_EX1;
 
@@ -2291,7 +2291,7 @@ typedef struct FABRIC_NAMED_PROPERTY
 
 typedef struct FABRIC_PUT_PROPERTY_OPERATION
     {
-    LPCWSTR PropertyName;
+    LPCSTR PropertyName;
     FABRIC_PROPERTY_TYPE_ID PropertyTypeId;
     void *PropertyValue;
     void *Reserved;
@@ -2299,43 +2299,43 @@ typedef struct FABRIC_PUT_PROPERTY_OPERATION
 
 typedef struct FABRIC_PUT_CUSTOM_PROPERTY_OPERATION
     {
-    LPCWSTR PropertyName;
+    LPCSTR PropertyName;
     FABRIC_PROPERTY_TYPE_ID PropertyTypeId;
     void *PropertyValue;
-    LPCWSTR PropertyCustomTypeId;
+    LPCSTR PropertyCustomTypeId;
     void *Reserved;
     } 	FABRIC_PUT_CUSTOM_PROPERTY_OPERATION;
 
 typedef struct FABRIC_GET_PROPERTY_OPERATION
     {
-    LPCWSTR PropertyName;
+    LPCSTR PropertyName;
     BOOLEAN IncludeValue;
     void *Reserved;
     } 	FABRIC_GET_PROPERTY_OPERATION;
 
 typedef struct FABRIC_DELETE_PROPERTY_OPERATION
     {
-    LPCWSTR PropertyName;
+    LPCSTR PropertyName;
     void *Reserved;
     } 	FABRIC_DELETE_PROPERTY_OPERATION;
 
 typedef struct FABRIC_CHECK_SEQUENCE_PROPERTY_OPERATION
     {
-    LPCWSTR PropertyName;
+    LPCSTR PropertyName;
     FABRIC_SEQUENCE_NUMBER SequenceNumber;
     void *Reserved;
     } 	FABRIC_CHECK_SEQUENCE_PROPERTY_OPERATION;
 
 typedef struct FABRIC_CHECK_EXISTS_PROPERTY_OPERATION
     {
-    LPCWSTR PropertyName;
+    LPCSTR PropertyName;
     BOOLEAN ExistenceCheck;
     void *Reserved;
     } 	FABRIC_CHECK_EXISTS_PROPERTY_OPERATION;
 
 typedef struct FABRIC_CHECK_VALUE_PROPERTY_OPERATION
     {
-    LPCWSTR PropertyName;
+    LPCSTR PropertyName;
     FABRIC_PROPERTY_TYPE_ID PropertyTypeId;
     void *PropertyValue;
     void *Reserved;
@@ -2362,7 +2362,7 @@ typedef struct FABRIC_NODE_TRANSITION_DESCRIPTION
 typedef struct FABRIC_NODE_STOP_DESCRIPTION
     {
     FABRIC_TEST_COMMAND_OPERATION_ID OperationId;
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_NODE_INSTANCE_ID NodeInstanceId;
     DWORD StopDurationInSeconds;
     void *Reserved;
@@ -2371,7 +2371,7 @@ typedef struct FABRIC_NODE_STOP_DESCRIPTION
 typedef struct FABRIC_NODE_START_DESCRIPTION
     {
     FABRIC_TEST_COMMAND_OPERATION_ID OperationId;
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_NODE_INSTANCE_ID NodeInstanceId;
     void *Reserved;
     } 	FABRIC_NODE_START_DESCRIPTION;
@@ -2393,8 +2393,8 @@ typedef struct FABRIC_SERVICE_FROM_TEMPLATE_DESCRIPTION
     {
     FABRIC_URI ApplicationName;
     FABRIC_URI ServiceName;
-    LPCWSTR ServiceDnsName;
-    LPCWSTR ServiceTypeName;
+    LPCSTR ServiceDnsName;
+    LPCSTR ServiceTypeName;
     FABRIC_SERVICE_PACKAGE_ACTIVATION_MODE ServicePackageActivationMode;
     ULONG InitializationDataSize;
     BYTE *InitializationData;
@@ -2405,7 +2405,7 @@ typedef struct FABRIC_SERVICE_GROUP_FROM_TEMPLATE_DESCRIPTION
     {
     FABRIC_URI ApplicationName;
     FABRIC_URI ServiceName;
-    LPCWSTR ServiceTypeName;
+    LPCSTR ServiceTypeName;
     FABRIC_SERVICE_PACKAGE_ACTIVATION_MODE ServicePackageActivationMode;
     ULONG InitializationDataSize;
     BYTE *InitializationData;
@@ -2414,7 +2414,7 @@ typedef struct FABRIC_SERVICE_GROUP_FROM_TEMPLATE_DESCRIPTION
 
 typedef struct FABRIC_UPGRADE_DOMAIN_STATUS_DESCRIPTION
     {
-    LPCWSTR Name;
+    LPCSTR Name;
     FABRIC_UPGRADE_DOMAIN_STATE State;
     void *Reserved;
     } 	FABRIC_UPGRADE_DOMAIN_STATUS_DESCRIPTION;
@@ -2450,7 +2450,7 @@ typedef struct FABRIC_UPGRADE_SAFETY_CHECK_LIST
 
 typedef struct FABRIC_NODE_UPGRADE_PROGRESS
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_NODE_UPGRADE_PHASE UpgradePhase;
     const FABRIC_UPGRADE_SAFETY_CHECK_LIST *PendingSafetyChecks;
     void *Reserved;
@@ -2464,7 +2464,7 @@ typedef struct FABRIC_NODE_UPGRADE_PROGRESS_LIST
 
 typedef struct FABRIC_UPGRADE_DOMAIN_PROGRESS
     {
-    LPCWSTR UpgradeDomainName;
+    LPCSTR UpgradeDomainName;
     FABRIC_NODE_UPGRADE_PROGRESS_LIST *NodeProgressList;
     void *Reserved;
     } 	FABRIC_UPGRADE_DOMAIN_PROGRESS;
@@ -2473,13 +2473,13 @@ typedef struct FABRIC_STATELESS_SERVICE_DESCRIPTION
     {
     FABRIC_URI ApplicationName;
     FABRIC_URI ServiceName;
-    LPCWSTR ServiceTypeName;
+    LPCSTR ServiceTypeName;
     ULONG InitializationDataSize;
     /* [size_is] */ BYTE *InitializationData;
     FABRIC_PARTITION_SCHEME PartitionScheme;
     void *PartitionSchemeDescription;
     LONG InstanceCount;
-    LPCWSTR PlacementConstraints;
+    LPCSTR PlacementConstraints;
     ULONG CorrelationCount;
     /* [size_is] */ FABRIC_SERVICE_CORRELATION_DESCRIPTION *Correlations;
     ULONG MetricCount;
@@ -2503,7 +2503,7 @@ typedef struct FABRIC_STATELESS_SERVICE_DESCRIPTION_EX2
 typedef struct FABRIC_STATELESS_SERVICE_DESCRIPTION_EX3
     {
     FABRIC_SERVICE_PACKAGE_ACTIVATION_MODE ServicePackageActivationMode;
-    LPCWSTR ServiceDnsName;
+    LPCSTR ServiceDnsName;
     void *Reserved;
     } 	FABRIC_STATELESS_SERVICE_DESCRIPTION_EX3;
 
@@ -2523,7 +2523,7 @@ typedef struct FABRIC_STATELESS_SERVICE_UPDATE_DESCRIPTION
 
 typedef struct FABRIC_STATELESS_SERVICE_UPDATE_DESCRIPTION_EX1
     {
-    LPCWSTR PlacementConstraints;
+    LPCSTR PlacementConstraints;
     FABRIC_SERVICE_PLACEMENT_POLICY_LIST *PolicyList;
     ULONG CorrelationCount;
     /* [size_is] */ FABRIC_SERVICE_CORRELATION_DESCRIPTION *Correlations;
@@ -2551,14 +2551,14 @@ typedef struct FABRIC_STATEFUL_SERVICE_DESCRIPTION
     {
     FABRIC_URI ApplicationName;
     FABRIC_URI ServiceName;
-    LPCWSTR ServiceTypeName;
+    LPCSTR ServiceTypeName;
     ULONG InitializationDataSize;
     /* [size_is] */ BYTE *InitializationData;
     FABRIC_PARTITION_SCHEME PartitionScheme;
     void *PartitionSchemeDescription;
     LONG TargetReplicaSetSize;
     LONG MinReplicaSetSize;
-    LPCWSTR PlacementConstraints;
+    LPCSTR PlacementConstraints;
     ULONG CorrelationCount;
     /* [size_is] */ FABRIC_SERVICE_CORRELATION_DESCRIPTION *Correlations;
     ULONG MetricCount;
@@ -2598,7 +2598,7 @@ typedef struct FABRIC_STATEFUL_SERVICE_DESCRIPTION_EX2
 typedef struct FABRIC_STATEFUL_SERVICE_DESCRIPTION_EX3
     {
     FABRIC_SERVICE_PACKAGE_ACTIVATION_MODE ServicePackageActivationMode;
-    LPCWSTR ServiceDnsName;
+    LPCSTR ServiceDnsName;
     void *Reserved;
     } 	FABRIC_STATEFUL_SERVICE_DESCRIPTION_EX3;
 
@@ -2632,7 +2632,7 @@ typedef struct FABRIC_STATEFUL_SERVICE_UPDATE_DESCRIPTION_EX2
 
 typedef struct FABRIC_STATEFUL_SERVICE_UPDATE_DESCRIPTION_EX3
     {
-    LPCWSTR PlacementConstraints;
+    LPCSTR PlacementConstraints;
     FABRIC_SERVICE_PLACEMENT_POLICY_LIST *PolicyList;
     ULONG CorrelationCount;
     /* [size_is] */ FABRIC_SERVICE_CORRELATION_DESCRIPTION *Correlations;
@@ -2659,9 +2659,9 @@ typedef struct FABRIC_STATEFUL_SERVICE_UPDATE_DESCRIPTION_EX5
 typedef struct FABRIC_NAMED_REPARTITION_DESCRIPTION
     {
     ULONG NamesToAddCount;
-    /* [size_is] */ LPCWSTR *NamesToAdd;
+    /* [size_is] */ LPCSTR *NamesToAdd;
     ULONG NamesToRemoveCount;
-    /* [size_is] */ LPCWSTR *NamesToRemove;
+    /* [size_is] */ LPCSTR *NamesToRemove;
     void *Reserved;
     } 	FABRIC_NAMED_REPARTITION_DESCRIPTION;
 
@@ -2676,13 +2676,13 @@ typedef struct FABRIC_UNIFORM_INT64_RANGE_PARTITION_SCHEME_DESCRIPTION
 typedef struct FABRIC_NAMED_PARTITION_SCHEME_DESCRIPTION
     {
     LONG PartitionCount;
-    /* [size_is] */ LPCWSTR *Names;
+    /* [size_is] */ LPCSTR *Names;
     void *Reserved;
     } 	FABRIC_NAMED_PARTITION_SCHEME_DESCRIPTION;
 
 typedef struct FABRIC_RESOLVED_SERVICE_ENDPOINT
     {
-    LPCWSTR Address;
+    LPCSTR Address;
     FABRIC_SERVICE_ENDPOINT_ROLE Role;
     void *Reserved;
     } 	FABRIC_RESOLVED_SERVICE_ENDPOINT;
@@ -2715,8 +2715,8 @@ typedef struct FABRIC_SERVICE_NOTIFICATION_FILTER_DESCRIPTION
 
 typedef struct FABRIC_APPLICATION_PARAMETER
     {
-    LPCWSTR Name;
-    LPCWSTR Value;
+    LPCSTR Name;
+    LPCSTR Value;
     void *Reserved;
     } 	FABRIC_APPLICATION_PARAMETER;
 
@@ -2737,15 +2737,15 @@ typedef struct FABRIC_STRING_MAP
 typedef struct FABRIC_APPLICATION_DESCRIPTION
     {
     FABRIC_URI ApplicationName;
-    LPCWSTR ApplicationTypeName;
-    LPCWSTR ApplicationTypeVersion;
+    LPCSTR ApplicationTypeName;
+    LPCSTR ApplicationTypeVersion;
     const FABRIC_APPLICATION_PARAMETER_LIST *ApplicationParameters;
     void *Reserved;
     } 	FABRIC_APPLICATION_DESCRIPTION;
 
 typedef struct FABRIC_APPLICATION_METRIC_DESCRIPTION
     {
-    LPCWSTR Name;
+    LPCSTR Name;
     ULONG NodeReservationCapacity;
     ULONG MaximumNodeCapacity;
     ULONG TotalApplicationCapacity;
@@ -2824,7 +2824,7 @@ typedef struct FABRIC_ROLLING_UPGRADE_POLICY_DESCRIPTION_EX2
 typedef struct FABRIC_APPLICATION_UPGRADE_DESCRIPTION
     {
     FABRIC_URI ApplicationName;
-    LPCWSTR TargetApplicationTypeVersion;
+    LPCSTR TargetApplicationTypeVersion;
     FABRIC_APPLICATION_PARAMETER_LIST *ApplicationParameters;
     FABRIC_APPLICATION_UPGRADE_KIND UpgradeKind;
     void *UpgradePolicyDescription;
@@ -2842,8 +2842,8 @@ typedef struct FABRIC_APPLICATION_UPGRADE_UPDATE_DESCRIPTION
 
 typedef struct FABRIC_UPGRADE_DESCRIPTION
     {
-    LPCWSTR CodeVersion;
-    LPCWSTR ConfigVersion;
+    LPCSTR CodeVersion;
+    LPCSTR ConfigVersion;
     FABRIC_UPGRADE_KIND UpgradeKind;
     void *UpgradePolicyDescription;
     void *Reserved;
@@ -2859,7 +2859,7 @@ typedef struct FABRIC_UPGRADE_UPDATE_DESCRIPTION
 
 typedef struct FABRIC_SERVICE_GROUP_MEMBER_DESCRIPTION
     {
-    LPCWSTR ServiceType;
+    LPCSTR ServiceType;
     FABRIC_URI ServiceName;
     ULONG InitializationDataSize;
     /* [size_is] */ const byte *InitializationData;
@@ -2884,7 +2884,7 @@ typedef struct FABRIC_SERVICE_GROUP_UPDATE_DESCRIPTION
 
 typedef struct FABRIC_KEY_VALUE_STORE_ITEM_METADATA
     {
-    LPCWSTR Key;
+    LPCSTR Key;
     LONG ValueSizeInBytes;
     FABRIC_SEQUENCE_NUMBER SequenceNumber;
     FILETIME LastModifiedUtc;
@@ -2949,7 +2949,7 @@ typedef struct FABRIC_KEY_VALUE_STORE_REPLICA_SETTINGS_EX3
 
 typedef struct FABRIC_ESE_LOCAL_STORE_SETTINGS
     {
-    LPCWSTR DbFolderPath;
+    LPCSTR DbFolderPath;
     LONG LogFileSizeInKB;
     LONG LogBufferSizeInKB;
     LONG MaxCursors;
@@ -2998,9 +2998,9 @@ typedef struct FABRIC_ESE_LOCAL_STORE_SETTINGS_EX6
 
 typedef struct FABRIC_NODE_CONTEXT
     {
-    LPCWSTR NodeName;
-    LPCWSTR NodeType;
-    LPCWSTR IPAddressOrFQDN;
+    LPCSTR NodeName;
+    LPCSTR NodeType;
+    LPCSTR IPAddressOrFQDN;
     FABRIC_NODE_INSTANCE_ID NodeInstanceId;
     FABRIC_NODE_ID NodeId;
     void *Reserved;
@@ -3019,7 +3019,7 @@ typedef struct FABRIC_CLIENT_SETTINGS
 
 typedef struct FABRIC_CLIENT_SETTINGS_EX1
     {
-    LPCWSTR ClientFriendlyName;
+    LPCSTR ClientFriendlyName;
     ULONG PartitionLocationCacheBucketCount;
     ULONG HealthReportRetrySendIntervalInSeconds;
     void *Reserved;
@@ -3046,35 +3046,35 @@ typedef struct FABRIC_CLIENT_SETTINGS_EX4
 
 typedef struct FABRIC_QUERY_PAGING_DESCRIPTION
     {
-    LPCWSTR ContinuationToken;
+    LPCSTR ContinuationToken;
     LONG MaxResults;
     void *Reserved;
     } 	FABRIC_QUERY_PAGING_DESCRIPTION;
 
 typedef struct FABRIC_CLUSTER_MANIFEST_QUERY_DESCRIPTION
     {
-    LPCWSTR ClusterManifestVersion;
+    LPCSTR ClusterManifestVersion;
     void *Reserved;
     } 	FABRIC_CLUSTER_MANIFEST_QUERY_DESCRIPTION;
 
 typedef struct FABRIC_NODE_QUERY_DESCRIPTION
     {
-    LPCWSTR NodeNameFilter;
+    LPCSTR NodeNameFilter;
     void *Reserved;
     } 	FABRIC_NODE_QUERY_DESCRIPTION;
 
 typedef struct FABRIC_NODE_QUERY_RESULT_ITEM
     {
-    LPCWSTR NodeName;
-    LPCWSTR IpAddressOrFQDN;
-    LPCWSTR NodeType;
-    LPCWSTR CodeVersion;
-    LPCWSTR ConfigVersion;
+    LPCSTR NodeName;
+    LPCSTR IpAddressOrFQDN;
+    LPCSTR NodeType;
+    LPCSTR CodeVersion;
+    LPCSTR ConfigVersion;
     FABRIC_QUERY_NODE_STATUS NodeStatus;
     LONGLONG NodeUpTimeInSeconds;
     FABRIC_HEALTH_STATE AggregatedHealthState;
     BOOLEAN IsSeedNode;
-    LPCWSTR UpgradeDomain;
+    LPCSTR UpgradeDomain;
     FABRIC_URI FaultDomain;
     void *Reserved;
     } 	FABRIC_NODE_QUERY_RESULT_ITEM;
@@ -3093,7 +3093,7 @@ typedef struct FABRIC_NODE_QUERY_RESULT_ITEM_EX2
 
 typedef struct FABRIC_NODE_DEACTIVATION_TASK_ID
     {
-    LPCWSTR Id;
+    LPCSTR Id;
     FABRIC_NODE_DEACTIVATION_TASK_TYPE Type;
     void *Reserved;
     } 	FABRIC_NODE_DEACTIVATION_TASK_ID;
@@ -3181,22 +3181,22 @@ typedef struct FABRIC_NODE_QUERY_RESULT_LIST
 
 typedef struct FABRIC_APPLICATION_TYPE_QUERY_DESCRIPTION
     {
-    LPCWSTR ApplicationTypeNameFilter;
+    LPCSTR ApplicationTypeNameFilter;
     void *Reserved;
     } 	FABRIC_APPLICATION_TYPE_QUERY_DESCRIPTION;
 
 typedef struct PAGED_FABRIC_APPLICATION_TYPE_QUERY_DESCRIPTION
     {
-    LPCWSTR ApplicationTypeNameFilter;
+    LPCSTR ApplicationTypeNameFilter;
     LONG MaxResults;
-    LPCWSTR ContinuationToken;
+    LPCSTR ContinuationToken;
     BOOLEAN ExcludeApplicationParameters;
     void *Reserved;
     } 	PAGED_FABRIC_APPLICATION_TYPE_QUERY_DESCRIPTION;
 
 typedef struct PAGED_FABRIC_APPLICATION_TYPE_QUERY_DESCRIPTION_EX1
     {
-    LPCWSTR ApplicationTypeVersionFilter;
+    LPCSTR ApplicationTypeVersionFilter;
     void *Reserved;
     } 	PAGED_FABRIC_APPLICATION_TYPE_QUERY_DESCRIPTION_EX1;
 
@@ -3208,8 +3208,8 @@ typedef struct PAGED_FABRIC_APPLICATION_TYPE_QUERY_DESCRIPTION_EX2
 
 typedef struct FABRIC_APPLICATION_TYPE_QUERY_RESULT_ITEM
     {
-    LPCWSTR ApplicationTypeName;
-    LPCWSTR ApplicationTypeVersion;
+    LPCSTR ApplicationTypeName;
+    LPCSTR ApplicationTypeVersion;
     FABRIC_APPLICATION_PARAMETER_LIST *DefaultParameters;
     void *Reserved;
     } 	FABRIC_APPLICATION_TYPE_QUERY_RESULT_ITEM;
@@ -3217,7 +3217,7 @@ typedef struct FABRIC_APPLICATION_TYPE_QUERY_RESULT_ITEM
 typedef struct FABRIC_APPLICATION_TYPE_QUERY_RESULT_ITEM_EX1
     {
     FABRIC_APPLICATION_TYPE_STATUS Status;
-    LPCWSTR StatusDetails;
+    LPCSTR StatusDetails;
     void *Reserved;
     } 	FABRIC_APPLICATION_TYPE_QUERY_RESULT_ITEM_EX1;
 
@@ -3235,30 +3235,30 @@ typedef struct FABRIC_APPLICATION_TYPE_QUERY_RESULT_LIST
 
 typedef struct FABRIC_SERVICE_TYPE_QUERY_DESCRIPTION
     {
-    LPCWSTR ApplicationTypeName;
-    LPCWSTR ApplicationTypeVersion;
-    LPCWSTR ServiceTypeNameFilter;
+    LPCSTR ApplicationTypeName;
+    LPCSTR ApplicationTypeVersion;
+    LPCSTR ServiceTypeNameFilter;
     void *Reserved;
     } 	FABRIC_SERVICE_TYPE_QUERY_DESCRIPTION;
 
 typedef struct FABRIC_SERVICE_GROUP_MEMBER_TYPE_QUERY_DESCRIPTION
     {
-    LPCWSTR ApplicationTypeName;
-    LPCWSTR ApplicationTypeVersion;
-    LPCWSTR ServiceGroupTypeNameFilter;
+    LPCSTR ApplicationTypeName;
+    LPCSTR ApplicationTypeVersion;
+    LPCSTR ServiceGroupTypeNameFilter;
     void *Reserved;
     } 	FABRIC_SERVICE_GROUP_MEMBER_TYPE_QUERY_DESCRIPTION;
 
 typedef struct FABRIC_SERVICE_TYPE_QUERY_RESULT_ITEM
     {
     FABRIC_SERVICE_TYPE_DESCRIPTION *ServiceTypeDescription;
-    LPCWSTR ServiceManifestVersion;
+    LPCSTR ServiceManifestVersion;
     void *Reserved;
     } 	FABRIC_SERVICE_TYPE_QUERY_RESULT_ITEM;
 
 typedef struct FABRIC_SERVICE_TYPE_QUERY_RESULT_ITEM_EX1
     {
-    LPCWSTR ServiceManifestName;
+    LPCSTR ServiceManifestName;
     void *Reserved;
     } 	FABRIC_SERVICE_TYPE_QUERY_RESULT_ITEM_EX1;
 
@@ -3277,8 +3277,8 @@ typedef struct FABRIC_SERVICE_TYPE_QUERY_RESULT_LIST
 typedef struct FABRIC_SERVICE_GROUP_MEMBER_TYPE_QUERY_RESULT_ITEM
     {
     FABRIC_SERVICE_GROUP_TYPE_MEMBER_DESCRIPTION_LIST *ServiceGroupMemberTypeDescription;
-    LPCWSTR ServiceManifestVersion;
-    LPCWSTR ServiceManifestName;
+    LPCSTR ServiceManifestVersion;
+    LPCSTR ServiceManifestName;
     void *Reserved;
     } 	FABRIC_SERVICE_GROUP_MEMBER_TYPE_QUERY_RESULT_ITEM;
 
@@ -3296,13 +3296,13 @@ typedef struct FABRIC_APPLICATION_QUERY_DESCRIPTION
 
 typedef struct FABRIC_APPLICATION_QUERY_DESCRIPTION_EX1
     {
-    LPCWSTR ContinuationToken;
+    LPCSTR ContinuationToken;
     void *Reserved;
     } 	FABRIC_APPLICATION_QUERY_DESCRIPTION_EX1;
 
 typedef struct FABRIC_APPLICATION_QUERY_DESCRIPTION_EX2
     {
-    LPCWSTR ApplicationTypeNameFilter;
+    LPCSTR ApplicationTypeNameFilter;
     BOOLEAN ExcludeApplicationParameters;
     void *Reserved;
     } 	FABRIC_APPLICATION_QUERY_DESCRIPTION_EX2;
@@ -3322,8 +3322,8 @@ typedef struct FABRIC_APPLICATION_QUERY_DESCRIPTION_EX4
 typedef struct FABRIC_APPLICATION_QUERY_RESULT_ITEM
     {
     FABRIC_URI ApplicationName;
-    LPCWSTR ApplicationTypeName;
-    LPCWSTR ApplicationTypeVersion;
+    LPCSTR ApplicationTypeName;
+    LPCSTR ApplicationTypeVersion;
     FABRIC_APPLICATION_STATUS Status;
     FABRIC_HEALTH_STATE HealthState;
     FABRIC_APPLICATION_PARAMETER_LIST *ApplicationParameters;
@@ -3332,7 +3332,7 @@ typedef struct FABRIC_APPLICATION_QUERY_RESULT_ITEM
 
 typedef struct FABRIC_APPLICATION_QUERY_RESULT_ITEM_EX1
     {
-    LPCWSTR UpgradeTypeVersion;
+    LPCSTR UpgradeTypeVersion;
     FABRIC_APPLICATION_PARAMETER_LIST *UpgradeParameters;
     void *Reserved;
     } 	FABRIC_APPLICATION_QUERY_RESULT_ITEM_EX1;
@@ -3358,13 +3358,13 @@ typedef struct FABRIC_SERVICE_QUERY_DESCRIPTION
 
 typedef struct FABRIC_SERVICE_QUERY_DESCRIPTION_EX1
     {
-    LPCWSTR ContinuationToken;
+    LPCSTR ContinuationToken;
     void *Reserved;
     } 	FABRIC_SERVICE_QUERY_DESCRIPTION_EX1;
 
 typedef struct FABRIC_SERVICE_QUERY_DESCRIPTION_EX2
     {
-    LPCWSTR ServiceTypeNameFilter;
+    LPCSTR ServiceTypeNameFilter;
     void *Reserved;
     } 	FABRIC_SERVICE_QUERY_DESCRIPTION_EX2;
 
@@ -3389,8 +3389,8 @@ typedef struct FABRIC_SERVICE_QUERY_RESULT_LIST
 typedef struct FABRIC_STATELESS_SERVICE_QUERY_RESULT_ITEM
     {
     FABRIC_URI ServiceName;
-    LPCWSTR ServiceTypeName;
-    LPCWSTR ServiceManifestVersion;
+    LPCSTR ServiceTypeName;
+    LPCSTR ServiceManifestVersion;
     FABRIC_HEALTH_STATE HealthState;
     void *Reserved;
     } 	FABRIC_STATELESS_SERVICE_QUERY_RESULT_ITEM;
@@ -3410,8 +3410,8 @@ typedef struct FABRIC_STATELESS_SERVICE_QUERY_RESULT_ITEM_EX2
 typedef struct FABRIC_STATEFUL_SERVICE_QUERY_RESULT_ITEM
     {
     FABRIC_URI ServiceName;
-    LPCWSTR ServiceTypeName;
-    LPCWSTR ServiceManifestVersion;
+    LPCSTR ServiceTypeName;
+    LPCSTR ServiceManifestVersion;
     BOOLEAN HasPersistedState;
     FABRIC_HEALTH_STATE HealthState;
     void *Reserved;
@@ -3438,7 +3438,7 @@ typedef struct FABRIC_SERVICE_GROUP_MEMBER_QUERY_DESCRIPTION
 
 typedef struct FABRIC_SERVICE_GROUP_MEMBER_MEMBER_QUERY_RESULT_ITEM
     {
-    LPCWSTR ServiceType;
+    LPCSTR ServiceType;
     FABRIC_URI ServiceName;
     void *Reserved;
     } 	FABRIC_SERVICE_GROUP_MEMBER_MEMBER_QUERY_RESULT_ITEM;
@@ -3492,13 +3492,13 @@ typedef struct FABRIC_SERVICE_PARTITION_QUERY_DESCRIPTION
 
 typedef struct FABRIC_NODE_LOAD_INFORMATION_QUERY_DESCRIPTION
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     void *Reserved;
     } 	FABRIC_NODE_LOAD_INFORMATION_QUERY_DESCRIPTION;
 
 typedef struct FABRIC_APPLICATION_LOAD_INFORMATION_QUERY_DESCRIPTION
     {
-    LPCWSTR ApplicationName;
+    LPCSTR ApplicationName;
     void *Reserved;
     } 	FABRIC_APPLICATION_LOAD_INFORMATION_QUERY_DESCRIPTION;
 
@@ -3571,8 +3571,8 @@ typedef struct FABRIC_STATEFUL_SERVICE_REPLICA_QUERY_RESULT_ITEM
     FABRIC_REPLICA_ROLE ReplicaRole;
     FABRIC_QUERY_SERVICE_REPLICA_STATUS ReplicaStatus;
     FABRIC_HEALTH_STATE AggregatedHealthState;
-    LPCWSTR ReplicaAddress;
-    LPCWSTR NodeName;
+    LPCSTR ReplicaAddress;
+    LPCSTR NodeName;
     LONGLONG LastInBuildDurationInSeconds;
     void *Reserved;
     } 	FABRIC_STATEFUL_SERVICE_REPLICA_QUERY_RESULT_ITEM;
@@ -3582,22 +3582,22 @@ typedef struct FABRIC_STATELESS_SERVICE_INSTANCE_QUERY_RESULT_ITEM
     FABRIC_INSTANCE_ID InstanceId;
     FABRIC_QUERY_SERVICE_REPLICA_STATUS ReplicaStatus;
     FABRIC_HEALTH_STATE AggregatedHealthState;
-    LPCWSTR ReplicaAddress;
-    LPCWSTR NodeName;
+    LPCSTR ReplicaAddress;
+    LPCSTR NodeName;
     LONGLONG LastInBuildDurationInSeconds;
     void *Reserved;
     } 	FABRIC_STATELESS_SERVICE_INSTANCE_QUERY_RESULT_ITEM;
 
 typedef struct FABRIC_DEPLOYED_APPLICATION_QUERY_DESCRIPTION
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_URI ApplicationNameFilter;
     void *Reserved;
     } 	FABRIC_DEPLOYED_APPLICATION_QUERY_DESCRIPTION;
 
 typedef struct FABRIC_PAGED_DEPLOYED_APPLICATION_QUERY_DESCRIPTION
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_URI ApplicationNameFilter;
     BOOLEAN IncludeHealthState;
     const FABRIC_QUERY_PAGING_DESCRIPTION *PagingDescription;
@@ -3607,16 +3607,16 @@ typedef struct FABRIC_PAGED_DEPLOYED_APPLICATION_QUERY_DESCRIPTION
 typedef struct FABRIC_DEPLOYED_APPLICATION_QUERY_RESULT_ITEM
     {
     FABRIC_URI ApplicationName;
-    LPCWSTR ApplicationTypeName;
+    LPCSTR ApplicationTypeName;
     FABRIC_DEPLOYMENT_STATUS DeployedApplicationStatus;
     void *Reserved;
     } 	FABRIC_DEPLOYED_APPLICATION_QUERY_RESULT_ITEM;
 
 typedef struct FABRIC_DEPLOYED_APPLICATION_QUERY_RESULT_ITEM_EX
     {
-    LPCWSTR WorkDirectory;
-    LPCWSTR LogDirectory;
-    LPCWSTR TempDirectory;
+    LPCSTR WorkDirectory;
+    LPCSTR LogDirectory;
+    LPCSTR TempDirectory;
     void *Reserved;
     } 	FABRIC_DEPLOYED_APPLICATION_QUERY_RESULT_ITEM_EX;
 
@@ -3634,23 +3634,23 @@ typedef struct FABRIC_DEPLOYED_APPLICATION_QUERY_RESULT_LIST
 
 typedef struct FABRIC_DEPLOYED_SERVICE_PACKAGE_QUERY_DESCRIPTION
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_URI ApplicationName;
-    LPCWSTR ServiceManifestNameFilter;
+    LPCSTR ServiceManifestNameFilter;
     void *Reserved;
     } 	FABRIC_DEPLOYED_SERVICE_PACKAGE_QUERY_DESCRIPTION;
 
 typedef struct FABRIC_DEPLOYED_SERVICE_PACKAGE_QUERY_RESULT_ITEM
     {
-    LPCWSTR ServiceManifestName;
-    LPCWSTR ServiceManifestVersion;
+    LPCSTR ServiceManifestName;
+    LPCSTR ServiceManifestVersion;
     FABRIC_DEPLOYMENT_STATUS DeployedServicePackageStatus;
     void *Reserved;
     } 	FABRIC_DEPLOYED_SERVICE_PACKAGE_QUERY_RESULT_ITEM;
 
 typedef struct FABRIC_DEPLOYED_SERVICE_PACKAGE_QUERY_RESULT_ITEM_EX1
     {
-    LPCWSTR ServicePackageActivationId;
+    LPCSTR ServicePackageActivationId;
     void *Reserved;
     } 	FABRIC_DEPLOYED_SERVICE_PACKAGE_QUERY_RESULT_ITEM_EX1;
 
@@ -3662,25 +3662,25 @@ typedef struct FABRIC_DEPLOYED_SERVICE_PACKAGE_QUERY_RESULT_LIST
 
 typedef struct FABRIC_DEPLOYED_SERVICE_TYPE_QUERY_DESCRIPTION
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_URI ApplicationName;
-    LPCWSTR ServiceManifestNameFilter;
-    LPCWSTR ServiceTypeNameFilter;
+    LPCSTR ServiceManifestNameFilter;
+    LPCSTR ServiceTypeNameFilter;
     void *Reserved;
     } 	FABRIC_DEPLOYED_SERVICE_TYPE_QUERY_DESCRIPTION;
 
 typedef struct FABRIC_DEPLOYED_SERVICE_TYPE_QUERY_RESULT_ITEM
     {
-    LPCWSTR ServiceTypeName;
-    LPCWSTR CodePackageName;
-    LPCWSTR ServiceManifestName;
+    LPCSTR ServiceTypeName;
+    LPCSTR CodePackageName;
+    LPCSTR ServiceManifestName;
     FABRIC_SERVICE_TYPE_REGISTRATION_STATUS Status;
     void *Reserved;
     } 	FABRIC_DEPLOYED_SERVICE_TYPE_QUERY_RESULT_ITEM;
 
 typedef struct FABRIC_DEPLOYED_SERVICE_TYPE_QUERY_RESULT_ITEM_EX1
     {
-    LPCWSTR ServicePackageActivationId;
+    LPCSTR ServicePackageActivationId;
     void *Reserved;
     } 	FABRIC_DEPLOYED_SERVICE_TYPE_QUERY_RESULT_ITEM_EX1;
 
@@ -3708,9 +3708,9 @@ typedef struct FABRIC_CODE_PACKAGE_ENTRY_POINT_STATISTICS
 
 typedef struct FABRIC_CODE_PACKAGE_ENTRY_POINT
     {
-    LPCWSTR EntryPointLocation;
+    LPCSTR EntryPointLocation;
     LONGLONG ProcessId;
-    LPCWSTR RunAsUserName;
+    LPCSTR RunAsUserName;
     FABRIC_ENTRY_POINT_STATUS EntryPointStatus;
     FILETIME NextActivationUtc;
     const FABRIC_CODE_PACKAGE_ENTRY_POINT_STATISTICS *Statistics;
@@ -3725,18 +3725,18 @@ typedef struct FABRIC_CODE_PACKAGE_ENTRY_POINT_EX1
 
 typedef struct FABRIC_DEPLOYED_CODE_PACKAGE_QUERY_DESCRIPTION
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_URI ApplicationName;
-    LPCWSTR ServiceManifestNameFilter;
-    LPCWSTR CodePackageNameFilter;
+    LPCSTR ServiceManifestNameFilter;
+    LPCSTR CodePackageNameFilter;
     void *Reserved;
     } 	FABRIC_DEPLOYED_CODE_PACKAGE_QUERY_DESCRIPTION;
 
 typedef struct FABRIC_DEPLOYED_CODE_PACKAGE_QUERY_RESULT_ITEM
     {
-    LPCWSTR CodePackageName;
-    LPCWSTR CodePackageVersion;
-    LPCWSTR ServiceManifestName;
+    LPCSTR CodePackageName;
+    LPCSTR CodePackageVersion;
+    LPCSTR ServiceManifestName;
     ULONG RunFrequencyInterval;
     FABRIC_DEPLOYMENT_STATUS DeployedCodePackageStatus;
     const FABRIC_CODE_PACKAGE_ENTRY_POINT *SetupEntryPoint;
@@ -3746,7 +3746,7 @@ typedef struct FABRIC_DEPLOYED_CODE_PACKAGE_QUERY_RESULT_ITEM
 
 typedef struct FABRIC_DEPLOYED_CODE_PACKAGE_QUERY_RESULT_ITEM_EX1
     {
-    LPCWSTR ServicePackageActivationId;
+    LPCSTR ServicePackageActivationId;
     FABRIC_HOST_TYPE HostType;
     FABRIC_HOST_ISOLATION_MODE HostIsolationMode;
     void *Reserved;
@@ -3760,9 +3760,9 @@ typedef struct FABRIC_DEPLOYED_CODE_PACKAGE_QUERY_RESULT_LIST
 
 typedef struct FABRIC_DEPLOYED_SERVICE_REPLICA_QUERY_DESCRIPTION
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_URI ApplicationName;
-    LPCWSTR ServiceManifestNameFilter;
+    LPCSTR ServiceManifestNameFilter;
     FABRIC_PARTITION_ID PartitionIdFilter;
     void *Reserved;
     } 	FABRIC_DEPLOYED_SERVICE_REPLICA_QUERY_DESCRIPTION;
@@ -3791,26 +3791,26 @@ typedef struct FABRIC_DEPLOYED_SERVICE_REPLICA_QUERY_RESULT_LIST
 typedef struct FABRIC_DEPLOYED_STATEFUL_SERVICE_REPLICA_QUERY_RESULT_ITEM
     {
     FABRIC_URI ServiceName;
-    LPCWSTR ServiceTypeName;
-    LPCWSTR ServiceManifestVersion;
-    LPCWSTR CodePackageName;
+    LPCSTR ServiceTypeName;
+    LPCSTR ServiceManifestVersion;
+    LPCSTR CodePackageName;
     FABRIC_PARTITION_ID PartitionId;
     FABRIC_REPLICA_ID ReplicaId;
     FABRIC_REPLICA_ROLE ReplicaRole;
     FABRIC_QUERY_SERVICE_REPLICA_STATUS ReplicaStatus;
-    LPCWSTR Address;
+    LPCSTR Address;
     void *Reserved;
     } 	FABRIC_DEPLOYED_STATEFUL_SERVICE_REPLICA_QUERY_RESULT_ITEM;
 
 typedef struct FABRIC_DEPLOYED_STATEFUL_SERVICE_REPLICA_QUERY_RESULT_ITEM_EX1
     {
-    LPCWSTR ServiceManifestName;
+    LPCSTR ServiceManifestName;
     void *Reserved;
     } 	FABRIC_DEPLOYED_STATEFUL_SERVICE_REPLICA_QUERY_RESULT_ITEM_EX1;
 
 typedef struct FABRIC_DEPLOYED_STATEFUL_SERVICE_REPLICA_QUERY_RESULT_ITEM_EX2
     {
-    LPCWSTR ServicePackageActivationId;
+    LPCSTR ServicePackageActivationId;
     void *Reserved;
     } 	FABRIC_DEPLOYED_STATEFUL_SERVICE_REPLICA_QUERY_RESULT_ITEM_EX2;
 
@@ -3824,25 +3824,25 @@ typedef struct FABRIC_DEPLOYED_STATEFUL_SERVICE_REPLICA_QUERY_RESULT_ITEM_EX3
 typedef struct FABRIC_DEPLOYED_STATELESS_SERVICE_INSTANCE_QUERY_RESULT_ITEM
     {
     FABRIC_URI ServiceName;
-    LPCWSTR ServiceTypeName;
-    LPCWSTR ServiceManifestVersion;
-    LPCWSTR CodePackageName;
+    LPCSTR ServiceTypeName;
+    LPCSTR ServiceManifestVersion;
+    LPCSTR CodePackageName;
     FABRIC_PARTITION_ID PartitionId;
     FABRIC_INSTANCE_ID InstanceId;
     FABRIC_QUERY_SERVICE_REPLICA_STATUS ReplicaStatus;
-    LPCWSTR Address;
+    LPCSTR Address;
     void *Reserved;
     } 	FABRIC_DEPLOYED_STATELESS_SERVICE_INSTANCE_QUERY_RESULT_ITEM;
 
 typedef struct FABRIC_DEPLOYED_STATELESS_SERVICE_INSTANCE_QUERY_RESULT_ITEM_EX1
     {
-    LPCWSTR ServiceManifestName;
+    LPCSTR ServiceManifestName;
     void *Reserved;
     } 	FABRIC_DEPLOYED_STATELESS_SERVICE_INSTANCE_QUERY_RESULT_ITEM_EX1;
 
 typedef struct FABRIC_DEPLOYED_STATELESS_SERVICE_INSTANCE_QUERY_RESULT_ITEM_EX2
     {
-    LPCWSTR ServicePackageActivationId;
+    LPCSTR ServicePackageActivationId;
     void *Reserved;
     } 	FABRIC_DEPLOYED_STATELESS_SERVICE_INSTANCE_QUERY_RESULT_ITEM_EX2;
 
@@ -3854,7 +3854,7 @@ typedef struct FABRIC_DEPLOYED_STATELESS_SERVICE_INSTANCE_QUERY_RESULT_ITEM_EX3
 
 typedef struct FABRIC_LOAD_METRIC_REPORT
     {
-    LPCWSTR Name;
+    LPCSTR Name;
     ULONG Value;
     FILETIME LastReportedUtc;
     void *Reserved;
@@ -3875,12 +3875,12 @@ typedef struct FABRIC_LOAD_METRIC_REPORT_LIST
 typedef struct FABRIC_UNPLACED_REPLICA_INFORMATION_LIST
     {
     ULONG Count;
-    /* [size_is] */ LPCWSTR *Items;
+    /* [size_is] */ LPCSTR *Items;
     } 	FABRIC_UNPLACED_REPLICA_INFORMATION_LIST;
 
 typedef struct FABRIC_DEPLOYED_SERVICE_REPLICA_DETAIL_QUERY_DESCRIPTION
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_PARTITION_ID PartitionId;
     FABRIC_REPLICA_ID ReplicaId;
     void *Reserved;
@@ -4024,9 +4024,9 @@ typedef struct FABRIC_KEY_VALUE_STORE_STATUS_QUERY_RESULT
     {
     LONGLONG DatabaseRowCountEstimate;
     LONGLONG DatabaseLogicalSizeEstimate;
-    LPCWSTR CopyNotificationCurrentKeyFilter;
+    LPCSTR CopyNotificationCurrentKeyFilter;
     LONGLONG CopyNotificationCurrentProgress;
-    LPCWSTR StatusDetails;
+    LPCSTR StatusDetails;
     void *Reserved;
     } 	FABRIC_KEY_VALUE_STORE_STATUS_QUERY_RESULT;
 
@@ -4039,13 +4039,13 @@ typedef struct FABRIC_KEY_VALUE_STORE_STATUS_QUERY_RESULT_EX1
 
 typedef struct FABRIC_PROVISIONED_CODE_VERSION_QUERY_DESCRIPTION
     {
-    LPCWSTR CodeVersionFilter;
+    LPCSTR CodeVersionFilter;
     void *Reserved;
     } 	FABRIC_PROVISIONED_CODE_VERSION_QUERY_DESCRIPTION;
 
 typedef struct FABRIC_PROVISIONED_CODE_VERSION_QUERY_RESULT_ITEM
     {
-    LPCWSTR CodeVersion;
+    LPCSTR CodeVersion;
     void *Reserved;
     } 	FABRIC_PROVISIONED_CODE_VERSION_QUERY_RESULT_ITEM;
 
@@ -4057,13 +4057,13 @@ typedef struct FABRIC_PROVISIONED_CODE_VERSION_QUERY_RESULT_LIST
 
 typedef struct FABRIC_PROVISIONED_CONFIG_VERSION_QUERY_DESCRIPTION
     {
-    LPCWSTR ConfigVersionFilter;
+    LPCSTR ConfigVersionFilter;
     void *Reserved;
     } 	FABRIC_PROVISIONED_CONFIG_VERSION_QUERY_DESCRIPTION;
 
 typedef struct FABRIC_PROVISIONED_CONFIG_VERSION_QUERY_RESULT_ITEM
     {
-    LPCWSTR ConfigVersion;
+    LPCSTR ConfigVersion;
     void *Reserved;
     } 	FABRIC_PROVISIONED_CONFIG_VERSION_QUERY_RESULT_ITEM;
 
@@ -4099,24 +4099,24 @@ typedef struct FABRIC_APPLICATION_NAME_QUERY_RESULT
 
 typedef struct FABRIC_RESTART_DEPLOYED_CODE_PACKAGE_DESCRIPTION
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_URI ApplicationName;
-    LPCWSTR ServiceManifestName;
-    LPCWSTR CodePackageName;
+    LPCSTR ServiceManifestName;
+    LPCSTR CodePackageName;
     FABRIC_INSTANCE_ID CodePackageInstanceId;
     void *Reserved;
     } 	FABRIC_RESTART_DEPLOYED_CODE_PACKAGE_DESCRIPTION;
 
 typedef struct FABRIC_RESTART_NODE_DESCRIPTION
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_NODE_INSTANCE_ID NodeInstanceId;
     void *Reserved;
     } 	FABRIC_RESTART_NODE_DESCRIPTION;
 
 typedef struct FABRIC_RESTART_NODE_DESCRIPTION_USING_NODE_NAME
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_NODE_INSTANCE_ID NodeInstanceId;
     BOOLEAN ShouldCreateFabricDump;
     void *Reserved;
@@ -4136,16 +4136,16 @@ typedef struct FABRIC_RESTART_NODE_DESCRIPTION_EX1
 
 typedef struct FABRIC_STOP_NODE_DESCRIPTION
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_NODE_INSTANCE_ID NodeInstanceId;
     void *Reserved;
     } 	FABRIC_STOP_NODE_DESCRIPTION;
 
 typedef struct FABRIC_START_NODE_DESCRIPTION
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_NODE_INSTANCE_ID NodeInstanceId;
-    LPCWSTR IPAddressOrFQDN;
+    LPCSTR IPAddressOrFQDN;
     ULONG ClusterConnectionPort;
     void *Reserved;
     } 	FABRIC_START_NODE_DESCRIPTION;
@@ -4158,9 +4158,9 @@ typedef struct FABRIC_START_NODE_DESCRIPTION2
 
 typedef struct FABRIC_START_NODE_DESCRIPTION_USING_NODE_NAME
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_NODE_INSTANCE_ID NodeInstanceId;
-    LPCWSTR IPAddressOrFQDN;
+    LPCSTR IPAddressOrFQDN;
     ULONG ClusterConnectionPort;
     void *Reserved;
     } 	FABRIC_START_NODE_DESCRIPTION_USING_NODE_NAME;
@@ -4173,7 +4173,7 @@ typedef struct FABRIC_STOP_NODE_DESCRIPTION2
 
 typedef struct FABRIC_STOP_NODE_DESCRIPTION_USING_NODE_NAME
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_NODE_INSTANCE_ID NodeInstanceId;
     void *Reserved;
     } 	FABRIC_STOP_NODE_DESCRIPTION_USING_NODE_NAME;
@@ -4186,33 +4186,33 @@ typedef struct FABRIC_RESTART_DEPLOYED_CODE_PACKAGE_DESCRIPTION2
 
 typedef struct FABRIC_RESTART_DEPLOYED_CODE_PACKAGE_DESCRIPTION_USING_NODE_NAME
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_URI ApplicationName;
-    LPCWSTR ServiceManifestName;
-    LPCWSTR CodePackageName;
+    LPCSTR ServiceManifestName;
+    LPCSTR CodePackageName;
     FABRIC_INSTANCE_ID CodePackageInstanceId;
     void *Reserved;
     } 	FABRIC_RESTART_DEPLOYED_CODE_PACKAGE_DESCRIPTION_USING_NODE_NAME;
 
 typedef struct FABRIC_RESTART_DEPLOYED_CODE_PACKAGE_DESCRIPTION_USING_NODE_NAME_EX1
     {
-    LPCWSTR ServicePackageActivationId;
+    LPCSTR ServicePackageActivationId;
     void *Reserved;
     } 	FABRIC_RESTART_DEPLOYED_CODE_PACKAGE_DESCRIPTION_USING_NODE_NAME_EX1;
 
 typedef struct FABRIC_DEPLOYED_CODE_PACKAGE_RESULT
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_URI ApplicationName;
-    LPCWSTR ServiceManifestName;
-    LPCWSTR CodePackageName;
+    LPCSTR ServiceManifestName;
+    LPCSTR CodePackageName;
     FABRIC_INSTANCE_ID CodePackageInstanceId;
     void *Reserved;
     } 	FABRIC_DEPLOYED_CODE_PACKAGE_RESULT;
 
 typedef struct FABRIC_DEPLOYED_CODE_PACKAGE_RESULT_EX1
     {
-    LPCWSTR ServicePackageActivationId;
+    LPCSTR ServicePackageActivationId;
     void *Reserved;
     } 	FABRIC_DEPLOYED_CODE_PACKAGE_RESULT_EX1;
 
@@ -4224,7 +4224,7 @@ typedef struct FABRIC_MOVE_PRIMARY_DESCRIPTION2
 
 typedef struct FABRIC_MOVE_PRIMARY_DESCRIPTION_USING_NODE_NAME
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_URI ServiceName;
     FABRIC_PARTITION_ID PartitionId;
     BOOLEAN IgnoreConstraints;
@@ -4233,7 +4233,7 @@ typedef struct FABRIC_MOVE_PRIMARY_DESCRIPTION_USING_NODE_NAME
 
 typedef struct FABRIC_MOVE_PRIMARY_RESULT
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_URI ServiceName;
     FABRIC_PARTITION_ID PartitionId;
     void *Reserved;
@@ -4247,8 +4247,8 @@ typedef struct FABRIC_MOVE_SECONDARY_DESCRIPTION2
 
 typedef struct FABRIC_MOVE_SECONDARY_DESCRIPTION_USING_NODE_NAME
     {
-    LPCWSTR CurrentNodeName;
-    LPCWSTR NewNodeName;
+    LPCSTR CurrentNodeName;
+    LPCSTR NewNodeName;
     FABRIC_URI ServiceName;
     FABRIC_PARTITION_ID PartitionId;
     BOOLEAN IgnoreConstraints;
@@ -4257,8 +4257,8 @@ typedef struct FABRIC_MOVE_SECONDARY_DESCRIPTION_USING_NODE_NAME
 
 typedef struct FABRIC_MOVE_SECONDARY_RESULT
     {
-    LPCWSTR CurrentNodeName;
-    LPCWSTR NewNodeName;
+    LPCSTR CurrentNodeName;
+    LPCSTR NewNodeName;
     FABRIC_URI ServiceName;
     FABRIC_PARTITION_ID PartitionId;
     void *Reserved;
@@ -4266,7 +4266,7 @@ typedef struct FABRIC_MOVE_SECONDARY_RESULT
 
 typedef struct FABRIC_RESTART_REPLICA_DESCRIPTION
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_PARTITION_ID PartitionId;
     FABRIC_REPLICA_ID ReplicaOrInstanceId;
     void *Reserved;
@@ -4274,7 +4274,7 @@ typedef struct FABRIC_RESTART_REPLICA_DESCRIPTION
 
 typedef struct FABRIC_REMOVE_REPLICA_DESCRIPTION
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_PARTITION_ID PartitionId;
     FABRIC_REPLICA_ID ReplicaOrInstanceId;
     void *Reserved;
@@ -4294,11 +4294,11 @@ typedef struct FABRIC_HEALTH_REPORT_SEND_OPTIONS
 
 typedef struct FABRIC_HEALTH_INFORMATION
     {
-    LPCWSTR SourceId;
-    LPCWSTR Property;
+    LPCSTR SourceId;
+    LPCSTR Property;
     DWORD TimeToLiveSeconds;
     FABRIC_HEALTH_STATE State;
-    LPCWSTR Description;
+    LPCSTR Description;
     FABRIC_SEQUENCE_NUMBER SequenceNumber;
     BOOLEAN RemoveWhenExpired;
     void *Reserved;
@@ -4341,7 +4341,7 @@ typedef struct FABRIC_PARTITION_HEALTH_REPORT
 
 typedef struct FABRIC_NODE_HEALTH_REPORT
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     const FABRIC_HEALTH_INFORMATION *HealthInformation;
     void *Reserved;
     } 	FABRIC_NODE_HEALTH_REPORT;
@@ -4363,22 +4363,22 @@ typedef struct FABRIC_SERVICE_HEALTH_REPORT
 typedef struct FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_REPORT
     {
     FABRIC_URI ApplicationName;
-    LPCWSTR ServiceManifestName;
-    LPCWSTR NodeName;
+    LPCSTR ServiceManifestName;
+    LPCSTR NodeName;
     const FABRIC_HEALTH_INFORMATION *HealthInformation;
     void *Reserved;
     } 	FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_REPORT;
 
 typedef struct FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_REPORT_EX1
     {
-    LPCWSTR ServicePackageActivationId;
+    LPCSTR ServicePackageActivationId;
     void *Reserved;
     } 	FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_REPORT_EX1;
 
 typedef struct FABRIC_DEPLOYED_APPLICATION_HEALTH_REPORT
     {
     FABRIC_URI ApplicationName;
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     const FABRIC_HEALTH_INFORMATION *HealthInformation;
     void *Reserved;
     } 	FABRIC_DEPLOYED_APPLICATION_HEALTH_REPORT;
@@ -4393,7 +4393,7 @@ typedef struct FABRIC_SERVICE_TYPE_HEALTH_POLICY
 
 typedef struct FABRIC_SERVICE_TYPE_HEALTH_POLICY_MAP_ITEM
     {
-    LPCWSTR ServiceTypeName;
+    LPCSTR ServiceTypeName;
     const FABRIC_SERVICE_TYPE_HEALTH_POLICY *ServiceTypeHealthPolicy;
     } 	FABRIC_SERVICE_TYPE_HEALTH_POLICY_MAP_ITEM;
 
@@ -4441,13 +4441,13 @@ typedef struct FABRIC_CLUSTER_UPGRADE_HEALTH_POLICY
 
 typedef struct FABRIC_LOAD_METRIC_INFORMATION
     {
-    LPCWSTR Name;
+    LPCSTR Name;
     BOOLEAN IsBalancedBefore;
     BOOLEAN IsBalancedAfter;
     DOUBLE DeviationBefore;
     DOUBLE DeviationAfter;
     DOUBLE BalancingThreshold;
-    LPCWSTR Action;
+    LPCSTR Action;
     void *Reserved;
     } 	FABRIC_LOAD_METRIC_INFORMATION;
 
@@ -4523,7 +4523,7 @@ typedef struct FABRIC_UNPLACED_REPLICA_INFORMATION
 
 typedef struct FABRIC_NODE_LOAD_METRIC_INFORMATION
     {
-    LPCWSTR Name;
+    LPCSTR Name;
     LONGLONG NodeCapacity;
     LONGLONG NodeLoad;
     LONGLONG NodeRemainingCapacity;
@@ -4554,14 +4554,14 @@ typedef struct FABRIC_NODE_LOAD_METRIC_INFORMATION_LIST
 
 typedef struct FABRIC_NODE_LOAD_INFORMATION
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     const FABRIC_NODE_LOAD_METRIC_INFORMATION_LIST *NodeLoadMetricInformation;
     void *Reserved;
     } 	FABRIC_NODE_LOAD_INFORMATION;
 
 typedef struct FABRIC_APPLICATION_LOAD_METRIC_INFORMATION
     {
-    LPCWSTR Name;
+    LPCSTR Name;
     LONGLONG ReservationCapacity;
     LONGLONG ApplicationCapacity;
     LONGLONG ApplicationLoad;
@@ -4577,7 +4577,7 @@ typedef struct FABRIC_APPLICATION_LOAD_METRIC_INFORMATION_LIST
 
 typedef struct FABRIC_APPLICATION_LOAD_INFORMATION
     {
-    LPCWSTR Name;
+    LPCSTR Name;
     ULONG MinimumNodes;
     ULONG MaximumNodes;
     ULONG NodeCount;
@@ -4587,24 +4587,24 @@ typedef struct FABRIC_APPLICATION_LOAD_INFORMATION
 
 typedef struct FABRIC_GATEWAY_INFORMATION
     {
-    LPCWSTR NodeAddress;
+    LPCSTR NodeAddress;
     FABRIC_NODE_ID NodeId;
     FABRIC_NODE_INSTANCE_ID NodeInstanceId;
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     void *Reserved;
     } 	FABRIC_GATEWAY_INFORMATION;
 
 typedef struct FABRIC_START_APPROVED_UPGRADES_DESCRIPTION
     {
     FABRIC_UPGRADE_ORCHESTRATION_SERVICE_OPERATION_ID OperationId;
-    LPCWSTR ClusterConfigPath;
+    LPCSTR ClusterConfigPath;
     BOOLEAN RollbackOnFailure;
     void *Reserved;
     } 	FABRIC_START_APPROVED_UPGRADES_DESCRIPTION;
 
 typedef struct FABRIC_START_UPGRADE_DESCRIPTION
     {
-    LPCWSTR ClusterConfig;
+    LPCSTR ClusterConfig;
     DWORD HealthCheckRetryTimeoutInSeconds;
     DWORD HealthCheckWaitDurationInSeconds;
     DWORD HealthCheckStableDurationInSeconds;
@@ -4625,11 +4625,11 @@ typedef struct FABRIC_START_UPGRADE_DESCRIPTION_EX1
 
 typedef struct FABRIC_UPGRADE_ORCHESTRATION_SERVICE_STATE
     {
-    LPCWSTR CurrentCodeVersion;
-    LPCWSTR CurrentManifestVersion;
-    LPCWSTR TargetCodeVersion;
-    LPCWSTR TargetManifestVersion;
-    LPCWSTR PendingUpgradeType;
+    LPCSTR CurrentCodeVersion;
+    LPCSTR CurrentManifestVersion;
+    LPCSTR TargetCodeVersion;
+    LPCSTR TargetManifestVersion;
+    LPCSTR PendingUpgradeType;
     void *Reserved;
     } 	FABRIC_UPGRADE_ORCHESTRATION_SERVICE_STATE;
 
@@ -4803,8 +4803,8 @@ typedef struct FABRIC_PARTITION_HEALTH_STATE_LIST
 typedef struct FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH
     {
     FABRIC_URI ApplicationName;
-    LPCWSTR ServiceManifestName;
-    LPCWSTR NodeName;
+    LPCSTR ServiceManifestName;
+    LPCSTR NodeName;
     FABRIC_HEALTH_STATE AggregatedHealthState;
     const FABRIC_HEALTH_EVENT_LIST *HealthEvents;
     void *Reserved;
@@ -4818,22 +4818,22 @@ typedef struct FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_EX1
 
 typedef struct FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_EX2
     {
-    LPCWSTR ServicePackageActivationId;
+    LPCSTR ServicePackageActivationId;
     void *Reserved;
     } 	FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_EX2;
 
 typedef struct FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_STATE
     {
     FABRIC_URI ApplicationName;
-    LPCWSTR ServiceManifestName;
-    LPCWSTR NodeName;
+    LPCSTR ServiceManifestName;
+    LPCSTR NodeName;
     FABRIC_HEALTH_STATE AggregatedHealthState;
     void *Reserved;
     } 	FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_STATE;
 
 typedef struct FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_STATE_EX1
     {
-    LPCWSTR ServicePackageActivationId;
+    LPCSTR ServicePackageActivationId;
     void *Reserved;
     } 	FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_STATE_EX1;
 
@@ -4846,7 +4846,7 @@ typedef struct FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_STATE_LIST
 typedef struct FABRIC_DEPLOYED_APPLICATION_HEALTH
     {
     FABRIC_URI ApplicationName;
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_HEALTH_STATE AggregatedHealthState;
     const FABRIC_HEALTH_EVENT_LIST *HealthEvents;
     const FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_STATE_LIST *DeployedServicePackageHealthStates;
@@ -4868,7 +4868,7 @@ typedef struct FABRIC_DEPLOYED_APPLICATION_HEALTH_EX2
 typedef struct FABRIC_DEPLOYED_APPLICATION_HEALTH_STATE
     {
     FABRIC_URI ApplicationName;
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_HEALTH_STATE AggregatedHealthState;
     void *Reserved;
     } 	FABRIC_DEPLOYED_APPLICATION_HEALTH_STATE;
@@ -4937,7 +4937,7 @@ typedef struct FABRIC_APPLICATION_HEALTH_EX2
 
 typedef struct FABRIC_NODE_HEALTH
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_HEALTH_STATE AggregatedHealthState;
     const FABRIC_HEALTH_EVENT_LIST *HealthEvents;
     void *Reserved;
@@ -4957,7 +4957,7 @@ typedef struct FABRIC_CLUSTER_HEALTH
 
 typedef struct FABRIC_NODE_HEALTH_STATE
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_HEALTH_STATE AggregatedHealthState;
     void *Reserved;
     } 	FABRIC_NODE_HEALTH_STATE;
@@ -5003,7 +5003,7 @@ typedef struct FABRIC_CLUSTER_HEALTH_EX3
 
 typedef struct FABRIC_EVENT_HEALTH_EVALUATION
     {
-    LPCWSTR Description;
+    LPCSTR Description;
     FABRIC_HEALTH_STATE AggregatedHealthState;
     const FABRIC_HEALTH_EVENT *UnhealthyEvent;
     BOOLEAN ConsiderWarningAsError;
@@ -5012,7 +5012,7 @@ typedef struct FABRIC_EVENT_HEALTH_EVALUATION
 
 typedef struct FABRIC_REPLICAS_HEALTH_EVALUATION
     {
-    LPCWSTR Description;
+    LPCSTR Description;
     FABRIC_HEALTH_STATE AggregatedHealthState;
     const FABRIC_HEALTH_EVALUATION_LIST *UnhealthyEvaluations;
     ULONG TotalCount;
@@ -5022,7 +5022,7 @@ typedef struct FABRIC_REPLICAS_HEALTH_EVALUATION
 
 typedef struct FABRIC_PARTITIONS_HEALTH_EVALUATION
     {
-    LPCWSTR Description;
+    LPCSTR Description;
     FABRIC_HEALTH_STATE AggregatedHealthState;
     const FABRIC_HEALTH_EVALUATION_LIST *UnhealthyEvaluations;
     ULONG TotalCount;
@@ -5032,7 +5032,7 @@ typedef struct FABRIC_PARTITIONS_HEALTH_EVALUATION
 
 typedef struct FABRIC_DEPLOYED_SERVICE_PACKAGES_HEALTH_EVALUATION
     {
-    LPCWSTR Description;
+    LPCSTR Description;
     FABRIC_HEALTH_STATE AggregatedHealthState;
     const FABRIC_HEALTH_EVALUATION_LIST *UnhealthyEvaluations;
     ULONG TotalCount;
@@ -5041,7 +5041,7 @@ typedef struct FABRIC_DEPLOYED_SERVICE_PACKAGES_HEALTH_EVALUATION
 
 typedef struct FABRIC_DEPLOYED_APPLICATIONS_HEALTH_EVALUATION
     {
-    LPCWSTR Description;
+    LPCSTR Description;
     FABRIC_HEALTH_STATE AggregatedHealthState;
     const FABRIC_HEALTH_EVALUATION_LIST *UnhealthyEvaluations;
     ULONG TotalCount;
@@ -5051,9 +5051,9 @@ typedef struct FABRIC_DEPLOYED_APPLICATIONS_HEALTH_EVALUATION
 
 typedef struct FABRIC_SERVICES_HEALTH_EVALUATION
     {
-    LPCWSTR Description;
+    LPCSTR Description;
     FABRIC_HEALTH_STATE AggregatedHealthState;
-    LPCWSTR ServiceTypeName;
+    LPCSTR ServiceTypeName;
     const FABRIC_HEALTH_EVALUATION_LIST *UnhealthyEvaluations;
     ULONG TotalCount;
     BYTE MaxPercentUnhealthyServices;
@@ -5062,7 +5062,7 @@ typedef struct FABRIC_SERVICES_HEALTH_EVALUATION
 
 typedef struct FABRIC_NODES_HEALTH_EVALUATION
     {
-    LPCWSTR Description;
+    LPCSTR Description;
     FABRIC_HEALTH_STATE AggregatedHealthState;
     const FABRIC_HEALTH_EVALUATION_LIST *UnhealthyEvaluations;
     ULONG TotalCount;
@@ -5072,7 +5072,7 @@ typedef struct FABRIC_NODES_HEALTH_EVALUATION
 
 typedef struct FABRIC_APPLICATIONS_HEALTH_EVALUATION
     {
-    LPCWSTR Description;
+    LPCSTR Description;
     FABRIC_HEALTH_STATE AggregatedHealthState;
     const FABRIC_HEALTH_EVALUATION_LIST *UnhealthyEvaluations;
     ULONG TotalCount;
@@ -5082,9 +5082,9 @@ typedef struct FABRIC_APPLICATIONS_HEALTH_EVALUATION
 
 typedef struct FABRIC_UPGRADE_DOMAIN_NODES_HEALTH_EVALUATION
     {
-    LPCWSTR Description;
+    LPCSTR Description;
     FABRIC_HEALTH_STATE AggregatedHealthState;
-    LPCWSTR UpgradeDomainName;
+    LPCSTR UpgradeDomainName;
     const FABRIC_HEALTH_EVALUATION_LIST *UnhealthyEvaluations;
     ULONG TotalCount;
     BYTE MaxPercentUnhealthyNodes;
@@ -5093,9 +5093,9 @@ typedef struct FABRIC_UPGRADE_DOMAIN_NODES_HEALTH_EVALUATION
 
 typedef struct FABRIC_UPGRADE_DOMAIN_DEPLOYED_APPLICATIONS_HEALTH_EVALUATION
     {
-    LPCWSTR Description;
+    LPCSTR Description;
     FABRIC_HEALTH_STATE AggregatedHealthState;
-    LPCWSTR UpgradeDomainName;
+    LPCSTR UpgradeDomainName;
     const FABRIC_HEALTH_EVALUATION_LIST *UnhealthyEvaluations;
     ULONG TotalCount;
     BYTE MaxPercentUnhealthyDeployedApplications;
@@ -5104,7 +5104,7 @@ typedef struct FABRIC_UPGRADE_DOMAIN_DEPLOYED_APPLICATIONS_HEALTH_EVALUATION
 
 typedef struct FABRIC_SYSTEM_APPLICATION_HEALTH_EVALUATION
     {
-    LPCWSTR Description;
+    LPCSTR Description;
     FABRIC_HEALTH_STATE AggregatedHealthState;
     const FABRIC_HEALTH_EVALUATION_LIST *UnhealthyEvaluations;
     void *Reserved;
@@ -5112,8 +5112,8 @@ typedef struct FABRIC_SYSTEM_APPLICATION_HEALTH_EVALUATION
 
 typedef struct FABRIC_NODE_HEALTH_EVALUATION
     {
-    LPCWSTR Description;
-    LPCWSTR NodeName;
+    LPCSTR Description;
+    LPCSTR NodeName;
     FABRIC_HEALTH_STATE AggregatedHealthState;
     const FABRIC_HEALTH_EVALUATION_LIST *UnhealthyEvaluations;
     void *Reserved;
@@ -5121,7 +5121,7 @@ typedef struct FABRIC_NODE_HEALTH_EVALUATION
 
 typedef struct FABRIC_REPLICA_HEALTH_EVALUATION
     {
-    LPCWSTR Description;
+    LPCSTR Description;
     FABRIC_PARTITION_ID PartitionId;
     FABRIC_REPLICA_ID ReplicaOrInstanceId;
     FABRIC_HEALTH_STATE AggregatedHealthState;
@@ -5131,7 +5131,7 @@ typedef struct FABRIC_REPLICA_HEALTH_EVALUATION
 
 typedef struct FABRIC_PARTITION_HEALTH_EVALUATION
     {
-    LPCWSTR Description;
+    LPCSTR Description;
     FABRIC_PARTITION_ID PartitionId;
     FABRIC_HEALTH_STATE AggregatedHealthState;
     const FABRIC_HEALTH_EVALUATION_LIST *UnhealthyEvaluations;
@@ -5140,7 +5140,7 @@ typedef struct FABRIC_PARTITION_HEALTH_EVALUATION
 
 typedef struct FABRIC_SERVICE_HEALTH_EVALUATION
     {
-    LPCWSTR Description;
+    LPCSTR Description;
     FABRIC_URI ServiceName;
     FABRIC_HEALTH_STATE AggregatedHealthState;
     const FABRIC_HEALTH_EVALUATION_LIST *UnhealthyEvaluations;
@@ -5149,10 +5149,10 @@ typedef struct FABRIC_SERVICE_HEALTH_EVALUATION
 
 typedef struct FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_EVALUATION
     {
-    LPCWSTR Description;
+    LPCSTR Description;
     FABRIC_URI ApplicationName;
-    LPCWSTR ServiceManifestName;
-    LPCWSTR NodeName;
+    LPCSTR ServiceManifestName;
+    LPCSTR NodeName;
     FABRIC_HEALTH_STATE AggregatedHealthState;
     const FABRIC_HEALTH_EVALUATION_LIST *UnhealthyEvaluations;
     void *Reserved;
@@ -5160,15 +5160,15 @@ typedef struct FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_EVALUATION
 
 typedef struct FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_EVALUATION_EX1
     {
-    LPCWSTR ServicePackageActivationId;
+    LPCSTR ServicePackageActivationId;
     void *Reserved;
     } 	FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_EVALUATION_EX1;
 
 typedef struct FABRIC_DEPLOYED_APPLICATION_HEALTH_EVALUATION
     {
-    LPCWSTR Description;
+    LPCSTR Description;
     FABRIC_URI ApplicationName;
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_HEALTH_STATE AggregatedHealthState;
     const FABRIC_HEALTH_EVALUATION_LIST *UnhealthyEvaluations;
     void *Reserved;
@@ -5176,7 +5176,7 @@ typedef struct FABRIC_DEPLOYED_APPLICATION_HEALTH_EVALUATION
 
 typedef struct FABRIC_APPLICATION_HEALTH_EVALUATION
     {
-    LPCWSTR Description;
+    LPCSTR Description;
     FABRIC_URI ApplicationName;
     FABRIC_HEALTH_STATE AggregatedHealthState;
     const FABRIC_HEALTH_EVALUATION_LIST *UnhealthyEvaluations;
@@ -5186,11 +5186,11 @@ typedef struct FABRIC_APPLICATION_HEALTH_EVALUATION
 typedef struct FABRIC_X509_CREDENTIALS
     {
     ULONG AllowedCommonNameCount;
-    /* [size_is] */ LPCWSTR *AllowedCommonNames;
+    /* [size_is] */ LPCSTR *AllowedCommonNames;
     FABRIC_X509_FIND_TYPE FindType;
     void *FindValue;
     FABRIC_X509_STORE_LOCATION StoreLocation;
-    LPCWSTR StoreName;
+    LPCSTR StoreName;
     FABRIC_PROTECTION_LEVEL ProtectionLevel;
     void *Reserved;
     } 	FABRIC_X509_CREDENTIALS;
@@ -5198,14 +5198,14 @@ typedef struct FABRIC_X509_CREDENTIALS
 typedef struct FABRIC_X509_CREDENTIALS_EX1
     {
     ULONG IssuerThumbprintCount;
-    /* [size_is] */ LPCWSTR *IssuerThumbprints;
+    /* [size_is] */ LPCSTR *IssuerThumbprints;
     void *Reserved;
     } 	FABRIC_X509_CREDENTIALS_EX1;
 
 typedef struct FABRIC_X509_NAME
     {
-    LPCWSTR Name;
-    LPCWSTR IssuerCertThumbprint;
+    LPCSTR Name;
+    LPCSTR IssuerCertThumbprint;
     void *Reserved;
     } 	FABRIC_X509_NAME;
 
@@ -5214,7 +5214,7 @@ typedef const struct FABRIC_X509_NAME *PCFABRIC_X509_NAME;
 typedef struct FABRIC_X509_CREDENTIALS_EX2
     {
     ULONG RemoteCertThumbprintCount;
-    /* [size_is] */ LPCWSTR *RemoteCertThumbprints;
+    /* [size_is] */ LPCSTR *RemoteCertThumbprints;
     ULONG RemoteX509NameCount;
     /* [size_is] */ PCFABRIC_X509_NAME RemoteX509Names;
     void *FindValueSecondary;
@@ -5223,9 +5223,9 @@ typedef struct FABRIC_X509_CREDENTIALS_EX2
 
 typedef struct FABRIC_X509_ISSUER_NAME
     {
-    LPCWSTR Name;
+    LPCSTR Name;
     ULONG IssuerStoreCount;
-    /* [size_is] */ LPCWSTR *IssuerStores;
+    /* [size_is] */ LPCSTR *IssuerStores;
     void *Reserved;
     } 	FABRIC_X509_ISSUER_NAME;
 
@@ -5240,9 +5240,9 @@ typedef struct FABRIC_X509_CREDENTIALS_EX3
 
 typedef struct FABRIC_X509_CREDENTIALS2
     {
-    LPCWSTR CertLoadPath;
+    LPCSTR CertLoadPath;
     ULONG RemoteCertThumbprintCount;
-    /* [size_is] */ LPCWSTR *RemoteCertThumbprints;
+    /* [size_is] */ LPCSTR *RemoteCertThumbprints;
     ULONG RemoteX509NameCount;
     /* [size_is] */ PCFABRIC_X509_NAME RemoteX509Names;
     FABRIC_PROTECTION_LEVEL ProtectionLevel;
@@ -5252,10 +5252,10 @@ typedef struct FABRIC_X509_CREDENTIALS2
 typedef struct FABRIC_CLAIMS_CREDENTIALS
     {
     ULONG ServerCommonNameCount;
-    /* [size_is] */ LPCWSTR *ServerCommonNames;
+    /* [size_is] */ LPCSTR *ServerCommonNames;
     ULONG IssuerThumbprintCount;
-    /* [size_is] */ LPCWSTR *IssuerThumbprints;
-    LPCWSTR LocalClaims;
+    /* [size_is] */ LPCSTR *IssuerThumbprints;
+    LPCSTR LocalClaims;
     FABRIC_PROTECTION_LEVEL ProtectionLevel;
     void *Reserved;
     } 	FABRIC_CLAIMS_CREDENTIALS;
@@ -5263,15 +5263,15 @@ typedef struct FABRIC_CLAIMS_CREDENTIALS
 typedef struct FABRIC_CLAIMS_CREDENTIALS_EX1
     {
     ULONG ServerThumbprintCount;
-    /* [size_is] */ LPCWSTR *ServerThumbprints;
+    /* [size_is] */ LPCSTR *ServerThumbprints;
     void *Reserved;
     } 	FABRIC_CLAIMS_CREDENTIALS_EX1;
 
 typedef struct FABRIC_WINDOWS_CREDENTIALS
     {
-    LPCWSTR RemoteSpn;
+    LPCSTR RemoteSpn;
     ULONG RemoteIdentityCount;
-    /* [size_is] */ LPCWSTR *RemoteIdentities;
+    /* [size_is] */ LPCSTR *RemoteIdentities;
     FABRIC_PROTECTION_LEVEL ProtectionLevel;
     void *Reserved;
     } 	FABRIC_WINDOWS_CREDENTIALS;
@@ -5284,24 +5284,24 @@ typedef struct FABRIC_CLAIMS_RETRIEVAL_METADATA
 
 typedef struct FABRIC_AAD_CLAIMS_RETRIEVAL_METADATA
     {
-    LPCWSTR Authority;
-    LPCWSTR TenantId;
-    LPCWSTR ClusterApplication;
-    LPCWSTR ClientApplication;
-    LPCWSTR ClientRedirect;
+    LPCSTR Authority;
+    LPCSTR TenantId;
+    LPCSTR ClusterApplication;
+    LPCSTR ClientApplication;
+    LPCSTR ClientRedirect;
     void *Reserved;
     } 	FABRIC_AAD_ClAIMS_RETRIEVAL_METADATA;
 
 typedef struct FABRIC_AAD_CLAIMS_RETRIEVAL_METADATA_EX1
     {
-    LPCWSTR LoginEndpoint;
+    LPCSTR LoginEndpoint;
     void *Reserved;
     } 	FABRIC_AAD_ClAIMS_RETRIEVAL_METADATA_EX1;
 
 typedef struct FABRIC_SECURITY_USER_DESCRIPTION
     {
-    LPCWSTR Name;
-    LPCWSTR Sid;
+    LPCSTR Name;
+    LPCSTR Sid;
     const FABRIC_STRING_LIST *ParentSystemGroups;
     const FABRIC_STRING_LIST *ParentApplicationGroups;
     void *Reserved;
@@ -5315,8 +5315,8 @@ typedef struct FABRIC_SECURITY_USER_DESCRIPTION_LIST
 
 typedef struct FABRIC_SECURITY_GROUP_DESCRIPTION
     {
-    LPCWSTR Name;
-    LPCWSTR Sid;
+    LPCSTR Name;
+    LPCSTR Sid;
     const FABRIC_STRING_LIST *DomainGroupMembers;
     const FABRIC_STRING_LIST *SystemGroupMembers;
     const FABRIC_STRING_LIST *DomainUserMembers;
@@ -5341,7 +5341,7 @@ typedef struct FABRIC_APPLICATION_UPGRADE_PROGRESS
     const FABRIC_APPLICATION_UPGRADE_DESCRIPTION *UpgradeDescription;
     FABRIC_APPLICATION_UPGRADE_STATE UpgradeState;
     FABRIC_ROLLING_UPGRADE_MODE UpgradeMode;
-    LPCWSTR NextUpgradeDomain;
+    LPCSTR NextUpgradeDomain;
     const FABRIC_UPGRADE_DOMAIN_STATUS_DESCRIPTION_LIST *UpgradeDomains;
     DWORD UpgradeDurationInSeconds;
     DWORD CurrentUpgradeDomainDurationInSeconds;
@@ -5361,7 +5361,7 @@ typedef struct FABRIC_APPLICATION_UPGRADE_PROGRESS_EX1
 
 typedef struct FABRIC_APPLICATION_UPGRADE_PROGRESS_EX2
     {
-    LPCWSTR UpgradeStatusDetails;
+    LPCSTR UpgradeStatusDetails;
     void *Reserved;
     } 	FABRIC_APPLICATION_UPGRADE_PROGRESS_EX2;
 
@@ -5373,7 +5373,7 @@ typedef struct FABRIC_PROVISION_APPLICATION_TYPE_DESCRIPTION_BASE
 
 typedef struct FABRIC_PROVISION_APPLICATION_TYPE_DESCRIPTION
     {
-    LPCWSTR BuildPath;
+    LPCSTR BuildPath;
     BOOLEAN Async;
     void *Reserved;
     } 	FABRIC_PROVISION_APPLICATION_TYPE_DESCRIPTION;
@@ -5386,17 +5386,17 @@ typedef struct FABRIC_PROVISION_APPLICATION_TYPE_DESCRIPTION_EX1
 
 typedef struct FABRIC_EXTERNAL_STORE_PROVISION_APPLICATION_TYPE_DESCRIPTION
     {
-    LPCWSTR ApplicationTypeName;
-    LPCWSTR ApplicationTypeVersion;
-    LPCWSTR ApplicationPackageDownloadUri;
+    LPCSTR ApplicationTypeName;
+    LPCSTR ApplicationTypeVersion;
+    LPCSTR ApplicationPackageDownloadUri;
     BOOLEAN Async;
     void *Reserved;
     } 	FABRIC_EXTERNAL_STORE_PROVISION_APPLICATION_TYPE_DESCRIPTION;
 
 typedef struct FABRIC_UNPROVISION_APPLICATION_TYPE_DESCRIPTION
     {
-    LPCWSTR ApplicationTypeName;
-    LPCWSTR ApplicationTypeVersion;
+    LPCSTR ApplicationTypeName;
+    LPCSTR ApplicationTypeVersion;
     BOOLEAN Async;
     void *Reserved;
     } 	FABRIC_UNPROVISION_APPLICATION_TYPE_DESCRIPTION;
@@ -5413,7 +5413,7 @@ typedef struct FABRIC_UPGRADE_PROGRESS
     const FABRIC_UPGRADE_DESCRIPTION *UpgradeDescription;
     FABRIC_UPGRADE_STATE UpgradeState;
     FABRIC_ROLLING_UPGRADE_MODE UpgradeMode;
-    LPCWSTR NextUpgradeDomain;
+    LPCSTR NextUpgradeDomain;
     const FABRIC_UPGRADE_DOMAIN_STATUS_DESCRIPTION_LIST *UpgradeDomains;
     DWORD UpgradeDurationInSeconds;
     DWORD CurrentUpgradeDomainDurationInSeconds;
@@ -5433,7 +5433,7 @@ typedef struct FABRIC_UPGRADE_PROGRESS_EX1
 
 typedef struct FABRIC_PACKAGE_SHARING_POLICY
     {
-    LPCWSTR PackageName;
+    LPCSTR PackageName;
     FABRIC_PACKAGE_SHARING_POLICY_SCOPE Scope;
     void *Reserved;
     } 	FABRIC_PACKAGE_SHARING_POLICY;
@@ -5517,7 +5517,7 @@ typedef struct FABRIC_CLUSTER_HEALTH_QUERY_DESCRIPTION_EX1
 
 typedef struct FABRIC_NODE_HEALTH_QUERY_DESCRIPTION
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     const FABRIC_CLUSTER_HEALTH_POLICY *HealthPolicy;
     const FABRIC_HEALTH_EVENTS_FILTER *EventsFilter;
     void *Reserved;
@@ -5599,7 +5599,7 @@ typedef struct FABRIC_REPLICA_HEALTH_QUERY_DESCRIPTION
 typedef struct FABRIC_DEPLOYED_APPLICATION_HEALTH_QUERY_DESCRIPTION
     {
     FABRIC_URI ApplicationName;
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     const FABRIC_APPLICATION_HEALTH_POLICY *HealthPolicy;
     const FABRIC_HEALTH_EVENTS_FILTER *EventsFilter;
     const FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_STATES_FILTER *DeployedServicePackagesFilter;
@@ -5621,8 +5621,8 @@ typedef struct FABRIC_DEPLOYED_APPLICATION_HEALTH_QUERY_DESCRIPTION_EX1
 typedef struct FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_QUERY_DESCRIPTION
     {
     FABRIC_URI ApplicationName;
-    LPCWSTR NodeName;
-    LPCWSTR ServiceManifestName;
+    LPCSTR NodeName;
+    LPCSTR ServiceManifestName;
     const FABRIC_APPLICATION_HEALTH_POLICY *HealthPolicy;
     const FABRIC_HEALTH_EVENTS_FILTER *EventsFilter;
     void *Reserved;
@@ -5630,7 +5630,7 @@ typedef struct FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_QUERY_DESCRIPTION
 
 typedef struct FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_QUERY_DESCRIPTION_EX1
     {
-    LPCWSTR ServicePackageActivationId;
+    LPCSTR ServicePackageActivationId;
     void *Reserved;
     } 	FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_QUERY_DESCRIPTION_EX1;
 
@@ -5648,7 +5648,7 @@ typedef struct FABRIC_REPAIR_TARGET_DESCRIPTION
 
 typedef struct FABRIC_REPAIR_NODE_IMPACT
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_REPAIR_NODE_IMPACT_LEVEL ImpactLevel;
     void *Reserved;
     } 	FABRIC_REPAIR_NODE_IMPACT;
@@ -5669,7 +5669,7 @@ typedef struct FABRIC_REPAIR_RESULT_DESCRIPTION
     {
     FABRIC_REPAIR_TASK_RESULT ResultStatus;
     HRESULT ResultCode;
-    LPCWSTR ResultDetails;
+    LPCSTR ResultDetails;
     void *Reserved;
     } 	FABRIC_REPAIR_RESULT_DESCRIPTION;
 
@@ -5696,15 +5696,15 @@ typedef struct FABRIC_REPAIR_TASK_HISTORY_EX1
 
 typedef struct FABRIC_REPAIR_EXECUTOR_STATE
     {
-    LPCWSTR Executor;
-    LPCWSTR ExecutorData;
+    LPCSTR Executor;
+    LPCSTR ExecutorData;
     void *Reserved;
     } 	FABRIC_REPAIR_EXECUTOR_STATE;
 
 typedef struct FABRIC_REPAIR_TASK_HEALTH_POLICY_UPDATE_DESCRIPTION
     {
     FABRIC_REPAIR_SCOPE_IDENTIFIER *Scope;
-    LPCWSTR RepairTaskId;
+    LPCSTR RepairTaskId;
     FABRIC_SEQUENCE_NUMBER Version;
     DWORD Flags;
     BOOLEAN PerformPreparingHealthCheck;
@@ -5715,12 +5715,12 @@ typedef struct FABRIC_REPAIR_TASK_HEALTH_POLICY_UPDATE_DESCRIPTION
 typedef struct FABRIC_REPAIR_TASK
     {
     const FABRIC_REPAIR_SCOPE_IDENTIFIER *Scope;
-    LPCWSTR TaskId;
+    LPCSTR TaskId;
     FABRIC_SEQUENCE_NUMBER Version;
-    LPCWSTR Description;
+    LPCSTR Description;
     FABRIC_REPAIR_TASK_STATE State;
     DWORD Flags;
-    LPCWSTR Action;
+    LPCSTR Action;
     const FABRIC_REPAIR_TARGET_DESCRIPTION *Target;
     FABRIC_REPAIR_EXECUTOR_STATE *ExecutorState;
     FABRIC_REPAIR_IMPACT_DESCRIPTION *Impact;
@@ -5747,7 +5747,7 @@ typedef struct FABRIC_REPAIR_TASK_LIST
 typedef struct FABRIC_REPAIR_CANCEL_DESCRIPTION
     {
     FABRIC_REPAIR_SCOPE_IDENTIFIER *Scope;
-    LPCWSTR RepairTaskId;
+    LPCSTR RepairTaskId;
     FABRIC_SEQUENCE_NUMBER Version;
     BOOLEAN RequestAbort;
     void *Reserved;
@@ -5756,7 +5756,7 @@ typedef struct FABRIC_REPAIR_CANCEL_DESCRIPTION
 typedef struct FABRIC_REPAIR_DELETE_DESCRIPTION
     {
     FABRIC_REPAIR_SCOPE_IDENTIFIER *Scope;
-    LPCWSTR RepairTaskId;
+    LPCSTR RepairTaskId;
     FABRIC_SEQUENCE_NUMBER Version;
     void *Reserved;
     } 	FABRIC_REPAIR_DELETE_DESCRIPTION;
@@ -5764,7 +5764,7 @@ typedef struct FABRIC_REPAIR_DELETE_DESCRIPTION
 typedef struct FABRIC_REPAIR_APPROVE_DESCRIPTION
     {
     FABRIC_REPAIR_SCOPE_IDENTIFIER *Scope;
-    LPCWSTR RepairTaskId;
+    LPCSTR RepairTaskId;
     FABRIC_SEQUENCE_NUMBER Version;
     void *Reserved;
     } 	FABRIC_REPAIR_APPROVE_DESCRIPTION;
@@ -5772,9 +5772,9 @@ typedef struct FABRIC_REPAIR_APPROVE_DESCRIPTION
 typedef struct FABRIC_REPAIR_TASK_QUERY_DESCRIPTION
     {
     FABRIC_REPAIR_SCOPE_IDENTIFIER *Scope;
-    LPCWSTR TaskIdFilter;
+    LPCSTR TaskIdFilter;
     DWORD StateFilter;
-    LPCWSTR ExecutorFilter;
+    LPCSTR ExecutorFilter;
     void *Reserved;
     } 	FABRIC_REPAIR_TASK_QUERY_DESCRIPTION;
 
@@ -5788,7 +5788,7 @@ enum FABRIC_STORE_BACKUP_OPTION
 
 typedef struct FABRIC_STORE_BACKUP_INFO
     {
-    LPCWSTR BackupFolder;
+    LPCSTR BackupFolder;
     FABRIC_STORE_BACKUP_OPTION BackupOption;
     void *Reserved;
     } 	FABRIC_STORE_BACKUP_INFO;
@@ -5802,7 +5802,7 @@ typedef struct FABRIC_STORE_BACKUP_INFO_EX1
 
 typedef struct FABRIC_DELTA_NODES_CHECK_HEALTH_EVALUATION
     {
-    LPCWSTR Description;
+    LPCSTR Description;
     FABRIC_HEALTH_STATE AggregatedHealthState;
     ULONG BaselineErrorCount;
     ULONG BaselineTotalCount;
@@ -5814,9 +5814,9 @@ typedef struct FABRIC_DELTA_NODES_CHECK_HEALTH_EVALUATION
 
 typedef struct FABRIC_UPGRADE_DOMAIN_DELTA_NODES_CHECK_HEALTH_EVALUATION
     {
-    LPCWSTR Description;
+    LPCSTR Description;
     FABRIC_HEALTH_STATE AggregatedHealthState;
-    LPCWSTR UpgradeDomainName;
+    LPCSTR UpgradeDomainName;
     ULONG BaselineErrorCount;
     ULONG BaselineTotalCount;
     ULONG TotalCount;
@@ -5827,13 +5827,13 @@ typedef struct FABRIC_UPGRADE_DOMAIN_DELTA_NODES_CHECK_HEALTH_EVALUATION
 
 typedef struct FABRIC_PAGING_STATUS
     {
-    LPCWSTR ContinuationToken;
+    LPCSTR ContinuationToken;
     void *Reserved;
     } 	FABRIC_PAGING_STATUS;
 
 typedef struct FABRIC_NODE_QUERY_DESCRIPTION_EX1
     {
-    LPCWSTR ContinuationToken;
+    LPCSTR ContinuationToken;
     void *Reserved;
     } 	FABRIC_NODE_QUERY_DESCRIPTION_EX1;
 
@@ -5851,19 +5851,19 @@ typedef struct FABRIC_NODE_QUERY_DESCRIPTION_EX3
 
 typedef struct FABRIC_SERVICE_PARTITION_QUERY_DESCRIPTION_EX1
     {
-    LPCWSTR ContinuationToken;
+    LPCSTR ContinuationToken;
     void *Reserved;
     } 	FABRIC_SERVICE_PARTITION_QUERY_DESCRIPTION_EX1;
 
 typedef struct FABRIC_SERVICE_REPLICA_QUERY_DESCRIPTION_EX2
     {
-    LPCWSTR ContinuationToken;
+    LPCSTR ContinuationToken;
     void *Reserved;
     } 	FABRIC_SERVICE_REPLICA_QUERY_DESCRIPTION_EX2;
 
 typedef struct FABRIC_APPLICATION_TYPE_HEALTH_POLICY_MAP_ITEM
     {
-    LPCWSTR ApplicationTypeName;
+    LPCSTR ApplicationTypeName;
     BYTE MaxPercentUnhealthyApplications;
     } 	FABRIC_APPLICATION_TYPE_HEALTH_POLICY_MAP_ITEM;
 
@@ -5881,9 +5881,9 @@ typedef struct FABRIC_CLUSTER_HEALTH_POLICY_EX1
 
 typedef struct FABRIC_APPLICATION_TYPE_APPLICATIONS_HEALTH_EVALUATION
     {
-    LPCWSTR Description;
+    LPCSTR Description;
     FABRIC_HEALTH_STATE AggregatedHealthState;
-    LPCWSTR ApplicationTypeName;
+    LPCSTR ApplicationTypeName;
     const FABRIC_HEALTH_EVALUATION_LIST *UnhealthyEvaluations;
     ULONG TotalCount;
     BYTE MaxPercentUnhealthyApplications;
@@ -5893,7 +5893,7 @@ typedef struct FABRIC_APPLICATION_TYPE_APPLICATIONS_HEALTH_EVALUATION
 typedef struct FABRIC_NODE_HEALTH_STATE_FILTER
     {
     DWORD HealthStateFilter;
-    LPCWSTR NodeNameFilter;
+    LPCSTR NodeNameFilter;
     void *Reserved;
     } 	FABRIC_NODE_HEALTH_STATE_FILTER;
 
@@ -5906,13 +5906,13 @@ typedef struct FABRIC_NODE_HEALTH_STATE_FILTER_LIST
 typedef struct FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_STATE_FILTER
     {
     DWORD HealthStateFilter;
-    LPCWSTR ServiceManifestNameFilter;
+    LPCSTR ServiceManifestNameFilter;
     void *Reserved;
     } 	FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_STATE_FILTER;
 
 typedef struct FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_STATE_FILTER_EX1
     {
-    LPCWSTR ServicePackageActivationIdFilter;
+    LPCSTR ServicePackageActivationIdFilter;
     void *Reserved;
     } 	FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_STATE_FILTER_EX1;
 
@@ -5925,7 +5925,7 @@ typedef struct FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_STATE_FILTER_LIST
 typedef struct FABRIC_DEPLOYED_APPLICATION_HEALTH_STATE_FILTER
     {
     DWORD HealthStateFilter;
-    LPCWSTR NodeNameFilter;
+    LPCSTR NodeNameFilter;
     const FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_STATE_FILTER_LIST *DeployedServicePackageFilters;
     void *Reserved;
     } 	FABRIC_DEPLOYED_APPLICATION_HEALTH_STATE_FILTER;
@@ -5988,7 +5988,7 @@ typedef struct FABRIC_APPLICATION_HEALTH_STATE_FILTER
 
 typedef struct FABRIC_APPLICATION_HEALTH_STATE_FILTER_EX1
     {
-    LPCWSTR ApplicationTypeNameFilter;
+    LPCSTR ApplicationTypeNameFilter;
     void *Reserved;
     } 	FABRIC_APPLICATION_HEALTH_STATE_FILTER_EX1;
 
@@ -6009,7 +6009,7 @@ typedef struct FABRIC_CLUSTER_HEALTH_CHUNK_QUERY_DESCRIPTION
 
 typedef struct FABRIC_NODE_HEALTH_STATE_CHUNK
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_HEALTH_STATE HealthState;
     void *Reserved;
     } 	FABRIC_NODE_HEALTH_STATE_CHUNK;
@@ -6071,14 +6071,14 @@ typedef struct FABRIC_SERVICE_HEALTH_STATE_CHUNK_LIST
 
 typedef struct FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_STATE_CHUNK
     {
-    LPCWSTR ServiceManifestName;
+    LPCSTR ServiceManifestName;
     FABRIC_HEALTH_STATE HealthState;
     void *Reserved;
     } 	FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_STATE_CHUNK;
 
 typedef struct FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_STATE_CHUNK_EX1
     {
-    LPCWSTR ServicePackageActivationId;
+    LPCSTR ServicePackageActivationId;
     void *Reserved;
     } 	FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_STATE_CHUNK_EX1;
 
@@ -6092,7 +6092,7 @@ typedef struct FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_STATE_CHUNK_LIST
 
 typedef struct FABRIC_DEPLOYED_APPLICATION_HEALTH_STATE_CHUNK
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_HEALTH_STATE HealthState;
     const FABRIC_DEPLOYED_SERVICE_PACKAGE_HEALTH_STATE_CHUNK_LIST *DeployedServicePackageHealthStateChunks;
     void *Reserved;
@@ -6145,8 +6145,8 @@ typedef struct FABRIC_ROLLING_UPGRADE_POLICY_DESCRIPTION_EX3
 
 typedef struct FABRIC_EVENT_CONTEXT_MAP_ITEM
     {
-    LPCWSTR Key;
-    LPCWSTR Value;
+    LPCSTR Key;
+    LPCSTR Value;
     } 	FABRIC_EVENT_CONTEXT_MAP_ITEM;
 
 typedef struct FABRIC_EVENT_CONTEXT_MAP
@@ -6216,7 +6216,7 @@ typedef struct FABRIC_CHAOS_REPORT_FILTER
 typedef struct FABRIC_GET_CHAOS_REPORT_DESCRIPTION
     {
     FABRIC_CHAOS_REPORT_FILTER *Filter;
-    LPCWSTR ContinuationToken;
+    LPCSTR ContinuationToken;
     void *Reserved;
     } 	FABRIC_GET_CHAOS_REPORT_DESCRIPTION;
 
@@ -6243,28 +6243,28 @@ typedef struct FABRIC_EXECUTING_FAULTS_EVENT
 typedef struct FABRIC_WAITING_EVENT
     {
     FILETIME TimeStampUtc;
-    LPCWSTR Reason;
+    LPCSTR Reason;
     void *Reserved;
     } 	FABRIC_WAITING_EVENT;
 
 typedef struct FABRIC_VALIDATION_FAILED_EVENT
     {
     FILETIME TimeStampUtc;
-    LPCWSTR Reason;
+    LPCSTR Reason;
     void *Reserved;
     } 	FABRIC_VALIDATION_FAILED_EVENT;
 
 typedef struct FABRIC_TEST_ERROR_EVENT
     {
     FILETIME TimeStampUtc;
-    LPCWSTR Reason;
+    LPCSTR Reason;
     void *Reserved;
     } 	FABRIC_TEST_ERROR_EVENT;
 
 typedef struct FABRIC_STOPPED_EVENT
     {
     FILETIME TimeStampUtc;
-    LPCWSTR Reason;
+    LPCSTR Reason;
     void *Reserved;
     } 	FABRIC_STOPPED_EVENT;
 
@@ -6278,14 +6278,14 @@ typedef struct FABRIC_CHAOS_REPORT
     {
     FABRIC_CHAOS_PARAMETERS *ChaosParameters;
     FABRIC_CHAOS_STATUS Status;
-    LPCWSTR ContinuationToken;
+    LPCSTR ContinuationToken;
     const FABRIC_CHAOS_EVENT_LIST *History;
     void *Reserved;
     } 	FABRIC_CHAOS_REPORT;
 
 typedef struct FABRIC_CHAOS_EVENTS_SEGMENT
     {
-    LPCWSTR ContinuationToken;
+    LPCSTR ContinuationToken;
     const FABRIC_CHAOS_EVENT_LIST *History;
     void *Reserved;
     } 	FABRIC_CHAOS_EVENTS_SEGMENT;
@@ -6332,7 +6332,7 @@ typedef struct FABRIC_CHAOS_SCHEDULE_JOB_ACTIVE_DAYS
 
 typedef struct FABRIC_CHAOS_SCHEDULE_JOB
     {
-    LPCWSTR ChaosParameters;
+    LPCSTR ChaosParameters;
     const FABRIC_CHAOS_SCHEDULE_JOB_ACTIVE_DAYS *Days;
     const FABRIC_CHAOS_SCHEDULE_TIME_RANGE_UTC_LIST *Times;
     void *Reserved;
@@ -6346,7 +6346,7 @@ typedef struct FABRIC_CHAOS_SCHEDULE_JOB_LIST
 
 typedef struct FABRIC_CHAOS_SCHEDULE_CHAOS_PARAMETERS_MAP_ITEM
     {
-    LPCWSTR Name;
+    LPCSTR Name;
     const FABRIC_CHAOS_PARAMETERS *Parameters;
     } 	FABRIC_CHAOS_SCHEDULE_CHAOS_PARAMETERS_MAP_ITEM;
 
@@ -6380,9 +6380,9 @@ typedef struct FABRIC_CHAOS_SERVICE_SCHEDULE_DESCRIPTION
 
 typedef struct FABRIC_SECRET
     {
-    LPCWSTR Name;
-    LPCWSTR Version;
-    LPCWSTR Value;
+    LPCSTR Name;
+    LPCSTR Version;
+    LPCSTR Value;
     } 	FABRIC_SECRET;
 
 typedef struct FABRIC_SECRET_LIST
@@ -6393,8 +6393,8 @@ typedef struct FABRIC_SECRET_LIST
 
 typedef struct FABRIC_SECRET_REFERENCE
     {
-    LPCWSTR Name;
-    LPCWSTR Version;
+    LPCSTR Name;
+    LPCSTR Version;
     } 	FABRIC_SECRET_REFERENCE;
 
 typedef struct FABRIC_SECRET_REFERENCE_LIST
@@ -6417,7 +6417,7 @@ enum FABRIC_CODE_PACKAGE_EVENT_TYPE
 
 typedef struct FABRIC_CODE_PACKAGE_EVENT_DESCRIPTION
     {
-    LPCWSTR CodePackageName;
+    LPCSTR CodePackageName;
     BOOL IsSetupEntryPoint;
     BOOL IsContainerHost;
     FABRIC_CODE_PACKAGE_EVENT_TYPE EventType;

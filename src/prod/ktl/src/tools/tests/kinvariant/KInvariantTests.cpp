@@ -40,7 +40,7 @@ Abstract:
 extern volatile LONGLONG gs_AllocsRemaining;
 #endif
 
-WCHAR KInvariantText[256];
+CHAR KInvariantText[256];
 BOOLEAN KInvariantBoolean;
 
 KInvariantCalloutType PreviousKInvariantCallout;
@@ -55,7 +55,7 @@ BOOLEAN MyKInvariantCallout(
     // Remember the info passed
     //
     StringCbPrintf(KInvariantText, sizeof(KInvariantText),
-                   L"KInvariant Failure %s at %s line %d\n", Condition, File, Line);
+                   "KInvariant Failure %s at %s line %d\n", Condition, File, Line);
 
     //
     // Forward on to the previous callout and remember result
@@ -73,7 +73,7 @@ BOOLEAN MyKInvariantCallout(
 NTSTATUS
 KInvariantTest(
     __in int argc,
-    __in_ecount(argc) WCHAR* args[]
+    __in_ecount(argc) CHAR* args[]
     )
 {
     UNREFERENCED_PARAMETER(argc);
@@ -104,10 +104,10 @@ KInvariantTest(
     // NOTE: This all needs to be on the same line so that the line
     // numbers will match when comparing the results
     //
-    WCHAR ExpectedKInvariantText[256];
-    StringCbPrintf(ExpectedKInvariantText, sizeof(ExpectedKInvariantText), L"KInvariant Failure %s at %s line %d\n", "0", __FILE__, __LINE__); KInvariant(FALSE);
+    CHAR ExpectedKInvariantText[256];
+    StringCbPrintf(ExpectedKInvariantText, sizeof(ExpectedKInvariantText), "KInvariant Failure %s at %s line %d\n", "0", __FILE__, __LINE__); KInvariant(FALSE);
 
-    if (wcscmp(ExpectedKInvariantText, KInvariantText) != 0)
+    if (strcmp(ExpectedKInvariantText, KInvariantText) != 0)
     {
         KTestPrintf("FAILED: computed \"%ws\" and expected \"%ws\"\n", KInvariantText, ExpectedKInvariantText);
         status = STATUS_UNSUCCESSFUL;
@@ -132,7 +132,7 @@ int __cdecl
 #if !defined(PLATFORM_UNIX)
 wmain(
     __in int argc,
-    __in_ecount(argc) WCHAR* args[]
+    __in_ecount(argc) CHAR* args[]
 )
 {
 #else

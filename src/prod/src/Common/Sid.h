@@ -27,16 +27,16 @@ namespace Common
         SID_IDENTIFIER_AUTHORITY GetAuthority() const;
         UCHAR GetSubAuthorityCount() const;
         DWORD GetSubAuthority(DWORD subAuthority) const;
-        Common::ErrorCode GetAllowDacl(__out std::wstring & allowDacl) const;
-        Common::ErrorCode ToString(__out std::wstring & stringSid) const;
+        Common::ErrorCode GetAllowDacl(__out std::string & allowDacl) const;
+        Common::ErrorCode ToString(__out std::string & stringSid) const;
 
         bool IsLocalSystem() const;
         bool IsNetworkService() const;
         bool IsAnonymous() const;
 
         static bool IsValid(PSID pSid);
-        static Common::ErrorCode LookupAccount(PSID pSid, __out std::wstring & domainName, __out std::wstring & userName);
-        static Common::ErrorCode ToString(PSID pSid, __out std::wstring & stringSid);
+        static Common::ErrorCode LookupAccount(PSID pSid, __out std::string & domainName, __out std::string & userName);
+        static Common::ErrorCode ToString(PSID pSid, __out std::string & stringSid);
 
     private:
         PSID const pSid_;
@@ -53,14 +53,14 @@ namespace Common
         static Common::ErrorCode CreateUPtr(__in PSID pSid, __out SidUPtr & sid);
         static Common::ErrorCode CreateSPtr(__in PSID pSid, __out SidSPtr & sid);
 
-        static Common::ErrorCode CreateUPtrFromStringSid(std::wstring const & stringSid, __out SidUPtr & sid);
-        static Common::ErrorCode CreateSPtrFromStringSid(std::wstring const & stringSid, __out SidSPtr & sid);
+        static Common::ErrorCode CreateUPtrFromStringSid(std::string const & stringSid, __out SidUPtr & sid);
+        static Common::ErrorCode CreateSPtrFromStringSid(std::string const & stringSid, __out SidSPtr & sid);
 
-        static Common::ErrorCode CreateUPtr(std::wstring const & accountName, __out SidUPtr & sid);
-        static Common::ErrorCode CreateSPtr(std::wstring const & accountName, __out SidSPtr & sid);
+        static Common::ErrorCode CreateUPtr(std::string const & accountName, __out SidUPtr & sid);
+        static Common::ErrorCode CreateSPtr(std::string const & accountName, __out SidSPtr & sid);
 
 #if defined(PLATFORM_UNIX)
-        static Common::ErrorCode CreateGroupSPtr(std::wstring const & accountName, __out SidSPtr & sid);
+        static Common::ErrorCode CreateGroupSPtr(std::string const & accountName, __out SidSPtr & sid);
 #endif
 
         static Common::ErrorCode CreateUPtr(WELL_KNOWN_SID_TYPE wellKnownSid, __out SidUPtr & sid);
@@ -71,7 +71,7 @@ namespace Common
 
         static Common::ErrorCode GetCurrentUserSid(__out SidUPtr & sid);
 
-        static Common::ErrorCode Create(std::wstring const & accountName, __inout Common::ByteBuffer & buffer);
+        static Common::ErrorCode Create(std::string const & accountName, __inout Common::ByteBuffer & buffer);
 
     private:
         static Common::ErrorCode Create(__in PSID pSid, __inout Common::ByteBuffer & buffer);

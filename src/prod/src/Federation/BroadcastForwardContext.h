@@ -21,7 +21,7 @@ namespace Federation
             std::vector<NodeIdRange> && subRanges,
             Common::AsyncOperationSPtr const & operation,
             RequestReceiverContextUPtr && requestContext,
-            std::vector<std::wstring> const & externalRings);
+            std::vector<std::string> const & externalRings);
 
         BroadcastForwardContext(BroadcastForwardContext && other);
 
@@ -29,7 +29,7 @@ namespace Federation
 
         void CompleteLocalRange();
 
-        void CompleteRing(std::wstring const & ringName);
+        void CompleteRing(std::string const & ringName);
 
         bool AddRange(
             NodeIdRange const & range, 
@@ -50,7 +50,7 @@ namespace Federation
             ForwardRequest(
                 NodeIdRange const & requestRange,
                 std::vector<NodeIdRange> && subRanges,
-                std::vector<std::wstring> const & externalRings,
+                std::vector<std::string> const & externalRings,
                 Common::AsyncOperationSPtr const & operation,
                 RequestReceiverContextUPtr && requestContext);
 
@@ -61,13 +61,13 @@ namespace Federation
             bool CompleteIfNeeded(Common::ErrorCode error);
             void CompleteRange(NodeIdRange const & range);
             void CompleteLocalRange(NodeId nodeId, NodeIdRange & localRange);
-            void CompleteRing(std::wstring const & ringName);
+            void CompleteRing(std::string const & ringName);
 
             void WriteTo(Common::TextWriter& w, Common::FormatOptions const &) const;
 
             NodeIdRange requestRange_;
             std::vector<NodeIdRange> pending_;
-            std::vector<std::wstring> pendingRings_;
+            std::vector<std::string> pendingRings_;
             Common::AsyncOperationSPtr operation_;
             RequestReceiverContextUPtr requestContext_;
         };
@@ -79,6 +79,6 @@ namespace Federation
         Common::ErrorCode error_;
         std::vector<NodeIdRange> acked_;
         std::vector<ForwardRequest> requests_;
-        std::vector<std::wstring> ackedRings_;
+        std::vector<std::string> ackedRings_;
     };
 }

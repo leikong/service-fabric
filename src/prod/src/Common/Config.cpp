@@ -55,12 +55,12 @@ namespace Common
     {
     }
 
-    void Config::GetKeyValues(std::wstring const & section, StringMap & entries) const
+    void Config::GetKeyValues(std::string const & section, StringMap & entries) const
     {
         StringCollection keys;
         GetKeys(section, keys);
 
-        for (std::wstring const & key : keys)
+        for (std::string const & key : keys)
         {                
             bool isEncrypted;
             entries[key] = ReadString(section, key, isEncrypted);

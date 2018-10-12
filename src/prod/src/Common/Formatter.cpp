@@ -10,11 +10,9 @@ namespace Common
     namespace detail
     {
         format_handler format_impl;
-        wformat_handler wformat_impl;
     };
 
     detail::format_handler & formatString = detail::format_impl;
-    detail::wformat_handler & wformatString = detail::wformat_impl;
 
     FormatOptions null_format_impl(0, false, "");
     FormatOptions& null_format = null_format_impl;

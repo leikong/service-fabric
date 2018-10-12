@@ -16,9 +16,9 @@ namespace Transport
         TcpSendTarget(
             TcpDatagramTransport & owner,
             IDatagramTransport::MessageHandlerSPtr const& msgHandler,
-            std::wstring const & address,
-            std::wstring const & targetId,
-            std::wstring const & sspiTarget,
+            std::string const & address,
+            std::string const & targetId,
+            std::string const & sspiTarget,
             uint64 instance,
             bool anonymous,
             TransportSecuritySPtr const & security);
@@ -30,10 +30,10 @@ namespace Transport
                 Common::TimeSpan expiration,
                 TransportPriority::Enum) override;
 
-        std::wstring const & Address() const override;
-        std::wstring const & LocalAddress() const override;
-        std::wstring const & Id() const override;
-        std::wstring const & TraceId() const override;
+        std::string const & Address() const override;
+        std::string const & LocalAddress() const override;
+        std::string const & Id() const override;
+        std::string const & TraceId() const override;
         bool IsAnonymous() const override;
 
         void TargetDown(uint64 instance = 0) override;
@@ -56,8 +56,8 @@ namespace Transport
         void Abort();
 
         TransportSecuritySPtr const & Security() const;
-        std::wstring const & SspiTarget() const;
-        void UpdateSspiTargetIfNeeded(std::wstring const & value);
+        std::string const & SspiTarget() const;
+        void UpdateSspiTargetIfNeeded(std::string const & value);
 
         void StopSendAndScheduleClose(
             IConnection const & connection,
@@ -66,7 +66,7 @@ namespace Transport
             Common::TimeSpan delay);
 
         bool HasId() const;
-        void UpdateId(std::wstring const & id);
+        void UpdateId(std::string const & id);
 
         void UpdateSecurity(TransportSecuritySPtr const & value);
 
@@ -97,7 +97,7 @@ namespace Transport
         void ValidateConnectionsChl(uint64 targetInstance, Common::StopwatchTime now);
 
         void TraceConnectionsChl();
-        std::wstring ConnectionStatesToStringChl();
+        std::string ConnectionStatesToStringChl();
 
         TcpConnectionSPtr AddAcceptedConnection(Common::Socket & accepted);
         Common::ErrorCode AddConnection_CallerHoldingLock(
@@ -157,16 +157,16 @@ namespace Transport
         TcpDatagramTransport & owner_;
         IDatagramTransport::MessageHandlerWPtr msgHandler_;
 
-        std::wstring const address_;
-        std::wstring const localAddress_;
+        std::string const address_;
+        std::string const localAddress_;
 
-        std::wstring id_;
-        std::wstring traceId_;
+        std::string id_;
+        std::string traceId_;
         uint64 instance_;
 
         volatile size_t maxOutgoingMessageSize_ = TcpFrameHeader::FrameSizeHardLimit();
 
-        std::wstring sspiTarget_;
+        std::string sspiTarget_;
         TransportSecuritySPtr security_;
 
         Common::TimeSpan connectionIdleTimeout_;

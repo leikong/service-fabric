@@ -90,7 +90,7 @@ inline ENUMTYPE &operator ^= (ENUMTYPE &a, ENUMTYPE b) { return (ENUMTYPE &)(((i
 }
 
 // 837
-#define UNICODE_NULL ((WCHAR)0)
+#define UNICODE_NULL ((CHAR)0)
 
 // 1997
 SHORT

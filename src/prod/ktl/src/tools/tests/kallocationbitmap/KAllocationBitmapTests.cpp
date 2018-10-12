@@ -34,7 +34,7 @@ Abstract:
 
 NTSTATUS
 KAllocationBitmapTestX(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     UNREFERENCED_PARAMETER(argc);
@@ -248,7 +248,7 @@ Finish:
 
 NTSTATUS
 KAllocationBitmapTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     KTestPrintf("KAllocationBitmapTest: STARTED\n");

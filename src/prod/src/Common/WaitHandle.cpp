@@ -42,7 +42,7 @@ bool WaitHandle<ManualReset>::IsSet()
 #ifdef PLATFORM_UNIX
 
 template <bool ManualReset>
-WaitHandle<ManualReset>::WaitHandle(bool initialState, std::wstring eventName) : signaled_(initialState)
+WaitHandle<ManualReset>::WaitHandle(bool initialState, std::string eventName) : signaled_(initialState)
 {
     // @TODO - eventName isn't actually supported in linux. we need to find another way
     UNREFERENCED_PARAMETER(eventName);
@@ -162,7 +162,7 @@ ErrorCode WaitHandle<ManualReset>::Reset()
 #else
 
 template <bool ManualReset>
-WaitHandle<ManualReset>::WaitHandle(bool initialState, std::wstring eventName)
+WaitHandle<ManualReset>::WaitHandle(bool initialState, std::string eventName)
 {
     handle_ = CreateEventW(
         nullptr,

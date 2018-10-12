@@ -14,6 +14,6 @@ namespace Common
         /* -------------- Configuration Security -------------- */
 
         // X509 certificate store used by fabric for configuration protection
-        PUBLIC_CONFIG_ENTRY(std::wstring, L"Paas", ClusterId, L"", ConfigEntryUpgradePolicy::NotAllowed);
+        PUBLIC_CONFIG_ENTRY(std::string, "Paas", ClusterId, "", ConfigEntryUpgradePolicy::NotAllowed);
     };
 }

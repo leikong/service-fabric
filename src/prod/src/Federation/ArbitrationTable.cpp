@@ -691,7 +691,7 @@ MessageUPtr ArbitrationTable::ProcessImplicitRequest(ArbitrationRequestBody cons
 
     WriteInfo(TraceResult,
         "{0} processed implicit request {1} decision {2} history start {3} subject {4}",
-        voteId_, request, decision, historyStartTime_, subjectRecord ? wformatString(*subjectRecord) : L"");
+        voteId_, request, decision, historyStartTime_, subjectRecord ? formatString(*subjectRecord) : "");
 
     return FederationMessage::GetArbitrateReply().CreateMessage(ArbitrationReplyBody(TimeSpan::MaxValue, decision != ArbitrationDecision::Reject ? TimeSpan::MaxValue : TimeSpan::Zero, false, ArbitrationReplyBody::Extended));
 }
@@ -821,7 +821,7 @@ MessageUPtr ArbitrationTable::InternalProcessRequest(ArbitrationRequestBody cons
         monitorRecord->flags_,
         monitorRecord->state_,
         monitor->SuspicionLevel,
-        wformatString("{0} {1}", subjectRecord->Decision, subjectRecord->state_),
+        formatString.L("{0} {1}", subjectRecord->Decision, subjectRecord->state_),
         subjectRecord->node_.GetRawSuspicionLevel(),
         foundHistory);
 

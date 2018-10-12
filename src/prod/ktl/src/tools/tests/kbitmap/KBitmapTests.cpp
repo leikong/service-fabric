@@ -33,7 +33,7 @@ Abstract:
 
 NTSTATUS
 KBitmapTestX(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     UNREFERENCED_PARAMETER(argc);
@@ -467,7 +467,7 @@ Finish:
 
 NTSTATUS
 KBitmapTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     KTestPrintf("KBitmapTest: START\n");

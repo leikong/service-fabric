@@ -11,7 +11,7 @@ using namespace std;
 static const StringLiteral TraceType("X509FindValue");
 
 _Use_decl_annotations_
-ErrorCode X509FindValue::Create(X509FindType::Enum type, LPCWSTR value, SPtr & result)
+ErrorCode X509FindValue::Create(X509FindType::Enum type, LPCSTR value, SPtr & result)
 {
     result.reset();
 
@@ -38,11 +38,11 @@ ErrorCode X509FindValue::Create(X509FindType::Enum type, LPCWSTR value, SPtr & r
 #endif
     }
 
-    return Create(type, wstring(value), result);
+    return Create(type, string(value), result);
 }
 
 _Use_decl_annotations_
-ErrorCode X509FindValue::Create(X509FindType::Enum type, std::wstring const & value, SPtr & result)
+ErrorCode X509FindValue::Create(X509FindType::Enum type, std::string const & value, SPtr & result)
 {
     result.reset();
 
@@ -97,17 +97,15 @@ ErrorCode X509FindValue::Create(X509FindType::Enum type, std::wstring const & va
 
         case X509FindType::FindByExtension:
         {
-            auto pos = value.find_first_of(L':');
-            if (pos == wstring::npos) return ErrorCodeValue::InvalidArgument;
+            auto pos = value.find_first_of(':');
+            if (pos == string::npos) return ErrorCodeValue::InvalidArgument;
 
-            wstring oid = value.substr(0, pos);
-            string oidAnsi;
-            StringUtility::UnicodeToAnsi(oid, oidAnsi);
-            if (!StringUtility::AreEqualCaseInsensitive(oidAnsi.c_str(), szOID_SUBJECT_ALT_NAME) &&
-                !StringUtility::AreEqualCaseInsensitive(oidAnsi.c_str(), szOID_SUBJECT_ALT_NAME2))
+            string oid = value.substr(0, pos);
+            if (!StringUtility::AreEqualCaseInsensitive(oid.c_str(), szOID_SUBJECT_ALT_NAME) &&
+                !StringUtility::AreEqualCaseInsensitive(oid.c_str(), szOID_SUBJECT_ALT_NAME2))
                 return ErrorCode::FromNtStatus(STATUS_NOT_SUPPORTED);
 
-            wstring extensionValue = value.substr(pos + 1, value.size() - pos - 1);
+            string extensionValue = value.substr(pos + 1, value.size() - pos - 1);
             X509FindSubjectAltName::SPtr altName;
             auto error = X509FindSubjectAltName::Create(extensionValue, altName);
             result = altName;
@@ -121,8 +119,8 @@ ErrorCode X509FindValue::Create(X509FindType::Enum type, std::wstring const & va
 
 _Use_decl_annotations_ ErrorCode X509FindValue::Create(
     X509FindType::Enum type,
-    std::wstring const & value,
-    std::wstring const & secondaryValue,
+    std::string const & value,
+    std::string const & secondaryValue,
     SPtr & result)
 {
     auto error = Create(type, value, result);
@@ -157,7 +155,7 @@ _Use_decl_annotations_ ErrorCode X509FindValue::Create(
     }
     else
     {
-        error = Create(x509FindType, (LPCWSTR)value, result);
+        error = Create(x509FindType, (LPCSTR)value, result);
         if (!error.IsSuccess() || (secondaryValue == nullptr)) return error;
     }
 
@@ -168,9 +166,9 @@ _Use_decl_annotations_ ErrorCode X509FindValue::Create(
 }
 
 _Use_decl_annotations_ ErrorCode X509FindValue::Create(
-    std::wstring const & type,
-    std::wstring const & value,
-    std::wstring const & secondaryValue,
+    std::string const & type,
+    std::string const & value,
+    std::string const & secondaryValue,
     SPtr & result)
 {
     result.reset();
@@ -212,9 +210,9 @@ void X509FindValue::WriteTo(TextWriter & w, FormatOptions const & f) const
     }
 }
 
-pair<wstring, wstring> X509FindValue::ToStrings() const
+pair<string, string> X509FindValue::ToStrings() const
 {
-    pair<wstring, wstring> result;
+    pair<string, string> result;
     result.first = PrimaryToString();
 
     if (!secondary_) return result;
@@ -223,9 +221,9 @@ pair<wstring, wstring> X509FindValue::ToStrings() const
     return result;
 }
 
-wstring X509FindValue::PrimaryToString() const
+string X509FindValue::PrimaryToString() const
 {
-    wstring str;
+    string str;
     StringWriter w(str);
     OnWriteTo(w, null_format);
     return str;

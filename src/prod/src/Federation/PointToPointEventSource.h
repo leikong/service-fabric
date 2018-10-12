@@ -10,8 +10,8 @@ namespace Federation
     class PointToPointEventSource
     {
     public:
-        Common::TraceEventWriter<std::wstring, std::wstring, NodeInstance, Transport::MessageId, bool, uint32> Send;
-        Common::TraceEventWriter<std::wstring, std::wstring, NodeInstance, Transport::MessageId, bool, uint32> Receive;
+        Common::TraceEventWriter<std::string, std::string, NodeInstance, Transport::MessageId, bool, uint32> Send;
+        Common::TraceEventWriter<std::string, std::string, NodeInstance, Transport::MessageId, bool, uint32> Receive;
 
         PointToPointEventSource() :
             Send(

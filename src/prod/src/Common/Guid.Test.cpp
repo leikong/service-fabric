@@ -22,7 +22,7 @@ namespace Common
     BOOST_AUTO_TEST_CASE(TestGuidSerializeDeserialize)
     {
         Guid g1 = Guid::NewGuid();
-        wstring str = g1.ToString();
+        string str = g1.ToString();
         Guid g2;
         Guid::TryParse(str, g2);
         VERIFY_ARE_EQUAL(g1.ToStringA(), g2.ToStringA());
@@ -30,20 +30,20 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(ToString_Format_N_Success)
     {
-        wstring expectedString(L"000007c300060010000102040810217f");
+        string expectedString("000007c300060010000102040810217f");
 
         Guid inputGuid(1987, 6, 16, 0, 1, 2, 4, 8, 16, 33, 127);
-        wstring outputString = inputGuid.ToString('N');
+        string outputString = inputGuid.ToString('N');
 
         VERIFY_ARE_EQUAL(expectedString, outputString);
     }
 
     BOOST_AUTO_TEST_CASE(ToString_Format_D_Success)
     {
-        wstring expectedString(L"000007c3-0006-0010-0001-02040810217f");
+        string expectedString("000007c3-0006-0010-0001-02040810217f");
 
         Guid inputGuid(1987, 6, 16, 0, 1, 2, 4, 8, 16, 33, 127);
-        wstring outputString = inputGuid.ToString('D');
+        string outputString = inputGuid.ToString('D');
 
         VERIFY_ARE_EQUAL(expectedString, outputString);
     }

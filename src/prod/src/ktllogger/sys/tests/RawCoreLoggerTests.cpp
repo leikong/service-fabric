@@ -70,7 +70,7 @@ NTSTATUS CoreLoggerRead(
 }
 
 NTSTATUS CoreLoggerWrite(
-    PWCHAR Tag,
+    PCHAR Tag,
     RvdLogStream::SPtr LogStream,
     RvdLogAsn Asn,
     ULONG DataSize,
@@ -201,7 +201,7 @@ VOID TruncateToBadLogLowLsnTest(
         status = logManager->CreateAsyncCreateLogContext(createLogOp);
         VERIFY_IS_TRUE(NT_SUCCESS(status));
 
-        KWString logType(KtlSystem::GlobalNonPagedAllocator(), L"TestLogType");
+        KWString logType(KtlSystem::GlobalNonPagedAllocator(), "TestLogType");
         KInvariant(NT_SUCCESS(logType.Status()));
         
         createLogOp->StartCreateLog(
@@ -267,19 +267,19 @@ VOID TruncateToBadLogLowLsnTest(
         status = emptyLogStream->CreateAsyncWriteContext(emptyStreamWriteOp);
         VERIFY_IS_TRUE(NT_SUCCESS(status));
 
-        status = CoreLoggerWrite(L"empty 12",
+        status = CoreLoggerWrite("empty 12",
                             emptyLogStream,
                             12,
                             0);              // 64K
         VERIFY_IS_TRUE(NT_SUCCESS(status));
-        status = CoreLoggerWrite(L"empty 14",
+        status = CoreLoggerWrite("empty 14",
                             emptyLogStream,
                             14,
                             0);              // 64K
         VERIFY_IS_TRUE(NT_SUCCESS(status));
         emptyLogStream->Truncate(15, 15);
 
-        status = CoreLoggerWrite(L"empty 16",
+        status = CoreLoggerWrite("empty 16",
                             emptyLogStream,
                             16,
                             0);              // 64K
@@ -458,7 +458,7 @@ VOID StreamCheckpointBoundaryTest(
         status = logManager->CreateAsyncCreateLogContext(createLogOp);
         VERIFY_IS_TRUE(NT_SUCCESS(status));
 
-        KWString logType(KtlSystem::GlobalNonPagedAllocator(), L"TestLogType");
+        KWString logType(KtlSystem::GlobalNonPagedAllocator(), "TestLogType");
         createLogOp->StartCreateLog(
             DiskId,
             logContainerId,
@@ -615,7 +615,7 @@ VOID QueryLogTypeTest(
     //
     KGuid logContainerGuid;
     RvdLogId logContainerId;
-    KWString logType(KtlSystem::GlobalNonPagedAllocator(), L"TestLogType");
+    KWString logType(KtlSystem::GlobalNonPagedAllocator(), "TestLogType");
     KWString readCreatedLogType(KtlSystem::GlobalNonPagedAllocator());
     KWString readOpenedLogType(KtlSystem::GlobalNonPagedAllocator());
 
@@ -697,8 +697,8 @@ VOID QueryLogTypeTest(
 
 
     // Max length is 16 chars - only 15 char plus nul saved
-    KWString longLogType(KtlSystem::GlobalNonPagedAllocator(), L"12345678901234567890");
-    KWString longCompareLogType(KtlSystem::GlobalNonPagedAllocator(), L"123456789012345");
+    KWString longLogType(KtlSystem::GlobalNonPagedAllocator(), "12345678901234567890");
+    KWString longCompareLogType(KtlSystem::GlobalNonPagedAllocator(), "123456789012345");
     KWString longCreatedLogType(KtlSystem::GlobalNonPagedAllocator());
     KWString longOpenedLogType(KtlSystem::GlobalNonPagedAllocator());
 
@@ -828,7 +828,7 @@ VOID DeleteRecordsTest(
         status = logManager->CreateAsyncCreateLogContext(createLogOp);
         VERIFY_IS_TRUE(NT_SUCCESS(status));
 
-        KWString logType(KtlSystem::GlobalNonPagedAllocator(), L"TestLogType");
+        KWString logType(KtlSystem::GlobalNonPagedAllocator(), "TestLogType");
         KInvariant(NT_SUCCESS(logType.Status()));
         
         createLogOp->StartCreateLog(
@@ -867,7 +867,7 @@ VOID DeleteRecordsTest(
             {
                 RvdLogAsn asn1 = (i * 5) + 5;
 
-                status = CoreLoggerWrite(L"Setup 1000 records", otherLogStream, asn1, 0x4000, recordVersion);
+                status = CoreLoggerWrite("Setup 1000 records", otherLogStream, asn1, 0x4000, recordVersion);
                 VERIFY_IS_TRUE(NT_SUCCESS(status));
             }
 
@@ -1057,31 +1057,31 @@ VOID DeleteRecordsTest(
             logContainer->QuerySpaceInformation(&totalSpace, &freeSpaceInitially);
 
             asn1 = 10000;
-            status = CoreLoggerWrite(L"Write 10000", otherLogStream, asn1, 0x4000, recordVersion);
+            status = CoreLoggerWrite("Write 10000", otherLogStream, asn1, 0x4000, recordVersion);
             VERIFY_IS_TRUE(NT_SUCCESS(status));
 
             asn1 = 11000;
-            status = CoreLoggerWrite(L"Write 11000", otherLogStream, asn1, 0x4000, recordVersion);
+            status = CoreLoggerWrite("Write 11000", otherLogStream, asn1, 0x4000, recordVersion);
             VERIFY_IS_TRUE(NT_SUCCESS(status));
 
             asn1 = 12000;
-            status = CoreLoggerWrite(L"Write 12000", otherLogStream, asn1, 0x4000, recordVersion);
+            status = CoreLoggerWrite("Write 12000", otherLogStream, asn1, 0x4000, recordVersion);
             VERIFY_IS_TRUE(NT_SUCCESS(status));
 
             asn1 = 13000;
-            status = CoreLoggerWrite(L"Write 13000", otherLogStream, asn1, 0x4000, recordVersion);
+            status = CoreLoggerWrite("Write 13000", otherLogStream, asn1, 0x4000, recordVersion);
             VERIFY_IS_TRUE(NT_SUCCESS(status));
 
             asn1 = 11500;
-            status = CoreLoggerWrite(L"Write 11500", otherLogStream, asn1, 0x4000, recordVersion);
+            status = CoreLoggerWrite("Write 11500", otherLogStream, asn1, 0x4000, recordVersion);
             VERIFY_IS_TRUE(NT_SUCCESS(status));
 
             asn1 = 11501;
-            status = CoreLoggerWrite(L"Write 11501", otherLogStream, asn1, 0x4000, recordVersion);
+            status = CoreLoggerWrite("Write 11501", otherLogStream, asn1, 0x4000, recordVersion);
             VERIFY_IS_TRUE(NT_SUCCESS(status));
 
             asn1 = 14000;
-            status = CoreLoggerWrite(L"Write 14000", otherLogStream, asn1, 0x4000, recordVersion);
+            status = CoreLoggerWrite("Write 14000", otherLogStream, asn1, 0x4000, recordVersion);
             VERIFY_IS_TRUE(NT_SUCCESS(status));
 
             //
@@ -1230,7 +1230,7 @@ VOID StreamCheckpointAtEndOfLogTest(
         status = logManager->CreateAsyncCreateLogContext(createLogOp);
         VERIFY_IS_TRUE(NT_SUCCESS(status));
 
-        KWString logType(KtlSystem::GlobalNonPagedAllocator(), L"TestLogType");
+        KWString logType(KtlSystem::GlobalNonPagedAllocator(), "TestLogType");
         KInvariant(NT_SUCCESS(logType.Status()));
         
         createLogOp->StartCreateLog(
@@ -1437,7 +1437,7 @@ VOID DuplicateRecordInLogTest(
         status = logManager->CreateAsyncCreateLogContext(createLogOp);
         VERIFY_IS_TRUE(NT_SUCCESS(status));
 
-        KWString logType(KtlSystem::GlobalNonPagedAllocator(), L"TestLogType");
+        KWString logType(KtlSystem::GlobalNonPagedAllocator(), "TestLogType");
         KInvariant(NT_SUCCESS(logType.Status()));
         
         createLogOp->StartCreateLog(
@@ -1517,11 +1517,11 @@ VOID DuplicateRecordInLogTest(
 		//
 		// Format is: \\??\Volume{a3316ef4-dfb4-40a3-9fae-427705f23d1f}\Log{3b4b7db6-ba84-4ab1-af83-ae0154a4d268}.log
 		//
-		logPath = L"\\??\\Volume";
+		logPath = "\\??\\Volume";
 		logPath += DiskId;
-		logPath += L"\\rvdlog\\Log";
+		logPath += "\\rvdlog\\Log";
 		logPath += logContainerId.Get();
-		logPath += L".log";
+		logPath += ".log";
 
 		status = logPath.Status();
         VERIFY_IS_TRUE(NT_SUCCESS(status));
@@ -1730,7 +1730,7 @@ VOID CorruptedRecordTest(
         status = logManager->CreateAsyncCreateLogContext(createLogOp);
         VERIFY_IS_TRUE(NT_SUCCESS(status));
 
-        KWString logType(KtlSystem::GlobalNonPagedAllocator(), L"TestLogType");
+        KWString logType(KtlSystem::GlobalNonPagedAllocator(), "TestLogType");
         KInvariant(NT_SUCCESS(logType.Status()));
         
         createLogOp->StartCreateLog(
@@ -1810,11 +1810,11 @@ VOID CorruptedRecordTest(
 	//
 	// Format is: \\??\Volume{a3316ef4-dfb4-40a3-9fae-427705f23d1f}\Log{3b4b7db6-ba84-4ab1-af83-ae0154a4d268}.log
 	//
-	logPath = L"\\??\\Volume";
+	logPath = "\\??\\Volume";
 	logPath += DiskId;
-	logPath += L"\\rvdlog\\Log";
+	logPath += "\\rvdlog\\Log";
 	logPath += logContainerId.Get();
-	logPath += L".log";
+	logPath += ".log";
 
 	status = logPath.Status();
 	VERIFY_IS_TRUE(NT_SUCCESS(status));

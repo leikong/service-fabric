@@ -102,7 +102,7 @@ bool TimerQueue::IsTimerArmed(TimerSPtr const & timer)
 void TimerQueue::HeapCheck_Dbg()
 {
 #ifdef DBG
-//    wstring str;
+//    string str;
 //    StringWriter w(str);
 //    w.WriteLine();
 //

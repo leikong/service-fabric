@@ -35,24 +35,24 @@ bool CryptoBitBlob::operator != (CryptoBitBlob const & rhs) const
     return !(*this == rhs);
 }
 
-ErrorCode CryptoBitBlob::Initialize(wstring const & hexString)
+ErrorCode CryptoBitBlob::Initialize(string const & hexString)
 {
     // Normalize the input hex string to something like "3a 4b 2c ..."
-    wstring normalizedString = hexString;
+    string normalizedString = hexString;
     StringUtility::TrimWhitespaces(normalizedString);
     data_.reserve(normalizedString.size() / 2);
 
     // Add " " for number parsing if needed
-    if (normalizedString.find(L" ") == wstring::npos)
+    if (normalizedString.find(" ") == string::npos)
     {
         for (int i = (int)normalizedString.size()-2; i >0; )
         {
-            normalizedString.insert(i, L" ");
+            normalizedString.insert(i, " ");
             i -= 2;
         }
     }
 
-    std::wstringstream stringStream(normalizedString);
+    std::stringstream stringStream(normalizedString);
     while(!stringStream.eof())
     {
         unsigned int byteValue;

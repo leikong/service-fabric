@@ -631,7 +631,7 @@ OverlayLog::OpenServiceFSM(
             
             SetDeferredCloseBehavior();
 
-            KStringView prefix(L"SharedLogWrite");
+            KStringView prefix("SharedLogWrite");
             Status = _LogInstrumentedComponent->SetComponentName(prefix, _ContainerId.Get());
             if (! NT_SUCCESS(Status))
             {

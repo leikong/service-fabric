@@ -10,9 +10,9 @@ namespace Common
     class ThumbprintSet
     {
     public:
-        Common::ErrorCode Set(std::wstring const & thumbprints);
-        Common::ErrorCode Add(std::wstring const & thumbprintString);
-        Common::ErrorCode Add(LPCWSTR thumbprintString);
+        Common::ErrorCode Set(std::string const & thumbprints);
+        Common::ErrorCode Add(std::string const & thumbprintString);
+        Common::ErrorCode Add(LPCSTR thumbprintString);
 
         void Add(Thumbprint const & thumbprint);
         void Add(ThumbprintSet const & other);
@@ -26,7 +26,7 @@ namespace Common
         bool operator != (ThumbprintSet const & rhs) const;
 
         void WriteTo(Common::TextWriter & w, Common::FormatOptions const &) const;
-        std::wstring ToString() const;
+        std::string ToString() const;
 
     private:
         std::set<Common::Thumbprint> value_;

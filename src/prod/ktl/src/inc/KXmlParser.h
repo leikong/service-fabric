@@ -54,20 +54,20 @@ public:
 
         // Called when a new element is discovered - establishes a "current" element - loigcally a "push" operation
         virtual NTSTATUS OpenElement(
-            __in_ecount(ElementNsLength) WCHAR* ElementNs, 
+            __in_ecount(ElementNsLength) CHAR* ElementNs, 
             __in ULONG  ElementNsLength, 
-            __in_ecount(ElementNameLength) WCHAR* ElementName, 
+            __in_ecount(ElementNameLength) CHAR* ElementName, 
             __in ULONG  ElementNameLength, 
-            __in_z const WCHAR* StartElementSection) = 0;
+            __in_z const CHAR* StartElementSection) = 0;
 
         // Called for every attribute on a discovered element
         virtual NTSTATUS AddAttribute(
             __in BOOLEAN HeaderAttributes,    // Set to true if these are the <?xml header attributes
-            __in_ecount(AttributeNsLength) WCHAR* AttributeNs,
+            __in_ecount(AttributeNsLength) CHAR* AttributeNs,
             __in ULONG  AttributeNsLength,
-            __in_ecount(AttributeNameLength) WCHAR* AttributeName,
+            __in_ecount(AttributeNameLength) CHAR* AttributeName,
             __in ULONG  AttributeNameLength,
-            __in_ecount(ValueLength) WCHAR* Value,
+            __in_ecount(ValueLength) CHAR* Value,
             __in ULONG  ValueLength
             ) = 0;
 
@@ -77,7 +77,7 @@ public:
         virtual NTSTATUS AddContent(
             __in ULONG  ContentIndex,
             __in ULONG  ContentType,
-            __in_ecount(ContentLength) WCHAR* ContentText,
+            __in_ecount(ContentLength) CHAR* ContentText,
             __in ULONG  ContentLength
             ) = 0;
 
@@ -101,7 +101,7 @@ public:
     // Parse Src (for the length of SizeOfSrc) for an XML document; passing the discovered XML components to
     // the provides IHook instance.
     NTSTATUS 
-    Parse(__in_ecount(SizeOfSrc) WCHAR* Src, __in ULONG SizeOfSrc, __in IHook& HookToUse);
+    Parse(__in_ecount(SizeOfSrc) CHAR* Src, __in ULONG SizeOfSrc, __in IHook& HookToUse);
 
     // Allow reuse of the instance.
     void 
@@ -115,16 +115,16 @@ public:
     GetFailedCharaterPosition();
 
 private:
-    NTSTATUS RecognizeIdent2(_Outref_result_buffer_(IdentLen) WCHAR*& Ident, _Out_ ULONG& IdentLen, _Outref_result_buffer_maybenull_(NsPrefixLen) WCHAR*& NsPrefix, _Out_ ULONG& NsPrefixLen);
+    NTSTATUS RecognizeIdent2(_Outref_result_buffer_(IdentLen) CHAR*& Ident, _Out_ ULONG& IdentLen, _Outref_result_buffer_maybenull_(NsPrefixLen) CHAR*& NsPrefix, _Out_ ULONG& NsPrefixLen);
     NTSTATUS RecognizeElement();
     NTSTATUS RecognizeXmlHeader();
     NTSTATUS RecognizeAttributes(__in BOOLEAN HeaderAttributes);
-    NTSTATUS RecognizeQString(_Outref_result_buffer_(Len) WCHAR*& Target, _Out_ ULONG& Len);
+    NTSTATUS RecognizeQString(_Outref_result_buffer_(Len) CHAR*& Target, _Out_ ULONG& Len);
     NTSTATUS RecognizeContent();
     NTSTATUS RecognizeCDATA(__out BOOLEAN& Result);
     NTSTATUS StripComments();
 
-    inline BOOLEAN IsSpace(WCHAR Char)
+    inline BOOLEAN IsSpace(CHAR Char)
     {
         return ((Char == 0x0009) ||     // HT  
                 (Char == 0x000A) ||     // LF
@@ -134,7 +134,7 @@ private:
                 (Char == 0x0020));      // or space
     }
 
-    inline LONG StrNCmp(__in_ecount(Size) const WCHAR* String1, __in_ecount(Size) const WCHAR* String2, __in ULONG Size)
+    inline LONG StrNCmp(__in_ecount(Size) const CHAR* String1, __in_ecount(Size) const CHAR* String2, __in ULONG Size)
     {
         #pragma warning(disable:4127)   // C4127: conditional expression is constant 
         while (TRUE)
@@ -144,8 +144,8 @@ private:
             UNICODE_STRING string2;
 
             string2.MaximumLength = (string2.Length = (string1.MaximumLength = (string1.Length = todo)));
-            string1.Buffer = (WCHAR*)String1;
-            string2.Buffer = (WCHAR*)String2;
+            string1.Buffer = (CHAR*)String1;
+            string2.Buffer = (CHAR*)String2;
 
             LONG    result =  RtlCompareUnicodeString(&string1, &string2, FALSE);
             if (result != 0)
@@ -164,7 +164,7 @@ private:
     }
 
     inline NTSTATUS 
-    Peek(WCHAR& Result, LONG Offset = 0)
+    Peek(CHAR& Result, LONG Offset = 0)
     {
         if (_CurrentPos + Offset >= _LastValid)
         {
@@ -176,13 +176,13 @@ private:
     }
 
     inline BOOLEAN
-    PeekMultiple(__out NTSTATUS& Status, __in_ecount(LengthToPeek) WCHAR const * const TestChars, ULONG LengthToPeek)
+    PeekMultiple(__out NTSTATUS& Status, __in_ecount(LengthToPeek) CHAR const * const TestChars, ULONG LengthToPeek)
     {
         Status = STATUS_SUCCESS;
 
         for (ULONG ix = 0; ix < LengthToPeek; ix++)
         {
-            WCHAR       c;
+            CHAR       c;
             Status = Peek(c, ix);
             if (!NT_SUCCESS(Status) || (TestChars[ix] != c))
             {
@@ -201,7 +201,7 @@ private:
             return K_STATUS_XML_END_OF_INPUT;
         }
 
-        if (*_CurrentPos == L'\n')
+        if (*_CurrentPos == '\n')
         {
             _LineNumber++;
             _CharPos = 0;
@@ -238,7 +238,7 @@ private:
         #pragma warning(disable:4127)   // C4127: conditional expression is constant
         while(TRUE) 
         {
-            WCHAR       c;
+            CHAR       c;
             NTSTATUS    status = Peek(c);
             if (!NT_SUCCESS(status))
             {
@@ -262,17 +262,17 @@ private:
     StripComment(BOOLEAN& Result)
     {
         NTSTATUS    status = STATUS_SUCCESS;
-        WCHAR       c;
+        CHAR       c;
 
         Result = FALSE;
 
-        if (!NT_SUCCESS((status = Peek(c))) || (c != L'<')) // Quick short-circuit test
+        if (!NT_SUCCESS((status = Peek(c))) || (c != '<')) // Quick short-circuit test
         {
             return status;
         }
 
-        static WCHAR    startComment[]  = L"<!--";
-        static WCHAR    endComment[]    = L"-->";
+        static CHAR    startComment[]  = "<!--";
+        static CHAR    endComment[]    = "-->";
 
         Result = PeekMultiple(status, &startComment[0], 4);
         if (Result)
@@ -325,47 +325,51 @@ private:
         namespace prefix separator
     */
     inline BOOLEAN 
-    LegalIdent_FirstChar(WCHAR Char)
+    LegalIdent_FirstChar(CHAR Char)
     {
-        if (Char >= L'a' && Char <= 'z') return TRUE;
-        if (Char >= L'A' && Char <= 'Z') return TRUE;
-        if (Char == L'_') return TRUE;
-        if (Char >= 0xC0 && Char <= 0xD6) return TRUE;
-        if (Char >= 0xD8 && Char <= 0xF6) return TRUE;
-        if (Char >= 0xF8 && Char <= 0x2FF) return TRUE;
-        if (Char >= 0x370 && Char <= 0x37D) return TRUE;
-        if (Char >= 0x37F && Char <= 0x1FFF) return TRUE;
-        if (Char == 0x200C || Char == 0x200D) return TRUE;
-        if (Char >= 0x2070 && Char <= 0x218F) return TRUE;
-        if (Char >= 0x2C00 && Char <= 0x2FEF) return TRUE;
-        if (Char >= 0x3001 && Char <= 0xD7FF) return TRUE;
-        if (Char >= 0xF900 && Char <= 0xFDCF) return TRUE;
-        if (Char >= 0xFDF0 && Char <= 0xFFFD) return TRUE;
+        if (Char >= 'a' && Char <= 'z') return TRUE;
+        if (Char >= 'A' && Char <= 'Z') return TRUE;
+        if (Char == '_') return TRUE;
+//todo.utf8, handle it in UTF8
+//        if (Char >= 0xC0 && Char <= 0xD6) return TRUE;
+//        if (Char >= 0xD8 && Char <= 0xF6) return TRUE;
+//        if (Char >= 0xF8 && Char <= 0x2FF) return TRUE;
+//        if (Char >= 0x370 && Char <= 0x37D) return TRUE;
+//        if (Char >= 0x37F && Char <= 0x1FFF) return TRUE;
+//        if (Char == 0x200C || Char == 0x200D) return TRUE;
+//        if (Char >= 0x2070 && Char <= 0x218F) return TRUE;
+//        if (Char >= 0x2C00 && Char <= 0x2FEF) return TRUE;
+//        if (Char >= 0x3001 && Char <= 0xD7FF) return TRUE;
+//        if (Char >= 0xF900 && Char <= 0xFDCF) return TRUE;
+//        if (Char >= 0xFDF0 && Char <= 0xFFFD) return TRUE;
         return FALSE;
     }
 
     inline BOOLEAN 
-    LegalIdent_Char(WCHAR Char)
+    LegalIdent_Char(CHAR Char)
     {
         if (LegalIdent_FirstChar(Char))  return TRUE;
-        if (Char >= L'0' && Char <= L'9') return TRUE;
-        if (Char == L'.' || Char == L'-' || Char == 0xB7) return TRUE;
-        if (Char >= 0x300 && Char <= 0x36F) return TRUE;
-        if (Char >= 0x203F && Char <= 0x2040) return TRUE;
+        if (Char >= '0' && Char <= '9') return TRUE;
+        if (Char == '.' || Char == '-') return TRUE;
+
+//todo.utf8, handle it in UTF8
+//        if (Char == 0xB7) return TRUE;
+//        if (Char >= 0x300 && Char <= 0x36F) return TRUE;
+//        if (Char >= 0x203F && Char <= 0x2040) return TRUE;
         return FALSE;
     }
 
 private:
-    WCHAR const*    _Start;
-    WCHAR const*    _CurrentPos;
-    WCHAR const*    _LastValid;
+    CHAR const*    _Start;
+    CHAR const*    _CurrentPos;
+    CHAR const*    _LastValid;
     ULONG           _LineNumber;
     ULONG           _CharPos;
     IHook*          _Hook;
 
     static const ULONG  CDATA_START_LENGTH = 9;
     static const ULONG  CDATA_END_LENGTH = 3;
-    static const WCHAR* CDATA_BEGIN_TAG;
-    static const WCHAR* CDATA_END_TAG;
+    static const CHAR* CDATA_BEGIN_TAG;
+    static const CHAR* CDATA_END_TAG;
 };
 

@@ -19,7 +19,7 @@ namespace Common
 
         static ConfigStoreSPtr InitConfigStore();
 
-        void RegisterForUpdate(std::wstring const & section, IConfigUpdateSink* sink)
+        void RegisterForUpdate(std::string const & section, IConfigUpdateSink* sink)
         {
             store_->RegisterForUpdate(section, sink);
         }
@@ -31,31 +31,24 @@ namespace Common
 
 #pragma region( Parse )
         template<typename T>
-        static bool TryParse(T & result, std::wstring const & value);
+        static bool TryParse(T & result, std::string const & value);
 
         template<>
-        bool TryParse<std::wstring>(std::wstring & result, std::wstring const & value)
+        bool TryParse<std::string>(std::string & result, std::string const & value)
         {
             result = value;
             return true;
         }
 
         template<>
-        bool TryParse<std::string>(std::string & result, std::wstring const & value)
-        {
-            StringUtility::UnicodeToAnsi(value, result);
-            return true;
-        }
-
-        template<>
-        bool TryParse<SecureString>(SecureString & result, std::wstring const & value)
+        bool TryParse<SecureString>(SecureString & result, std::string const & value)
         {
             result = SecureString(value);
             return true;
         }
 
         template<>
-        bool TryParse<int64>(int64 & result, std::wstring const & value)
+        bool TryParse<int64>(int64 & result, std::string const & value)
         {
             if (!TryParseInt64(value, result))
             {
@@ -66,7 +59,7 @@ namespace Common
         }
 
         template<>
-        bool TryParse<int>(int & result, std::wstring const & value)
+        bool TryParse<int>(int & result, std::string const & value)
         {
             int64 temp;
             if (!TryParseInt64(value, temp))
@@ -79,7 +72,7 @@ namespace Common
         }
 
         template<>
-        bool TryParse<uint>(uint & result, std::wstring const & value)
+        bool TryParse<uint>(uint & result, std::string const & value)
         {
             int64 temp;
             if (!TryParseInt64(value, temp) || temp < 0)
@@ -92,7 +85,7 @@ namespace Common
         }
         
         template<>
-        bool TryParse<double>(double & result, std::wstring const & value)
+        bool TryParse<double>(double & result, std::string const & value)
         {
             // TODO: not handling incorrect format yet
             result = Double_Parse(value);
@@ -100,7 +93,7 @@ namespace Common
         }
 
         template<>
-        bool TryParse<TimeSpan>(TimeSpan & result, std::wstring const & value)
+        bool TryParse<TimeSpan>(TimeSpan & result, std::string const & value)
         {
             double seconds;
             if (!TryParse<double>(seconds, value) || seconds < 0.0)
@@ -113,35 +106,35 @@ namespace Common
         }
 
         template<>
-        bool TryParse<bool>(bool & result, std::wstring const & value)
+        bool TryParse<bool>(bool & result, std::string const & value)
         {
-            result = StringUtility::AreEqualCaseInsensitive(value, L"true");
+            result = StringUtility::AreEqualCaseInsensitive(value, "true");
             return true;
         }
 
         template<>
-        bool TryParse<StringCollection>(StringCollection & result, std::wstring const & value)
+        bool TryParse<StringCollection>(StringCollection & result, std::string const & value)
         {
-            StringUtility::Split<std::wstring>(value, result, L",");
+            StringUtility::Split<std::string>(value, result, ",");
             return true;
         }
 
         template<>
-        bool TryParse<FabricVersionInstance>(FabricVersionInstance & result, std::wstring const & value)
+        bool TryParse<FabricVersionInstance>(FabricVersionInstance & result, std::string const & value)
         {
             auto error = FabricVersionInstance::FromString(value, result);
             return error.IsSuccess();
         }
 		
 		template<>
-        bool TryParse<X509StoreLocation::Enum>(X509StoreLocation::Enum & result, std::wstring const & value)
+        bool TryParse<X509StoreLocation::Enum>(X509StoreLocation::Enum & result, std::string const & value)
         {
             auto error = X509StoreLocation::Parse(value, result);
             return error.IsSuccess();
         }
 
         template<typename T>
-        static T Parse(std::wstring const & value)
+        static T Parse(std::string const & value)
         {
             T result;
             TryParse(result, value);
@@ -153,10 +146,10 @@ namespace Common
 
         // If a parameter is encypted, this method returns the decrypted value.
         template<typename T>        
-        bool ReadUnencryptedConfig(std::wstring const & section, std::wstring const & key, T & result, T const & defaultValue)
+        bool ReadUnencryptedConfig(std::string const & section, std::string const & key, T & result, T const & defaultValue)
         {
             bool isEncrypted;
-            std::wstring stringValue = ReadString(section, key, isEncrypted);
+            std::string stringValue = ReadString(section, key, isEncrypted);
 
             ASSERT_IF(isEncrypted, "This method does not support encrypted configuration. Section={0}, Key={1}", section, key);
 
@@ -170,27 +163,27 @@ namespace Common
         }        
 
         // This method returns a string and also indicates whether the string is encrypted through "isEncrypted"        
-        std::wstring ReadString(std::wstring const & section, std::wstring const & key, bool & isEncrypted) const
+        std::string ReadString(std::string const & section, std::string const & key, bool & isEncrypted) const
         {            
             return store_->ReadString(section, key, isEncrypted);
         }
 
         void GetSections(
             Common::StringCollection & sectionNames, 
-            std::wstring const & partialName = L"") const 
+            std::string const & partialName = "") const 
         {
             store_->GetSections(sectionNames, partialName);
         }
 
         void GetKeys(
-            std::wstring const & section,
+            std::string const & section,
             Common::StringCollection & keyNames, 
-            std::wstring const & partialName = L"") const 
+            std::string const & partialName = "") const 
         {
             return store_->GetKeys(section, keyNames, partialName);
         }
 
-        void GetKeyValues(std::wstring const & section, StringMap & entries) const;
+        void GetKeyValues(std::string const & section, StringMap & entries) const;
 
         // sets the config store to use, if not set appropriate 
         // config store will be created based on the store provider

@@ -14,12 +14,12 @@ namespace Common
     public:
         typedef std::shared_ptr<X509FindSubjectAltName> SPtr;
 
-        static ErrorCode Create(std::wstring const & nameTypeAndValue, _Out_ SPtr & result);
+        static ErrorCode Create(std::string const & nameTypeAndValue, _Out_ SPtr & result);
         static ErrorCode Create(CERT_ALT_NAME_ENTRY const & certAltName, _Out_ SPtr & result);
 
         X509FindSubjectAltName();
 
-        ErrorCode Initialize(std::wstring const & nameTypeAndValue);
+        ErrorCode Initialize(std::string const & nameTypeAndValue);
         ErrorCode Initialize(CERT_ALT_NAME_ENTRY const & certAltName);
 
         X509FindType::Enum Type() const override;

@@ -16,7 +16,7 @@ namespace Transport
             EncryptAndSign = 2
         };
 
-        Common::ErrorCode Parse(std::wstring const & inputString, _Out_ Enum & result);
+        Common::ErrorCode Parse(std::string const & inputString, _Out_ Enum & result);
         Common::ErrorCode FromPublic(::FABRIC_PROTECTION_LEVEL publicEnum, _Out_ ProtectionLevel::Enum & internalEnum);
         ::FABRIC_PROTECTION_LEVEL ToPublic(ProtectionLevel::Enum internalEnum);
 

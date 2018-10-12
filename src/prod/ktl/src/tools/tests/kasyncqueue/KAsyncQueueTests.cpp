@@ -813,7 +813,7 @@ BasicAsyncOrderedGateTest()
 
 
 NTSTATUS
-KAsyncQueueTest(int argc, WCHAR* args[])
+KAsyncQueueTest(int argc, CHAR* args[])
 {
     UNREFERENCED_PARAMETER(argc);
     UNREFERENCED_PARAMETER(args);
@@ -848,7 +848,7 @@ KAsyncQueueTest(int argc, WCHAR* args[])
 }
 
 NTSTATUS
-KAsyncHelperTests(int argc, WCHAR* args[])
+KAsyncHelperTests(int argc, CHAR* args[])
 {
     KTestPrintf("KAsyncQueueUserTests: STARTED\n");
     NTSTATUS status = STATUS_SUCCESS;
@@ -881,7 +881,7 @@ KAsyncHelperTests(int argc, WCHAR* args[])
 #if CONSOLE_TEST
 int
 #if !defined(PLATFORM_UNIX)
-main(int argc, WCHAR* args[])
+main(int argc, CHAR* args[])
 {
 #else
 main(int argc, char* cargs[])

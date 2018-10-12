@@ -32,28 +32,28 @@ Abstract:
 
 NTSTATUS
 GetLogDriveRootPath(
-    __in WCHAR const DriveLetter,
+    __in CHAR const DriveLetter,
     __out KWString& RootPath);
 
 NTSTATUS
 GetLogFilesOnLogDrive(
-    __in WCHAR const DriveLetter,
+    __in CHAR const DriveLetter,
     __out KVolumeNamespace::NameArray& LogFiles);
 
 NTSTATUS
 CleanAndPrepLog(
-    __in WCHAR const DriveLetter,
+    __in CHAR const DriveLetter,
     __in BOOLEAN CreateDir = TRUE);
 
 NTSTATUS
 GetLogDriveGuid(
-    __in WCHAR const DriveLetter,
+    __in CHAR const DriveLetter,
     __out KGuid& DiskIdGuid);
 
 NTSTATUS
 GetLogDriveLetter(
     __in KGuid const& LogDriveGuid,
-    __out WCHAR* LogDriveLetter);
+    __out CHAR* LogDriveLetter);
 
 NTSTATUS
 CheckIfLogExists(
@@ -70,7 +70,7 @@ CheckLogAttributes(
 
 NTSTATUS
 GetDriveAndPathOfLogFile(
-    __in WCHAR DriveLetter,
+    __in CHAR DriveLetter,
     __in RvdLogId& LogId,
     __out KGuid& DriveGuid,
     __out KWString& FullyQualifiedDiskFileName);

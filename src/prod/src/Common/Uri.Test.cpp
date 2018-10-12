@@ -22,11 +22,11 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(UriCreationTest)
     {
-        Uri one(L"scheme");
-        Uri two(L"scheme", L"auth");
-        Uri three(L"scheme", L"auth", L"path");
-        Uri four(L"scheme", L"auth", L"path/morePath");
-        Uri five(L"wf", L"foo", L"bar");
+        Uri one("scheme");
+        Uri two("scheme", "auth");
+        Uri three("scheme", "auth", "path");
+        Uri four("scheme", "auth", "path/morePath");
+        Uri five("wf", "foo", "bar");
 
         CODING_ERROR_ASSERT(one.Scheme == two.Scheme);
         CODING_ERROR_ASSERT(one.Segments.empty() && two.Segments.empty());
@@ -42,10 +42,10 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(UriSchemeCompareTest)
     {
-        Uri one(L"red");
-        Uri two(L"Red");
-        Uri three(L"blue");
-        Uri four(L"blue");
+        Uri one("red");
+        Uri two("Red");
+        Uri three("blue");
+        Uri four("blue");
 
         CODING_ERROR_ASSERT(one == two);
         CODING_ERROR_ASSERT(three == four);
@@ -54,14 +54,14 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(UriAuthorityCompareTest)
     {
-        Uri one(L"green", L"square");
-        Uri two(L"green", L"Square");            
-        Uri three(L"green", L"square");                     
-        Uri four(L"green", L"square", L"light");
-        Uri five(L"green", L"Square", L"light");
-        Uri six(L"green", L"square", L"dark");
-        Uri seven(L"green", L"circle", L"light");
-        Uri eight(L"yellow", L"square", L"light");
+        Uri one("green", "square");
+        Uri two("green", "Square");            
+        Uri three("green", "square");                     
+        Uri four("green", "square", "light");
+        Uri five("green", "Square", "light");
+        Uri six("green", "square", "dark");
+        Uri seven("green", "circle", "light");
+        Uri eight("yellow", "square", "light");
 
         CODING_ERROR_ASSERT(one == three);
         CODING_ERROR_ASSERT(one == two);
@@ -81,11 +81,11 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(UriPathCompareTest)
     {
-        Uri one(L"gold", L"triangle", L"dim");
-        Uri two(L"gold", L"triangle", L"dim");
-        Uri three(L"gold", L"triangle", L"bright");
-        Uri four(L"gold", L"triangle", L"Dim");
-        Uri five(L"gold", L"octagon", L"bright");
+        Uri one("gold", "triangle", "dim");
+        Uri two("gold", "triangle", "dim");
+        Uri three("gold", "triangle", "bright");
+        Uri four("gold", "triangle", "Dim");
+        Uri five("gold", "octagon", "bright");
 
         CODING_ERROR_ASSERT(one == two);
         CODING_ERROR_ASSERT(one != three);
@@ -96,39 +96,39 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(UriToStringTest)
     {
-        Uri one(L"orange", L"pentagon", L"cloudy");
-        Uri two(L"purple", L"hexagon");
-        Uri three(L"fuchsia", L"");
+        Uri one("orange", "pentagon", "cloudy");
+        Uri two("purple", "hexagon");
+        Uri three("fuchsia", "");
 
-        CODING_ERROR_ASSERT(one.ToString() == L"orange://pentagon/cloudy");
-        CODING_ERROR_ASSERT(two.ToString() == L"purple://hexagon");
-        CODING_ERROR_ASSERT(three.ToString() == L"fuchsia:");
+        CODING_ERROR_ASSERT(one.ToString() == "orange://pentagon/cloudy");
+        CODING_ERROR_ASSERT(two.ToString() == "purple://hexagon");
+        CODING_ERROR_ASSERT(three.ToString() == "fuchsia:");
     }
 
     BOOST_AUTO_TEST_CASE(UriParseTest)
     {
-        std::wstring zero = L"amber:";
-        std::wstring one = L"pink://";
-        std::wstring two = L"brown://decagon";
-        std::wstring three = L"black://dodecagon/sparkly";
-        std::wstring four = L"olive:/";
-        std::wstring five = L"purple//septagon";
-        std::wstring six = L"magenta:/torus/drab";
-        std::wstring seven = L"oval/pale";
-        std::wstring eight = L"black://purple/white/pink";
-        std::wstring nine = L"green://yellow:808/rhombus";
-        std::wstring ten = L"plaid://127.0.0.1:9000";
-        std::wstring eleven = L"chartreuse://[2001:4898:0:fff:0:5efe:10.121.33.93]:103";
-        std::wstring twelve = L"red://grey:987654321/";
-        std::wstring legal13 = L"indigo://white/space";
-        std::wstring legal14 = L"\t\r\n indigo://white/space \n\r\t";
-        std::wstring legal15 = L"indigo://white/ space";
-        std::wstring illegal16 = L"indigo://wh ite/space";
-        std::wstring illegal17 = L"indi go://white/space";
-        std::wstring legal18 = L"mauve://circle/no%20white%20space";
-        std::wstring illegal19 = L"mauve://circle/no%20white%2/space";
-        Uri temp(L"white", L"rhombus", L"brilliant");
-        std::wstring tempS = temp.ToString();
+        std::string zero = "amber:";
+        std::string one = "pink://";
+        std::string two = "brown://decagon";
+        std::string three = "black://dodecagon/sparkly";
+        std::string four = "olive:/";
+        std::string five = "purple//septagon";
+        std::string six = "magenta:/torus/drab";
+        std::string seven = "oval/pale";
+        std::string eight = "black://purple/white/pink";
+        std::string nine = "green://yellow:808/rhombus";
+        std::string ten = "plaid://127.0.0.1:9000";
+        std::string eleven = "chartreuse://[2001:4898:0:fff:0:5efe:10.121.33.93]:103";
+        std::string twelve = "red://grey:987654321/";
+        std::string legal13 = "indigo://white/space";
+        std::string legal14 = "\t\r\n indigo://white/space \n\r\t";
+        std::string legal15 = "indigo://white/ space";
+        std::string illegal16 = "indigo://wh ite/space";
+        std::string illegal17 = "indi go://white/space";
+        std::string legal18 = "mauve://circle/no%20white%20space";
+        std::string illegal19 = "mauve://circle/no%20white%2/space";
+        Uri temp("white", "rhombus", "brilliant");
+        std::string tempS = temp.ToString();
 
         CODING_ERROR_ASSERT(Uri::TryParse(zero, temp));
         CODING_ERROR_ASSERT(temp.ToString() == zero);
@@ -166,7 +166,7 @@ namespace Common
         CODING_ERROR_ASSERT(temp.ToString() == eleven);
         CODING_ERROR_ASSERT(temp.Port == 103);
 
-        temp = Uri(L"white", L"rhombus", L"brilliant");
+        temp = Uri("white", "rhombus", "brilliant");
 
         CODING_ERROR_ASSERT(!Uri::TryParse(five, temp));
         CODING_ERROR_ASSERT(temp.ToString() == tempS);
@@ -184,26 +184,26 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(LessThanTest)
     {
-        Uri one(L"bronze");
-        Uri two(L"Copper");
-        Uri three(L"silver");
-        Uri four(L"SILVER");
+        Uri one("bronze");
+        Uri two("Copper");
+        Uri three("silver");
+        Uri four("SILVER");
 
         CODING_ERROR_ASSERT(one < two && two < three);
         CODING_ERROR_ASSERT(!(three < four));
 
-        Uri five(L"bronze", L"parallelogram");
-        Uri six(L"bronze", L"Rectangle");
-        Uri seven(L"bronze", L"trapezoid");
-        Uri eight(L"bronze", L"TRAPEZOID");
+        Uri five("bronze", "parallelogram");
+        Uri six("bronze", "Rectangle");
+        Uri seven("bronze", "trapezoid");
+        Uri eight("bronze", "TRAPEZOID");
 
         CODING_ERROR_ASSERT(five < six && six < seven);
         CODING_ERROR_ASSERT(!(seven < eight));
 
-        Uri nine(L"bronze", L"parallelogram", L"fiery");
-        Uri ten(L"bronze", L"parallelogram", L"iridescent");
-        Uri eleven(L"bronze", L"parallelogram", L"shiny");
-        Uri twelve(L"bronze", L"parallelogram", L"SHINY");
+        Uri nine("bronze", "parallelogram", "fiery");
+        Uri ten("bronze", "parallelogram", "iridescent");
+        Uri eleven("bronze", "parallelogram", "shiny");
+        Uri twelve("bronze", "parallelogram", "SHINY");
 
         CODING_ERROR_ASSERT(nine < ten && ten < eleven);
         CODING_ERROR_ASSERT(twelve < eleven);
@@ -214,89 +214,89 @@ namespace Common
         Uri uri;
 
         // *** arbitrary unicode characters
-        std::wstring unicode(L"unicodetest1:/");
-        unicode.push_back(L'\u9EAD');
-        unicode.push_back(L'\uAEEF');
-        unicode.push_back(L'/');
-        unicode.push_back(L'\uB00D');
-        unicode.push_back(L'\uCACE');
-        unicode.push_back(L'\u3060'); // Hiragana
+        std::string unicode("unicodetest1:/");
+        unicode.push_back('\u9EAD');
+        unicode.push_back('\uAEEF');
+        unicode.push_back('/');
+        unicode.push_back('\uB00D');
+        unicode.push_back('\uCACE');
+        unicode.push_back('\u3060'); // Hiragana
 
         VERIFY_IS_TRUE(Uri::TryParse(unicode, uri));
         VERIFY_IS_TRUE(uri.ToString() == unicode);
 
         // *** combining diacritical marks
-        unicode = L"unicodetest2:/";
-        unicode.push_back(L'\uB00D');
-        unicode.push_back(L'\u0300');
-        unicode.push_back(L'\uB00D');
-        unicode.push_back(L'\u032F');
-        unicode.push_back(L'\uB00D');
-        unicode.push_back(L'\u036F');
-        unicode.push_back(L'/');
-        unicode.push_back(L'\uB00D');
-        unicode.push_back(L'\u0300');
-        unicode.push_back(L'\uB00D');
-        unicode.push_back(L'\u032F');
-        unicode.push_back(L'\uB00D');
-        unicode.push_back(L'\u036F');
+        unicode = "unicodetest2:/";
+        unicode.push_back('\uB00D');
+        unicode.push_back('\u0300');
+        unicode.push_back('\uB00D');
+        unicode.push_back('\u032F');
+        unicode.push_back('\uB00D');
+        unicode.push_back('\u036F');
+        unicode.push_back('/');
+        unicode.push_back('\uB00D');
+        unicode.push_back('\u0300');
+        unicode.push_back('\uB00D');
+        unicode.push_back('\u032F');
+        unicode.push_back('\uB00D');
+        unicode.push_back('\u036F');
 
         VERIFY_IS_TRUE(Uri::TryParse(unicode, uri));
         VERIFY_IS_TRUE(uri.ToString() == unicode);
 
         // *** combining diacritical marks supplement
-        unicode = L"unicodetest3:/";
-        unicode.push_back(L'\uB00D');
-        unicode.push_back(L'\u1DC0');
-        unicode.push_back(L'\uB00D');
-        unicode.push_back(L'\u1DA3');
-        unicode.push_back(L'\uB00D');
-        unicode.push_back(L'\u1DFF');
-        unicode.push_back(L'/');
-        unicode.push_back(L'\uB00D');
-        unicode.push_back(L'\u1DC0');
-        unicode.push_back(L'\uB00D');
-        unicode.push_back(L'\u1DA3');
-        unicode.push_back(L'\uB00D');
-        unicode.push_back(L'\u1DFF');
+        unicode = "unicodetest3:/";
+        unicode.push_back('\uB00D');
+        unicode.push_back('\u1DC0');
+        unicode.push_back('\uB00D');
+        unicode.push_back('\u1DA3');
+        unicode.push_back('\uB00D');
+        unicode.push_back('\u1DFF');
+        unicode.push_back('/');
+        unicode.push_back('\uB00D');
+        unicode.push_back('\u1DC0');
+        unicode.push_back('\uB00D');
+        unicode.push_back('\u1DA3');
+        unicode.push_back('\uB00D');
+        unicode.push_back('\u1DFF');
 
         VERIFY_IS_TRUE(Uri::TryParse(unicode, uri));
         VERIFY_IS_TRUE(uri.ToString() == unicode);
 
         // *** combining half marks
-        unicode = L"unicodetest4:/";
-        unicode.push_back(L'\uB00D');
-        unicode.push_back(L'\uFE20');
-        unicode.push_back(L'\uB00D');
-        unicode.push_back(L'\uFE2C');
-        unicode.push_back(L'\uB00D');
-        unicode.push_back(L'\uFE2F');
-        unicode.push_back(L'/');
-        unicode.push_back(L'\uB00D');
-        unicode.push_back(L'\uFE20');
-        unicode.push_back(L'\uB00D');
-        unicode.push_back(L'\uFE2C');
-        unicode.push_back(L'\uB00D');
-        unicode.push_back(L'\uFE2F');
+        unicode = "unicodetest4:/";
+        unicode.push_back('\uB00D');
+        unicode.push_back('\uFE20');
+        unicode.push_back('\uB00D');
+        unicode.push_back('\uFE2C');
+        unicode.push_back('\uB00D');
+        unicode.push_back('\uFE2F');
+        unicode.push_back('/');
+        unicode.push_back('\uB00D');
+        unicode.push_back('\uFE20');
+        unicode.push_back('\uB00D');
+        unicode.push_back('\uFE2C');
+        unicode.push_back('\uB00D');
+        unicode.push_back('\uFE2F');
 
         VERIFY_IS_TRUE(Uri::TryParse(unicode, uri));
         VERIFY_IS_TRUE(uri.ToString() == unicode);
 
         // *** combining diacritical marks for symbols
-        unicode = L"unicodetest5:/";
-        unicode.push_back(L'\uB00D');
-        unicode.push_back(L'\u20D0');
-        unicode.push_back(L'\uB00D');
-        unicode.push_back(L'\u20EB');
-        unicode.push_back(L'\uB00D');
-        unicode.push_back(L'\u20FF');
-        unicode.push_back(L'/');
-        unicode.push_back(L'\uB00D');
-        unicode.push_back(L'\u20D0');
-        unicode.push_back(L'\uB00D');
-        unicode.push_back(L'\u20EB');
-        unicode.push_back(L'\uB00D');
-        unicode.push_back(L'\u20FF');
+        unicode = "unicodetest5:/";
+        unicode.push_back('\uB00D');
+        unicode.push_back('\u20D0');
+        unicode.push_back('\uB00D');
+        unicode.push_back('\u20EB');
+        unicode.push_back('\uB00D');
+        unicode.push_back('\u20FF');
+        unicode.push_back('/');
+        unicode.push_back('\uB00D');
+        unicode.push_back('\u20D0');
+        unicode.push_back('\uB00D');
+        unicode.push_back('\u20EB');
+        unicode.push_back('\uB00D');
+        unicode.push_back('\u20FF');
 
         VERIFY_IS_TRUE(Uri::TryParse(unicode, uri));
         VERIFY_IS_TRUE(uri.ToString() == unicode);
@@ -307,149 +307,149 @@ namespace Common
         Uri uri;
 
         // *** surrogate pairs in the valid range
-        std::wstring unicode(L"surrogatepairs1:/");
+        std::string unicode("surrogatepairs1:/");
 
         // first in range
-        unicode.push_back(static_cast<wchar_t>(0xD800));
-        unicode.push_back(static_cast<wchar_t>(0xDC00));
+        unicode.push_back(static_cast<char>(0xD800));
+        unicode.push_back(static_cast<char>(0xDC00));
 
         // arbitrary in range
-        unicode.push_back(static_cast<wchar_t>(0xDAAA));
-        unicode.push_back(static_cast<wchar_t>(0xDEEB));
+        unicode.push_back(static_cast<char>(0xDAAA));
+        unicode.push_back(static_cast<char>(0xDEEB));
 
         // last in range
-        unicode.push_back(static_cast<wchar_t>(0xDBFF));
-        unicode.push_back(static_cast<wchar_t>(0xDFFF));
+        unicode.push_back(static_cast<char>(0xDBFF));
+        unicode.push_back(static_cast<char>(0xDFFF));
 
-        unicode.push_back(L'/');
+        unicode.push_back('/');
 
         // first in range
-        unicode.push_back(static_cast<wchar_t>(0xD800));
-        unicode.push_back(static_cast<wchar_t>(0xDC00));
+        unicode.push_back(static_cast<char>(0xD800));
+        unicode.push_back(static_cast<char>(0xDC00));
 
         // arbitrary in range
-        unicode.push_back(static_cast<wchar_t>(0xDAAA));
-        unicode.push_back(static_cast<wchar_t>(0xDEEB));
+        unicode.push_back(static_cast<char>(0xDAAA));
+        unicode.push_back(static_cast<char>(0xDEEB));
 
         // last in range
-        unicode.push_back(static_cast<wchar_t>(0xDBFF));
-        unicode.push_back(static_cast<wchar_t>(0xDFFF));
+        unicode.push_back(static_cast<char>(0xDBFF));
+        unicode.push_back(static_cast<char>(0xDFFF));
 
         VERIFY_IS_TRUE(Uri::TryParse(unicode, uri));
         VERIFY_IS_TRUE(uri.ToString() == unicode);
 
         // *** reverse byte order of the above (no byte ordering is assumed)
-        unicode = L"surrogatepairs2:/";
+        unicode = "surrogatepairs2:/";
 
         // first in range
-        unicode.push_back(static_cast<wchar_t>(0xDC00));
-        unicode.push_back(static_cast<wchar_t>(0xD800));
+        unicode.push_back(static_cast<char>(0xDC00));
+        unicode.push_back(static_cast<char>(0xD800));
 
         // arbitrary in range
-        unicode.push_back(static_cast<wchar_t>(0xDEEB));
-        unicode.push_back(static_cast<wchar_t>(0xDAAA));
+        unicode.push_back(static_cast<char>(0xDEEB));
+        unicode.push_back(static_cast<char>(0xDAAA));
 
         // last in range
-        unicode.push_back(static_cast<wchar_t>(0xDFFF));
-        unicode.push_back(static_cast<wchar_t>(0xDBFF));
+        unicode.push_back(static_cast<char>(0xDFFF));
+        unicode.push_back(static_cast<char>(0xDBFF));
 
-        unicode.push_back(L'/');
+        unicode.push_back('/');
 
         // first in range
-        unicode.push_back(static_cast<wchar_t>(0xDC00));
-        unicode.push_back(static_cast<wchar_t>(0xD800));
+        unicode.push_back(static_cast<char>(0xDC00));
+        unicode.push_back(static_cast<char>(0xD800));
 
         // arbitrary in range
-        unicode.push_back(static_cast<wchar_t>(0xDEEB));
-        unicode.push_back(static_cast<wchar_t>(0xDAAA));
+        unicode.push_back(static_cast<char>(0xDEEB));
+        unicode.push_back(static_cast<char>(0xDAAA));
 
         // last in range
-        unicode.push_back(static_cast<wchar_t>(0xDFFF));
-        unicode.push_back(static_cast<wchar_t>(0xDBFF));
+        unicode.push_back(static_cast<char>(0xDFFF));
+        unicode.push_back(static_cast<char>(0xDBFF));
 
         VERIFY_IS_TRUE(Uri::TryParse(unicode, uri));
         VERIFY_IS_TRUE(uri.ToString() == unicode);
 
         // *** missing leading code
-        unicode = L"surrogatepairs3:/";
+        unicode = "surrogatepairs3:/";
 
         // first in range
-        unicode.push_back(static_cast<wchar_t>(0xDC00));
+        unicode.push_back(static_cast<char>(0xDC00));
 
         // arbitrary in range
-        unicode.push_back(static_cast<wchar_t>(0xDEEB));
+        unicode.push_back(static_cast<char>(0xDEEB));
 
         // last in range
-        unicode.push_back(static_cast<wchar_t>(0xDFFF));
+        unicode.push_back(static_cast<char>(0xDFFF));
 
-        unicode.push_back(L'/');
+        unicode.push_back('/');
 
         // first in range
-        unicode.push_back(static_cast<wchar_t>(0xDC00));
+        unicode.push_back(static_cast<char>(0xDC00));
 
         // arbitrary in range
-        unicode.push_back(static_cast<wchar_t>(0xDEEB));
+        unicode.push_back(static_cast<char>(0xDEEB));
 
         // last in range
-        unicode.push_back(static_cast<wchar_t>(0xDFFF));
+        unicode.push_back(static_cast<char>(0xDFFF));
 
         VERIFY_IS_FALSE(Uri::TryParse(unicode, uri));
 
         // *** missing trailing code
-        unicode = L"surrogatepairs4:/";
+        unicode = "surrogatepairs4:/";
 
         // first in range
-        unicode.push_back(static_cast<wchar_t>(0xD800));
+        unicode.push_back(static_cast<char>(0xD800));
 
         // arbitrary in range
-        unicode.push_back(static_cast<wchar_t>(0xDAAA));
+        unicode.push_back(static_cast<char>(0xDAAA));
 
         // last in range
-        unicode.push_back(static_cast<wchar_t>(0xDBFF));
+        unicode.push_back(static_cast<char>(0xDBFF));
 
-        unicode.push_back(L'/');
+        unicode.push_back('/');
 
         // first in range
-        unicode.push_back(static_cast<wchar_t>(0xD800));
+        unicode.push_back(static_cast<char>(0xD800));
 
         // arbitrary in range
-        unicode.push_back(static_cast<wchar_t>(0xDAAA));
+        unicode.push_back(static_cast<char>(0xDAAA));
 
         // last in range
-        unicode.push_back(static_cast<wchar_t>(0xDBFF));
+        unicode.push_back(static_cast<char>(0xDBFF));
 
         VERIFY_IS_FALSE(Uri::TryParse(unicode, uri));
 
         // *** code is surrounded by non-surrogate code
-        unicode = L"surrogatepairs5:/";
+        unicode = "surrogatepairs5:/";
 
         // first in range
-        unicode.push_back(static_cast<wchar_t>(0xB00D));
-        unicode.push_back(static_cast<wchar_t>(0xDC00));
-        unicode.push_back(static_cast<wchar_t>(0xB00D));
+        unicode.push_back(static_cast<char>(0xB00D));
+        unicode.push_back(static_cast<char>(0xDC00));
+        unicode.push_back(static_cast<char>(0xB00D));
 
         // arbitrary in range
-        unicode.push_back(static_cast<wchar_t>(0xDEEB));
-        unicode.push_back(static_cast<wchar_t>(0xB00D));
+        unicode.push_back(static_cast<char>(0xDEEB));
+        unicode.push_back(static_cast<char>(0xB00D));
 
         // last in range
-        unicode.push_back(static_cast<wchar_t>(0xDFFF));
-        unicode.push_back(static_cast<wchar_t>(0xB00D));
+        unicode.push_back(static_cast<char>(0xDFFF));
+        unicode.push_back(static_cast<char>(0xB00D));
 
-        unicode.push_back(L'/');
+        unicode.push_back('/');
 
         // first in range
-        unicode.push_back(static_cast<wchar_t>(0xB00D));
-        unicode.push_back(static_cast<wchar_t>(0xD800));
-        unicode.push_back(static_cast<wchar_t>(0xB00D));
+        unicode.push_back(static_cast<char>(0xB00D));
+        unicode.push_back(static_cast<char>(0xD800));
+        unicode.push_back(static_cast<char>(0xB00D));
 
         // arbitrary in range
-        unicode.push_back(static_cast<wchar_t>(0xDAAA));
-        unicode.push_back(static_cast<wchar_t>(0xB00D));
+        unicode.push_back(static_cast<char>(0xDAAA));
+        unicode.push_back(static_cast<char>(0xB00D));
 
         // last in range
-        unicode.push_back(static_cast<wchar_t>(0xDBFF));
-        unicode.push_back(static_cast<wchar_t>(0xB00D));
+        unicode.push_back(static_cast<char>(0xDBFF));
+        unicode.push_back(static_cast<char>(0xB00D));
 
         VERIFY_IS_FALSE(Uri::TryParse(unicode, uri));
     }

@@ -10,15 +10,15 @@ namespace FederationUnitTests
     class SiteNodeHelper
     {
     public:
-        static Federation::SiteNodeSPtr CreateSiteNode(Federation::NodeId nodeId, std::wstring host, std::wstring port);
+        static Federation::SiteNodeSPtr CreateSiteNode(Federation::NodeId nodeId, std::string host, std::string port);
         static Federation::SiteNodeSPtr CreateSiteNode(Federation::NodeId nodeId);
-        static std::wstring GetLoopbackAddress();
-        static std::wstring GetFederationPort();
-        static std::wstring GetLeaseAgentPort();
-        static std::wstring BuildAddress(std::wstring hostname, std::wstring port);
-        static std::wstring GetTicketFilePath(Federation::NodeId nodeId);
+        static std::string GetLoopbackAddress();
+        static std::string GetFederationPort();
+        static std::string GetLeaseAgentPort();
+        static std::string BuildAddress(std::string hostname, std::string port);
+        static std::string GetTicketFilePath(Federation::NodeId nodeId);
         static void DeleteTicketFile(Federation::NodeId nodeId);
-        static std::wstring GetWorkingDir();
+        static std::string GetWorkingDir();
     };
 };
 

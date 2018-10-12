@@ -1084,8 +1084,8 @@ Template_xtzq(
     EventDataDescCreate(&EventData[1], &_Arg1, sizeof(const BOOL)  );
 
     EventDataDescCreate(&EventData[2],
-                        (_Arg2 != NULL) ? _Arg2 : L"NULL",
-                        (_Arg2 != NULL) ? (ULONG)((wcslen(_Arg2) + 1) * sizeof(WCHAR)) : (ULONG)sizeof(L"NULL"));
+                        (_Arg2 != NULL) ? _Arg2 : "NULL",
+                        (_Arg2 != NULL) ? (ULONG)((strlen(_Arg2) + 1) * sizeof(CHAR)) : (ULONG)sizeof("NULL"));
 
     EventDataDescCreate(&EventData[3], &_Arg3, sizeof(const signed int)  );
 

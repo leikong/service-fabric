@@ -17,25 +17,9 @@ namespace Common
         transform(str.begin(), str.end(), str.begin(), ToUpperChar);
     }
 
-    void StringUtility::ToUpper(wstring & str)
-    {
-        transform(str.begin(), str.end(), str.begin(), ToUpperCharW);
-    }
-
     void StringUtility::ToLower(string & str)
     {
         transform(str.begin(), str.end(), str.begin(), ToLowerChar);
-    }
-
-    void StringUtility::ToLower(wstring & str)
-    {
-        transform(str.begin(), str.end(), str.begin(), ToLowerCharW);
-    }
-
-    void StringUtility::TrimSpaces(wstring & str)
-    {
-        static const wstring space(L" ");
-        Trim<wstring>(str, space);
     }
 
     void StringUtility::TrimSpaces(string & str)
@@ -44,24 +28,18 @@ namespace Common
         Trim<string>(str, space);
     }
 
-    void StringUtility::TrimWhitespaces(wstring & str)
-    {
-        static const wstring whitespaces(L" \t\r\n");
-        Trim<wstring>(str, whitespaces);
-    }
-
     void StringUtility::TrimWhitespaces(string & str)
     {
         static const string whitespaces(" \t\r\n");
         Trim<string>(str, whitespaces);
     }
 
-    void StringUtility::GenerateRandomString(int length, wstring & randomString)
+    void StringUtility::GenerateRandomString(int length, string & randomString)
     {
-        wstring allowedChars =
-            L"0123456789"
-            L"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-            L"abcdefghijklmnopqrstuvwxyz";
+        string allowedChars =
+            "0123456789"
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            "abcdefghijklmnopqrstuvwxyz";
 
         size_t numberOfPossibilities = allowedChars.length();
         for (int i = 0; i < length; ++i)
@@ -70,8 +48,8 @@ namespace Common
         }
     }
 
-// TODO: This conversion code has been found duplicated in at least three places:
-//       ktlpal.cpp, pal_string_util.cpp, and here
+// TODO: This conversion code has been found duplicated in at least two places:
+//       ktlpal.cpp and here
 //
 using lchar_t = wchar_t;
 
@@ -114,40 +92,29 @@ using lchar_t = wchar_t;
         return utf16String;
     }
 
-    void StringUtility::UnicodeToAnsi(std::wstring const &uniString, std::string &dst)
-    {
-        wchar_t const *str = uniString.c_str();
-        DWORD size = WideCharToMultiByte(CP_ACP, 0, str, -1, NULL, 0, NULL, NULL);
-        system_error_if_not(size, microsoft::GetLastErrorCode(), "Size of UnicodeToAnsi string would have been 0.");
-        cbuffer buffer(size + 2, '\0');
-        size = ::WideCharToMultiByte(CP_ACP, 0, str, -1, &buffer[0], size + 1, NULL, NULL);
-        system_error_if_not(size, microsoft::GetLastErrorCode(), "Size of UnicodeToAnsi string would have been 0.");
-        dst = &buffer[0];
-    }
-
-    HRESULT StringUtility::LpcwstrToWstring(LPCWSTR ptr, bool acceptNull, __inout std::wstring & output)
+    HRESULT StringUtility::LpcwstrToWstring(LPCSTR ptr, bool acceptNull, __inout std::string & output)
     {
         return LpcwstrToWstring2(ptr, acceptNull, output).ToHResult();
     }
 
-    HRESULT StringUtility::LpcwstrToWstring(LPCWSTR ptr, bool acceptNull, size_t minSize, size_t maxSize, __inout std::wstring & output)
+    HRESULT StringUtility::LpcwstrToWstring(LPCSTR ptr, bool acceptNull, size_t minSize, size_t maxSize, __inout std::string & output)
     {
         return LpcwstrToWstring2(ptr, acceptNull, minSize, maxSize, output).ToHResult();
     }
 
-    ErrorCode StringUtility::LpcwstrToWstring2(LPCWSTR ptr, bool acceptNull, __inout std::wstring & output)
+    ErrorCode StringUtility::LpcwstrToWstring2(LPCSTR ptr, bool acceptNull, __inout std::string & output)
     {
         size_t minSize = acceptNull ? 0 : ParameterValidator::MinStringSize;
         return StringUtility::LpcwstrToWstring2(ptr, acceptNull, minSize, ParameterValidator::MaxStringSize, output);
     }
 
-    ErrorCode StringUtility::LpcwstrToWstring2(LPCWSTR ptr, bool acceptNull, size_t minSize, size_t maxSize, __inout std::wstring & output)
+    ErrorCode StringUtility::LpcwstrToWstring2(LPCSTR ptr, bool acceptNull, size_t minSize, size_t maxSize, __inout std::string & output)
     {
         if (ptr == nullptr)
         {
             if (acceptNull)
             {
-                output = L"";
+                output = "";
                 return ErrorCodeValue::Success;
             }
             else
@@ -160,20 +127,20 @@ using lchar_t = wchar_t;
             auto error = ParameterValidator::IsValid(ptr, minSize, maxSize);
             if (error.IsSuccess())
             {
-                output = wstring(ptr);
+                output = string(ptr);
             }
 
             return error;
         }
     }
 
-    ErrorCode StringUtility::LpcwstrToTruncatedWstring(LPCWSTR ptr, bool acceptNull, size_t minSize, size_t maxSize, __inout std::wstring & output)
+    ErrorCode StringUtility::LpcwstrToTruncatedWstring(LPCSTR ptr, bool acceptNull, size_t minSize, size_t maxSize, __inout std::string & output)
     {
         if (ptr == nullptr)
         {
             if (acceptNull)
             {
-                output = L"";
+                output = "";
                 return ErrorCodeValue::Success;
             }
             else
@@ -192,12 +159,12 @@ using lchar_t = wchar_t;
 
             if (length <= maxSize)
             {
-                output = wstring(ptr);
+                output = string(ptr);
             }
             else
             {
                 // Need to truncate the string as it's longer than allowed size.
-                output = wstring(ptr, maxSize);
+                output = string(ptr, maxSize);
                 ReplaceEndWithTruncateMarker(output);
             }
 
@@ -205,7 +172,7 @@ using lchar_t = wchar_t;
         }
     }
 
-    bool StringUtility::TruncateIfNeeded(__in std::wstring & s, size_t maxSize)
+    bool StringUtility::TruncateIfNeeded(__in std::string & s, size_t maxSize)
     {
         if (s.size() <= maxSize)
         {
@@ -217,7 +184,7 @@ using lchar_t = wchar_t;
         return true;
     }
     
-    bool StringUtility::TruncateStartIfNeeded(__in std::wstring & s, size_t maxSize)
+    bool StringUtility::TruncateStartIfNeeded(__in std::string & s, size_t maxSize)
     {
         if (s.size() <= maxSize)
         {
@@ -229,7 +196,7 @@ using lchar_t = wchar_t;
         return true;
     }
 
-    std::wstring StringUtility::LimitNumberOfCharacters(__in const std::wstring &s, wchar_t token, size_t maxSize)
+    std::string StringUtility::LimitNumberOfCharacters(__in const std::string &s, char token, size_t maxSize)
     {
         size_t position = 0;
         size_t numberOfOccurences = 0;
@@ -249,10 +216,10 @@ using lchar_t = wchar_t;
         return s.substr(0, position);
     }
 
-    void StringUtility::ReplaceEndWithTruncateMarker(__in std::wstring & s)
+    void StringUtility::ReplaceEndWithTruncateMarker(__in std::string & s)
     {
         // Replace last characters with a marker so users know the string was truncated
-        static wstring TruncateMarker(L" [Truncated]");
+        static string TruncateMarker(" [Truncated]");
 
         size_t size = s.size();
         ASSERT_IF(size <= TruncateMarker.size(), "Can't replace last characters in string with truncated marker as maxSize is too small: {0}", size);
@@ -264,10 +231,10 @@ using lchar_t = wchar_t;
 #endif
     }
     
-    void StringUtility::ReplaceStartWithTruncateMarker(__in std::wstring & s)
+    void StringUtility::ReplaceStartWithTruncateMarker(__in std::string & s)
     {
         // Replace first characters with a marker so users know the string was truncated
-        static wstring TruncateMarker(L" [Truncated]");
+        static string TruncateMarker(" [Truncated]");
 
         size_t size = s.size();
         ASSERT_IF(size <= TruncateMarker.size(), "Can't replace first characters in string with truncated marker as maxSize is too small: {0}", size);
@@ -278,20 +245,20 @@ using lchar_t = wchar_t;
 #endif
     }
 
-    HRESULT StringUtility::LpcwstrToFilePath(LPCWSTR ptr, __out std::wstring & path)
+    HRESULT StringUtility::LpcwstrToFilePath(LPCSTR ptr, __out std::string & path)
     {
         // Allow empty paths for current directory
         return StringUtility::LpcwstrToWstring2(ptr, true, 0, ParameterValidator::MaxFilePathSize, path).ToHResult();
     }
 
-    HRESULT StringUtility::FromLPCWSTRArray(ULONG count, LPCWSTR * items, __out std::vector<std::wstring> & output)
+    HRESULT StringUtility::FromLPCSTRArray(ULONG count, LPCSTR * items, __out std::vector<std::string> & output)
     {
         ASSERT_IF(((count > 0) && (items == NULL)), "The items must not be null.");
 
-        std::vector<std::wstring> temp;
+        std::vector<std::string> temp;
         for (ULONG i = 0; i < count; ++i)
         {
-            wstring result;
+            string result;
             auto error = StringUtility::LpcwstrToWstring2(items[i], true /*acceptNull*/, 0 /*minStringSize*/, ParameterValidator::MaxStringSize, result);
             if (!error.IsSuccess())
             {
@@ -305,7 +272,7 @@ using lchar_t = wchar_t;
         return ErrorCodeValue::Success;
     }
 
-    bool StringUtility::AreStringCollectionsEqualCaseInsensitive(vector<wstring> const & v1, vector<wstring> const & v2)
+    bool StringUtility::AreStringCollectionsEqualCaseInsensitive(vector<string> const & v1, vector<string> const & v2)
     {
         if (v1.size() != v2.size())
         {
@@ -323,7 +290,7 @@ using lchar_t = wchar_t;
         return true;
     }
 
-    size_t StringUtility::GetHash(wstring const & value)
+    size_t StringUtility::GetHash(string const & value)
     {
         // Code copied from <cxcache>Microsoft.WindowsAzure.EngSys.External.Windows.sdk.9.1.0\inc\crt\stl100\locale
         // This is to make hash computation same for both windows and linux
@@ -336,7 +303,7 @@ using lchar_t = wchar_t;
         return static_cast<size_t>((int)(val));
     }
 
-    bool StringUtility::StartsWith(std::wstring const & bigStr, WStringLiteral const & smallStr)
+    bool StringUtility::StartsWith(std::string const & bigStr, StringLiteral const & smallStr)
     {
         auto bigStrPrefix = bigStr.substr(0, smallStr.size());
         return bigStrPrefix == smallStr;
@@ -350,21 +317,6 @@ using lchar_t = wchar_t;
         }
 
         return !memcmp(lhs.begin(), rhs.begin(), lhs.size());
-    }
-
-    bool operator!=(StringLiteral const & lhs, StringLiteral const & rhs)
-    {
-        return !(lhs == rhs);
-    }
-
-    bool operator==(StringLiteral const & lhs, std::string const & rhs)
-    {
-        if (lhs.size() != rhs.size())
-        {
-            return false;
-        }
-
-        return !memcmp(lhs.begin(), rhs.c_str(), lhs.size());
     }
 
     bool operator==(std::string const & lhs, StringLiteral const & rhs)
@@ -382,22 +334,12 @@ using lchar_t = wchar_t;
         return !(rhs == lhs);
     }
 
-    bool operator==(WStringLiteral const & lhs, WStringLiteral const & rhs)
-    {
-        if (lhs.size() != rhs.size())
-        {
-            return false;
-        }
-
-        return !memcmp(lhs.begin(), rhs.begin(), lhs.size() << 1);
-    }
-
-    bool operator!=(WStringLiteral const & lhs, WStringLiteral const & rhs)
+    bool operator!=(StringLiteral const & lhs, StringLiteral const & rhs)
     {
         return !(lhs == rhs);
     }
 
-    bool operator==(WStringLiteral const & lhs, std::wstring const & rhs)
+    bool operator==(StringLiteral const & lhs, std::string const & rhs)
     {
         if (lhs.size() != rhs.size())
         {
@@ -405,21 +347,6 @@ using lchar_t = wchar_t;
         }
 
         return !memcmp(lhs.begin(), rhs.c_str(), lhs.size() << 1);
-    }
-
-    bool operator==(std::wstring const & lhs, WStringLiteral const & rhs)
-    {
-        return (rhs == lhs);
-    }
-
-    bool operator!=(WStringLiteral const & lhs, std::wstring const & rhs)
-    {
-        return !(lhs == rhs);
-    }
-
-    bool operator!=(std::wstring const & lhs, WStringLiteral const & rhs)
-    {
-        return !(rhs == lhs);
     }
 
     bool operator==(GlobalString const & lhs, GlobalString const & rhs)
@@ -448,36 +375,6 @@ using lchar_t = wchar_t;
     }
 
     bool operator!=(std::string const & lhs, GlobalString const & rhs)
-    {
-        return (lhs != *rhs);
-    }
-
-    bool operator==(GlobalWString const & lhs, GlobalWString const & rhs)
-    {
-        return (*lhs == *rhs);
-    }
-
-    bool operator!=(GlobalWString const & lhs, GlobalWString const & rhs)
-    {
-        return (*lhs != *rhs);
-    }
-
-    bool operator==(GlobalWString const & lhs, std::wstring const & rhs)
-    {
-        return (*lhs == rhs);
-    }
-
-    bool operator==(std::wstring const & lhs, GlobalWString const & rhs)
-    {
-        return (lhs == *rhs);
-    }
-
-    bool operator!=(GlobalWString const & lhs, std::wstring const & rhs)
-    {
-        return (*lhs != rhs);
-    }
-
-    bool operator!=(std::wstring const & lhs, GlobalWString const & rhs)
     {
         return (lhs != *rhs);
     }

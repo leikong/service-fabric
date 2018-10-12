@@ -104,7 +104,7 @@ Return Value:
     return STATUS_SUCCESS;
 }
 
-const WCHAR*
+const CHAR*
 KCachedBlockFile::GetFileName(
     )
 {

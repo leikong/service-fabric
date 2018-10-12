@@ -10,47 +10,47 @@ using namespace std;
 
 static const StringLiteral TraceType("MutexHandle");
 
-MutexHandleSPtr MutexHandle::CreateSPtr(wstring const & name)
+MutexHandleSPtr MutexHandle::CreateSPtr(string const & name)
 {
     return make_shared<MutexHandle>(name);
 }
 
-MutexHandleUPtr MutexHandle::CreateUPtr(wstring const & name)
+MutexHandleUPtr MutexHandle::CreateUPtr(string const & name)
 {
     return make_unique<MutexHandle>(name);
 }
 
 #ifdef PLATFORM_UNIX
 
-MutexHandle::MutexHandle(wstring const & name)
-    : id_(wformatString("{0}", TextTraceThis))
+MutexHandle::MutexHandle(string const & name)
+    : id_(formatString.L("{0}", TextTraceThis))
     , handle_(GetMutexPath(name))
 {
     WriteInfo(TraceType, id_, "name='{0}', path='{1}'", name, GetMutexPath(name));
 }
 
-wstring MutexHandle::NormalizeName(std::wstring const & name)
+string MutexHandle::NormalizeName(std::string const & name)
 {
-    wstring normalizedName;
+    string normalizedName;
     normalizedName.reserve(name.size());
 
     for(auto ch : name)
     {
         // Linux file path actually allows all characters except null terminator,
         // the following converts non-standard ones for portability to other unix systems
-        if (isdigit(ch) || isalpha(ch) || (ch == L'.') || (ch == L'-') || (ch == L'_') || (ch == L'/'))
+        if (isdigit(ch) || isalpha(ch) || (ch == '.') || (ch == '-') || (ch == '_') || (ch == '/'))
         {
             normalizedName.push_back(ch);
             continue;
         }
 
-        if (ch == L'\\')
+        if (ch == '\\')
         {
-            normalizedName.push_back(L'/');
+            normalizedName.push_back('/');
             continue;
         }
 
-        const FormatOptions formatString(sizeof(wchar_t)*2, true, "x");
+        const FormatOptions formatString(sizeof(char)*2, true, "x");
         StringWriter(normalizedName).WriteNumber(ch, formatString, false); 
     }
 
@@ -58,12 +58,12 @@ wstring MutexHandle::NormalizeName(std::wstring const & name)
     return normalizedName;
 }
 
-wstring MutexHandle::GetMutexPath(wstring const & name)
+string MutexHandle::GetMutexPath(string const & name)
 {
     ASSERT_IF(name.empty(), "empty name not supported, use RwLock instead");
 
     auto pathw = Environment::GetObjectFolder();
-    Path::CombineInPlace(pathw, L"mutex");
+    Path::CombineInPlace(pathw, "mutex");
     return Path::Combine(pathw, NormalizeName(name));
 }
 
@@ -84,8 +84,8 @@ void MutexHandle::Release()
 
 #else
 
-MutexHandle::MutexHandle(wstring const & name)
-    : handle_(nullptr), id_(wformatString("{0}", TextTraceThis))
+MutexHandle::MutexHandle(string const & name)
+    : handle_(nullptr), id_(formatString.L("{0}", TextTraceThis))
 {
     ASSERT_IF(name.empty(), "empty name not supported, use Rwlock instead");
 

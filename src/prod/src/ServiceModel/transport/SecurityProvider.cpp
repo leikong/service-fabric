@@ -63,11 +63,11 @@ namespace Transport
         {
             switch (e)
             {
-                case None: w << L"None"; return;
+                case None: w << "None"; return;
                 case Negotiate: w << NEGOSSP_NAME; return;
                 case Kerberos: w << MICROSOFT_KERBEROS_NAME; return;
-                case Ssl: w << L"SSL"; return;
-                case Claims: w << L"Claims"; return;
+                case Ssl: w << "SSL"; return;
+                case Claims: w << "Claims"; return;
             }
 
             w << "SecurityProvider(" << static_cast<int>(e) << ')';
@@ -113,18 +113,18 @@ namespace Transport
                 return;
             }
 
-            std::wstring buffer;
+            std::string buffer;
             StringWriter sw(buffer);
             for(auto e : MaskToEnums(mask))
             {
-               if (!buffer.empty()) sw << L'|';
+               if (!buffer.empty()) sw << '|';
                 sw << e;
             }
 
             w << buffer;
         }
 
-        wchar_t * GetSspiProviderName(Enum e)
+        char * GetSspiProviderName(Enum e)
         {
             switch (e)
             {
@@ -138,30 +138,30 @@ namespace Transport
             Common::Assert::CodingError("Unknown security provider: {0}", static_cast<int>(e));
         }
 
-        Common::ErrorCode FromCredentialType(std::wstring const & providerString, Enum & result)
+        Common::ErrorCode FromCredentialType(std::string const & providerString, Enum & result)
         {
             // Only None and X509 are supported 
-            if (Common::StringUtility::AreEqualCaseInsensitive(providerString, L"None"))
+            if (Common::StringUtility::AreEqualCaseInsensitive(providerString, "None"))
             {
                 result = Enum::None;
                 return Common::ErrorCode::Success();
             }
 
-            if (Common::StringUtility::AreEqualCaseInsensitive(providerString, L"X509") ||
-                    Common::StringUtility::AreEqualCaseInsensitive(providerString, L"SSL"))
+            if (Common::StringUtility::AreEqualCaseInsensitive(providerString, "X509") ||
+                    Common::StringUtility::AreEqualCaseInsensitive(providerString, "SSL"))
             {
                 result = Enum::Ssl;
                 return Common::ErrorCode::Success();
             }
 
-            if (StringUtility::AreEqualCaseInsensitive(providerString, L"Windows") ||
-                StringUtility::AreEqualCaseInsensitive(providerString, L"Negotiate"))
+            if (StringUtility::AreEqualCaseInsensitive(providerString, "Windows") ||
+                StringUtility::AreEqualCaseInsensitive(providerString, "Negotiate"))
             {
                 result = SecurityConfig::GetConfig().NegotiateForWindowsSecurity ? Enum::Negotiate : Enum::Kerberos;
                 return Common::ErrorCode::Success();
             }
 
-            if (Common::StringUtility::AreEqualCaseInsensitive(providerString, L"Claims"))
+            if (Common::StringUtility::AreEqualCaseInsensitive(providerString, "Claims"))
             {
                 result = Enum::Claims;
                 return Common::ErrorCode::Success();

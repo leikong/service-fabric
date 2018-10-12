@@ -45,9 +45,9 @@ namespace Common
         w.Write("{0}:{1}", activityId_, activityType_);
     }
 
-    wstring ActivityDescription::ToString() const
+    string ActivityDescription::ToString() const
     {
-        return wformatString("{0}:{1}", activityId_, activityType_);
+        return formatString.L("{0}:{1}", activityId_, activityType_);
     }
 
     string ActivityDescription::AddField(TraceEvent & traceEvent, std::string const & name)

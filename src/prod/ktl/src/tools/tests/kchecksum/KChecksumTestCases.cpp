@@ -26,5 +26,5 @@ Abstract:
 
 const KU_TEST_ENTRY gs_KuTestCases[] =
 {
-    {   L"KChecksumTest",              KChecksumTest,         L"BVT", L"KChecksum Test"}
+    {   "KChecksumTest",              KChecksumTest,         "BVT", "KChecksum Test"}
 };

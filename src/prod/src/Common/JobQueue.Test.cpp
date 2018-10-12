@@ -296,7 +296,7 @@ namespace Common
     {
     public:
         AsyncJobQueue(ComponentRoot & root, int limit) : JobQueue(
-            L"AsyncJobQueue",
+            "AsyncJobQueue",
             root,
             false, // forceEnqueue
             limit) // maxThreads
@@ -384,7 +384,7 @@ namespace Common
         unique_ptr<CommonTimedJobQueue<JobRoot>> jobQueue;
 
         jobQueue = make_unique<CommonTimedJobQueue<JobRoot>>(
-            L"JobQueueTest",
+            "JobQueueTest",
             *jobRoot,
             false,
             0);
@@ -406,7 +406,7 @@ namespace Common
         unique_ptr<JobQueue<JobRoot::TestJobItemWithOnQueueFullMethod, JobRoot>> jobQueueNonEncapsulated;
 
         jobQueueNonEncapsulated = make_unique<JobQueue<JobRoot::TestJobItemWithOnQueueFullMethod, JobRoot>>(
-            L"QueueFullTestNoEncapsulationNoMethod",
+            "QueueFullTestNoEncapsulationNoMethod",
             *jobRoot,
             false,
             1,
@@ -446,7 +446,7 @@ namespace Common
         unique_ptr<JobQueue<JobRoot::TestJobItemWithCloseWait, JobRoot>> jobQueue;
 
         jobQueue = make_unique<JobQueue<JobRoot::TestJobItemWithCloseWait, JobRoot>>(
-            L"JobQueueWithCloseWaitTest",
+            "JobQueueWithCloseWaitTest",
             *jobRoot);
 
         std::shared_ptr<ManualResetEvent> jobItemCloseStarted = make_shared<ManualResetEvent>();
@@ -470,7 +470,7 @@ namespace Common
         unique_ptr<JobQueue<JobRoot::TestJobItemWithoutOnQueueFullMethod, JobRoot>> jobQueueNonEncapsulatedNoMethod;
 
         jobQueueNonEncapsulatedNoMethod = make_unique<JobQueue<JobRoot::TestJobItemWithoutOnQueueFullMethod, JobRoot>>(
-            L"QueueFullTestNoEncapsulationWithMethod",
+            "QueueFullTestNoEncapsulationWithMethod",
             *jobRoot,
             false,
             1,
@@ -510,7 +510,7 @@ namespace Common
         unique_ptr<CommonTimedJobQueue<JobRoot>> jobQueue;
 
         jobQueue = make_unique<CommonTimedJobQueue<JobRoot>>(
-            L"QueueFullTest",
+            "QueueFullTest",
             *jobRoot,
             false,
             1,
@@ -547,7 +547,7 @@ namespace Common
         shared_ptr<JobRoot> jobRoot = make_shared<JobRoot>();
 
         CommonTimedJobQueue<JobRoot> jobQueue(
-            L"LifoTest",
+            "LifoTest",
             *jobRoot,
             false, // ForceEnqueue
             1, // ThreadCount
@@ -581,7 +581,7 @@ namespace Common
         Sleep(1000 * 10);
 
         VERIFY_ARE_EQUAL(jobRoot->ProcessedItems.size(), numberOfEnqueuedItems);
-        VERIFY_ARE_EQUAL(wformatString(jobRoot->ProcessedItems), L"(1 2 3 4 5 6)");
+        VERIFY_ARE_EQUAL(formatString(jobRoot->ProcessedItems), "(1 2 3 4 5 6)");
 
         //
         // Enqueue some some items to the job queue. The processing order should remain Fifo
@@ -607,7 +607,7 @@ namespace Common
         Sleep(1000 * 10);
 
         VERIFY_ARE_EQUAL(jobRoot->ProcessedItems.size(), numberOfEnqueuedItems);
-        VERIFY_ARE_EQUAL(wformatString(jobRoot->ProcessedItems), L"(1 2 3 4 5 6 7 8 9 10)");
+        VERIFY_ARE_EQUAL(formatString(jobRoot->ProcessedItems), "(1 2 3 4 5 6 7 8 9 10)");
 
         jobQueue.Close();
 
@@ -618,7 +618,7 @@ namespace Common
         shared_ptr<JobRoot> jobRoot = make_shared<JobRoot>();
 
         CommonTimedJobQueue<JobRoot> jobQueue(
-            L"LifoTest",
+            "LifoTest",
             *jobRoot,
             false, // ForceEnqueue
             1, // ThreadCount
@@ -652,7 +652,7 @@ namespace Common
         Sleep(1000 * 10);
 
         VERIFY_ARE_EQUAL(jobRoot->ProcessedItems.size(), numberOfEnqueuedItems);
-        VERIFY_ARE_EQUAL(wformatString(jobRoot->ProcessedItems), L"(1 6 5 4 3 2)");
+        VERIFY_ARE_EQUAL(formatString(jobRoot->ProcessedItems), "(1 6 5 4 3 2)");
 
         //
         // Enqueue some some items to the job queue. The processing order should remain Lifo
@@ -678,7 +678,7 @@ namespace Common
         Sleep(1000 * 10);
 
         VERIFY_ARE_EQUAL(jobRoot->ProcessedItems.size(), numberOfEnqueuedItems);
-        VERIFY_ARE_EQUAL(wformatString(jobRoot->ProcessedItems), L"(1 6 5 4 3 2 7 10 9 8)");
+        VERIFY_ARE_EQUAL(formatString(jobRoot->ProcessedItems), "(1 6 5 4 3 2 7 10 9 8)");
 
         jobQueue.Close();
 
@@ -689,7 +689,7 @@ namespace Common
         shared_ptr<JobRoot> jobRoot = make_shared<JobRoot>();
 
         CommonTimedJobQueue<JobRoot> jobQueue(
-            L"LifoTest",
+            "LifoTest",
             *jobRoot,
             false, // ForceEnqueue
             1, // ThreadCount
@@ -723,7 +723,7 @@ namespace Common
         Sleep(1000 * 10);
 
         VERIFY_ARE_EQUAL(jobRoot->ProcessedItems.size(), numberOfEnqueuedItems);
-        VERIFY_ARE_EQUAL(wformatString(jobRoot->ProcessedItems), L"(1 6 5 4 3 2)");
+        VERIFY_ARE_EQUAL(formatString(jobRoot->ProcessedItems), "(1 6 5 4 3 2)");
 
         //
         // Enqueue some items to the job queue. The processing order should remain should back to Fifo
@@ -749,7 +749,7 @@ namespace Common
         Sleep(1000 * 10);
 
         VERIFY_ARE_EQUAL(jobRoot->ProcessedItems.size(), numberOfEnqueuedItems);
-        VERIFY_ARE_EQUAL(wformatString(jobRoot->ProcessedItems), L"(1 6 5 4 3 2 7 8 9 10)");
+        VERIFY_ARE_EQUAL(formatString(jobRoot->ProcessedItems), "(1 6 5 4 3 2 7 8 9 10)");
 
         jobQueue.Close();
 

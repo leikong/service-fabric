@@ -14,7 +14,7 @@ namespace Common
         DENY_COPY(PerformanceCounterSetInstance)
 
     public:
-        PerformanceCounterSetInstance(std::shared_ptr<PerformanceCounterSet> const & PerformanceCounterSet, std::wstring const & instanceName, bool allocateCounterMemory);
+        PerformanceCounterSetInstance(std::shared_ptr<PerformanceCounterSet> const & PerformanceCounterSet, std::string const & instanceName, bool allocateCounterMemory);
         ~PerformanceCounterSetInstance(void);
 
         PerformanceCounterData & GetCounter(PerformanceCounterId id);

@@ -30,19 +30,19 @@ using namespace Common;
 
     struct TestMapBody : public Serialization::FabricSerializable
     {
-        map<wstring, wstring> map1;
-        map<wstring, int> map2;
+        map<string, string> map1;
+        map<string, int> map2;
 
         FABRIC_FIELDS_02(map1, map2);
     };
 
     struct TestLargeOperation : public Serialization::FabricSerializable
     {
-        wstring name_;
+        string name_;
         Guid guid_;
         vector<byte> bytes_;
         ULONG64 checksum_;
-        wstring id_;
+        string id_;
 
         FABRIC_FIELDS_05(name_, guid_, bytes_, checksum_, id_);
     };
@@ -51,13 +51,13 @@ using namespace Common;
 
     struct TestLargeObjectContainer :  public Serialization::FabricSerializable
     {
-        wstring name_;
+        string name_;
         vector<TestLargeOperation> operations_;
 
         FABRIC_FIELDS_02(name_, operations_);
     };
 
-    DEFINE_USER_MAP_UTILITY(std::wstring, int);
+    DEFINE_USER_MAP_UTILITY(std::string, int);
 
     namespace TestFlags
     {
@@ -96,7 +96,7 @@ using namespace Common;
 
     struct WStringBody : public Serialization::FabricSerializable
     {
-        wstring s;
+        string s;
 
         FABRIC_FIELDS_01(s);
     };
@@ -167,7 +167,7 @@ using namespace Common;
 
         TestLargeOperation operation;
         operation.bytes_.resize(value);
-        operation.id_ = L"Test id for this test";
+        operation.id_ = "Test id for this test";
         operation.guid_ = Guid::NewGuid();
         operation.name_ = operation.guid_.ToString();
 
@@ -184,7 +184,7 @@ using namespace Common;
     {
         TestLargeObjectContainer container;
 
-        container.name_ = L"This is the best container ever";
+        container.name_ = "This is the best container ever";
 
         size_t value = random.Next(0x20, 0x100);
 
@@ -296,7 +296,7 @@ using namespace Common;
 #define MakeMap(TYPE) MakeMap<TYPE, TYPE>
 
     typedef map<int, int> MapInt;
-    typedef map<wstring, wstring> MapWString;
+    typedef map<string, string> MapWString;
 
     template <class T, class TestObjV2>
     void SerializeFromTruncated(TestObjV1<T> const &,  __out TestObjV2 &);
@@ -334,7 +334,7 @@ using namespace Common;
         TEST_TYPE##CompatibilityTest( TEST_OBJV2, GUID, Guid::NewGuid().AsGUID(), Guid::NewGuid().AsGUID(), Guid::NewGuid().AsGUID()) \
         TEST_TYPE##CompatibilityTest( TEST_OBJV2, DOUBLE, 11.1, 22.2, 33.3) \
         TEST_TYPE##CompatibilityTest( TEST_OBJV2, Test::Enum, Test::Enum::First, Test::Enum::Second, Test::Enum::Third) \
-        TEST_TYPE##CompatibilityTest( TEST_OBJV2, wstring, L"first", L"second", L"third") \
+        TEST_TYPE##CompatibilityTest( TEST_OBJV2, string, "first", "second", "third") \
         TEST_TYPE##CompatibilityTest( TEST_OBJV2, USER_TYPE_UINT64, USER_TYPE_UINT64(11), USER_TYPE_UINT64(22), USER_TYPE_UINT64(33)) \
         TEST_TYPE##CompatibilityTest( TEST_OBJV2, vector<LONG>, \
             MakeVector<LONG>( VAR_ARGS(11, 12)), \
@@ -344,10 +344,10 @@ using namespace Common;
             MakeVector<byte>( VAR_ARGS(11, 12)), \
             MakeVector<byte>( VAR_ARGS(22, 23)), \
             MakeVector<byte>( VAR_ARGS(33, 34))) \
-        TEST_TYPE##CompatibilityTest( TEST_OBJV2, vector<wstring>, \
-            MakeVector<wstring>( VAR_ARGS(L"a", L"b")), \
-            MakeVector<wstring>( VAR_ARGS(L"c", L"d")), \
-            MakeVector<wstring>( VAR_ARGS(L"e", L"f"))) \
+        TEST_TYPE##CompatibilityTest( TEST_OBJV2, vector<string>, \
+            MakeVector<string>( VAR_ARGS("a", "b")), \
+            MakeVector<string>( VAR_ARGS("c", "d")), \
+            MakeVector<string>( VAR_ARGS("e", "f"))) \
         TEST_TYPE##CompatibilityTest( TEST_OBJV2, vector<TestObjV1<int>>, \
             MakeVector<TestObjV1<int>>( TestObjV1<int>(11), TestObjV1<int>(12)), \
             MakeVector<TestObjV1<int>>( TestObjV1<int>(22), TestObjV1<int>(23)), \
@@ -357,9 +357,9 @@ using namespace Common;
             MakeMap(int)( VAR_ARGS(22, 23, 24, 25)), \
             MakeMap(int)( VAR_ARGS(33, 34, 35, 36))) \
         TEST_TYPE##CompatibilityTest( TEST_OBJV2, MapWString, \
-            MakeMap(wstring)( VAR_ARGS(L"keyA", L"valA", L"keyB", L"valB")), \
-            MakeMap(wstring)( VAR_ARGS(L"keyC", L"valC", L"keyD", L"valD")), \
-            MakeMap(wstring)( VAR_ARGS(L"keyE", L"valE", L"keyF", L"valF"))) \
+            MakeMap(string)( VAR_ARGS("keyA", "valA", "keyB", "valB")), \
+            MakeMap(string)( VAR_ARGS("keyC", "valC", "keyD", "valD")), \
+            MakeMap(string)( VAR_ARGS("keyE", "valE", "keyF", "valF"))) \
     } \
 
     template <class T, class TestObjV2>
@@ -447,16 +447,16 @@ using namespace Common;
     //void TestFabricSerializationHelper::MapTest()
     BOOST_AUTO_TEST_CASE(MapTest)
     {
-        map<wstring, wstring> myStrings;
-        myStrings.insert(pair<wstring, wstring>(L"Hello", L"World"));
-        myStrings.insert(pair<wstring, wstring>(L"Hello with a really long key", L"World"));
-        myStrings.insert(pair<wstring, wstring>(L"Hello", L"World with a really long value"));
-        myStrings.insert(pair<wstring, wstring>(L"Hello long key and long value", L"World long key and long value"));
+        map<string, string> myStrings;
+        myStrings.insert(pair<string, string>("Hello", "World"));
+        myStrings.insert(pair<string, string>("Hello with a really long key", "World"));
+        myStrings.insert(pair<string, string>("Hello", "World with a really long value"));
+        myStrings.insert(pair<string, string>("Hello long key and long value", "World long key and long value"));
 
-        map<wstring, int> myStringAndInt;
-        myStringAndInt.insert(pair<wstring, int>(L"one", 1));
-        myStringAndInt.insert(pair<wstring, int>(L"two", 2));
-        myStringAndInt.insert(pair<wstring, int>(L"three", 3));
+        map<string, int> myStringAndInt;
+        myStringAndInt.insert(pair<string, int>("one", 1));
+        myStringAndInt.insert(pair<string, int>("two", 2));
+        myStringAndInt.insert(pair<string, int>("three", 3));
 
         TestMapBody body1;
         body1.map1 = myStrings;
@@ -516,7 +516,7 @@ using namespace Common;
     BOOST_AUTO_TEST_CASE(UniquePtrTest)
     {
         WStringBody body;
-        body.s = L"Hello, World!";
+        body.s = "Hello, World!";
 
         TestUniquePtrBody body1;
         body1.s1 = nullptr;
@@ -537,14 +537,14 @@ using namespace Common;
 
         // Forward compatibility
         {
-            PointerObjV1<wstring> objV1(L"a");
-            PointerObjV2<wstring> objV2(L"b", L"c");
+            PointerObjV1<string> objV1("a");
+            PointerObjV2<string> objV2("b", "c");
 
             buffer.clear();
 
             VERIFY_IS_TRUE(FabricSerializer::Serialize(&objV1, buffer).IsSuccess());
 
-            wstring expectedField2 = objV2.Field2->Value;
+            string expectedField2 = objV2.Field2->Value;
 
             VERIFY_IS_TRUE(FabricSerializer::Deserialize(objV2, buffer).IsSuccess());
 
@@ -555,9 +555,9 @@ using namespace Common;
 
         // Roundtrip compatibility
         {
-            PointerObjV1<wstring> objV1(L"a");
-            PointerObjV2<wstring> objV2(L"b", L"c");
-            PointerObjV2<wstring> objV3(L"d", L"e");
+            PointerObjV1<string> objV1("a");
+            PointerObjV2<string> objV2("b", "c");
+            PointerObjV2<string> objV3("d", "e");
 
             buffer.clear();
 
@@ -601,15 +601,15 @@ using namespace Common;
             for (size_t i = 0; i < container1.operations_.size(); ++i)
             {
                 bool check1 = container1.operations_[i].guid_ ==       container2.operations_[i].guid_;
-                if(!check1) {VERIFY_FAIL(L"check1 failed");}
+                if(!check1) {VERIFY_FAIL("check1 failed");}
                 bool check2 = container1.operations_[i].checksum_ ==   container2.operations_[i].checksum_;
-                if(!check2) {VERIFY_FAIL(L"check2 failed");}
+                if(!check2) {VERIFY_FAIL("check2 failed");}
                 bool check3 = container1.operations_[i].id_ ==         container2.operations_[i].id_;
-                if(!check3) {VERIFY_FAIL(L"check3 failed");}
+                if(!check3) {VERIFY_FAIL("check3 failed");}
                 bool check4 = container1.operations_[i].name_ ==       container2.operations_[i].name_;
-                if(!check4) {VERIFY_FAIL(L"check4 failed");}
+                if(!check4) {VERIFY_FAIL("check4 failed");}
                 bool check5 = container1.operations_[i].bytes_ ==       container2.operations_[i].bytes_;
-                if(!check5) {VERIFY_FAIL(L"check5 failed");}
+                if(!check5) {VERIFY_FAIL("check5 failed");}
             }
         }
 

@@ -17,11 +17,11 @@ namespace
 {
     IDatagramTransportSPtr CreateTransport(
         Common::ComponentRoot const & root,
-        std::wstring const & clientId,
-        std::wstring const & owner,
+        std::string const & clientId,
+        std::string const & owner,
         bool useUnreliableTransport)
     {
-        IDatagramTransportSPtr transport = DatagramTransportFactory::CreateTcpClient(clientId, owner + L".IpcClient");
+        IDatagramTransportSPtr transport = DatagramTransportFactory::CreateTcpClient(clientId, owner + ".IpcClient");
 
         //Support for Unreliable transport for request reply over IPC
         if (useUnreliableTransport && TransportConfig::GetConfig().UseUnreliableForRequestReply)
@@ -36,12 +36,12 @@ namespace
 
 IpcClient::IpcClient(
     ComponentRoot const & root,
-    wstring const & clientId,
-    wstring const & serverTransportAddress,
+    string const & clientId,
+    string const & serverTransportAddress,
     bool useUnreliableTransport,
-    wstring const & owner)
+    string const & owner)
     : clientId_(clientId),
-    traceId_(clientId.empty()? wformatString("{0}", TextTraceThis) : wformatString("{0}-{1}", TextTraceThis, clientId)),
+    traceId_(clientId.empty()? formatString.L("{0}", TextTraceThis) : formatString.L("{0}-{1}", TextTraceThis, clientId)),
     processId_(GetCurrentProcessId()),
     serverTransportAddress_(serverTransportAddress),
     transport_(CreateTransport(root, clientId, owner, useUnreliableTransport)),

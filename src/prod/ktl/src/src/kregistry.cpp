@@ -45,7 +45,7 @@ KRegistry::Open(
 #else
     OBJECT_ATTRIBUTES Attr;
 
-    KWString RealKey(_Allocator, L"\\Registry\\Machine\\");
+    KWString RealKey(_Allocator, "\\Registry\\Machine\\");
     RealKey += HKLM_Subkey;
 
     if (!NT_SUCCESS(RealKey.Status()))

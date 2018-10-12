@@ -26,7 +26,7 @@ Abstract:
 
 const KU_TEST_ENTRY gs_KuTestCases[] =
 {
-    {   L"KWeakRefTest",              KWeakRefTest,         L"BVT", L"Template for first test"}
+    {   "KWeakRefTest",              KWeakRefTest,         "BVT", "Template for first test"}
 };
 
 const ULONG gs_KuTestCasesSize = ARRAYSIZE(gs_KuTestCases);

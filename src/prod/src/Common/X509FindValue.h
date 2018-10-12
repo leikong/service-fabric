@@ -12,8 +12,8 @@ namespace Common
     public:
         typedef std::shared_ptr<X509FindValue> SPtr;
 
-        static ErrorCode Create(X509FindType::Enum type, LPCWSTR value, _Out_ SPtr & result);
-        static ErrorCode Create(X509FindType::Enum type, std::wstring const & value, _Out_ SPtr & result);
+        static ErrorCode Create(X509FindType::Enum type, LPCSTR value, _Out_ SPtr & result);
+        static ErrorCode Create(X509FindType::Enum type, std::string const & value, _Out_ SPtr & result);
 
         static ErrorCode Create(
             FABRIC_X509_FIND_TYPE type,
@@ -23,14 +23,14 @@ namespace Common
 
         static ErrorCode Create(
             X509FindType::Enum type,
-            std::wstring const & value,
-            std::wstring const & secondaryValue,
+            std::string const & value,
+            std::string const & secondaryValue,
             _Out_ SPtr & result);
 
         static ErrorCode Create(
-            std::wstring const & type,
-            std::wstring const & value,
-            std::wstring const & secondaryValue,
+            std::string const & type,
+            std::string const & value,
+            std::string const & secondaryValue,
             _Out_ SPtr & result);
 
         virtual ~X509FindValue() = 0;
@@ -45,8 +45,8 @@ namespace Common
         bool operator == (X509FindValue const & other) const;
         bool operator != (X509FindValue const & other) const;
 
-        std::pair<std::wstring, std::wstring> ToStrings() const;
-        std::wstring PrimaryToString() const;
+        std::pair<std::string, std::string> ToStrings() const;
+        std::string PrimaryToString() const;
         void WriteTo(Common::TextWriter & w, Common::FormatOptions const &) const;
 
         SPtr const & Secondary() const;

@@ -27,5 +27,5 @@ Abstract:
 
 NTSTATUS
 KStringViewTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     );

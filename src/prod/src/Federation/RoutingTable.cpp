@@ -114,9 +114,9 @@ namespace Federation
             }
         }
 
-        wstring ToString()
+        string ToString()
         {
-            return wformatString("{0}:{1}", message_->Action, targetId_);
+            return formatString.L("{0}:{1}", message_->Action, targetId_);
         }
 
         MessageUPtr message_;
@@ -138,9 +138,9 @@ namespace Federation
             siteNode.LivenessQuery(target_);
         }
 
-        wstring ToString()
+        string ToString()
         {
-            return wformatString("LivenessQuery:{0}", target_.Instance);
+            return formatString.L("LivenessQuery:{0}", target_.Instance);
         }
 
     private:
@@ -162,9 +162,9 @@ namespace Federation
 			siteNode.getRoutingTable().CheckGapRecovery(range_);
         }
 
-        wstring ToString()
+        string ToString()
         {
-			return wformatString("GapCheck: {0}", range_);
+			return formatString.L("GapCheck: {0}", range_);
         }
 
 	private:
@@ -229,13 +229,13 @@ namespace Federation
         return ring_.GetRoutingNodeCount();
     }
 
-    PartnerNodeSPtr RoutingTable::FindClosest(NodeId const& value, wstring const & toRing) const
+    PartnerNodeSPtr RoutingTable::FindClosest(NodeId const& value, string const & toRing) const
     {
         AcquireReadLock grab(lock_);
         return InternalFindClosest(value, toRing, false);
     }
 
-    PartnerNodeSPtr RoutingTable::GetRoutingHop(NodeId const& value, wstring const & toRing, bool safeMode, bool& ownsToken) const
+    PartnerNodeSPtr RoutingTable::GetRoutingHop(NodeId const& value, string const & toRing, bool safeMode, bool& ownsToken) const
     {
         AcquireReadLock grab(lock_);
         
@@ -248,7 +248,7 @@ namespace Federation
         return InternalFindClosest(value, toRing, safeMode);
     }
 
-    PartnerNodeSPtr const& RoutingTable::InternalFindClosest(NodeId const& value, wstring const & toRing, bool safeMode) const
+    PartnerNodeSPtr const& RoutingTable::InternalFindClosest(NodeId const& value, string const & toRing, bool safeMode) const
     {
         if (site_.IsRingNameMatched(toRing))
         {
@@ -390,7 +390,7 @@ namespace Federation
         return GetInternal(value);
     }
 
-    PartnerNodeSPtr RoutingTable::Get(NodeInstance const & value, wstring const & ringName) const
+    PartnerNodeSPtr RoutingTable::Get(NodeInstance const & value, string const & ringName) const
     {
         AcquireReadLock grab(lock_);
         PartnerNodeSPtr result = GetInternal(value.Id, ringName);
@@ -409,13 +409,13 @@ namespace Federation
         return GetInternal(value, &knownTable_);
     }
 
-    PartnerNodeSPtr RoutingTable::Get(NodeId value, wstring const & ringName) const
+    PartnerNodeSPtr RoutingTable::Get(NodeId value, string const & ringName) const
     {
         AcquireReadLock grab(lock_);
         return GetInternal(value, ringName);
     }
 
-    PartnerNodeSPtr const & RoutingTable::GetInternal(NodeId value, wstring const & ringName) const
+    PartnerNodeSPtr const & RoutingTable::GetInternal(NodeId value, string const & ringName) const
     {
         NodeRingBase const * ring;
         if (ringName.empty() || ringName == site_.RingName)
@@ -1038,13 +1038,13 @@ namespace Federation
         return result;
     }
 
-    void RoutingTable::SetShutdown(NodeInstance const& shutdownNode, wstring const & ringName)
+    void RoutingTable::SetShutdown(NodeInstance const& shutdownNode, string const & ringName)
     {
         WriteLock grab(*this);
         InternalSetShutdown(shutdownNode, ringName);
     }
 
-    void RoutingTable::InternalSetShutdown(NodeInstance const& shutdownNode, wstring const & ringName)
+    void RoutingTable::InternalSetShutdown(NodeInstance const& shutdownNode, string const & ringName)
     {
         // first check the known table
         PartnerNodeSPtr const& knownPtr = GetInternal(shutdownNode.Id, ringName);
@@ -1060,7 +1060,7 @@ namespace Federation
         InternalConsider(FederationPartnerNodeHeader(shutdownNode->Instance, NodePhase::Shutdown, shutdownNode->Address, shutdownNode->LeaseAgentAddress, shutdownNode->LeaseAgentInstanceId, shutdownNode->Token, shutdownNode->NodeFaultDomainId, false, shutdownNode->RingName, shutdownNode->Flags));
     }
 
-    void RoutingTable::SetUnknown(NodeInstance const& unknownNode, wstring const & ringName)
+    void RoutingTable::SetUnknown(NodeInstance const& unknownNode, string const & ringName)
     {
         AcquireReadLock grab(lock_);
         PartnerNodeSPtr const& knownPtr = GetInternal(unknownNode.Id, ringName);
@@ -1070,7 +1070,7 @@ namespace Federation
         }
     }
 
-    void RoutingTable::SetUnknown(wstring const& unreachableAddress)
+    void RoutingTable::SetUnknown(string const& unreachableAddress)
     {
         AcquireReadLock grab(lock_);
 
@@ -1257,7 +1257,7 @@ namespace Federation
         ring_.ReplaceNode(ring_.ThisNode, newPtr);
     }
 
-    PartnerNodeSPtr RoutingTable::ProcessNeighborHeaders(Message & message, NodeInstance const & from, wstring const & fromRing, bool instanceMatched)
+    PartnerNodeSPtr RoutingTable::ProcessNeighborHeaders(Message & message, NodeInstance const & from, string const & fromRing, bool instanceMatched)
     {
         PartnerNodeSPtr fromNode;
 
@@ -1454,7 +1454,7 @@ namespace Federation
         return fromNode;
     }
 
-    PartnerNodeSPtr RoutingTable::ProcessNodeHeaders(Message & message, NodeInstance const & from, wstring const & fromRing)
+    PartnerNodeSPtr RoutingTable::ProcessNodeHeaders(Message & message, NodeInstance const & from, string const & fromRing)
     {
         PartnerNodeSPtr fromNode;
         FederationPartnerNodeHeader header;
@@ -1977,7 +1977,7 @@ namespace Federation
             }
             else
             {
-                ReportNeighborhoodLost(wformatString("{0}-{1}", site_.Id, succProbeTarget_));
+                ReportNeighborhoodLost(formatString.L("{0}-{1}", site_.Id, succProbeTarget_));
                 actions.Add(make_unique<GapCheckAction>(NodeIdRange(site_.Id, succProbeTarget_)));
 
                 return max(succRecoveryTime_ + config.GlobalTicketLeaseDuration, now + config.EdgeProbeInterval);
@@ -3486,7 +3486,7 @@ namespace Federation
         oneWayReceiverContext.Accept();
     }
 
-    void RoutingTable::ReportNeighborhoodLost(wstring const & extraDescription)
+    void RoutingTable::ReportNeighborhoodLost(string const & extraDescription)
     {
         TimeSpan ttl =  FederationConfig::GetConfig().GlobalTicketLeaseDuration;
         StopwatchTime now = Stopwatch::Now();
@@ -3568,7 +3568,7 @@ namespace Federation
         }
     }
 
-    void RoutingTable::GetExternalRings(vector<wstring> & externalRings)
+    void RoutingTable::GetExternalRings(vector<string> & externalRings)
     {
         AcquireReadLock grab(lock_);
 
@@ -3657,7 +3657,7 @@ namespace Federation
         implicitLeaseContext_.ReportImplicitArbitrationResult(result);
     }
 
-    void RoutingTable::ReportArbitrationQueryResult(wstring const & address, int64 instance, StopwatchTime remoteResult)
+    void RoutingTable::ReportArbitrationQueryResult(string const & address, int64 instance, StopwatchTime remoteResult)
     {
         WriteLock grab(*this);
         implicitLeaseContext_.ReportArbitrationQueryResult(address, instance, remoteResult);
@@ -3766,9 +3766,9 @@ namespace Federation
             siteNode.GetVoteManager().Arbitrate(local, remote_, TimeSpan::Zero, TimeSpan::Zero, 0, 0, extraData_, type_);
         }
 
-        wstring ToString()
+        string ToString()
         {
-            return wformatString("{0} {1}", type_, remote_);
+            return formatString.L("{0} {1}", type_, remote_);
         }
 
     private:
@@ -3931,7 +3931,7 @@ namespace Federation
         }
     }
 
-    void RoutingTable::ImplicitLeaseContext::ReportArbitrationQueryResult(wstring const & address, int64 instance, StopwatchTime remoteResult)
+    void RoutingTable::ImplicitLeaseContext::ReportArbitrationQueryResult(string const & address, int64 instance, StopwatchTime remoteResult)
     {
         FederationConfig const & config = FederationConfig::GetConfig();
         if (succQuery_)

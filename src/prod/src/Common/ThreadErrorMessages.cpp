@@ -19,7 +19,7 @@ ThreadErrorMessages::ThreadErrorMessages()
 {
 }
 
-DWORD ThreadErrorMessages::SetMessage(wstring const & msg)
+DWORD ThreadErrorMessages::SetMessage(string const & msg)
 {
     auto tid = ::GetCurrentThreadId();
 
@@ -30,7 +30,7 @@ DWORD ThreadErrorMessages::SetMessage(wstring const & msg)
     return tid;
 }
 
-wstring ThreadErrorMessages::GetMessage()
+string ThreadErrorMessages::GetMessage()
 {
     auto tid = ::GetCurrentThreadId();
 
@@ -42,7 +42,7 @@ wstring ThreadErrorMessages::GetMessage()
         return it->second;
     }
 
-    return L"";
+    return "";
 }
 
 void ThreadErrorMessages::ClearMessage(DWORD tid)

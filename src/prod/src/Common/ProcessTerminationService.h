@@ -20,7 +20,7 @@ namespace Common
         DENY_COPY(ProcessTerminationService);
 
     public:
-        typedef std::function<void(std::wstring const &)> ExitProcessHandler;
+        typedef std::function<void(std::string const &)> ExitProcessHandler;
 
         ProcessTerminationService();
         ProcessTerminationService(ExitProcessHandler const & exitProcessOverride);
@@ -29,7 +29,7 @@ namespace Common
             Aborts the process using ProcessUtility::Abort exit code
             Does not generate a dump
         */
-        void ExitProcess(std::wstring const & reason);
+        void ExitProcess(std::string const & reason);
 
         static std::shared_ptr<ProcessTerminationService> Create();
 

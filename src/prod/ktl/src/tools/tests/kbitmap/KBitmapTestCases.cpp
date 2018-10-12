@@ -26,5 +26,5 @@ Abstract:
 
 const KU_TEST_ENTRY gs_KuTestCases[] =
 {
-    {   L"KBitmapTest",              KBitmapTest,         L"BVT", L"KBitmap unit test"}
+    {   "KBitmapTest",              KBitmapTest,         "BVT", "KBitmap unit test"}
 };

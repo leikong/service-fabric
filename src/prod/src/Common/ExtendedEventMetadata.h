@@ -12,18 +12,18 @@ namespace Common
         DENY_COPY(ExtendedEventMetadata);
 
     public:
-        ExtendedEventMetadata(std::wstring const& publicEventName, std::wstring const& category);
+        ExtendedEventMetadata(std::string const& publicEventName, std::string const& category);
 
-        static std::unique_ptr<ExtendedEventMetadata> Create(std::wstring const& publicEventName, std::wstring const& category);
+        static std::unique_ptr<ExtendedEventMetadata> Create(std::string const& publicEventName, std::string const& category);
 
         static std::string AddMetadataFields(TraceEvent & traceEvent, size_t & fieldsCount);
 
-        std::wstring const& GetPublicEventNameField() const
+        std::string const& GetPublicEventNameField() const
         {
             return publicEventName_;
         }
 
-        std::wstring const& GetCategoryField() const
+        std::string const& GetCategoryField() const
         {
             return category_;
         }
@@ -34,8 +34,8 @@ namespace Common
     private:
         static StringLiteral const& GetMetadataFieldsFormat();
 
-        std::wstring publicEventName_;
-        std::wstring category_;
+        std::string publicEventName_;
+        std::string category_;
     };
 
 }

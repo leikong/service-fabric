@@ -14,20 +14,20 @@ namespace Common
         {
         }
 
-        void Set(FailPointCriteriaSPtr const & criteria, FailPointActionSPtr const & action, int priority=0, std::wstring name=std::wstring());
+        void Set(FailPointCriteriaSPtr const & criteria, FailPointActionSPtr const & action, int priority=0, std::string name=std::string());
 
-        void Remove(std::wstring name);
+        void Remove(std::string name);
 
-        void Remove(FailPointCriteriaSPtr const & criteria,std::wstring name=std::wstring());
+        void Remove(FailPointCriteriaSPtr const & criteria,std::string name=std::string());
 
         void Remove(const FailPoint& failpoint)
         {
             Remove(failpoint.CriteriaSPtr);
         }
 
-        bool Check(FailPointContext context, bool invokeAction,std::wstring name=std::wstring());
+        bool Check(FailPointContext context, bool invokeAction,std::string name=std::string());
 
-        bool Check(FailPointContext context,std::wstring name=std::wstring())
+        bool Check(FailPointContext context,std::string name=std::string())
         {
             return Check(context,true,name);
         }

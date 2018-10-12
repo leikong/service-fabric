@@ -70,7 +70,7 @@ KNt::OpenFile(
 
 NTSTATUS
 KNt::DeleteFile(
-    __in_z PCWCHAR FileName
+    __in_z PCCHAR FileName
     )
 {
     NTSTATUS LocalStatus;

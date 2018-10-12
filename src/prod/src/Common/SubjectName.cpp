@@ -10,12 +10,12 @@ using namespace std;
 
 static StringLiteral const TraceType("Security");
 
-SubjectName::SubjectName(wstring const & name) : name_(name)
+SubjectName::SubjectName(string const & name) : name_(name)
 {
 }
 
 _Use_decl_annotations_
-ErrorCode SubjectName::Create(std::wstring const & name, SPtr & result)
+ErrorCode SubjectName::Create(std::string const & name, SPtr & result)
 {
     result = make_shared<SubjectName>(name);
     auto error = result->Initialize();
@@ -91,7 +91,7 @@ void const * SubjectName::Value() const
     return &nameBlob_;
 }
 
-wstring const & SubjectName::Name() const
+string const & SubjectName::Name() const
 {
     return name_;
 }

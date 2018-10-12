@@ -54,7 +54,7 @@ namespace Common
 #if !defined(PLATFORM_UNIX)
         if (ole32Module == NULL)
         {
-            BOOL getModuleResult = ::GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_PIN, L"ole32.dll", &ole32Module);
+            BOOL getModuleResult = ::GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_PIN, "ole32.dll", &ole32Module);
             if (!getModuleResult) { return false; }
         }
 
@@ -120,10 +120,10 @@ namespace Common
     // To work around this, we clear error info whenever we return a failure HRESULT.
     HRESULT ComUtility::OnPublicApiReturn(HRESULT hr)
     { 
-        return OnPublicApiReturn(hr, std::wstring());
+        return OnPublicApiReturn(hr, std::string());
     }
 
-    HRESULT ComUtility::OnPublicApiReturn(HRESULT hr, std::wstring && description)
+    HRESULT ComUtility::OnPublicApiReturn(HRESULT hr, std::string && description)
     {
         if (FAILED(hr)) 
         { 
@@ -140,7 +140,7 @@ namespace Common
 
     HRESULT ComUtility::OnPublicApiReturn(Common::ErrorCode const & error)
     {
-        return OnPublicApiReturn(error.ToHResult(), wstring(error.Message));
+        return OnPublicApiReturn(error.ToHResult(), string(error.Message));
     }
 
     HRESULT ComUtility::OnPublicApiReturn(Common::ErrorCode && error)

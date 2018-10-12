@@ -35,9 +35,9 @@ namespace Common
     class X509IdentitySet
     {
     public:
-        ErrorCode SetToThumbprints(std::wstring const & thumbprints);
+        ErrorCode SetToThumbprints(std::string const & thumbprints);
 
-        ErrorCode AddThumbprint(std::wstring const & thumbprint);
+        ErrorCode AddThumbprint(std::string const & thumbprint);
         void AddPublicKey(PCCertContext certContext);
 
         void Add(X509Identity::SPtr && x509Identity);
@@ -54,8 +54,8 @@ namespace Common
         bool IsEmpty() const;
 
         void WriteTo(TextWriter & w, FormatOptions const &) const;
-        std::wstring ToString() const;
-        std::vector<std::wstring> ToStrings() const;
+        std::string ToString() const;
+        std::vector<std::string> ToStrings() const;
 
     private:
         struct X509IdentitySPtrLess

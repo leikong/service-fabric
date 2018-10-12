@@ -152,7 +152,7 @@ class KMessageEndpointAddress : public KObject<KMessageEndpointAddress>, public 
         static
         NTSTATUS
         Create(
-            __in_z const WCHAR* Uri,
+            __in_z const CHAR* Uri,
             __out KMessageEndpointAddress::SPtr& MessageEndpointAddress,
             __in KAllocator& Allocator,
             __in ULONG AllocationTag = KTL_TAG_MESSAGE_PORT
@@ -179,7 +179,7 @@ class KMessageEndpointAddress : public KObject<KMessageEndpointAddress>, public 
             ) = 0;
 
         virtual
-        const WCHAR*
+        const CHAR*
         GetString(
             ) = 0;
 
@@ -292,7 +292,7 @@ class KMessagePort : public KObject<KMessagePort>, public KShared<KMessagePort> 
         static
         NTSTATUS
         Create(
-            __in_z const WCHAR* LocalUri,
+            __in_z const CHAR* LocalUri,
             __in BOOLEAN EnableInboundConnections,
             __out KMessagePort::SPtr& MessagePort,
             __in KAllocator& Allocator,

@@ -32,8 +32,8 @@ public:
     }
 
     HRESULT STDMETHODCALLTYPE OnUpdate(
-    /* [in] */ LPCWSTR section,
-    /* [in] */ LPCWSTR key,
+    /* [in] */ LPCSTR section,
+    /* [in] */ LPCSTR key,
     /* [retval][out] */ BOOLEAN *isProcessed)
     {
         if ((section == NULL) || (key == NULL) || (isProcessed == NULL))
@@ -49,7 +49,7 @@ public:
             if (owner)
             {
                 auto comProxyConfigStore = static_cast<ComProxyConfigStore*>(owner.get());
-                if (comProxyConfigStore->DispatchUpdate(wstring(section), wstring(key)))
+                if (comProxyConfigStore->DispatchUpdate(string(section), string(key)))
                 {
                     *isProcessed = TRUE;
                 }
@@ -60,9 +60,9 @@ public:
     }
 
     HRESULT STDMETHODCALLTYPE CheckUpdate(
-    /* [in] */ LPCWSTR section,
-    /* [in] */ LPCWSTR key,
-    /* [in] */ LPCWSTR value,
+    /* [in] */ LPCSTR section,
+    /* [in] */ LPCSTR key,
+    /* [in] */ LPCSTR value,
     /* [in] */ BOOLEAN isEncrypted,
     /* [retval][out] */ BOOLEAN *canUpdate)
     {
@@ -79,7 +79,7 @@ public:
             if (owner)
             {
                 auto comProxyConfigStore = static_cast<ComProxyConfigStore*>(owner.get());
-                if (comProxyConfigStore->DispatchCheckUpdate(wstring(section), wstring(key), wstring(value), (isEncrypted == TRUE)))
+                if (comProxyConfigStore->DispatchCheckUpdate(string(section), string(key), string(value), (isEncrypted == TRUE)))
                 {
                     *canUpdate = TRUE;
                 }
@@ -120,9 +120,9 @@ void ComProxyConfigStore::SetIgnoreUpdateFailures(bool value)
     this->store_->set_IgnoreUpdateFailures(value ? TRUE : FALSE);
 }
 
-wstring ComProxyConfigStore::ReadString(
-    wstring const & section,
-    wstring const & key,
+string ComProxyConfigStore::ReadString(
+    string const & section,
+    string const & key,
     __out bool & isEncrypted) const
 {
     HRESULT hr;
@@ -134,7 +134,7 @@ wstring ComProxyConfigStore::ReadString(
     if (SUCCEEDED(hr))
     {
         isEncrypted = isEncryptedValue ? true : false;
-        return wstring(result->get_String());
+        return string(result->get_String());
     }
 
     Assert::CodingError(
@@ -146,7 +146,7 @@ wstring ComProxyConfigStore::ReadString(
        
 void ComProxyConfigStore::GetSections(
     StringCollection & sectionNames, 
-    wstring const & partialName) const
+    string const & partialName) const
 {
     HRESULT hr;
     ComPointer<IFabricStringListResult> result;
@@ -155,13 +155,13 @@ void ComProxyConfigStore::GetSections(
     if (SUCCEEDED(hr))
     {
         ULONG itemCount;
-        LPCWSTR *items;
-        hr = result->GetStrings(&itemCount, (const LPCWSTR**)&items);
+        LPCSTR *items;
+        hr = result->GetStrings(&itemCount, (const LPCSTR**)&items);
         if (SUCCEEDED(hr))
         {
             for(ULONG i = 0; i < itemCount; i++)
             {
-                sectionNames.push_back(wstring(items[i]));
+                sectionNames.push_back(string(items[i]));
             }
             
             return;
@@ -175,9 +175,9 @@ void ComProxyConfigStore::GetSections(
 }
 
 void ComProxyConfigStore::GetKeys(
-    wstring const & section,
+    string const & section,
     StringCollection & keyNames, 
-    wstring const & partialName) const
+    string const & partialName) const
 {
     HRESULT hr;
     ComPointer<IFabricStringListResult> result;
@@ -186,13 +186,13 @@ void ComProxyConfigStore::GetKeys(
     if (SUCCEEDED(hr))
     {
         ULONG itemCount;
-        LPCWSTR *items;
-        hr = result->GetStrings(&itemCount, (const LPCWSTR**)&items);
+        LPCSTR *items;
+        hr = result->GetStrings(&itemCount, (const LPCSTR**)&items);
         if (SUCCEEDED(hr))
         {
             for(ULONG i = 0; i < itemCount; i++)
             {
-                keyNames.push_back(wstring(items[i]));
+                keyNames.push_back(string(items[i]));
             }
 
             return;
@@ -223,12 +223,12 @@ ConfigStoreSPtr ComProxyConfigStore::Create(GetConfigStoreImpl const & getConfig
     return proxyStore;
 }
 
-bool ComProxyConfigStore::DispatchUpdate(wstring const & section, wstring const & key)
+bool ComProxyConfigStore::DispatchUpdate(string const & section, string const & key)
 {
     return ConfigStore::OnUpdate(section, key);
 }
 
-bool ComProxyConfigStore::DispatchCheckUpdate(wstring const & section, wstring const & key, wstring const & value, bool isEncrypted)
+bool ComProxyConfigStore::DispatchCheckUpdate(string const & section, string const & key, string const & value, bool isEncrypted)
 {
     return ConfigStore::CheckUpdate(section, key, value, isEncrypted);
 }

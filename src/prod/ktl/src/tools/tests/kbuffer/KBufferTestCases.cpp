@@ -26,5 +26,5 @@ Abstract:
 
 const KU_TEST_ENTRY gs_KuTestCases[] =
 {
-    {   L"KBufferTest",              KBufferTest,         L"BVT", L"KBufferTest"}
+    {   "KBufferTest",              KBufferTest,         "BVT", "KBufferTest"}
 };

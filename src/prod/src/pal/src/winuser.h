@@ -30,7 +30,7 @@ WINUSERAPI
 DWORD
 WINAPI
 CharLowerBuffW(
-    __inout_ecount(cchLength) LPWSTR lpsz,
+    __inout_ecount(cchLength) LPSTR lpsz,
     __in DWORD cchLength);
 #ifdef UNICODE
 #define CharLowerBuff  CharLowerBuffW
@@ -48,7 +48,7 @@ WINUSERAPI
 BOOL
 WINAPI
 IsCharAlphaW(
-    __in WCHAR ch);
+    __in CHAR ch);
 #ifdef UNICODE
 #define IsCharAlpha  IsCharAlphaW
 #else

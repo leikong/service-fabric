@@ -14,30 +14,30 @@ namespace Transport
         {
             switch (e)
             {
-                case None: w << L"None"; return;
-                case X509: w << L"X509"; return;
-                case Windows: w << L"Windows"; return;
+                case None: w << "None"; return;
+                case X509: w << "X509"; return;
+                case Windows: w << "Windows"; return;
             }
 
             w << "CredentialType(" << static_cast<int>(e) << ')';
         }
 
-        bool TryParse(std::wstring const & inputString, __out Enum & result)
+        bool TryParse(std::string const & inputString, __out Enum & result)
         {
-            const wchar_t * providerPtr = inputString.c_str();
-            if (Common::StringUtility::AreEqualCaseInsensitive(providerPtr, L"None"))
+            const char * providerPtr = inputString.c_str();
+            if (Common::StringUtility::AreEqualCaseInsensitive(providerPtr, "None"))
             {
                 result = Enum::None;
                 return true;
             }
 
-            if (Common::StringUtility::AreEqualCaseInsensitive(providerPtr, L"X509"))
+            if (Common::StringUtility::AreEqualCaseInsensitive(providerPtr, "X509"))
             {
                 result = Enum::X509;
                 return true;
             }
 
-            if (Common::StringUtility::AreEqualCaseInsensitive(providerPtr, L"Windows"))
+            if (Common::StringUtility::AreEqualCaseInsensitive(providerPtr, "Windows"))
             {
                 result = Enum::Windows;
                 return true;

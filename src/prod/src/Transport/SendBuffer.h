@@ -90,8 +90,8 @@ namespace Transport
         std::vector<Common::TimeSpan> expirationOfDelayedMessages_;
         uint64 totalDelayedBytes_ = 0;
         TcpDatagramTransport* transportPtr_ = nullptr;
-        std::wstring transportId_;
-        std::wstring transportOwner_;
+        std::string transportId_;
+        std::string transportOwner_;
 
         std::unique_ptr<MessageIdHashSet> messageIdTable_;
         PerfCountersSPtr perfCounters_;

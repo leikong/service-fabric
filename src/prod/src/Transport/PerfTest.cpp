@@ -26,7 +26,7 @@ public:
     void Run(FileWriter & sw);
     TimeSpan GetTestDuration() const;
 
-    static void ParseCmdline(int argc, wchar_t* argv[]);
+    static void ParseCmdline(int argc, char* argv[]);
     static void SetupTest(bool installCerts);
     static void CleanupTest(bool uninstallCerts);
 
@@ -97,16 +97,16 @@ bool PerfTest::shouldQueueReceivedMessage_ = qrDefault;
 
 uint PerfTest::runCount_ = 0;
 
-static const wstring clientExeName(L"Transport.PerfTest.Client.exe");
-static const wstring certSetupExe(L"RingCertSetup.exe");
-static const wstring lib0(L"FabricResources.dll");
-static const wstring lib1(L"FabricCommon.dll");
-static const wstring lib2(L"boost_unit_test_framework.dll");
-static const wstring lib3(L"boost_unit_test_framework-vc140-mt-1_61.dll");
+static const string clientExeName("Transport.PerfTest.Client.exe");
+static const string certSetupExe("RingCertSetup.exe");
+static const string lib0("FabricResources.dll");
+static const string lib1("FabricCommon.dll");
+static const string lib2("boost_unit_test_framework.dll");
+static const string lib3("boost_unit_test_framework-vc140-mt-1_61.dll");
 
-static wstring computer;
-static wstring remotePath;
-static wstring remoteWorkDir;
+static string computer;
+static string remotePath;
+static string remoteWorkDir;
 
 bool securityProviderSet = false;
 SecurityProvider::Enum securityProvider = SecurityProvider::None;
@@ -115,7 +115,7 @@ ProtectionLevel::Enum protectionLevel = ProtectionLevel::EncryptAndSign;
 #ifdef PLATFORM_UNIX
 int main(int argc, char* argva[])
 #else
-void wmain(int argc, wchar_t* argv[])
+void wmain(int argc, char* argv[])
 #endif
 {
     Config config; // Trigger config loading
@@ -125,16 +125,16 @@ void wmain(int argc, wchar_t* argv[])
 
 #ifdef PLATFORM_UNIX
     Invariant(argc >= 1);
-    vector<wstring> args;
+    vector<string> args;
     for(int i = 0; i < argc; ++i)
     {
-        args.emplace_back(StringUtility::Utf8ToUtf16(argva[i]));
+        args.emplace_back(argva[i]);
     }
 
-    vector<wchar_t*> argvv;
+    vector<char*> argvv;
     for(auto const & arg : args)
     {
-        argvv.emplace_back(const_cast<wchar_t*>(arg.c_str()));
+        argvv.emplace_back(const_cast<char*>(arg.c_str()));
     }
 
     auto argv = argvv.data();
@@ -195,13 +195,13 @@ struct TestRoot : public ComponentRoot
 
 void PerfTest::StartListener()
 {
-    wstring localFqdn;
+    string localFqdn;
     auto error = TcpTransportUtility::GetLocalFqdn(localFqdn);
     Invariant(error.IsSuccess());
 
     for (USHORT port = 22000; port < 23000; ++port)
     {
-        listener_ = TcpDatagramTransport::Create(wformatString("{0}:{1}", localFqdn, port));
+        listener_ = TcpDatagramTransport::Create(formatString.L("{0}:{1}", localFqdn, port));
         SecuritySettings securitySettings = TTestUtil::CreateTestSecuritySettings(securityProvider_, protectionLevel);
         Invariant(listener_->SetSecurity(securitySettings).IsSuccess());
 
@@ -276,7 +276,7 @@ void PerfTest::StartClient()
         return;
     }
 
-    auto cmdline = wformatString(
+    auto cmdline = formatString(
         "{0} {1} {2}",
         Path::Combine(Environment::GetExecutablePath(), clientExeName),
         listener_->ListenAddress(),
@@ -285,11 +285,11 @@ void PerfTest::StartClient()
     console.WriteLine("{0}", cmdline);
 
     HandleUPtr processHandle, threadHandle;
-    vector<wchar_t> envBlock = vector<wchar_t>();
+    vector<char> envBlock = vector<char>();
 
     auto error = ProcessUtility::CreateProcess(
         cmdline,
-        wstring(),
+        string(),
         envBlock,
         0,
         processHandle,
@@ -302,7 +302,7 @@ void PerfTest::StartClient()
 void PerfTest::StartClientOnRemoteComputer()
 {
 #ifndef PLATFORM_UNIX
-    wstring cmdline = wformatString(
+    string cmdline = formatString(
         "{0} {1} {2}",
         clientExeName,
         listener_->ListenAddress(),
@@ -353,7 +353,7 @@ void PerfTest::RunRecvBufferSizeTests(SecurityProvider::Enum secProvider)
 
     for (uint clientThreadCount = clientThreadMin_; clientThreadCount <= clientThreadMax_; ++clientThreadCount)
     {
-        wstring outputFile = wformatString(
+        string outputFile = formatString(
             "PerfTest-QueueReceived@{0}_ClientThread@{1}_Sec@{2}.csv",
             shouldQueueReceivedMessage_, clientThreadCount, secProvider);
 
@@ -415,25 +415,25 @@ void PerfTest::SetShouldQueueReceivedMessage(bool value)
     shouldQueueReceivedMessage_ = value;
 }
 
-static const wstring remoteArg = L"-remote";
-static const wstring bsizeMinArg = L"-bsizeMin";
-static const wstring bsizeMaxArg = L"-bsizeMax";
-static const wstring dataArg = L"-data";
-static const wstring tminArg = L"-tmin";
-static const wstring tmaxArg = L"-tmax";
-static const wstring mminArg = L"-mmin";
-static const wstring mmaxArg = L"-mmax";
-static const wstring qrArg = L"-qr";
-static const wstring securityArg = L"-security";
+static const string remoteArg = "-remote";
+static const string bsizeMinArg = "-bsizeMin";
+static const string bsizeMaxArg = "-bsizeMax";
+static const string dataArg = "-data";
+static const string tminArg = "-tmin";
+static const string tmaxArg = "-tmax";
+static const string mminArg = "-mmin";
+static const string mmaxArg = "-mmax";
+static const string qrArg = "-qr";
+static const string securityArg = "-security";
 
-void PerfTest::ParseCmdline(int argc, wchar_t* argv[])
+void PerfTest::ParseCmdline(int argc, char* argv[])
 {
     for (int i = 1; i < argc; ++i)
     {
-        wstring arg(argv[i]);
-        vector<wstring> tokens;
-        StringUtility::Split<wstring>(arg, tokens, L":");
-        if ((tokens.size() != 2) || !StringUtility::StartsWith(tokens.front(), L"-"))
+        string arg(argv[i]);
+        vector<string> tokens;
+        StringUtility::Split<string>(arg, tokens, ":");
+        if ((tokens.size() != 2) || !StringUtility::StartsWith(tokens.front(), "-"))
         {
             console.WriteLine("arg[{0}] = '{1}', token count = {2}, 2 expected", i, arg, tokens.size());
             if (!tokens.empty())
@@ -448,13 +448,13 @@ void PerfTest::ParseCmdline(int argc, wchar_t* argv[])
         {
             remotePath = tokens[1];
             console.WriteLine("remote path = {0}", remotePath);
-            if (!StringUtility::StartsWith(remotePath, L"\\\\"))
+            if (!StringUtility::StartsWith(remotePath, "\\\\"))
             {
                 console.WriteLine("Invalid UNC path: {0}", remotePath);
                 PrintUsageAndExit();
             }
 
-            auto pos = remotePath.find_first_of(L"\\", 2);
+            auto pos = remotePath.find_first_of("\\", 2);
             computer = remotePath.substr(0, pos);
             if (computer.empty())
             {
@@ -462,18 +462,18 @@ void PerfTest::ParseCmdline(int argc, wchar_t* argv[])
                 PrintUsageAndExit();
             }
 
-            if (pos != wstring::npos)
+            if (pos != string::npos)
             {
                 remoteWorkDir = remotePath.substr(pos + 1, remotePath.length() - pos - 1);
             }
 
-            if (remoteWorkDir.empty() || (remoteWorkDir[1] != L'$'))
+            if (remoteWorkDir.empty() || (remoteWorkDir[1] != '$'))
             {
                 console.WriteLine("Invalid UNC path: {0}", remotePath);
                 PrintUsageAndExit();
             }
 
-            remoteWorkDir[1] = L':';
+            remoteWorkDir[1] = ':';
             console.WriteLine("remote computer = {0}", computer);
             console.WriteLine("remote work directory = {0}", remoteWorkDir);
 
@@ -629,8 +629,8 @@ void PerfTest::SetupTest(bool installCerts)
     if (!remotePath.empty())
     {
         // skip auto cert installing/uninstalling until we figure out all dependencies of RingCertSetup.exe 
-        //const wstring filesToCopy[] = { clientExeName, clientExeName + L".cfg", lib0, lib1, lib2, lib3, certSetupExe };
-        const wstring filesToCopy[] = { clientExeName, clientExeName + L".cfg", lib0, lib1, lib2, lib3};
+        //const string filesToCopy[] = { clientExeName, clientExeName + ".cfg", lib0, lib1, lib2, lib3, certSetupExe };
+        const string filesToCopy[] = { clientExeName, clientExeName + ".cfg", lib0, lib1, lib2, lib3};
         for (auto const & file : filesToCopy)
         {
             console.WriteLine("{0} => {1}", file, remotePath);
@@ -641,12 +641,12 @@ void PerfTest::SetupTest(bool installCerts)
         {
             console.WriteLine("certificate files => {0}", remotePath);
             TTestUtil::CopyFiles(
-                Directory::GetFiles(Environment::GetExecutablePath(), L"*.pfx", false, true),
+                Directory::GetFiles(Environment::GetExecutablePath(), "*.pfx", false, true),
                 Environment::GetExecutablePath(),
                 remotePath);
 
             TTestUtil::CopyFiles(
-                Directory::GetFiles(Environment::GetExecutablePath(), L"*.cer", false, true),
+                Directory::GetFiles(Environment::GetExecutablePath(), "*.cer", false, true),
                 Environment::GetExecutablePath(),
                 remotePath);
 
@@ -665,11 +665,11 @@ void PerfTest::SetupTest(bool installCerts)
         console.WriteLine("install certificates on local computer");
 
         HandleUPtr processHandle, threadHandle;
-        vector<wchar_t> envBlock = vector<wchar_t>();
+        vector<char> envBlock = vector<char>();
         
         auto error = ProcessUtility::CreateProcess(
             certSetupExe,
-            wstring(),
+            string(),
             envBlock,
             0,
             processHandle,
@@ -700,11 +700,11 @@ void PerfTest::CleanupTest(bool uninstallCerts)
             console.WriteLine("uninstall certificates on local computer");
 
             HandleUPtr processHandle, threadHandle;
-            vector<wchar_t> envBlock = vector<wchar_t>();
+            vector<char> envBlock = vector<char>();
             
             auto error = ProcessUtility::CreateProcess(
-                certSetupExe + L" r",
-                wstring(),
+                certSetupExe + " r",
+                string(),
                 envBlock,
                 0,
                 processHandle,
@@ -723,7 +723,7 @@ void PerfTest::CleanupTest(bool uninstallCerts)
             console.WriteLine("\nuninstall certificate on {0}", computer);
             TTestUtil::CreateRemoteProcess(
                 computer,
-                Path::Combine(remoteWorkDir, certSetupExe) + L" r",
+                Path::Combine(remoteWorkDir, certSetupExe) + " r",
                 remoteWorkDir,
                 0);
 

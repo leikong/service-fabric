@@ -27,5 +27,5 @@ Abstract:
 
 NTSTATUS
 KUriTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     );

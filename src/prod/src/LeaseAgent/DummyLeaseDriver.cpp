@@ -21,8 +21,8 @@ public:
     {
     }
 
-    wstring Name;
-    wstring Socket;
+    string Name;
+    string Socket;
     Dummy_LEASING_APPLICATION_EXPIRED_CALLBACK AppFailureCallback;
     Dummy_LEASING_APPLICATION_LEASE_ESTABLISHED_CALLBACK AppEstablishCallback;
     Dummy_REMOTE_LEASING_APPLICATION_EXPIRED_CALLBACK RemoteAppFailureCallback;
@@ -85,7 +85,7 @@ static vector<AppContextSPtr> apps;
 static vector<LeaseContextSPtr> leases;
 static RwLock leaseLock;
 
-static vector<AppContextSPtr>::iterator FindApp(wstring const & name)
+static vector<AppContextSPtr>::iterator FindApp(string const & name)
 {
     return find_if(apps.begin(), apps.end(), [name](AppContextSPtr const & x) -> bool
     {
@@ -93,7 +93,7 @@ static vector<AppContextSPtr>::iterator FindApp(wstring const & name)
     });
 }
 
-static AppContextSPtr const & GetApp(wstring const & name)
+static AppContextSPtr const & GetApp(string const & name)
 {
     auto it = FindApp(name);
     if (it == apps.end())
@@ -116,8 +116,8 @@ static AppContextSPtr const & GetApp(HANDLE appHandle)
 }
 
 HANDLE WINAPI Dummy_RegisterLeasingApplication(
-    __in LPCWSTR SocketAddress,
-    __in LPCWSTR LeasingApplicationIdentifier,
+    __in LPCSTR SocketAddress,
+    __in LPCSTR LeasingApplicationIdentifier,
     __in PLEASE_CONFIG_DURATIONS,
     __in LONG, // LeaseSuspendDurationMilliseconds
     __in LONG, // ArbitrationDurationMilliseconds
@@ -131,8 +131,8 @@ HANDLE WINAPI Dummy_RegisterLeasingApplication(
     )
 {
     AcquireExclusiveLock lock(leaseLock);
-    wstring socket(SocketAddress);
-    wstring name(LeasingApplicationIdentifier);
+    string socket(SocketAddress);
+    string name(LeasingApplicationIdentifier);
 
     if (GetApp(name))
     {
@@ -196,7 +196,7 @@ BOOL WINAPI Dummy_UnregisterLeasingApplication(__in HANDLE LeasingApplication)
 
             if (monitor->StartCallback())
             {
-                wstring name = app->Name;
+                string name = app->Name;
                 Threadpool::Post([name, monitor]()
                 { 
                     monitor->RemoteAppFailureCallback(name.c_str(), monitor->Context);
@@ -220,8 +220,8 @@ BOOL WINAPI Dummy_UnregisterLeasingApplication(__in HANDLE LeasingApplication)
 
 HANDLE WINAPI Dummy_EstablishLease(
     __in HANDLE LeasingApplication,
-    __in LPCWSTR RemoteApplicationIdentifier, 
-    __in LPCWSTR,
+    __in LPCSTR RemoteApplicationIdentifier, 
+    __in LPCSTR,
     __in LONGLONG)
 {
     AcquireExclusiveLock lock(leaseLock);
@@ -229,7 +229,7 @@ HANDLE WINAPI Dummy_EstablishLease(
     AppContextSPtr const & subject = GetApp(LeasingApplication);
     ASSERT_IF(!subject, "subject {0} does not exist", (AppContext*) LeasingApplication);
 
-    AppContextSPtr const & monitor = GetApp(wstring(RemoteApplicationIdentifier));
+    AppContextSPtr const & monitor = GetApp(string(RemoteApplicationIdentifier));
     if (!monitor)
     {
         SetLastError(ERROR_RETRY);;
@@ -299,7 +299,7 @@ BOOL WINAPI Dummy_SetGlobalLeaseExpirationTime(__in HANDLE ,__in LONGLONG)
 
 BOOL WINAPI Dummy_GetRemoteLeaseExpirationTime(
 __in HANDLE,
-__in LPCWSTR,
+__in LPCSTR,
 __out PLONG MonitorExpireTTL,
 __out PLONG SubjectExpireTTL)
 {
@@ -308,17 +308,17 @@ __out PLONG SubjectExpireTTL)
     return TRUE;
 }
 
-BOOL WINAPI Dummy_CompleteArbitrationSuccessProcessing(__in HANDLE, LONGLONG, __in LPCWSTR, LONGLONG, LONG, LONG)
+BOOL WINAPI Dummy_CompleteArbitrationSuccessProcessing(__in HANDLE, LONGLONG, __in LPCSTR, LONGLONG, LONG, LONG)
 {
     //TODO: Delete the registed application. Might never be done.
     return TRUE;
 }
 
-BOOL WINAPI Dummy_FaultLeaseAgent(__in LPCWSTR SocketAddress)
+BOOL WINAPI Dummy_FaultLeaseAgent(__in LPCSTR SocketAddress)
 {
-    wstring socket(SocketAddress);
-    map<LeaseContextSPtr, wstring> monitorNotificationList;
-    map<LeaseContextSPtr, wstring> subjectNotificationList;
+    string socket(SocketAddress);
+    map<LeaseContextSPtr, string> monitorNotificationList;
+    map<LeaseContextSPtr, string> subjectNotificationList;
     vector<AppContextSPtr> appNotificationList;
 
     bool foundLeaseAgent = false;
@@ -354,7 +354,7 @@ BOOL WINAPI Dummy_FaultLeaseAgent(__in LPCWSTR SocketAddress)
     for (auto it2 = monitorNotificationList.begin(); it2 != monitorNotificationList.end(); it2++)
     {
         LeaseContextSPtr const & leaseContext = (*it2).first;
-        wstring RemoteApplicationIdentifier = (*it2).second;
+        string RemoteApplicationIdentifier = (*it2).second;
         if (leaseContext->Subject != nullptr && leaseContext->Subject->StartCallback())
         {
             Threadpool::Post([leaseContext, RemoteApplicationIdentifier]()
@@ -371,7 +371,7 @@ BOOL WINAPI Dummy_FaultLeaseAgent(__in LPCWSTR SocketAddress)
     for (auto it2 = subjectNotificationList.begin(); it2 != subjectNotificationList.end(); it2++)
     {
         LeaseContextSPtr const & leaseContext = (*it2).first;
-        wstring RemoteApplicationIdentifier = (*it2).second;
+        string RemoteApplicationIdentifier = (*it2).second;
         if (leaseContext->Monitor != nullptr && leaseContext->Monitor->StartCallback())
         {
             Threadpool::Post([leaseContext, RemoteApplicationIdentifier]()
@@ -402,11 +402,11 @@ BOOL WINAPI Dummy_FaultLeaseAgent(__in LPCWSTR SocketAddress)
     return foundLeaseAgent;
 }
 
-wstring Dummy_DumpLeases()
+string Dummy_DumpLeases()
 {
     AcquireReadLock lock(leaseLock);
 
-    wstring result;
+    string result;
     StringWriter writer(result);
     for (auto it = leases.begin(); it != leases.end(); it++)
     {

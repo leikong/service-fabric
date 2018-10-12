@@ -31,7 +31,7 @@ RoutingManager::~RoutingManager()
 RoutingHeader RoutingManager::GetRoutingHeader(
     __in Message & message,
     NodeInstance const & target,
-    wstring const & toRing,
+    string const & toRing,
     TimeSpan expiration,
     TimeSpan retryTimeout,
     bool useExactRouting,
@@ -51,7 +51,7 @@ AsyncOperationSPtr RoutingManager::InternalBeginRoute(
     bool isRequest,
     NodeId nodeId,
     uint64 instance,
-    wstring const & toRing,
+    string const & toRing,
     bool useExactRouting,
     TimeSpan retryTimeout,
     TimeSpan timeout,
@@ -90,7 +90,7 @@ AsyncOperationSPtr RoutingManager::BeginRoute(
     MessageUPtr && message,
     NodeId nodeId,
     uint64 instance,
-    wstring const & toRing,
+    string const & toRing,
     bool useExactRouting,
     TimeSpan retryTimeout,
     TimeSpan timeout,
@@ -118,7 +118,7 @@ shared_ptr<AsyncOperation> RoutingManager::BeginRouteRequest(
     MessageUPtr && request,
     NodeId nodeId,
     uint64 instance,
-    wstring const & toRing,
+    string const & toRing,
     bool useExactRouting,
     TimeSpan retryTimeout,
     TimeSpan timeout,
@@ -538,7 +538,7 @@ void RoutingManager::OnRouteReply(RoutingContextUPtr && context, bool sendRoutin
 
 // Return true if we can continue to process this message or false if the current node must wait for events that changes the token or neighborhood
 // If returning false the context will moved to a list else it will remain
-bool RoutingManager::TryGetRoutingHop(__in RoutingContextUPtr & context, wstring const & toRing, __out PartnerNodeSPtr & closestNode, __out bool & thisOwnsRoutingToken)
+bool RoutingManager::TryGetRoutingHop(__in RoutingContextUPtr & context, string const & toRing, __out PartnerNodeSPtr & closestNode, __out bool & thisOwnsRoutingToken)
 {
     // We need the lock here in case we decide to hold the message, but the events come in before adding to the list.  Taking the lock now will prevent the
     // processing from happening until this has completed.

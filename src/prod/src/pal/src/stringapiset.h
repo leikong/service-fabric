@@ -22,7 +22,7 @@ MultiByteToWideChar(
     _In_ DWORD dwFlags,
     _In_NLS_string_(cbMultiByte) LPCCH lpMultiByteStr,
     _In_ int cbMultiByte,
-    _Out_writes_to_opt_(cchWideChar, return) LPWSTR lpWideCharStr,
+    _Out_writes_to_opt_(cchWideChar, return) LPSTR lpWideCharStr,
     _In_ int cchWideChar
     );
 

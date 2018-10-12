@@ -166,19 +166,19 @@ __emit(
 
 #define NT_ASSERT(_exp) \
     ((!(_exp)) ? \
-        (__annotation(L"Debug", L"AssertFail", L#_exp), \
+        (__annotation("Debug", "AssertFail", L#_exp), \
          DbgRaiseAssertionFailure(), FALSE) : \
         TRUE)
 
 #define NT_ASSERTMSG(_msg, _exp) \
     ((!(_exp)) ? \
-        (__annotation(L"Debug", L"AssertFail", L##_msg), \
+        (__annotation("Debug", "AssertFail", L##_msg), \
          DbgRaiseAssertionFailure(), FALSE) : \
         TRUE)
 
 #define NT_ASSERTMSGW(_msg, _exp) \
     ((!(_exp)) ? \
-        (__annotation(L"Debug", L"AssertFail", _msg), \
+        (__annotation("Debug", "AssertFail", _msg), \
          DbgRaiseAssertionFailure(), FALSE) : \
         TRUE)
 

@@ -55,7 +55,7 @@ namespace Transport
         return frameHeaderCRC_;
     }
 
-    bool TcpFrameHeader::Validate(bool firstFrame, byte expectedSecurityProviderMask, std::wstring const & traceId) const
+    bool TcpFrameHeader::Validate(bool firstFrame, byte expectedSecurityProviderMask, std::string const & traceId) const
     {
         if (FrameHeaderCRC())
         {

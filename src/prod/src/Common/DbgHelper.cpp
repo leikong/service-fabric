@@ -33,10 +33,10 @@ map<void*, string> DbgHelper::Addr2Line(string const & module, vector<void*> con
 
     string cmdline;
     cmdline.reserve(module.size() + (2*sizeof(void*) + 1)*addresses.size() + 32);
-    cmdline.append(formatString("addr2line -e {0}", module));
+    cmdline.append(formatString.L("addr2line -e {0}", module));
     for (auto const & addr : addresses)
     {
-        cmdline.append(formatString(" {0}", addr));
+        cmdline.append(formatString.L(" {0}", addr));
     }
 
     map<void*, string> results;
@@ -119,7 +119,7 @@ ErrorCode BackTrace::ResolveSymbols()
         for(int i = 0; i < backtrace_.size(); ++i)
         {
             moduleList_[i] = "???";
-            funcAddrList_[i] = formatString("{0:x}", backtrace_[i]);
+            funcAddrList_[i] = formatString.L("{0:x}", backtrace_[i]);
         }
 
         return ErrorCode::FromErrno(errNo);
@@ -172,7 +172,7 @@ ErrorCode BackTrace::ResolveSymbols()
 
         if (!beginOffset || !endOffset || beginName >= beginOffset)
         {
-            funcAddrList_[i] = formatString("[0x{0}]", backtrace_[i]); 
+            funcAddrList_[i] = formatString.L("[0x{0}]", backtrace_[i]); 
             continue;
         }
 
@@ -181,7 +181,7 @@ ErrorCode BackTrace::ResolveSymbols()
         *endOffset = '\0';
         
 //        Trace.WriteNoise(TraceType, "mangled name: {0}", beginName); 
-        funcAddrList_[i] = formatString("{0}+{1}", DbgHelper::CxaDemangle(beginName), beginOffset);
+        funcAddrList_[i] = formatString.L("{0}+{1}", DbgHelper::CxaDemangle(beginName), beginOffset);
     }
 
     for(auto const & m : moduleMap)

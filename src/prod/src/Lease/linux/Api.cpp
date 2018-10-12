@@ -70,7 +70,7 @@ PLONGLONG TTLFile::Addr() const
 
 bool TTLFile::Initialize(bool writable)
 {
-    auto fileName = formatString("ServiceFabricLeaseApp_{0}",(int64)handle_);
+    auto fileName = formatString.L("ServiceFabricLeaseApp_{0}",(int64)handle_);
     auto fd =
         writable ?
         shm_open(fileName.c_str(), O_RDWR | O_CREAT, S_IRWXU | S_IRGRP | S_IROTH) :
@@ -1086,7 +1086,7 @@ Return Value:
 VOID WINAPI
 DefaultLeasingApplicationLeaseEstablished(
     __in HANDLE Lease,
-    __in LPCWSTR RemoteLeasingApplicationIdentifier,
+    __in LPCSTR RemoteLeasingApplicationIdentifier,
     __in PVOID Context
     )
 
@@ -1124,7 +1124,7 @@ Return Value:
 //       specified in the correct order. nm shows that symbol exists as well?
 //
 STRSAFEAPI
-_StringCopyWorkerW(wchar_t* pszDest, size_t cchDest, const wchar_t* pszSrc)
+_StringCopyWorkerW(char* pszDest, size_t cchDest, const char* pszSrc)
 {
     HRESULT hr = S_OK;
 
@@ -1135,7 +1135,7 @@ _StringCopyWorkerW(wchar_t* pszDest, size_t cchDest, const wchar_t* pszSrc)
     }
     else
     {
-        while (cchDest && (*pszSrc != L'\0'))
+        while (cchDest && (*pszSrc != '\0'))
         {
             *pszDest++ = *pszSrc++;
             cchDest--;
@@ -1148,7 +1148,7 @@ _StringCopyWorkerW(wchar_t* pszDest, size_t cchDest, const wchar_t* pszSrc)
             hr = STRSAFE_E_INSUFFICIENT_BUFFER;
         }
 
-        *pszDest= L'\0';
+        *pszDest= '\0';
     }
 
     return hr;
@@ -1156,9 +1156,9 @@ _StringCopyWorkerW(wchar_t* pszDest, size_t cchDest, const wchar_t* pszSrc)
 
 STRSAFEAPI
 _StringCchCopy(
-        _Out_writes_(cchDest) _Always_(_Post_z_) STRSAFE_LPWSTR pszDest,
+        _Out_writes_(cchDest) _Always_(_Post_z_) STRSAFE_LPSTR pszDest,
         _In_ size_t cchDest,
-        _In_ STRSAFE_LPCWSTR pszSrc)
+        _In_ STRSAFE_LPCSTR pszSrc)
 {
     HRESULT hr;
 
@@ -1177,7 +1177,7 @@ _StringCchCopy(
 HANDLE WINAPI 
 RegisterLeasingApplication(
     __in PTRANSPORT_LISTEN_ENDPOINT SocketAddress,
-    __in LPCWSTR LeasingApplicationIdentifier,
+    __in LPCSTR LeasingApplicationIdentifier,
     __in PLEASE_CONFIG_DURATIONS LeaseConfigDurations,
     __in LONG LeaseSuspendDurationMilliseconds,
     __in LONG ArbitrationDurationMilliseconds,
@@ -1502,7 +1502,7 @@ __success(return != NULL)
 HANDLE WINAPI 
 EstablishLease(
     __in HANDLE LeasingApplication,
-    __in LPCWSTR RemoteApplicationIdentifier,
+    __in LPCSTR RemoteApplicationIdentifier,
     __in PTRANSPORT_LISTEN_ENDPOINT RemoteSocketAddress,
     __in LONGLONG RemoteLeaseAgentInstance,
     __in LEASE_DURATION_TYPE LeaseDurationType,
@@ -1633,7 +1633,7 @@ BOOL WINAPI
 TerminateLease(
     __in HANDLE LeasingApplication,
     __in HANDLE Lease,
-    __in LPCWSTR RemoteApplicationIdentifier
+    __in LPCSTR RemoteApplicationIdentifier
     )
 
 /*++
@@ -1902,7 +1902,7 @@ Return Value:
 BOOL WINAPI
 GetRemoteLeaseExpirationTime(
     __in HANDLE LeasingApplication,
-    __in LPCWSTR RemoteApplicationIdentifier,
+    __in LPCSTR RemoteApplicationIdentifier,
     __out PLONG MonitorExpireTTL,
     __out PLONG SubjectExpireTTL
     )
@@ -2471,7 +2471,7 @@ __in BOOL FromAny,
 __in PTRANSPORT_LISTEN_ENDPOINT RemoteSocketAddress,
 __in BOOL ToAny,
 __in LEASE_BLOCKING_ACTION_TYPE BlockingType,
-__in std::wstring alias
+__in std::string alias
 )
 /*++
 
@@ -2544,7 +2544,7 @@ Call GetLastError to retrieve the actual error that occured.
     {
         DeviceIoctlInputBuffer.Alias[i] = alias[i];
     }
-    DeviceIoctlInputBuffer.Alias[i] = L'\0';
+    DeviceIoctlInputBuffer.Alias[i] = '\0';
 
     //
     // Create a device IOCTL and send it to the device.
@@ -2562,7 +2562,7 @@ Call GetLastError to retrieve the actual error that occured.
 
 BOOL WINAPI
 removeLeaseBehavior(
-__in std::wstring alias
+__in std::string alias
 )
 /*++
 
@@ -2591,7 +2591,7 @@ Call GetLastError to retrieve the actual error that occured.
         DeviceIoctlInputBuffer.Alias[i] = alias[i];
     }
 
-    DeviceIoctlInputBuffer.Alias[i] = L'\0';
+    DeviceIoctlInputBuffer.Alias[i] = '\0';
 
     if (!IsInitializeCalled)
     {

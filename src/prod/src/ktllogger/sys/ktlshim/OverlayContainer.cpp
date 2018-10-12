@@ -113,7 +113,7 @@ OverlayLogFreeService::AsyncInitializeContainerContext::FSMContinue(
                 //
                 Status = KString::Create(_PathTemp,
                                          GetThisAllocator(),
-                                         (LPCWSTR)(*_Path));
+                                         (LPCSTR)(*_Path));
                 if (! NT_SUCCESS(Status))
                 {
                     KTraceFailedAsyncRequest(Status, this, _State, 0);
@@ -122,7 +122,7 @@ OverlayLogFreeService::AsyncInitializeContainerContext::FSMContinue(
                     return;
                 }
 
-                KStringView tempString(L".temp");
+                KStringView tempString(".temp");
                 b = _PathTemp->Concat(tempString);
                 if (! b)
                 {
@@ -171,7 +171,7 @@ OverlayLogFreeService::AsyncInitializeContainerContext::FSMContinue(
                 //
                 // Delete any old temporary log container files
                 //
-                KWString fileName(GetThisAllocator(), (WCHAR*)(*_PathTemp));
+                KWString fileName(GetThisAllocator(), (CHAR*)(*_PathTemp));
 
                 Status = fileName.Status();
                 if (! NT_SUCCESS(Status))
@@ -208,8 +208,8 @@ OverlayLogFreeService::AsyncInitializeContainerContext::FSMContinue(
             //
             // Delete any old temporary log container files
             //
-            KWString fileName(GetThisAllocator(), (WCHAR*)(*_PathTemp));
-            fileName += L":MBInfo";
+            KWString fileName(GetThisAllocator(), (CHAR*)(*_PathTemp));
+            fileName += ":MBInfo";
 
             Status = fileName.Status();
             if (! NT_SUCCESS(Status))
@@ -324,13 +324,13 @@ DeleteTempMBInfo:
                 //
                 // Rename the metdata file
                 //
-                KStringView pathTempMBInfoView((WCHAR*)(*_PathTemp));
+                KStringView pathTempMBInfoView((CHAR*)(*_PathTemp));
                 KWString pathTempMBInfo(GetThisAllocator(), pathTempMBInfoView);
-                KStringView pathMBInfoView((WCHAR*)(*_Path));
+                KStringView pathMBInfoView((CHAR*)(*_Path));
                 KWString pathMBInfo(GetThisAllocator(), pathMBInfoView);
 
-                pathTempMBInfo += L":MBInfo";
-                pathMBInfo += L":MBInfo";
+                pathTempMBInfo += ":MBInfo";
+                pathMBInfo += ":MBInfo";
 
                 Status = pathTempMBInfo.Status();
                 if (! NT_SUCCESS(Status))
@@ -381,8 +381,8 @@ DeleteTempMBInfo:
             // Rename the log container file
             //
             _State = MarkContainerReady;
-            Status = KVolumeNamespace::RenameFile((PWCHAR)(*_PathTemp),
-                                                  (PWCHAR)(*_Path),
+            Status = KVolumeNamespace::RenameFile((PCHAR)(*_PathTemp),
+                                                  (PCHAR)(*_Path),
                                                   TRUE,
                                                   GetThisAllocator(),
                                                   completion,

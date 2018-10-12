@@ -30,9 +30,9 @@ namespace Transport
         w << "RequestInstance(" << instance_ << ")";
     }
 
-    wstring RequestInstanceHeader::ToString() const
+    string RequestInstanceHeader::ToString() const
     {
-        wstring result;
+        string result;
         StringWriter(result).Write(*this);
         return result;
     }

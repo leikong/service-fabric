@@ -16,7 +16,7 @@ namespace Federation
         SendMessageAction(Transport::MessageUPtr && message, NodeId targetId);
 
         virtual void Execute(SiteNode & siteNode);
-        virtual std::wstring ToString();
+        virtual std::string ToString();
     private:
         Transport::MessageUPtr message_;
         PartnerNodeSPtr target_;

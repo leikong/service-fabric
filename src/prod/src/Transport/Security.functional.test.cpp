@@ -18,31 +18,31 @@ class SecurityTest
 protected:
     void X509CertChecking(SecuritySettings const & senderSecuritySettings, bool localChecking = false, bool failureExpected = false);
     void FindValueSecondaryTestWithThumbprint(
-        wstring const & primary,
-        wstring const & secondary,
+        string const & primary,
+        string const & secondary,
         int expected /*-1: none, 0: primary, 1: secondary*/);
 
     void FindValueSecondaryTestWithCommonName(
-        wstring const & primary,
-        wstring const & secondary,
+        string const & primary,
+        string const & secondary,
         int expected /*-1: none, 0: primary, 1: secondary*/);
 
     void SendTestMsg(
         IDatagramTransportSPtr const & sender,
         ISendTarget::SPtr const & target,
-        wstring const & msgAction);
+        string const & msgAction);
 
     void FullCertChainValidationWithThumbprintAuth_SelfSignedCert(
-        wstring const & certStoreName,
+        string const & certStoreName,
         bool expectFailureOnFullCertChainValidation);
 
-    void LoadByFullSubjectNameVsCommonName(wstring const & commonName, wstring const & fullSubjectName);
+    void LoadByFullSubjectNameVsCommonName(string const & commonName, string const & fullSubjectName);
 
-    void LoadBySubjectAltName(vector<wstring> const & subjectAltNames);
+    void LoadBySubjectAltName(vector<string> const & subjectAltNames);
 
     void CrlTest(
-        wstring const & senderCN,
-        wstring const & receiverCN,
+        string const & senderCN,
+        string const & receiverCN,
         bool ignoreCrlOffline);
 };
 
@@ -52,7 +52,7 @@ BOOST_AUTO_TEST_CASE(LoadByNonExistentSubjectName)
 {
     ENTER;
 
-    wstring subjectName = L"CN=LoadByNonExistentSubjectName, O=Microsoft Corporation, L=Redmond, S=Washington, C=US";
+    string subjectName = "CN=LoadByNonExistentSubjectName, O=Microsoft Corporation, L=Redmond, S=Washington, C=US";
     X509FindValue::SPtr findValue;
     auto error = X509FindValue::Create(X509FindType::FindBySubjectName, subjectName, findValue);
     VERIFY_IS_TRUE(error.IsSuccess());
@@ -72,8 +72,8 @@ BOOST_AUTO_TEST_CASE(LoadByNonExistentSubjectName)
 BOOST_AUTO_TEST_CASE(LoadByFullSubjectNameVsCommonName1)
 {
     ENTER;
-    wstring commonName = L"SVC";
-    wstring fullSubjectName = L"CN=" + commonName + L", O=Microsoft, L=Redmond, C=US";
+    string commonName = "SVC";
+    string fullSubjectName = "CN=" + commonName + ", O=Microsoft, L=Redmond, C=US";
     Trace.WriteInfo(TraceType, "loading by full subject name starting with 'CN=': {0}", fullSubjectName);
     LoadByFullSubjectNameVsCommonName(commonName, fullSubjectName);
     LEAVE;
@@ -82,8 +82,8 @@ BOOST_AUTO_TEST_CASE(LoadByFullSubjectNameVsCommonName1)
 BOOST_AUTO_TEST_CASE(LoadByFullSubjectNameVsCommonName2)
 {
     ENTER;
-    wstring commonName = L"SVC2";
-    wstring fullSubjectName = L"C=US, L=Redmond, O=Microsoft, CN=" + commonName;
+    string commonName = "SVC2";
+    string fullSubjectName = "C=US, L=Redmond, O=Microsoft, CN=" + commonName;
     Trace.WriteInfo(TraceType, "loading by full subject name ending with 'CN=': {0}", fullSubjectName);
     LoadByFullSubjectNameVsCommonName(commonName, fullSubjectName);
     LEAVE;
@@ -115,18 +115,18 @@ BOOST_AUTO_TEST_CASE(FindValueSecondaryWithThumbprint)
     Trace.WriteInfo(TraceType, "bad primary, good secondary");
     InstallTestCertInScope c1;
     FindValueSecondaryTestWithThumbprint(
-        L"ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff",
+        "ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff",
         c1.Thumbprint()->PrimaryToString(),
         1);
 
     Trace.WriteInfo(TraceType, "good primary, bad secondary");
     FindValueSecondaryTestWithThumbprint(
         c1.Thumbprint()->PrimaryToString(),
-        L"ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff",
+        "ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff",
         0);
 
     Trace.WriteInfo(TraceType, "good primary, good secondary, different expiration");
-    InstallTestCertInScope c2(L"", nullptr, InstallTestCertInScope::DefaultCertExpiry() + InstallTestCertInScope::DefaultCertExpiry());
+    InstallTestCertInScope c2("", nullptr, InstallTestCertInScope::DefaultCertExpiry() + InstallTestCertInScope::DefaultCertExpiry());
     FindValueSecondaryTestWithThumbprint(
         c1.Thumbprint()->PrimaryToString(),
         c2.Thumbprint()->PrimaryToString(),
@@ -138,7 +138,7 @@ BOOST_AUTO_TEST_CASE(FindValueSecondaryWithThumbprint)
         0);
 
     Trace.WriteInfo(TraceType, "expired primary, good secondary");
-    InstallTestCertInScope ce(L"", nullptr, TimeSpan::Zero -InstallTestCertInScope::DefaultCertExpiry());
+    InstallTestCertInScope ce("", nullptr, TimeSpan::Zero -InstallTestCertInScope::DefaultCertExpiry());
     FindValueSecondaryTestWithThumbprint(
         ce.Thumbprint()->PrimaryToString(),
         c1.Thumbprint()->PrimaryToString(),
@@ -152,8 +152,8 @@ BOOST_AUTO_TEST_CASE(FindValueSecondaryWithThumbprint)
 
     Trace.WriteInfo(TraceType, "bad primary, bad secondary");
     FindValueSecondaryTestWithThumbprint(
-        L"ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff",
-        L"00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
+        "ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff",
+        "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00",
         -1);
 
     LEAVE;
@@ -163,10 +163,10 @@ BOOST_AUTO_TEST_CASE(TestInstallTestCertInScope)
 {
     ENTER;
 
-    wstring commonName = Guid::NewGuid().ToString();
-    wstring subjectName = L"CN=" + commonName;
+    string commonName = Guid::NewGuid().ToString();
+    string subjectName = "CN=" + commonName;
     Thumbprint::SPtr certThumbprint;
-    wstring storeName;
+    string storeName;
     X509StoreLocation::Enum storeLocation;
     {
         InstallTestCertInScope testCert(subjectName);
@@ -176,7 +176,7 @@ BOOST_AUTO_TEST_CASE(TestInstallTestCertInScope)
         storeLocation = testCert.StoreLocation();
 
         Trace.WriteInfo(TraceType, "verify we can load the cert from store and verify common name");
-        wstring certCommonName;
+        string certCommonName;
         auto error = CryptoUtility::GetCertificateCommonName(
             storeLocation,
             storeName,
@@ -188,7 +188,7 @@ BOOST_AUTO_TEST_CASE(TestInstallTestCertInScope)
 
 #ifndef PLATFORM_UNIX
         Trace.WriteInfo(TraceType, "verify we can load the private key of the cert");
-        wstring privateKeyFileName;
+        string privateKeyFileName;
         error = CryptoUtility::GetCertificatePrivateKeyFileName(
             testCert.StoreLocation(),
             testCert.StoreName(),
@@ -222,26 +222,26 @@ BOOST_AUTO_TEST_CASE(CertRolloverWithThumbprints)
     KFinally([&] { SecurityConfig::GetConfig().CertificateMonitorInterval = savedRefreshInterval; });
 
     Trace.WriteInfo(TraceType, "Installing certificates for initial setup");
-    InstallTestCertInScope serverCert(L"CN=server.CertRolloverWithThumbprints");
+    InstallTestCertInScope serverCert("CN=server.CertRolloverWithThumbprints");
     InstallTestCertInScope clientCert(
-        L"CN=client@CertRolloverWithThumbprints",
+        "CN=client@CertRolloverWithThumbprints",
         nullptr,
         InstallTestCertInScope::DefaultCertExpiry(),
         X509Default::StoreName(),
-        L"client@CertRolloverWithThumbprints"/*use non-default key container name to get a pair of key different from server*/);
+        "client@CertRolloverWithThumbprints"/*use non-default key container name to get a pair of key different from server*/);
 
     auto svrSecSettings = TTestUtil::CreateX509SettingsTp(
         serverCert.Thumbprint()->PrimaryToString(),
-        L"",
+        "",
         clientCert.Thumbprint()->PrimaryToString(),
-        L"");
+        "");
 
     Trace.WriteInfo(TraceType, "create server transport");
-    auto server = DatagramTransportFactory::CreateTcp(L"127.0.0.1:0");
+    auto server = DatagramTransportFactory::CreateTcp("127.0.0.1:0");
     auto error = server->SetSecurity(svrSecSettings);
     VERIFY_IS_TRUE(error.IsSuccess());
 
-    wstring action = Guid::NewGuid().ToString();
+    string action = Guid::NewGuid().ToString();
     TTestUtil::SetMessageHandler(
         server,
         action,
@@ -255,7 +255,7 @@ BOOST_AUTO_TEST_CASE(CertRolloverWithThumbprints)
         });
 
     Trace.WriteInfo(TraceType, "create another server whose config update will drag behind");
-    auto serverLaggedBehind = DatagramTransportFactory::CreateTcp(L"127.0.0.1:0");
+    auto serverLaggedBehind = DatagramTransportFactory::CreateTcp("127.0.0.1:0");
     error = serverLaggedBehind->SetSecurity(svrSecSettings);
     VERIFY_IS_TRUE(error.IsSuccess());
 
@@ -273,9 +273,9 @@ BOOST_AUTO_TEST_CASE(CertRolloverWithThumbprints)
 
     auto cltSecSettings = TTestUtil::CreateX509SettingsTp(
         clientCert.Thumbprint()->PrimaryToString(),
-        L"",
+        "",
         serverCert.Thumbprint()->PrimaryToString(),
-        L"");
+        "");
 
     auto client = DatagramTransportFactory::CreateTcpClient();
     error = client->SetSecurity(cltSecSettings);
@@ -291,7 +291,7 @@ BOOST_AUTO_TEST_CASE(CertRolloverWithThumbprints)
             cltReceivedMsg.Set();
         });
 
-    auto clientLaggedBehind = DatagramTransportFactory::CreateTcp(L"127.0.0.1:0");
+    auto clientLaggedBehind = DatagramTransportFactory::CreateTcp("127.0.0.1:0");
     error = clientLaggedBehind->SetSecurity(cltSecSettings);
     VERIFY_IS_TRUE(error.IsSuccess());
 
@@ -337,7 +337,7 @@ BOOST_AUTO_TEST_CASE(CertRolloverWithThumbprints)
     error = CryptoUtility::GetCertificateExpiration(
         serverCert.StoreLocation(),
         serverCert.StoreName(),
-        L"FindByThumbprint",
+        "FindByThumbprint",
         serverCert.Thumbprint()->PrimaryToString(),
         serverCertExpiry);
 
@@ -345,9 +345,9 @@ BOOST_AUTO_TEST_CASE(CertRolloverWithThumbprints)
 
     Trace.WriteInfo(TraceType, "Creating new certificates with further expiration for rollover");
     CertContextUPtr svrCert2;
-    wstring svrCert2KeyContainer = L"server2.CertRolloverWithThumbprints";
+    string svrCert2KeyContainer = "server2.CertRolloverWithThumbprints";
     error = CryptoUtility::CreateSelfSignedCertificate(
-        L"CN=server2.CertRolloverWithThumbprints",
+        "CN=server2.CertRolloverWithThumbprints",
         serverCertExpiry + InstallTestCertInScope::DefaultCertExpiry(),
         svrCert2KeyContainer,
         svrCert2);
@@ -361,16 +361,16 @@ BOOST_AUTO_TEST_CASE(CertRolloverWithThumbprints)
     error = CryptoUtility::GetCertificateExpiration(
         clientCert.StoreLocation(),
         clientCert.StoreName(),
-        L"FindByThumbprint",
+        "FindByThumbprint",
         clientCert.Thumbprint()->PrimaryToString(),
         clientCertExpiry);
 
     VERIFY_IS_TRUE(error.IsSuccess());
 
     CertContextUPtr cltCert2;
-    wstring cltCert2KeyContainer = L"client2@CertRolloverWithThumbprints";
+    string cltCert2KeyContainer = "client2@CertRolloverWithThumbprints";
     error = CryptoUtility::CreateSelfSignedCertificate(
-        L"CN=client2@CertRolloverWithThumbprints",
+        "CN=client2@CertRolloverWithThumbprints",
         clientCertExpiry + InstallTestCertInScope::DefaultCertExpiry(),
         cltCert2KeyContainer,
         cltCert2);
@@ -381,18 +381,18 @@ BOOST_AUTO_TEST_CASE(CertRolloverWithThumbprints)
     VERIFY_IS_TRUE(error.IsSuccess());
 
     auto svrSecSettings2 = TTestUtil::CreateX509SettingsTp(
-        wformatString(svrCertThumbprint2),
+        formatString(svrCertThumbprint2),
         serverCert.Thumbprint()->PrimaryToString(),
-        wformatString(cltCertThumbprint2),
+        formatString(cltCertThumbprint2),
         clientCert.Thumbprint()->PrimaryToString());
 
     error = server->SetSecurity(svrSecSettings2);
     VERIFY_IS_TRUE(error.IsSuccess());
 
     auto cltSecSettings2 = TTestUtil::CreateX509SettingsTp(
-        wformatString(cltCertThumbprint2),
+        formatString(cltCertThumbprint2),
         clientCert.Thumbprint()->PrimaryToString(),
-        wformatString(svrCertThumbprint2),
+        formatString(svrCertThumbprint2),
         serverCert.Thumbprint()->PrimaryToString());
 
     error = client->SetSecurity(cltSecSettings2);
@@ -401,9 +401,9 @@ BOOST_AUTO_TEST_CASE(CertRolloverWithThumbprints)
     Trace.WriteInfo(TraceType, "still prefer old server certificate on serverLaggedBehind, but allow both old and new on incoming client certificates");
     auto svrSecSettingsOldLocalNewRemote = TTestUtil::CreateX509SettingsTp(
         serverCert.Thumbprint()->PrimaryToString(),
-        wformatString(svrCertThumbprint2),
+        formatString(svrCertThumbprint2),
         clientCert.Thumbprint()->PrimaryToString(),
-        wformatString(cltCertThumbprint2));
+        formatString(cltCertThumbprint2));
 
     error = serverLaggedBehind->SetSecurity(svrSecSettingsOldLocalNewRemote);
     VERIFY_IS_TRUE(error.IsSuccess());
@@ -411,9 +411,9 @@ BOOST_AUTO_TEST_CASE(CertRolloverWithThumbprints)
     Trace.WriteInfo(TraceType, "still prefer old client certificate on clientLaggedBehind, but allow both old and new on incoming server certificates");
     auto cltSecSettingsOldLocalNewRemote = TTestUtil::CreateX509SettingsTp(
         clientCert.Thumbprint()->PrimaryToString(),
-        wformatString(cltCertThumbprint2),
+        formatString(cltCertThumbprint2),
         serverCert.Thumbprint()->PrimaryToString(),
-        wformatString(svrCertThumbprint2));
+        formatString(svrCertThumbprint2));
 
     error = clientLaggedBehind->SetSecurity(cltSecSettingsOldLocalNewRemote);
     VERIFY_IS_TRUE(error.IsSuccess());
@@ -515,10 +515,10 @@ BOOST_AUTO_TEST_CASE(CertRolloverWithThumbprints)
 
     Trace.WriteInfo(TraceType, "remove old certificates from settings on all clients and servers");
     auto svrSecSettings3 = TTestUtil::CreateX509SettingsTp(
-        wformatString(svrCertThumbprint2),
-        L"",
-        wformatString(cltCertThumbprint2),
-        L"");
+        formatString(svrCertThumbprint2),
+        "",
+        formatString(cltCertThumbprint2),
+        "");
 
     error = server->SetSecurity(svrSecSettings3);
     VERIFY_IS_TRUE(error.IsSuccess());
@@ -526,10 +526,10 @@ BOOST_AUTO_TEST_CASE(CertRolloverWithThumbprints)
     VERIFY_IS_TRUE(error.IsSuccess());
 
     auto cltSecSettings3 = TTestUtil::CreateX509SettingsTp(
-        wformatString(cltCertThumbprint2),
-        L"",
-        wformatString(svrCertThumbprint2),
-        L"");
+        formatString(cltCertThumbprint2),
+        "",
+        formatString(svrCertThumbprint2),
+        "");
 
     error = client->SetSecurity(cltSecSettings3);
     VERIFY_IS_TRUE(error.IsSuccess());
@@ -556,9 +556,9 @@ BOOST_AUTO_TEST_CASE(CertRolloverWithThumbprints)
     Trace.WriteInfo(TraceType, "update sec settings on clientLaggedBehind to make it load old client certificate");
     auto cltSecSettings4 = TTestUtil::CreateX509SettingsTp(
         clientCert.Thumbprint()->PrimaryToString(),
-        L"",
-        wformatString(svrCertThumbprint2),
-        L"");
+        "",
+        formatString(svrCertThumbprint2),
+        "");
 
     error = clientLaggedBehind->SetSecurity(cltSecSettings4);
     VERIFY_IS_TRUE(error.IsSuccess());
@@ -595,28 +595,28 @@ BOOST_AUTO_TEST_CASE(CertRolloverWithThumbprints)
 BOOST_AUTO_TEST_CASE(CrlTest_OfflineErrIgnored)
 {
     ENTER;
-    CrlTest(L"WinFabric-Test-User@microsoft.com", L"WinFabric-Test-SAN1-Bob", true);
+    CrlTest("WinFabric-Test-User@microsoft.com", "WinFabric-Test-SAN1-Bob", true);
     LEAVE;
 }
 
 BOOST_AUTO_TEST_CASE(CrlTest_OfflineErrIgnored2) // test with server certs on both sides
 {
     ENTER;
-    CrlTest(L"WinFabric-Test-SAN2-Charlie", L"WinFabric-Test-SAN1-Bob", true);
+    CrlTest("WinFabric-Test-SAN2-Charlie", "WinFabric-Test-SAN1-Bob", true);
     LEAVE;
 }
 
 BOOST_AUTO_TEST_CASE(CrlTest_OfflineErrNotIgnored)
 {
     ENTER;
-    CrlTest(L"WinFabric-Test-User@microsoft.com", L"WinFabric-Test-SAN1-Bob", false);
+    CrlTest("WinFabric-Test-User@microsoft.com", "WinFabric-Test-SAN1-Bob", false);
     LEAVE;
 }
 
 BOOST_AUTO_TEST_CASE(CrlTest_OfflineErrNotIgnored2) // test with server certs on both sides
 {
     ENTER;
-    CrlTest(L"WinFabric-Test-SAN2-Charlie", L"WinFabric-Test-SAN1-Bob", false);
+    CrlTest("WinFabric-Test-SAN2-Charlie", "WinFabric-Test-SAN1-Bob", false);
     LEAVE;
 }
 
@@ -626,7 +626,7 @@ BOOST_AUTO_TEST_CASE(PartialChainTest)
 
     Trace.WriteInfo(TraceType, "Test thumbprint matching on partial chain");
     X509FindValue::SPtr findValue;
-    auto error = X509FindValue::Create(X509FindType::FindByThumbprint, L"59 ec 79 20 04 c5 62 25 dd 66 91 13 2c 71 31 94 d2 80 98 f1", findValue);
+    auto error = X509FindValue::Create(X509FindType::FindByThumbprint, "59 ec 79 20 04 c5 62 25 dd 66 91 13 2c 71 31 94 d2 80 98 f1", findValue);
     VERIFY_IS_TRUE(error.IsSuccess());
     CertContextUPtr certificate;
     error = CryptoUtility::GetCertificate(
@@ -639,11 +639,11 @@ BOOST_AUTO_TEST_CASE(PartialChainTest)
     VERIFY_IS_TRUE(certificate != nullptr);
 
     ThumbprintSet thumbprintSetToMatch;
-    error = thumbprintSetToMatch.Add(L"59 ec 79 20 04 c5 62 25 dd 66 91 13 2c 71 31 94 d2 80 98 f1");
+    error = thumbprintSetToMatch.Add("59 ec 79 20 04 c5 62 25 dd 66 91 13 2c 71 31 94 d2 80 98 f1");
     VERIFY_IS_TRUE(error.IsSuccess());
 
     SECURITY_STATUS status = SecurityContextSsl::VerifyCertificate(
-        L"PartialChainTest",
+        "PartialChainTest",
         certificate.get(),
         SecurityConfig::GetConfig().CrlCheckingFlag,
         false,
@@ -663,7 +663,7 @@ BOOST_AUTO_TEST_CASE(PartialChainTest2)
 
     Trace.WriteInfo(TraceType, "Test thumbprint matching on partial chain with chain validation");
     X509FindValue::SPtr findValue;
-    auto error = X509FindValue::Create(X509FindType::FindByThumbprint, L"59 ec 79 20 04 c5 62 25 dd 66 91 13 2c 71 31 94 d2 80 98 f1", findValue);
+    auto error = X509FindValue::Create(X509FindType::FindByThumbprint, "59 ec 79 20 04 c5 62 25 dd 66 91 13 2c 71 31 94 d2 80 98 f1", findValue);
     VERIFY_IS_TRUE(error.IsSuccess());
     CertContextUPtr certificate;
     error = CryptoUtility::GetCertificate(
@@ -676,11 +676,11 @@ BOOST_AUTO_TEST_CASE(PartialChainTest2)
     VERIFY_IS_TRUE(certificate != nullptr);
 
     ThumbprintSet thumbprintSetToMatch;
-    error = thumbprintSetToMatch.Add(L"59 ec 79 20 04 c5 62 25 dd 66 91 13 2c 71 31 94 d2 80 98 f1?true");
+    error = thumbprintSetToMatch.Add("59 ec 79 20 04 c5 62 25 dd 66 91 13 2c 71 31 94 d2 80 98 f1?true");
     VERIFY_IS_TRUE(error.IsSuccess());
 
     SECURITY_STATUS status = SecurityContextSsl::VerifyCertificate(
-        L"PartialChainTest2",
+        "PartialChainTest2",
         certificate.get(),
         SecurityConfig::GetConfig().CrlCheckingFlag,
         false,
@@ -701,7 +701,7 @@ BOOST_AUTO_TEST_CASE(FullCertChainValidationWithThumbprintAuth)
     Trace.WriteInfo(TraceType, "Test with a CA signed cert");
     {
         X509FindValue::SPtr findValue;
-        auto error = X509FindValue::Create(X509FindType::FindByThumbprint, L"9d c9 06 b1 69 dc 4f af fd 16 97 ac 78 1e 80 67 90 74 9d 2f", findValue);
+        auto error = X509FindValue::Create(X509FindType::FindByThumbprint, "9d c9 06 b1 69 dc 4f af fd 16 97 ac 78 1e 80 67 90 74 9d 2f", findValue);
         VERIFY_IS_TRUE(error.IsSuccess());
         CertContextUPtr certificate;
         error = CryptoUtility::GetCertificate(
@@ -714,11 +714,11 @@ BOOST_AUTO_TEST_CASE(FullCertChainValidationWithThumbprintAuth)
         VERIFY_IS_TRUE(certificate != nullptr);
 
         ThumbprintSet thumbprintSetToMatch;
-        error = thumbprintSetToMatch.Add(L"9d c9 06 b1 69 dc 4f af fd 16 97 ac 78 1e 80 67 90 74 9d 2f ? true");
+        error = thumbprintSetToMatch.Add("9d c9 06 b1 69 dc 4f af fd 16 97 ac 78 1e 80 67 90 74 9d 2f ? true");
         VERIFY_IS_TRUE(error.IsSuccess());
 
         SECURITY_STATUS status = SecurityContextSsl::VerifyCertificate(
-            L"FullCertChainValidationWithThumbprintAuth",
+            "FullCertChainValidationWithThumbprintAuth",
             certificate.get(),
             SecurityConfig::GetConfig().CrlCheckingFlag,
             false,
@@ -739,10 +739,10 @@ BOOST_AUTO_TEST_CASE(FullCertChainValidationWithThumbprintAuth)
     // RDBug 11674715:[Test Failure Investigation]Transport.Functional.Test.exe test failed in SingleMachine-Functional
     // http://vstfrd:8080/Azure/RD/_workitems?_a=edit&id=11674715
     //Trace.WriteInfo(TraceType, "Test with a self-signed cert installed to TrustedPeople");
-    //FullCertChainValidationWithThumbprintAuth_SelfSignedCert(L"TrustedPeople", false);
+    //FullCertChainValidationWithThumbprintAuth_SelfSignedCert("TrustedPeople", false);
 
     //Trace.WriteInfo(TraceType, "Test with a self-signed cert installed to Root");
-    //FullCertChainValidationWithThumbprintAuth_SelfSignedCert(L"Root", false);
+    //FullCertChainValidationWithThumbprintAuth_SelfSignedCert("Root", false);
 
     LEAVE;
 }
@@ -753,11 +753,11 @@ BOOST_AUTO_TEST_CASE(LoadBySubjectAltNameTest)
     ENTER;
 
     Trace.WriteInfo(TraceType, "Find by Subject Alt Name");
-    vector<wstring> subjectAltNames;
-    subjectAltNames.push_back(L"TestDns");
-    subjectAltNames.push_back(L"TestDns.TestSubDomain");
-    subjectAltNames.push_back(L"TestDns.TestSubDomain.Microsoft.Com");
-    subjectAltNames.push_back(L"TestDns.TestSubDomain.Microsoft");
+    vector<string> subjectAltNames;
+    subjectAltNames.push_back("TestDns");
+    subjectAltNames.push_back("TestDns.TestSubDomain");
+    subjectAltNames.push_back("TestDns.TestSubDomain.Microsoft.Com");
+    subjectAltNames.push_back("TestDns.TestSubDomain.Microsoft");
 
     LoadBySubjectAltName(subjectAltNames);
 
@@ -768,28 +768,28 @@ BOOST_AUTO_TEST_CASE(MessagingTestWithLoadBySubjectAltName)
 {
     ENTER;
 
-    vector<wstring> node1DnsName(1, L"node1.test.com");
-    vector<wstring> node2DnsName(1, L"node2.test.com");
+    vector<string> node1DnsName(1, "node1.test.com");
+    vector<string> node2DnsName(1, "node2.test.com");
 
-    wstring const storeName = L"Root"; //install to root store for chain validation
+    string const storeName = "Root"; //install to root store for chain validation
     InstallTestCertInScope node1Cert(
-        L"CN=node1",
+        "CN=node1",
         &node1DnsName,
         InstallTestCertInScope::DefaultCertExpiry(),
         storeName);
 
     InstallTestCertInScope node2Cert(
-        L"CN=node2",
+        "CN=node2",
         &node2DnsName,
         InstallTestCertInScope::DefaultCertExpiry(),
         storeName);
 
-    auto node1 = DatagramTransportFactory::CreateTcp(L"127.0.0.1:0");
+    auto node1 = DatagramTransportFactory::CreateTcp("127.0.0.1:0");
     auto error = node1->SetSecurity(TTestUtil::CreateX509SettingsBySan(storeName, node1DnsName.front(), node2DnsName.front()));
     VERIFY_IS_TRUE(error.IsSuccess());
 
     AutoResetEvent node1ReceivedMsg;
-    wstring testAction = TTestUtil::GetGuidAction();
+    string testAction = TTestUtil::GetGuidAction();
     TTestUtil::SetMessageHandler(
         node1,
         testAction,
@@ -802,7 +802,7 @@ BOOST_AUTO_TEST_CASE(MessagingTestWithLoadBySubjectAltName)
     error = node1->Start();
     VERIFY_IS_TRUE(error.IsSuccess());
 
-    auto node2 = DatagramTransportFactory::CreateTcp(L"127.0.0.1:0");
+    auto node2 = DatagramTransportFactory::CreateTcp("127.0.0.1:0");
     error = node2->SetSecurity(TTestUtil::CreateX509SettingsBySan(storeName, node2DnsName.front(), node1DnsName.front()));
     VERIFY_IS_TRUE(error.IsSuccess());
 
@@ -845,38 +845,38 @@ BOOST_AUTO_TEST_CASE(FindValueSecondaryWithCommonName)
 
     Trace.WriteInfo(TraceType, "bad primary, good secondary");
     FindValueSecondaryTestWithCommonName(
-        L"NoSuchCertificateIHope",
-        L"WinFabric-Test-SAN1-Alice",
+        "NoSuchCertificateIHope",
+        "WinFabric-Test-SAN1-Alice",
         1);
 
     Trace.WriteInfo(TraceType, "good primary, bad secondary");
     FindValueSecondaryTestWithCommonName(
-        L"WinFabric-Test-SAN1-Alice",
-        L"NoSuchCertificateIHope",
+        "WinFabric-Test-SAN1-Alice",
+        "NoSuchCertificateIHope",
         0);
 
     Trace.WriteInfo(TraceType, "good primary, good secondary");
     FindValueSecondaryTestWithCommonName(
-        L"WinFabric-Test-SAN1-Bob",
-        L"WinFabric-Test-SAN1-Alice",
+        "WinFabric-Test-SAN1-Bob",
+        "WinFabric-Test-SAN1-Alice",
         0);
 
     Trace.WriteInfo(TraceType, "expired primary, good secondary");
     FindValueSecondaryTestWithCommonName(
-        L"WinFabric-Test-Expired",
-        L"WinFabric-Test-SAN1-Alice",
+        "WinFabric-Test-Expired",
+        "WinFabric-Test-SAN1-Alice",
         1);
 
     Trace.WriteInfo(TraceType, "good primary, expired secondary");
     FindValueSecondaryTestWithCommonName(
-        L"WinFabric-Test-SAN1-Alice",
-        L"WinFabric-Test-Expired",
+        "WinFabric-Test-SAN1-Alice",
+        "WinFabric-Test-Expired",
         0);
 
     Trace.WriteInfo(TraceType, "bad primary, bad secondary");
     FindValueSecondaryTestWithCommonName(
-        L"NoSuchCertificateIHope",
-        L"NoSuchCertificateAgain",
+        "NoSuchCertificateIHope",
+        "NoSuchCertificateAgain",
         -1);
 
     LEAVE;
@@ -889,7 +889,7 @@ BOOST_AUTO_TEST_CASE(X509CertificateLoadTests)
     Trace.WriteInfo(TraceType, "loading a valid certificate by subject name ...");
     {
         X509FindValue::SPtr subjectName;
-        auto error = X509FindValue::Create(X509FindType::FindBySubjectName, L"CN = WinFabric-Test-SAN1-Alice", subjectName);
+        auto error = X509FindValue::Create(X509FindType::FindBySubjectName, "CN = WinFabric-Test-SAN1-Alice", subjectName);
         VERIFY_IS_TRUE(error.IsSuccess());
         CertContextUPtr certificate;
         error = CryptoUtility::GetCertificate(
@@ -906,13 +906,13 @@ BOOST_AUTO_TEST_CASE(X509CertificateLoadTests)
         VERIFY_IS_TRUE(error.IsSuccess());
 
         Thumbprint expectedThumbprint;
-        error = expectedThumbprint.Initialize(L"78 12 20 5a 39 d2 23 76 da a0 37 f0 5a ed e3 60 1a 7e 64 bf");
+        error = expectedThumbprint.Initialize("78 12 20 5a 39 d2 23 76 da a0 37 f0 5a ed e3 60 1a 7e 64 bf");
         VERIFY_IS_TRUE(error.IsSuccess());
 
         // Verify the certificate with the furthest expiration is loaded, there are multiple matches for "CN=WinFabric-Test-SAN1-Alice".
         VERIFY_IS_TRUE(loadedThumbprint == expectedThumbprint);
 
-        wstring commonName;
+        string commonName;
         error = CryptoUtility::GetCertificateCommonName(certificate.get(), commonName);
         VERIFY_IS_TRUE(error.IsSuccess());
 
@@ -924,7 +924,7 @@ BOOST_AUTO_TEST_CASE(X509CertificateLoadTests)
     Trace.WriteInfo(TraceType, "loading a valid certificate by common name ...");
     {
         X509FindValue::SPtr findValue;
-        auto error = X509FindValue::Create(X509FindType::FindBySubjectName, L"WinFabric-Test-SAN1-Alice", findValue);
+        auto error = X509FindValue::Create(X509FindType::FindBySubjectName, "WinFabric-Test-SAN1-Alice", findValue);
         VERIFY_IS_TRUE(error.IsSuccess());
         CertContextUPtr certificate;
         error = CryptoUtility::GetCertificate(
@@ -941,13 +941,13 @@ BOOST_AUTO_TEST_CASE(X509CertificateLoadTests)
         VERIFY_IS_TRUE(error.IsSuccess());
 
         Thumbprint expectedThumbprint;
-        error = expectedThumbprint.Initialize(L"78 12 20 5a 39 d2 23 76 da a0 37 f0 5a ed e3 60 1a 7e 64 bf");
+        error = expectedThumbprint.Initialize("78 12 20 5a 39 d2 23 76 da a0 37 f0 5a ed e3 60 1a 7e 64 bf");
         VERIFY_IS_TRUE(error.IsSuccess());
 
         // Verify the certificate with the furthest expiration is loaded, there are multiple matches for "CN=WinFabric-Test-SAN1-Alice".
         VERIFY_IS_TRUE(loadedThumbprint == expectedThumbprint);
 
-        wstring commonName;
+        string commonName;
         error = CryptoUtility::GetCertificateCommonName(certificate.get(), commonName);
         VERIFY_IS_TRUE(error.IsSuccess());
 
@@ -960,7 +960,7 @@ BOOST_AUTO_TEST_CASE(X509CertificateLoadTests)
     {
         CertContextUPtr certificate;
         X509FindValue::SPtr thumbprint;
-        auto error = X509FindValue::Create(X509FindType::FindByThumbprint, L"6f 4a a9 61 8a ea 95 ab 5d ce 8c 77 26 09 38 65 3e e1 5f d7", thumbprint);
+        auto error = X509FindValue::Create(X509FindType::FindByThumbprint, "6f 4a a9 61 8a ea 95 ab 5d ce 8c 77 26 09 38 65 3e e1 5f d7", thumbprint);
         VERIFY_IS_TRUE(error.IsSuccess());
 
         error = CryptoUtility::GetCertificate(
@@ -972,14 +972,14 @@ BOOST_AUTO_TEST_CASE(X509CertificateLoadTests)
         VERIFY_IS_TRUE(error.IsSuccess());
         VERIFY_IS_TRUE(certificate != nullptr);
 
-        SECURITY_STATUS status = SecurityContextSsl::Test_VerifyCertificate(certificate.get(), L"WiNfAbRiC-tEsT-uSeR@mIcRoSoFt.CoM");
+        SECURITY_STATUS status = SecurityContextSsl::Test_VerifyCertificate(certificate.get(), "WiNfAbRiC-tEsT-uSeR@mIcRoSoFt.CoM");
         VERIFY_IS_TRUE(status == SEC_E_OK);
     }
 
     Trace.WriteInfo(TraceType, "loading an expired certificate ...");
     {
         X509FindValue::SPtr findValue;
-        auto error = X509FindValue::Create(X509FindType::FindByThumbprint, L"ad fc 91 97 13 16 8d 9f a8 ee 71 2b a2 f4 37 62 00 03 49 0d", findValue);
+        auto error = X509FindValue::Create(X509FindType::FindByThumbprint, "ad fc 91 97 13 16 8d 9f a8 ee 71 2b a2 f4 37 62 00 03 49 0d", findValue);
         VERIFY_IS_TRUE(error.IsSuccess());
 
         CertContextUPtr certificate;
@@ -992,7 +992,7 @@ BOOST_AUTO_TEST_CASE(X509CertificateLoadTests)
         VERIFY_IS_TRUE(error.IsSuccess());
         VERIFY_IS_TRUE(certificate != nullptr);
 
-        wstring commonName;
+        string commonName;
         error = CryptoUtility::GetCertificateCommonName(certificate.get(), commonName);
         VERIFY_IS_TRUE(error.IsSuccess());
 
@@ -1008,7 +1008,7 @@ BOOST_AUTO_TEST_CASE(X509CertificateLoadTests)
         KFinally([=] { SecurityConfig::GetConfig().CrlCheckingFlag = savedValue; });
 
         shared_ptr<SubjectName> subjectName;
-        auto error = SubjectName::Create(L"CN=WinFabric-Test-SAN9-Revoked", subjectName);
+        auto error = SubjectName::Create("CN=WinFabric-Test-SAN9-Revoked", subjectName);
         VERIFY_IS_TRUE(error.IsSuccess());
 
         CertContextUPtr certificate;
@@ -1021,7 +1021,7 @@ BOOST_AUTO_TEST_CASE(X509CertificateLoadTests)
         VERIFY_IS_TRUE(error.IsSuccess());
         VERIFY_IS_TRUE(certificate != nullptr);
 
-        wstring commonName;
+        string commonName;
         error = CryptoUtility::GetCertificateCommonName(certificate.get(), commonName);
         VERIFY_IS_TRUE(error.IsSuccess());
 
@@ -1044,8 +1044,8 @@ BOOST_AUTO_TEST_CASE(X509CertRemoteCheckingTests)
     Trace.WriteInfo(TraceType, "testing with a server auth certificate");
     {
         SecuritySettings senderSecuritySettings = TTestUtil::CreateX509Settings(
-            L"CN=WinFabric-Test-SAN1-Bob",
-            L"WinFabric-Test-SAN2-Charlie");
+            "CN=WinFabric-Test-SAN1-Bob",
+            "WinFabric-Test-SAN2-Charlie");
 
         X509CertChecking(senderSecuritySettings);
     }
@@ -1053,15 +1053,15 @@ BOOST_AUTO_TEST_CASE(X509CertRemoteCheckingTests)
     Trace.WriteInfo(TraceType, "testing with a client auth certificate");
     {
         SecuritySettings senderSecuritySettings = TTestUtil::CreateX509Settings(
-            L"WinFabric-Test-User@microsoft.com",
-            L"WinFabric-Test-SAN2-Charlie");
+            "WinFabric-Test-User@microsoft.com",
+            "WinFabric-Test-SAN2-Charlie");
 
         X509CertChecking(senderSecuritySettings);
     }
 
     Trace.WriteInfo(TraceType, "testing with an expired certificate");
     {
-        SecuritySettings senderSecuritySettings = TTestUtil::CreateX509SettingsExpired(L"WinFabric-Test-SAN1-Alice");
+        SecuritySettings senderSecuritySettings = TTestUtil::CreateX509SettingsExpired("WinFabric-Test-SAN1-Alice");
         X509CertChecking(senderSecuritySettings, false, true);
     }
 
@@ -1072,8 +1072,8 @@ BOOST_AUTO_TEST_CASE(X509CertRemoteCheckingTests)
         KFinally([=] { SecurityConfig::GetConfig().CrlCheckingFlag = savedValue; });
 
         SecuritySettings senderSecuritySettings = TTestUtil::CreateX509Settings(
-            L"CN=WinFabric-Test-SAN9-Revoked",
-            L"WinFabric-Test-SAN1-Alice");
+            "CN=WinFabric-Test-SAN9-Revoked",
+            "WinFabric-Test-SAN1-Alice");
 
         X509CertChecking(senderSecuritySettings, false, true);
     }
@@ -1097,8 +1097,8 @@ BOOST_AUTO_TEST_CASE(X509CertRemoteCheckingTests_ClientCert)
     ENTER;
 
     SecuritySettings senderSecuritySettings = TTestUtil::CreateX509Settings2(
-        L"6f 4a a9 61 8a ea 95 ab 5d ce 8c 77 26 09 38 65 3e e1 5f d7",
-        L"WinFabric-Test-SAN2-Charlie");
+        "6f 4a a9 61 8a ea 95 ab 5d ce 8c 77 26 09 38 65 3e e1 5f d7",
+        "WinFabric-Test-SAN2-Charlie");
 
     X509CertChecking(senderSecuritySettings);
 
@@ -1109,21 +1109,21 @@ BOOST_AUTO_TEST_CASE(SelfSignedCertManagement)
 {
     ENTER;
 
-    wstring commonName = Guid::NewGuid().ToString();
-    wstring const trustedPeopleStore = L"TrustedPeople";
+    string commonName = Guid::NewGuid().ToString();
+    string const trustedPeopleStore = "TrustedPeople";
     Thumbprint::SPtr thumbprint;
 
     Trace.WriteInfo(TraceType, "Testing certificate create: CN = {0}", commonName);
     CertContextUPtr certCreated;
     {
         auto error = CryptoUtility::CreateSelfSignedCertificate(
-            L"CN=" + commonName,
+            "CN=" + commonName,
             DateTime::Now() + InstallTestCertInScope::DefaultCertExpiry(),
             certCreated);
 
         VERIFY_IS_TRUE(error.IsSuccess());
 
-        wstring certCommonName;
+        string certCommonName;
         error = CryptoUtility::GetCertificateCommonName(certCreated.get(), certCommonName);
         VERIFY_IS_TRUE(error.IsSuccess());
         VERIFY_ARE_EQUAL2(commonName, certCommonName);
@@ -1202,13 +1202,13 @@ BOOST_AUTO_TEST_CASE(ExpiredCertCredLoadTest)
 {
     ENTER;
 
-    InstallTestCertInScope expiredCert(L"CN=Expired@ExpiredCertCredLoadTest", nullptr, DateTime::Zero - DateTime::Now());
+    InstallTestCertInScope expiredCert("CN=Expired@ExpiredCertCredLoadTest", nullptr, DateTime::Zero - DateTime::Now());
 
     auto secSettings = TTestUtil::CreateX509SettingsTp(
         expiredCert.Thumbprint()->PrimaryToString(),
-        L"",
+        "",
         expiredCert.Thumbprint()->PrimaryToString(),
-        L"");
+        "");
 
     Trace.WriteInfo(TraceType, "create server transport");
     auto client = DatagramTransportFactory::CreateTcpClient();
@@ -1222,17 +1222,17 @@ BOOST_AUTO_TEST_CASE(IssuerPinningByPubKey)
 {
     ENTER;
 
-    wstring clientCName = L"WinFabric-Test-SAN2-Charlie";
-    wstring serverCName = L"WinFabric-Test-SAN3-Oscar";
+    string clientCName = "WinFabric-Test-SAN2-Charlie";
+    string serverCName = "WinFabric-Test-SAN3-Oscar";
 
     CommonName::SPtr issuerCommonName;
-    auto error = CommonName::Create(L"WinFabric-Test-TA-CA", issuerCommonName);
+    auto error = CommonName::Create("WinFabric-Test-TA-CA", issuerCommonName);
     VERIFY_ARE_EQUAL2(error.ReadValue(), ErrorCodeValue::Success);
 
     CertContextUPtr issuerCert;
     error = CryptoUtility::GetCertificate(
         X509Default::StoreLocation(),
-        L"Root",
+        "Root",
         issuerCommonName,
         issuerCert);
     VERIFY_ARE_EQUAL2(error.ReadValue(), ErrorCodeValue::Success);
@@ -1242,20 +1242,20 @@ BOOST_AUTO_TEST_CASE(IssuerPinningByPubKey)
 
     SecuritySettings clientSecuritySettings;
     error = SecuritySettings::FromConfiguration(
-        L"X509",
+        "X509",
         X509Default::StoreName(),
-        wformatString(X509Default::StoreLocation()),
-        wformatString(X509FindType::FindBySubjectName),
+        formatString(X509Default::StoreLocation()),
+        formatString(X509FindType::FindBySubjectName),
         clientCName,
-        L"",
-        wformatString(ProtectionLevel::EncryptAndSign),
-        L"",
+        "",
+        formatString(ProtectionLevel::EncryptAndSign),
+        "",
         serverX509Name,
         SecurityConfig::IssuerStoreKeyValueMap(),
-        L"",
-        L"",
-        L"",
-        L"",
+        "",
+        "",
+        "",
+        "",
         clientSecuritySettings);
 
     ASSERT_IFNOT(error.IsSuccess(), "SecuritySettings::FromConfiguration failed: {0}", error);
@@ -1265,29 +1265,29 @@ BOOST_AUTO_TEST_CASE(IssuerPinningByPubKey)
 
     SecuritySettings serverSecuritySettings;
     error = SecuritySettings::FromConfiguration(
-        L"X509",
+        "X509",
         X509Default::StoreName(),
-        wformatString(X509Default::StoreLocation()),
-        wformatString(X509FindType::FindBySubjectName),
+        formatString(X509Default::StoreLocation()),
+        formatString(X509FindType::FindBySubjectName),
         serverCName,
-        L"",
-        wformatString(ProtectionLevel::EncryptAndSign),
-        L"",
+        "",
+        formatString(ProtectionLevel::EncryptAndSign),
+        "",
         clientX509Name,
         SecurityConfig::IssuerStoreKeyValueMap(),
-        L"",
-        L"",
-        L"",
-        L"",
+        "",
+        "",
+        "",
+        "",
         serverSecuritySettings);
 
     ASSERT_IFNOT(error.IsSuccess(), "SecuritySettings::FromConfiguration failed: {0}", error);
 
-    auto server = DatagramTransportFactory::CreateTcp(L"127.0.0.1:0");
+    auto server = DatagramTransportFactory::CreateTcp("127.0.0.1:0");
     error = server->SetSecurity(serverSecuritySettings);
     VERIFY_IS_TRUE(error.IsSuccess());
 
-    wstring action = Guid::NewGuid().ToString();
+    string action = Guid::NewGuid().ToString();
     AutoResetEvent serverReceivedMessage;
     TTestUtil::SetMessageHandler(
         server,
@@ -1329,21 +1329,21 @@ BOOST_AUTO_TEST_CASE(ThumbprintMatchWithExpiredSelfSignedCert)
     SecurityConfig::GetConfig().SkipX509CredentialExpirationChecking = true;
     KFinally([&] { SecurityConfig::GetConfig().SkipX509CredentialExpirationChecking = saved; });
 
-    InstallTestCertInScope serverCert(L"CN=server.TestWithExpiredSelfSignedCert");
-    InstallTestCertInScope clientCert(L"CN=client@TestWithExpiredSelfSignedCert", nullptr, DateTime::Zero - DateTime::Now());
+    InstallTestCertInScope serverCert("CN=server.TestWithExpiredSelfSignedCert");
+    InstallTestCertInScope clientCert("CN=client@TestWithExpiredSelfSignedCert", nullptr, DateTime::Zero - DateTime::Now());
 
     auto svrSecSettings = TTestUtil::CreateX509SettingsTp(
         serverCert.Thumbprint()->PrimaryToString(),
-        L"",
+        "",
         clientCert.Thumbprint()->PrimaryToString(),
-        L"");
+        "");
 
     Trace.WriteInfo(TraceType, "create server transport");
-    auto server = DatagramTransportFactory::CreateTcp(L"127.0.0.1:0");
+    auto server = DatagramTransportFactory::CreateTcp("127.0.0.1:0");
     auto error = server->SetSecurity(svrSecSettings);
     VERIFY_IS_TRUE(error.IsSuccess());
 
-    wstring action = Guid::NewGuid().ToString();
+    string action = Guid::NewGuid().ToString();
     AutoResetEvent serverReceivedMessage;
     TTestUtil::SetMessageHandler(
         server,
@@ -1356,9 +1356,9 @@ BOOST_AUTO_TEST_CASE(ThumbprintMatchWithExpiredSelfSignedCert)
 
     auto cltSecSettings = TTestUtil::CreateX509SettingsTp(
         clientCert.Thumbprint()->PrimaryToString(),
-        L"",
+        "",
         serverCert.Thumbprint()->PrimaryToString(),
-        L"");
+        "");
 
     auto client = DatagramTransportFactory::CreateTcpClient();
     error = client->SetSecurity(cltSecSettings);
@@ -1398,21 +1398,21 @@ static void ThumbprintTestWithRevokedClientCert(bool verifyChain)
     SecurityConfig::GetConfig().CrlCheckingFlag = 0x40000000;
     KFinally([=] { SecurityConfig::GetConfig().CrlCheckingFlag = savedValue; });
 
-    InstallTestCertInScope serverCert(L"CN=server.ThumbprintTestWithRevokedClientCert");
+    InstallTestCertInScope serverCert("CN=server.ThumbprintTestWithRevokedClientCert");
 
-    auto clientCertThumbprint = wformatString("9f 1b 74 0d 5a fc 49 eb cd a9 62 dd ef 65 bc 05 b9 57 2a 7c?{0}", verifyChain);
+    auto clientCertThumbprint = formatString.L("9f 1b 74 0d 5a fc 49 eb cd a9 62 dd ef 65 bc 05 b9 57 2a 7c?{0}", verifyChain);
     auto svrSecSettings = TTestUtil::CreateX509SettingsTp(
         serverCert.Thumbprint()->PrimaryToString(),
-        L"",
+        "",
         clientCertThumbprint,
-        L"");
+        "");
 
     Trace.WriteInfo(TraceType, "create server transport");
-    auto server = DatagramTransportFactory::CreateTcp(L"127.0.0.1:0");
+    auto server = DatagramTransportFactory::CreateTcp("127.0.0.1:0");
     auto error = server->SetSecurity(svrSecSettings);
     VERIFY_IS_TRUE(error.IsSuccess());
 
-    wstring action = Guid::NewGuid().ToString();
+    string action = Guid::NewGuid().ToString();
     AutoResetEvent serverReceivedMessage;
     TTestUtil::SetMessageHandler(
         server,
@@ -1425,9 +1425,9 @@ static void ThumbprintTestWithRevokedClientCert(bool verifyChain)
 
     auto cltSecSettings = TTestUtil::CreateX509SettingsTp(
         clientCertThumbprint,
-        L"",
+        "",
         serverCert.Thumbprint()->PrimaryToString(),
-        L"");
+        "");
 
     auto client = DatagramTransportFactory::CreateTcpClient();
     error = client->SetSecurity(cltSecSettings);
@@ -1479,7 +1479,7 @@ BOOST_AUTO_TEST_CASE(ThumbprintMatchWithChainValidation)
 
 BOOST_AUTO_TEST_SUITE_END()
 
-void SecurityTest::LoadByFullSubjectNameVsCommonName(wstring const & commonName, wstring const & fullSubjectName)
+void SecurityTest::LoadByFullSubjectNameVsCommonName(string const & commonName, string const & fullSubjectName)
 {
     InstallTestCertInScope cert(fullSubjectName);
     X509FindValue::SPtr findValue;
@@ -1501,7 +1501,7 @@ void SecurityTest::LoadByFullSubjectNameVsCommonName(wstring const & commonName,
         VERIFY_IS_TRUE(error.IsSuccess());
         VERIFY_IS_TRUE(loadedThumbprint == *cert.Thumbprint());
 
-        wstring certCommonName;
+        string certCommonName;
         error = CryptoUtility::GetCertificateCommonName(certificate.get(), certCommonName);
         VERIFY_IS_TRUE(error.IsSuccess());
         VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive(commonName, certCommonName));
@@ -1526,23 +1526,23 @@ void SecurityTest::LoadByFullSubjectNameVsCommonName(wstring const & commonName,
         VERIFY_IS_TRUE(error.IsSuccess());
         VERIFY_IS_TRUE(loadedThumbprint == *cert.Thumbprint());
 
-        wstring certCommonName;
+        string certCommonName;
         error = CryptoUtility::GetCertificateCommonName(certificate.get(), certCommonName);
         VERIFY_IS_TRUE(error.IsSuccess());
         VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive(commonName, certCommonName));
     }
 }
 
-void SecurityTest::LoadBySubjectAltName(vector<wstring> const & subjectAltNames)
+void SecurityTest::LoadBySubjectAltName(vector<string> const & subjectAltNames)
 {
-    InstallTestCertInScope cert(L"", &subjectAltNames);
+    InstallTestCertInScope cert("", &subjectAltNames);
 
     for (int i = 0; i < subjectAltNames.size(); i++)
     {
         // Try searching search string as is, its lower case variant and upper case varient.
         for (int j = 0; j < 3; j++)
         {
-            wstring searchString = subjectAltNames[i];
+            string searchString = subjectAltNames[i];
             switch (j)
             {
             case 1:
@@ -1556,7 +1556,7 @@ void SecurityTest::LoadBySubjectAltName(vector<wstring> const & subjectAltNames)
             }
 
             X509FindValue::SPtr findValue;
-            wstring findValueString = L"2.5.29.17:3=" + searchString;
+            string findValueString = "2.5.29.17:3=" + searchString;
             auto error = X509FindValue::Create(X509FindType::FindByExtension, findValueString, findValue);
             VERIFY_IS_TRUE(error.IsSuccess());
             {
@@ -1579,7 +1579,7 @@ void SecurityTest::LoadBySubjectAltName(vector<wstring> const & subjectAltNames)
     }
 }
 
-void SecurityTest::CrlTest(wstring const & senderCN, wstring const & receiverCN, bool ignoreCrlOffline)
+void SecurityTest::CrlTest(string const & senderCN, string const & receiverCN, bool ignoreCrlOffline)
 {
     auto& config = SecurityConfig::GetConfig();
     auto saved0 = config.CrlCheckingFlag;
@@ -1604,7 +1604,7 @@ void SecurityTest::CrlTest(wstring const & senderCN, wstring const & receiverCN,
     auto offlineReported = make_shared<AutoResetEvent>(false);
     auto recoveryReported = make_shared<AutoResetEvent>(false);
     auto bothCertsAdded = make_shared<AutoResetEvent>(false);
-    crlOfflineCache.SetHealthReportCallback([=](size_t cacheSize, wstring const&)
+    crlOfflineCache.SetHealthReportCallback([=](size_t cacheSize, string const&)
     {
         Trace.WriteInfo(TraceType, "HealthReport callback called: cacheSize = {0}", cacheSize);
 
@@ -1637,7 +1637,7 @@ void SecurityTest::CrlTest(wstring const & senderCN, wstring const & receiverCN,
     VERIFY_IS_TRUE(error.IsSuccess());
 
     AutoResetEvent messageReceived;
-    wstring testAction = TTestUtil::GetGuidAction();
+    string testAction = TTestUtil::GetGuidAction();
     TTestUtil::SetMessageHandler(
         receiver,
         testAction,
@@ -1730,8 +1730,8 @@ void SecurityTest::CrlTest(wstring const & senderCN, wstring const & receiverCN,
 void SecurityTest::X509CertChecking(SecuritySettings const & senderSecuritySettings, bool localChecking, bool failureExpected)
 {
     SecuritySettings receiverSecuritySettings = TTestUtil::CreateX509Settings(
-        L"CN=WinFabric-Test-SAN2-Charlie",
-        L"WinFabric-Test-SAN1-Bob,WinFabric-Test-Expired,WinFabric-Test-SAN9-Revoked,WiNfAbRiC-tEsT-uSeR@mIcRoSoFt.CoM");
+        "CN=WinFabric-Test-SAN2-Charlie",
+        "WinFabric-Test-SAN1-Bob,WinFabric-Test-Expired,WinFabric-Test-SAN9-Revoked,WiNfAbRiC-tEsT-uSeR@mIcRoSoFt.CoM");
 
     auto receiver = TcpDatagramTransport::Create(TTestUtil::GetListenAddress());
     VERIFY_IS_TRUE(receiver != nullptr);
@@ -1740,7 +1740,7 @@ void SecurityTest::X509CertChecking(SecuritySettings const & senderSecuritySetti
     VERIFY_IS_TRUE(error.IsSuccess());
 
     AutoResetEvent messageReceived;
-    wstring testAction = TTestUtil::GetGuidAction();
+    string testAction = TTestUtil::GetGuidAction();
     TTestUtil::SetMessageHandler(
         receiver,
         testAction,
@@ -1782,7 +1782,7 @@ void SecurityTest::X509CertChecking(SecuritySettings const & senderSecuritySetti
         VERIFY_IS_TRUE(messageReceived.WaitOne(TimeSpan::FromSeconds(1)))
 }
 
-void SecurityTest::FindValueSecondaryTestWithThumbprint(wstring const & primary, wstring const & secondary, int expected)
+void SecurityTest::FindValueSecondaryTestWithThumbprint(string const & primary, string const & secondary, int expected)
 {
     X509FindValue::SPtr thumbprint;
     auto error = X509FindValue::Create(X509FindType::FindByThumbprint, primary, secondary, thumbprint);
@@ -1813,13 +1813,13 @@ void SecurityTest::FindValueSecondaryTestWithThumbprint(wstring const & primary,
     VERIFY_ARE_EQUAL2(expectedThumbprint, svrCred.front()->X509CertThumbprint());
 }
 
-void SecurityTest::FindValueSecondaryTestWithCommonName(wstring const & primary, wstring const & secondary, int expected)
+void SecurityTest::FindValueSecondaryTestWithCommonName(string const & primary, string const & secondary, int expected)
 {
     X509FindValue::SPtr subjectNameFindValue;
     auto error = X509FindValue::Create(
         X509FindType::FindBySubjectName,
-        L"CN=" + primary,
-        L"CN=" + secondary,
+        "CN=" + primary,
+        "CN=" + secondary,
         subjectNameFindValue);
 
     VERIFY_IS_TRUE(error.IsSuccess());
@@ -1840,17 +1840,17 @@ void SecurityTest::FindValueSecondaryTestWithCommonName(wstring const & primary,
 
     VERIFY_IS_TRUE(error.IsSuccess());
 
-    wstring nameLoaded;
+    string nameLoaded;
     error = CryptoUtility::GetCertificateCommonName(
         X509Default::StoreLocation(), 
         X509Default::StoreName(),
-        wformatString(X509FindType::FindBySubjectName),
+        formatString(X509FindType::FindBySubjectName),
         (expected == 0) ? primary : secondary,
         nameLoaded);
 
     VERIFY_IS_TRUE(error.IsSuccess());
 
-    wstring nameExpected = (expected == 0) ? primary : secondary;
+    string nameExpected = (expected == 0) ? primary : secondary;
     Trace.WriteInfo(TraceType, "expected name = {0}, loaded name = {1}", nameExpected, nameLoaded);
     VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive(nameLoaded, nameExpected));
 }
@@ -1858,7 +1858,7 @@ void SecurityTest::FindValueSecondaryTestWithCommonName(wstring const & primary,
 #ifndef PLATFORM_UNIX
 
 void SecurityTest::FullCertChainValidationWithThumbprintAuth_SelfSignedCert(
-    wstring const & certStoreName,
+    string const & certStoreName,
     bool expectFailureOnFullCertChainValidation)
 {
     auto storeLocation = X509Default::StoreLocation();
@@ -1867,15 +1867,15 @@ void SecurityTest::FullCertChainValidationWithThumbprintAuth_SelfSignedCert(
     for(int i = 0; i < 3; ++i)
     {
         InstallTestCertInScope selfSignedCert(
-            L"CN=SelfSigned@FullCertChainValidationWithThumbprintAuth",
+            "CN=SelfSigned@FullCertChainValidationWithThumbprintAuth",
             nullptr,
             InstallTestCertInScope::DefaultCertExpiry(),
             certStoreName,
-            L"",
+            "",
             storeLocation); 
 
         X509FindValue::SPtr findValue;
-        auto error = X509FindValue::Create(X509FindType::FindByThumbprint, wformatString(*(selfSignedCert.Thumbprint())), findValue);
+        auto error = X509FindValue::Create(X509FindType::FindByThumbprint, formatString(*(selfSignedCert.Thumbprint())), findValue);
         VERIFY_IS_TRUE(error.IsSuccess());
         CertContextUPtr certificate;
         error = CryptoUtility::GetCertificate(
@@ -1889,11 +1889,11 @@ void SecurityTest::FullCertChainValidationWithThumbprintAuth_SelfSignedCert(
 
         {
             ThumbprintSet thumbprintSetToMatch;
-            error = thumbprintSetToMatch.Add(wformatString(*(selfSignedCert.Thumbprint())) + L"?false");
+            error = thumbprintSetToMatch.Add(formatString(*(selfSignedCert.Thumbprint())) + "?false");
             VERIFY_IS_TRUE(error.IsSuccess());
 
             SECURITY_STATUS status = SecurityContextSsl::VerifyCertificate(
-                L"FullCertChainValidationWithThumbprintAuth_SelfSignedCert_false",
+                "FullCertChainValidationWithThumbprintAuth_SelfSignedCert_false",
                 certificate.get(),
                 SecurityConfig::GetConfig().CrlCheckingFlag,
                 false,
@@ -1914,11 +1914,11 @@ void SecurityTest::FullCertChainValidationWithThumbprintAuth_SelfSignedCert(
             }
 
             ThumbprintSet thumbprintSetToMatch;
-            error = thumbprintSetToMatch.Add(wformatString(*(selfSignedCert.Thumbprint())) + L"?true");
+            error = thumbprintSetToMatch.Add(formatString(*(selfSignedCert.Thumbprint())) + "?true");
             VERIFY_IS_TRUE(error.IsSuccess());
 
             SECURITY_STATUS status = SecurityContextSsl::VerifyCertificate(
-                L"FullCertChainValidationWithThumbprintAuth_SelfSignedCert_true",
+                "FullCertChainValidationWithThumbprintAuth_SelfSignedCert_true",
                 certificate.get(),
                 SecurityConfig::GetConfig().CrlCheckingFlag,
                 false,
@@ -1960,7 +1960,7 @@ void SecurityTest::FullCertChainValidationWithThumbprintAuth_SelfSignedCert(
 void SecurityTest::SendTestMsg(
     IDatagramTransportSPtr const & sender,
     ISendTarget::SPtr const & target,
-    wstring const & msgAction)
+    string const & msgAction)
 {
     auto msg = make_unique<Message>();
     msg->Headers.Add(MessageIdHeader());

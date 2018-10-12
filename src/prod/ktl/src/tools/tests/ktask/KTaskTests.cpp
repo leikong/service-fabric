@@ -110,7 +110,7 @@ public:
         }
 
         KUri::SPtr TableUri;
-        Res = KUri::Create(KStringView(L"table://mytable"), *g_Allocator, TableUri);
+        Res = KUri::Create(KStringView("table://mytable"), *g_Allocator, TableUri);
         if (!NT_SUCCESS(Res))
         {
             Complete(Res);
@@ -126,7 +126,7 @@ public:
         }
 
         KIMutableDomNode::SPtr TestDom;
-        Res = TestTable->Get(KStringView(L""), TestDom);
+        Res = TestTable->Get(KStringView(""), TestDom);
         if (!NT_SUCCESS(Res))
         {
             Complete(Res);
@@ -134,14 +134,14 @@ public:
         }
 
         KVariant v;
-        TestDom->GetChildValue(KIDomNode::QName(L"b"), v);
+        TestDom->GetChildValue(KIDomNode::QName("b"), v);
 
         KVariant v2;
 
-        v2 = KVariant::Create(KStringView(L"aa333"), *g_Allocator);
-        TestDom->SetChildValue(KIDomNode::QName(L"b"), v2);
+        v2 = KVariant::Create(KStringView("aa333"), *g_Allocator);
+        TestDom->SetChildValue(KIDomNode::QName("b"), v2);
 
-        Res = TestTable->Update(KStringView(L""), TestDom, 0);
+        Res = TestTable->Update(KStringView(""), TestDom, 0);
 
         Complete(STATUS_SUCCESS);
     }
@@ -214,7 +214,7 @@ MakeFactory(
     }
 
     KUri::SPtr TaskUri;
-    Res = KUri::Create(KStringView(L"rvd://task/test"), *g_Allocator, TaskUri);
+    Res = KUri::Create(KStringView("rvd://task/test"), *g_Allocator, TaskUri);
     if (!NT_SUCCESS(Res))
     {
         return Res;
@@ -233,7 +233,7 @@ NewTask(
 
     KUri::SPtr TaskUri;
 
-    Res = KUri::Create(KStringView(L"rvd://task/test"), *g_Allocator, TaskUri);
+    Res = KUri::Create(KStringView("rvd://task/test"), *g_Allocator, TaskUri);
     if (!NT_SUCCESS(Res))
     {
         return Res;
@@ -271,7 +271,7 @@ SetupDb(
     }
 
     KUri::SPtr TableUri;
-    Res = KUri::Create(KStringView(L"table://mytable"), *g_Allocator, TableUri);
+    Res = KUri::Create(KStringView("table://mytable"), *g_Allocator, TableUri);
     if (!NT_SUCCESS(Res))
     {
         return Res;
@@ -285,14 +285,14 @@ SetupDb(
     }
 
     KIMutableDomNode::SPtr TestDom;
-    KStringView DomData(L"\xFEFF<a><b>x100</b><c>y200</c></a>");
+    KStringView DomData("\xFEFF<a><b>x100</b><c>y200</c></a>");
     Res = DomFromKStringView(DomData, *g_Allocator, TestDom);
     if (!NT_SUCCESS(Res))
     {
         return Res;
     }
 
-    Res = TestTable->Insert(KStringView(L""), TestDom);
+    Res = TestTable->Insert(KStringView(""), TestDom);
     if (!NT_SUCCESS(Res))
     {
         return Res;
@@ -316,7 +316,7 @@ TestDomChanges(
     }
 
     KUri::SPtr TableUri;
-    Res = KUri::Create(KStringView(L"table://mytable"), *g_Allocator, TableUri);
+    Res = KUri::Create(KStringView("table://mytable"), *g_Allocator, TableUri);
     if (!NT_SUCCESS(Res))
     {
         return Res;
@@ -330,14 +330,14 @@ TestDomChanges(
     }
 
     KIMutableDomNode::SPtr TestDom;
-    Res = TestTable->Get(KStringView(L""), TestDom);
+    Res = TestTable->Get(KStringView(""), TestDom);
     if (!NT_SUCCESS(Res))
     {
         return Res;
     }
 
     KVariant v;
-    TestDom->GetChildValue(KIDomNode::QName(L"b"), v);
+    TestDom->GetChildValue(KIDomNode::QName("b"), v);
 
 
     return Res;
@@ -400,7 +400,7 @@ TestSequence()
 
 NTSTATUS
 KTaskTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     UNREFERENCED_PARAMETER(argc);
@@ -442,7 +442,7 @@ int
 #if defined(PLATFORM_UNIX)
 main(int argc, char* args[])
 #else
-wmain(int argc, WCHAR* args[])
+wmain(int argc, CHAR* args[])
 #endif
 {
 #if defined(PLATFORM_UNIX)

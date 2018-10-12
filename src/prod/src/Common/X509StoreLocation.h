@@ -15,7 +15,7 @@ namespace Common
             LocalMachine = CERT_SYSTEM_STORE_LOCAL_MACHINE
         };
 		
-        Common::ErrorCode Parse(std::wstring const & providerString, __out Enum & result);
+        Common::ErrorCode Parse(std::string const & providerString, __out Enum & result);
         Common::ErrorCode FromPublic(::FABRIC_X509_STORE_LOCATION publicEnum, X509StoreLocation::Enum & internalEnum);
         ::FABRIC_X509_STORE_LOCATION ToPublic(X509StoreLocation::Enum internalEnum);
 

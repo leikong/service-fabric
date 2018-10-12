@@ -48,9 +48,9 @@ void MessageHeaders::WriteTo(Common::TextWriter & w, Common::FormatOptions const
     w.Write(" ~ {0} deleted bytes ~]", deletedHeaderByteCount_);
 }
 
-wstring MessageHeaders::ToString() const
+string MessageHeaders::ToString() const
 {
-    wstring result;
+    string result;
     StringWriter(result).Write(*this);
     return result;
 }

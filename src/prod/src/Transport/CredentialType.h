@@ -16,7 +16,7 @@ namespace Transport
             Windows = SecurityProvider::Kerberos
         };
 
-        bool TryParse(std::wstring const & providerString, __out Enum & result);
+        bool TryParse(std::string const & providerString, __out Enum & result);
 
         void WriteToTextWriter(Common::TextWriter & w, Enum const & e);
     }

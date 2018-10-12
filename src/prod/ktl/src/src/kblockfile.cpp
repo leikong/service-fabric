@@ -534,7 +534,7 @@ class KBlockFileStandard : public KBlockFile {
                 KArray<AllocatedRange>* _Results;
         };
 
-        const WCHAR*
+        const CHAR*
         GetFileName(
             ) override;
 
@@ -1472,7 +1472,7 @@ KBlockFile::Create(
 #if defined(K_UseResumable)
 Awaitable<NTSTATUS>
 KBlockFile::CreateAsync(
-    __in LPCWSTR FileName,
+    __in LPCSTR FileName,
     __in BOOLEAN IsWriteThrough,
     __in CreateDisposition Disposition,
     __out KBlockFile::SPtr& File,
@@ -1559,7 +1559,7 @@ KBlockFile::CreateAsync(
 
 Awaitable<NTSTATUS>
 KBlockFile::CreateAsync(
-   __in LPCWSTR FileName,
+   __in LPCSTR FileName,
    __in BOOLEAN IsWriteThrough,
    __in CreateDisposition Disposition,
    __in CreateOptions Options,
@@ -1644,7 +1644,7 @@ KBlockFile::CreateAsync(
 
 Awaitable<NTSTATUS>
 KBlockFile::CreateAsync(
-   __in LPCWSTR FileName,
+   __in LPCSTR FileName,
    __in BOOLEAN IsWriteThrough,
    __in CreateDisposition Disposition,
    __in CreateOptions Options,
@@ -1789,7 +1789,7 @@ Return Value:
 #if defined(K_UseResumable)
 Awaitable<NTSTATUS>
 KBlockFile::CreateSparseFileAsync(
-    __in LPCWSTR FileName,
+    __in LPCSTR FileName,
     __in BOOLEAN IsWriteThrough,
     __in CreateDisposition Disposition,
     __out KBlockFile::SPtr& File,
@@ -1866,7 +1866,7 @@ KBlockFile::CreateSparseFileAsync(
 
 Awaitable<NTSTATUS>
 KBlockFile::CreateSparseFileAsync(
-    __in LPCWSTR FileName,
+    __in LPCSTR FileName,
     __in BOOLEAN IsWriteThrough,
     __in CreateDisposition Disposition,
     __in CreateOptions Options,
@@ -2094,7 +2094,7 @@ Return Value:
 #if defined(K_UseResumable)
 Awaitable<NTSTATUS>
 KBlockFile::CreateSparseFileAsync(
-    __in LPCWSTR FileName,
+    __in LPCSTR FileName,
     __in BOOLEAN IsWriteThrough,
     __in CreateDisposition Disposition,
     __in CreateOptions Options,
@@ -2280,7 +2280,7 @@ KBlockFileStandard::KBlockFileStandard(
     SetConstructorStatus(Initialize(FileName, Disposition, Options, IsWriteThrough, CreateSparseFile, AllocationTag));
 }
 
-const WCHAR*
+const CHAR*
 KBlockFileStandard::GetFileName(
     )
 {
@@ -4436,7 +4436,7 @@ Return Value:
     ULONG i;
     GET_LENGTH_INFORMATION lengthInfo;
     ULONG createFlags = 0;
-    KStringView fileName((PWCHAR)FileName);
+    KStringView fileName((PCHAR)FileName);
 
 
     if ((_QueueDepth == 0) || (_QueueDepth > KBlockFile::DefaultQueueDepth))
@@ -6663,7 +6663,7 @@ Return Value:
     NTSTATUS status;
     IO_STATUS_BLOCK ioStatus;
 
-    size = FIELD_OFFSET(FILE_FS_ATTRIBUTE_INFORMATION, FileSystemName) + 4*sizeof(WCHAR);
+    size = FIELD_OFFSET(FILE_FS_ATTRIBUTE_INFORMATION, FileSystemName) + 4*sizeof(CHAR);
 
     fsAttributeInfo = (FILE_FS_ATTRIBUTE_INFORMATION*) _new(KTL_TAG_FILE, GetThisAllocator()) UCHAR[size];
 

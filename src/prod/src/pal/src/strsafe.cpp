@@ -10,12 +10,12 @@
 using namespace std;
 using namespace Pal;
 
-STRSAFEAPI StringCchLengthW(const wchar_t* psz, size_t cchMax, size_t* pcch)
+STRSAFEAPI StringCchLengthW(const char* psz, size_t cchMax, size_t* pcch)
 {
     HRESULT hr = S_OK;
     size_t cchMaxPrev = cchMax;
 
-    while (cchMax && (*psz != L'\0'))
+    while (cchMax && (*psz != '\0'))
     {
         psz++;
         cchMax--;

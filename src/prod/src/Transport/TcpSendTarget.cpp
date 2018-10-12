@@ -12,20 +12,20 @@ using namespace std;
 namespace
 {
     StringLiteral const TraceType("SendTarget");
-    const Global<wstring> ScheduleCloseAction = make_global<wstring>(L"ScheduleClose");
+    const Global<string> ScheduleCloseAction = make_global<string>("ScheduleClose");
 
-    wstring CreateTraceId(TcpSendTarget const* target, wstring const & targetId, wstring const & ownerId)
+    string CreateTraceId(TcpSendTarget const* target, string const & targetId, string const & ownerId)
     {
         if (!targetId.empty() && !ownerId.empty())
-            return wformatString("{0}-{1}-{2}", TextTracePtrAs(target, ISendTarget), targetId, ownerId); 
+            return formatString.L("{0}-{1}-{2}", TextTracePtrAs(target, ISendTarget), targetId, ownerId); 
 
         if (!targetId.empty())
-            return wformatString("{0}-{1}", TextTracePtrAs(target, ISendTarget), targetId);
+            return formatString.L("{0}-{1}", TextTracePtrAs(target, ISendTarget), targetId);
 
         if (!ownerId.empty()) 
-            return wformatString("{0}-{1}", TextTracePtrAs(target, ISendTarget), ownerId);
+            return formatString.L("{0}-{1}", TextTracePtrAs(target, ISendTarget), ownerId);
 
-        return wformatString("{0}", TextTracePtrAs(target, ISendTarget));
+        return formatString.L("{0}", TextTracePtrAs(target, ISendTarget));
     }
 }
 
@@ -34,9 +34,9 @@ atomic_uint64  TcpSendTarget::objCount_(0);
 TcpSendTarget::TcpSendTarget(
     TcpDatagramTransport & owner,
     IDatagramTransport::MessageHandlerSPtr const& msgHandler,
-    std::wstring const & address,
-    std::wstring const & targetId,
-    std::wstring const & sspiTarget,
+    std::string const & address,
+    std::string const & targetId,
+    std::string const & sspiTarget,
     uint64 instance,
     bool anonymous,
     TransportSecuritySPtr const & security)
@@ -94,7 +94,7 @@ void TcpSendTarget::SetMessageHandler(IDatagramTransport::MessageHandlerSPtr con
     msgHandler_ = msgHandler;
 }
 
-void TcpSendTarget::UpdateId(std::wstring const & id)
+void TcpSendTarget::UpdateId(std::string const & id)
 {
     id_ = id;
     hasId_ = true;
@@ -368,7 +368,7 @@ void TcpSendTarget::Start()
 {
 }
 
-std::wstring const & TcpSendTarget::LocalAddress() const
+std::string const & TcpSendTarget::LocalAddress() const
 {
     return this->localAddress_;
 }
@@ -681,7 +681,7 @@ void TcpSendTarget::OnMessageReceived(
                 }
             }
 
-            ErrorCode authStatus(message->FaultErrorCodeValue, wstring(connectionAuthMessage.ErrorMessage()));
+            ErrorCode authStatus(message->FaultErrorCodeValue, string(connectionAuthMessage.ErrorMessage()));
             textTrace.WriteTrace(
                 authStatus.ToLogLevel(),
                 TraceType,
@@ -1015,9 +1015,9 @@ void TcpSendTarget::UpdateSecurity(TransportSecuritySPtr const & value)
     }
 }
 
-wstring TcpSendTarget::ConnectionStatesToStringChl()
+string TcpSendTarget::ConnectionStatesToStringChl()
 {
-    wstring connections;
+    string connections;
     StringWriter writer(connections);
 
     writer.WriteLine();
@@ -1039,14 +1039,14 @@ void TcpSendTarget::ValidateConnections(StopwatchTime now)
     ValidateConnectionsChl(instance_, now);
 }
 
-wstring const & TcpSendTarget::SspiTarget() const
+string const & TcpSendTarget::SspiTarget() const
 {
     AcquireReadLock lockInScope(lock_);
 
     return sspiTarget_;
 }
 
-void TcpSendTarget::UpdateSspiTargetIfNeeded(wstring const & value)
+void TcpSendTarget::UpdateSspiTargetIfNeeded(string const & value)
 {
     if (!sspiTargetToBeSet_ || value.empty())
     {
@@ -1236,12 +1236,12 @@ TransportSecuritySPtr const & TcpSendTarget::Security() const
     return security_;
 }
 
-wstring const & TcpSendTarget::Address() const
+string const & TcpSendTarget::Address() const
 {
     return address_;
 }
 
-wstring const & TcpSendTarget::Id() const
+string const & TcpSendTarget::Id() const
 {
     return id_;
 }
@@ -1251,7 +1251,7 @@ bool TcpSendTarget::IsAnonymous() const
     return anonymous_;
 }
 
-wstring const & TcpSendTarget::TraceId() const
+string const & TcpSendTarget::TraceId() const
 {
     return traceId_;
 }

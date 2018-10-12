@@ -12,10 +12,10 @@ namespace Common
     struct ConfigSectionOverride
     {
     public:
-        typedef std::map<std::wstring, ConfigParameterOverride, IsLessCaseInsensitiveComparer<std::wstring>> ParametersMapType;
+        typedef std::map<std::string, ConfigParameterOverride, IsLessCaseInsensitiveComparer<std::string>> ParametersMapType;
 
         ConfigSectionOverride();
-        ConfigSectionOverride(std::wstring && name, ParametersMapType && parameters);
+        ConfigSectionOverride(std::string && name, ParametersMapType && parameters);
         ConfigSectionOverride(ConfigSectionOverride const & other);
         ConfigSectionOverride(ConfigSectionOverride && other);
 
@@ -29,7 +29,7 @@ namespace Common
 
         void clear();
     public:
-        std::wstring Name;
+        std::string Name;
         ParametersMapType Parameters;
     };
 }

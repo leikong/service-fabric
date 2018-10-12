@@ -7,7 +7,7 @@
 
 using namespace Common;
 
-PerformanceCounterSetDefinition::PerformanceCounterSetDefinition(Guid const & identifier, std::wstring const & name, std::wstring const & description, PerformanceCounterSetInstanceType::Enum instanceType) :
+PerformanceCounterSetDefinition::PerformanceCounterSetDefinition(Guid const & identifier, std::string const & name, std::string const & description, PerformanceCounterSetInstanceType::Enum instanceType) :
     identifier_(identifier),
     name_(name),
     description_(description),

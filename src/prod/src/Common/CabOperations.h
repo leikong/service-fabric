@@ -15,10 +15,10 @@ namespace Common
         DENY_COPY(CabOperations)
 
     public:
-        static bool IsCabFile(std::wstring const & cabPath);
-        static int ExtractAll(__in std::wstring const & cabPath, __in std::wstring const & extractPath);
-        static int ExtractFiltered(__in std::wstring const & cabPath, __in std::wstring const & extractPath, __in std::vector<std::wstring> const & filters, __in bool inclusive = true);
-        static int ContainsFile(__in std::wstring const & cabPath, __in std::wstring const & checkedFile, __out bool & found);
+        static bool IsCabFile(std::string const & cabPath);
+        static int ExtractAll(__in std::string const & cabPath, __in std::string const & extractPath);
+        static int ExtractFiltered(__in std::string const & cabPath, __in std::string const & extractPath, __in std::vector<std::string> const & filters, __in bool inclusive = true);
+        static int ContainsFile(__in std::string const & cabPath, __in std::string const & checkedFile, __out bool & found);
 
     private:
         class CabOperation;

@@ -17,8 +17,8 @@ namespace Common
         public:
 
             BEGIN_JSON_SERIALIZABLE_PROPERTIES()
-                SERIALIZABLE_PROPERTY(L"Key", key_)
-                SERIALIZABLE_PROPERTY(L"Value", value_)
+                SERIALIZABLE_PROPERTY("Key", key_)
+                SERIALIZABLE_PROPERTY("Value", value_)
             END_JSON_SERIALIZABLE_PROPERTIES()
 
             TKey key_;
@@ -125,8 +125,8 @@ namespace Common
         template<>
         HRESULT Set<INT64>(JsonReaderVisitor* pVisitor, void* pData)
         {
-            std::wstring strValue;
-            HRESULT hr = Set<std::wstring>(pVisitor, &strValue);
+            std::string strValue;
+            HRESULT hr = Set<std::string>(pVisitor, &strValue);
             if (FAILED(hr)) { return hr; }
 
             INT64 *nValue = (INT64*) pData;
@@ -140,8 +140,8 @@ namespace Common
         template<>
         HRESULT Set<UINT64>(JsonReaderVisitor* pVisitor, void* pData)
         {
-            std::wstring strValue;
-            HRESULT hr = Set<std::wstring>(pVisitor, &strValue);
+            std::string strValue;
+            HRESULT hr = Set<std::string>(pVisitor, &strValue);
             if (FAILED(hr)) { return hr; }
 
             UINT64 *nValue = (UINT64*) pData;
@@ -224,7 +224,7 @@ namespace Common
             hr = ULongAdd(nLength, 1, &bufferSize);
             if (FAILED(hr)) return hr;
 
-            std::vector<WCHAR> buffer(bufferSize);
+            std::vector<char> buffer(bufferSize);
             hr = pVisitor->m_pReader->GetStringValue(buffer.data(), bufferSize);
             if(FAILED(hr)) return hr;
 
@@ -237,8 +237,8 @@ namespace Common
         template<>
         HRESULT Set<DateTime>(JsonReaderVisitor* pVisitor, void* pData)
         {
-            std::wstring strValue;
-            HRESULT hr = Set<std::wstring>(pVisitor, &strValue);
+            std::string strValue;
+            HRESULT hr = Set<std::string>(pVisitor, &strValue);
             if (FAILED(hr)) { return hr; }
 
             DateTime *pDateTime = (DateTime *)pData;
@@ -261,8 +261,8 @@ namespace Common
         template<>
         HRESULT Set<TimeSpan>(JsonReaderVisitor* pVisitor, void* pData)
         {
-            std::wstring strValue;
-            HRESULT hr = Set<std::wstring>(pVisitor, &strValue);
+            std::string strValue;
+            HRESULT hr = Set<std::string>(pVisitor, &strValue);
             if (FAILED(hr)) { return hr; }
 
             TimeSpan* pTimeSpan = (TimeSpan *)pData;
@@ -279,17 +279,17 @@ namespace Common
         }
 
         template<>
-        HRESULT Set<std::wstring>(JsonReaderVisitor* pVisitor, void* pData)
+        HRESULT Set<std::string>(JsonReaderVisitor* pVisitor, void* pData)
         {
             //
-            // This code to read numbers as wstring exists only to support deserializing enum's given as
+            // This code to read numbers as string exists only to support deserializing enum's given as
             // string. This can be improved.
             //
             JsonTokenType tokenType;
             HRESULT hr = pVisitor->m_pReader->GetTokenType(&tokenType);
             if(FAILED(hr)) { return hr; }
 
-            std::wstring* pstrData = (std::wstring *)pData;
+            std::string* pstrData = (std::string *)pData;
             if (tokenType == JsonTokenType_String)
             {
                 ULONG nLength = 0;
@@ -300,11 +300,11 @@ namespace Common
                 hr = ULongAdd(nLength, 1, &bufferSize);
                 if (FAILED(hr)) return hr;
 
-                std::vector<WCHAR> buffer(bufferSize);
+                std::vector<char> buffer(bufferSize);
                 hr = pVisitor->m_pReader->GetStringValue(buffer.data(), bufferSize);
                 if (FAILED(hr)) return hr;
 
-                *pstrData = std::wstring(buffer.data());
+                *pstrData = std::string(buffer.data());
 
                 return hr;
             }
@@ -332,7 +332,7 @@ namespace Common
             hr = ULongAdd(nLength, 1, &bufferSize);
             if (FAILED(hr)) return hr;
 
-            std::vector<WCHAR> buffer(bufferSize);
+            std::vector<char> buffer(bufferSize);
             hr = pVisitor->m_pReader->GetStringValue(buffer.data(), bufferSize);
             if(FAILED(hr)) return hr;
 
@@ -353,7 +353,7 @@ namespace Common
             hr = ULongAdd(nLength, 1, &bufferSize);
             if (FAILED(hr)) return hr;
 
-            std::vector<WCHAR> buffer(bufferSize);
+            std::vector<char> buffer(bufferSize);
             hr = pVisitor->m_pReader->GetStringValue(buffer.data(), bufferSize);
             if(FAILED(hr)) return hr;
 
@@ -374,7 +374,7 @@ namespace Common
             hr = ULongAdd(nLength, 1, &bufferSize);
             if (FAILED(hr)) return hr;
 
-            std::vector<WCHAR> buffer(bufferSize);
+            std::vector<char> buffer(bufferSize);
             hr = pVisitor->m_pReader->GetStringValue(buffer.data(), bufferSize);
             if(FAILED(hr)) return hr;
 
@@ -395,7 +395,7 @@ namespace Common
             hr = ULongAdd(nLength, 1, &bufferSize);
             if (FAILED(hr)) return hr;
 
-            std::vector<WCHAR> buffer(bufferSize);
+            std::vector<char> buffer(bufferSize);
             hr = pVisitor->m_pReader->GetStringValue(buffer.data(), bufferSize);
             if(FAILED(hr)) return hr;
 
@@ -409,8 +409,8 @@ namespace Common
         template<>
         HRESULT Set<__int64>(JsonReaderVisitor *pVisitor, void *pData)
         {
-            std::wstring strValue;
-            HRESULT hr = Set<std::wstring>(pVisitor, &strValue);
+            std::string strValue;
+            HRESULT hr = Set<std::string>(pVisitor, &strValue);
             if (FAILED(hr)) { return hr; }
 
             __int64 *nValue = (__int64*) pData;
@@ -424,8 +424,8 @@ namespace Common
         template<>
         HRESULT Set<unsigned __int64>(JsonReaderVisitor *pVisitor, void *pData)
         {
-            std::wstring strValue;
-            HRESULT hr = Set<std::wstring>(pVisitor, &strValue);
+            std::string strValue;
+            HRESULT hr = Set<std::string>(pVisitor, &strValue);
             if (FAILED(hr)) { return hr; }
 
             unsigned __int64 *nValue = (unsigned __int64*) pData;
@@ -477,8 +477,8 @@ namespace Common
             }
             else
             {
-                std::wstring strValue;
-                hr = Set<std::wstring>(pVisitor, &strValue);
+                std::string strValue;
+                hr = Set<std::string>(pVisitor, &strValue);
                 if (FAILED(hr)) { return hr; }
 
                 Common::ErrorCode error = Common::WStringToEnum(strValue, *enumVal);
@@ -491,13 +491,13 @@ namespace Common
         }
 
         //
-        // When the key is wstring, Map<wstring, value> can be serialized as
+        // When the key is string, Map<string, value> can be serialized as
         //
-        // [{ "Key" : "<wstring_key>", "Value" : "<Actual value> }, { "Key" : "<wstring_key1>", "Value" : "<Actual value>"}]
+        // [{ "Key" : "<string_key>", "Value" : "<Actual value> }, { "Key" : "<string_key1>", "Value" : "<Actual value>"}]
         //
         // or
         //
-        // { "<wstring_key>" : "Actual value", "<wstring_key1>" : "Actual value" } -- indicated by SimpleMapType in this code.
+        // { "<string_key>" : "Actual value", "<string_key1>" : "Actual value" } -- indicated by SimpleMapType in this code.
         //
         //
         template<typename TKey, typename TValue>
@@ -571,14 +571,14 @@ namespace Common
             hr = pVisitor->m_pReader->GetTokenType(&tokenType);
             if (FAILED(hr)) { return hr; }
 
-            std::map<std::wstring, TValue> *map = static_cast<std::map<std::wstring, TValue> *>(pData);
+            std::map<std::string, TValue> *map = static_cast<std::map<std::string, TValue> *>(pData);
 
             //
             // Simple Map type
             //
             while (tokenType != JsonTokenType_EndObject)
             {
-                MapItem<std::wstring, TValue> item;
+                MapItem<std::string, TValue> item;
 
                 if (tokenType != JsonTokenType_FieldName) { return E_FAIL; }
 
@@ -656,14 +656,14 @@ namespace Common
             hr = pVisitor->m_pReader->GetTokenType(&tokenType);
             if (FAILED(hr)) { return hr; }
 
-            std::map<std::wstring, TCollection> *map = static_cast<std::map<std::wstring, TCollection> *>(pData);
+            std::map<std::string, TCollection> *map = static_cast<std::map<std::string, TCollection> *>(pData);
 
             //
             // Simple Map type
             //
             while (tokenType != JsonTokenType_EndObject)
             {
-                MapItem<std::wstring, TCollection> item;
+                MapItem<std::string, TCollection> item;
 
                 if (tokenType != JsonTokenType_FieldName) { return E_FAIL; }
 
@@ -707,7 +707,7 @@ namespace Common
         template<typename TKey, typename TValue>
         static HRESULT SetSimpleMap(JsonReaderVisitor *pVisitor, void *pData)
         {
-            static_assert(false, "Only 'wstring' keys are supported for SimpleMap types");
+            static_assert(false, "Only 'string' keys are supported for SimpleMap types");
             return E_FAIL;
         }
 
@@ -974,12 +974,12 @@ namespace Common
 #endif
         
         template<typename T>
-        HRESULT Visit(LPCWSTR pszName, T& value, bool conditional = true)
+        HRESULT Visit(LPCSTR pszName, T& value, bool conditional = true)
         {
             UNREFERENCED_PARAMETER(conditional);
 
             void* pData = &value;
-            std::wstring fieldName = pszName;
+            std::string fieldName = pszName;
             Setter setter = nullptr;
             const bool isEnum = std::is_enum<T>::value;
 
@@ -997,12 +997,12 @@ namespace Common
         }
 
         template<typename T>
-        HRESULT VisitInt64AsNumber(LPCWSTR pszName, T& value, bool conditional = true)
+        HRESULT VisitInt64AsNumber(LPCSTR pszName, T& value, bool conditional = true)
         {
             UNREFERENCED_PARAMETER(conditional);
 
             void* pData = &value;
-            std::wstring fieldName = pszName;
+            std::string fieldName = pszName;
             Setter setter = nullptr;
             const bool isEnum = std::is_enum<T>::value;
 
@@ -1020,14 +1020,14 @@ namespace Common
         }
 
         template<typename T>
-        HRESULT Visit(LPCWSTR pszName, std::vector<T> &objectArray, bool conditional = true)
+        HRESULT Visit(LPCSTR pszName, std::vector<T> &objectArray, bool conditional = true)
         {
             UNREFERENCED_PARAMETER(conditional);
 
             Setter setter = &SetArray<T>;
             void* pData = &objectArray;
             ValueFiller valueFiller(std::make_pair(setter, pData));
-            std::wstring fieldName = pszName;
+            std::string fieldName = pszName;
 
             ASSERT_IF(
                 currentObject_->map.count(fieldName) != 0,
@@ -1038,14 +1038,14 @@ namespace Common
         }
 
         template<typename T>
-        HRESULT Visit(LPCWSTR pszName, std::vector<std::shared_ptr<T>> &objectArray, bool conditional = true)
+        HRESULT Visit(LPCSTR pszName, std::vector<std::shared_ptr<T>> &objectArray, bool conditional = true)
         {
             UNREFERENCED_PARAMETER(conditional);
 
             Setter setter = &SetSharedPointerArray<T>;
             void* pData = &objectArray;
             ValueFiller valueFiller(std::make_pair(setter, pData));
-            std::wstring fieldName = pszName;
+            std::string fieldName = pszName;
 
             ASSERT_IF(
                 currentObject_->map.count(fieldName) != 0,
@@ -1056,14 +1056,14 @@ namespace Common
         }
 
         template<typename TKey, typename TValue>
-        HRESULT Visit(LPCWSTR pszName, std::map<TKey, TValue> &map, bool conditional = true)
+        HRESULT Visit(LPCSTR pszName, std::map<TKey, TValue> &map, bool conditional = true)
         {
             UNREFERENCED_PARAMETER(conditional);
 
             Setter setter = &SetMap<TKey, TValue>;
             void* pData = &map;
             ValueFiller valueFiller(std::make_pair(setter, pData));
-            std::wstring fieldName = pszName;
+            std::string fieldName = pszName;
 
             ASSERT_IF(
                 objectStack_.back()->map.count(fieldName) != 0, 
@@ -1074,14 +1074,14 @@ namespace Common
         }
 
         template<typename T>
-        HRESULT Visit(LPCWSTR pszName, std::shared_ptr<T> &sptr, bool conditional = true)
+        HRESULT Visit(LPCSTR pszName, std::shared_ptr<T> &sptr, bool conditional = true)
         {
             UNREFERENCED_PARAMETER(conditional);
 
             Setter setter = &SetSharedPointer<T>;
             void* pData = &sptr;
             ValueFiller valueFiller(std::make_pair(setter, pData));
-            std::wstring fieldName = pszName;
+            std::string fieldName = pszName;
 
             ASSERT_IF(
                 objectStack_.back()->map.count(fieldName) != 0, 
@@ -1092,14 +1092,14 @@ namespace Common
         }
 
         template<typename TKey, typename TValue>
-        HRESULT Visit(LPCWSTR pszName, std::map<TKey, std::vector<TValue>> &map, bool conditional = true)
+        HRESULT Visit(LPCSTR pszName, std::map<TKey, std::vector<TValue>> &map, bool conditional = true)
         {
             UNREFERENCED_PARAMETER(conditional);
             Setter setter = &SetSimpleMap1<std::vector<TValue>>;
             void* pData = &map;
             ValueFiller valueFiller(std::make_pair(setter, pData));
             
-            std::wstring fieldName = pszName;
+            std::string fieldName = pszName;
 
             ASSERT_IF(
                 objectStack_.back()->map.count(fieldName) != 0,
@@ -1109,14 +1109,14 @@ namespace Common
         }
 
         template<typename T>
-        HRESULT Visit(LPCWSTR pszName, std::unique_ptr<T> &sptr, bool conditional = true)
+        HRESULT Visit(LPCSTR pszName, std::unique_ptr<T> &sptr, bool conditional = true)
         {
             UNREFERENCED_PARAMETER(conditional);
 
             Setter setter = &SetUniquePointer<T>;
             void* pData = &sptr;
             ValueFiller valueFiller(std::make_pair(setter, pData));
-            std::wstring fieldName = pszName;
+            std::string fieldName = pszName;
 
             ASSERT_IF(
                 objectStack_.back()->map.count(fieldName) != 0,
@@ -1126,7 +1126,7 @@ namespace Common
             return S_OK;
         }
 
-        HRESULT StartObject(LPCWSTR pszName, bool conditional = true)
+        HRESULT StartObject(LPCSTR pszName, bool conditional = true)
         {
             UNREFERENCED_PARAMETER(conditional);
 
@@ -1135,7 +1135,7 @@ namespace Common
                 ObjectSPtr object = std::make_shared<Object>();
                 object->isNested = true;
                 ValueFiller valueFiller(object);
-                std::wstring fieldName = pszName;
+                std::string fieldName = pszName;
 
                 ASSERT_IF(
                     currentObject_->map.count(fieldName) != 0,
@@ -1221,7 +1221,7 @@ namespace Common
             return ParseJsonObject();
         }
 
-        static HRESULT Dispatch(JsonReaderVisitor &reader, Common::WStringLiteral pszName, IFabricJsonSerializable &value, bool conditional = true)
+        static HRESULT Dispatch(JsonReaderVisitor &reader, Common::StringLiteral pszName, IFabricJsonSerializable &value, bool conditional = true)
         {
             HRESULT hr = reader.StartObject(pszName.begin(), conditional);
             if(FAILED(hr)) return hr;
@@ -1233,7 +1233,7 @@ namespace Common
         }
 
         template<typename T>
-        static __forceinline HRESULT Dispatch(JsonReaderVisitor& reader, Common::WStringLiteral pszName, T &value, bool conditional = true)
+        static __forceinline HRESULT Dispatch(JsonReaderVisitor& reader, Common::StringLiteral pszName, T &value, bool conditional = true)
         {
             __if_exists(IMPLEMENTS(T, IsSerializable))
             {
@@ -1247,7 +1247,7 @@ namespace Common
         }
 
         template<typename T>
-        static __forceinline HRESULT Dispatch_Int64AsNum(JsonReaderVisitor& reader, Common::WStringLiteral pszName, T &value, bool conditional = true)
+        static __forceinline HRESULT Dispatch_Int64AsNum(JsonReaderVisitor& reader, Common::StringLiteral pszName, T &value, bool conditional = true)
         {
             return reader.VisitInt64AsNumber(pszName.begin(), value, conditional);
         }
@@ -1255,7 +1255,7 @@ namespace Common
 #if defined(PLATFORM_UNIX)
 #define INTRINSIC_SPECIALIZATION(type) \
         template<> \
-        __forceinline HRESULT Dispatch<type>(JsonReaderVisitor& reader, Common::WStringLiteral pszName, type &value, bool conditional) \
+        __forceinline HRESULT Dispatch<type>(JsonReaderVisitor& reader, Common::StringLiteral pszName, type &value, bool conditional) \
         { \
             return reader.Visit(pszName.begin(), value, conditional); \
         }
@@ -1298,7 +1298,7 @@ namespace Common
                 }
                 if(tokenType != JsonTokenType_FieldName) { return E_FAIL; }
 
-                std::wstring fieldName;
+                std::string fieldName;
                 hr = GetFieldName(fieldName);
                 if(FAILED(hr)) { return hr; }
 
@@ -1359,7 +1359,7 @@ namespace Common
             return S_OK;
         }
 
-        HRESULT GetFieldName(std::wstring &fieldName)
+        HRESULT GetFieldName(std::string &fieldName)
         {
             JsonTokenType tokenType = JsonTokenType_NotStarted;
             HRESULT hr = m_pReader->GetTokenType(&tokenType);
@@ -1374,7 +1374,7 @@ namespace Common
             if(FAILED(hr)) { return hr; }
 
             fieldName.resize(nLength);
-            hr = m_pReader->GetFieldName(const_cast<wchar_t*>(fieldName.c_str()), nLength+1);
+            hr = m_pReader->GetFieldName(const_cast<char*>(fieldName.c_str()), nLength+1);
             return hr;
         }
 
@@ -1464,11 +1464,11 @@ namespace Common
 
             if (tokenType != JsonTokenType_FieldName) { return false; }
 
-            std::wstring fieldName;
+            std::string fieldName;
             hr = pVisitor->GetFieldName(fieldName);
             if (FAILED(hr)) { return false; }
 
-            if ((fieldName == L"Kind") || (fieldName == L"kind"))
+            if ((fieldName == "Kind") || (fieldName == "kind"))
             {
                 return true;
             }
@@ -1489,7 +1489,7 @@ namespace Common
             {}
 
             bool isNested;
-            std::map<std::wstring, ValueFiller> map;
+            std::map<std::string, ValueFiller> map;
         };
 
         class ValueFiller
@@ -1520,7 +1520,7 @@ namespace Common
         {
         public:
             BEGIN_JSON_SERIALIZABLE_PROPERTIES()
-                SERIALIZABLE_PROPERTY(L"Id", id_)
+                SERIALIZABLE_PROPERTY("Id", id_)
             END_JSON_SERIALIZABLE_PROPERTIES()
 
             LargeInteger id_;

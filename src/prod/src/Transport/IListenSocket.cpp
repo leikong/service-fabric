@@ -14,7 +14,7 @@ static const StringLiteral TraceType("ListenSocket");
 IListenSocket::IListenSocket(
     Endpoint const & endpoint,
     AcceptCompleteCallback && acceptCompleteCallback,
-    wstring const & traceId)
+    string const & traceId)
     : listenEndpoint_(endpoint)
     , acceptCompleteCallback_(move(acceptCompleteCallback))
     , traceId_(traceId)

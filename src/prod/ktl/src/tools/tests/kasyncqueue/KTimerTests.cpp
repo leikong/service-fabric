@@ -401,10 +401,10 @@ AdaptiveTimerTest()
     int i;
 
     KAdaptiveTimerRoot::Parameters timerParams;
-    LPCWSTR newParams[] =
+    LPCSTR newParams[] =
     {
-        L"MaximumTimeout", L"1000",
-        L"InitialTimeInterval", L"200"
+        "MaximumTimeout", "1000",
+        "InitialTimeInterval", "200"
     };
 
     //
@@ -577,7 +577,7 @@ AdaptiveTimerTest()
 }
 
 NTSTATUS
-KTimerTest(int argc, WCHAR* args[])
+KTimerTest(int argc, CHAR* args[])
 {
     UNREFERENCED_PARAMETER(argc);
     UNREFERENCED_PARAMETER(args);

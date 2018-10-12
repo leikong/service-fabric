@@ -130,13 +130,13 @@ namespace Common
     bool operator == (ByteBuffer const & b1, ByteBuffer const & b2);
     bool operator < (ByteBuffer const & b1, ByteBuffer const & b2);
 
-    ByteBuffer StringToByteBuffer(std::wstring const& str);
-    std::wstring ByteBufferToString(ByteBuffer const & buffer);
+    ByteBuffer StringToByteBuffer(std::string const& str);
+    std::string ByteBufferToString(ByteBuffer const & buffer);
 
     bool operator == (ByteBuffer2 const & b1, ByteBuffer2 const & b2);
     bool operator < (ByteBuffer2 const & b1, ByteBuffer2 const & b2);
 
-    ByteBuffer2 StringToByteBuffer2(std::wstring const& str);
+    ByteBuffer2 StringToByteBuffer2(std::string const& str);
 
 #ifdef PLATFORM_UNIX
 

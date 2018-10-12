@@ -34,7 +34,7 @@ namespace Federation
     {
     }
 
-    bool NodeId::TryParse(wstring const& data, __out NodeId & id)
+    bool NodeId::TryParse(string const& data, __out NodeId & id)
     {
         return LargeInteger::TryParse(data, id.idValue_);
     }
@@ -181,7 +181,7 @@ namespace Federation
         idValue_.WriteTo(w, options);
     }
 
-    wstring NodeId::ToString() const
+    string NodeId::ToString() const
     {
         return idValue_.ToString();
     }

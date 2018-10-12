@@ -20,9 +20,9 @@ namespace Transport
         // Round trip test with three things that affect extension allocation in public types
     protected:
         void RoundTripTest(
-            wstring const & certIssuerThumbprints,
-            wstring const & remoteCertThumbprnits,
-            wstring const & findValueSecondary,
+            string const & certIssuerThumbprints,
+            string const & remoteCertThumbprnits,
+            string const & findValueSecondary,
             X509FindType::Enum findType = X509FindType::FindByThumbprint);
 
         SecurityTestSetup securityTestSetup_;
@@ -35,8 +35,8 @@ namespace Transport
         ENTER;
 
         X509FindValue::SPtr findValue;
-        wstring nameValue = L"TestDnsName.microsoft.com";
-        wstring findValueString = L"2.5.29.17:3=" + nameValue;
+        string nameValue = "TestDnsName.microsoft.com";
+        string findValueString = "2.5.29.17:3=" + nameValue;
         auto error = X509FindValue::Create(X509FindType::FindByExtension, findValueString, findValue);
         VERIFY_IS_TRUE(error.IsSuccess());
 
@@ -44,26 +44,26 @@ namespace Transport
         VERIFY_IS_TRUE(certAltName.dwAltNameChoice == CERT_ALT_NAME_DNS_NAME);
         VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive(certAltName.pwszDNSName, nameValue.c_str()));
 
-        wstring invalidFindValue = L"2.5.29.17:2=" + nameValue;
+        string invalidFindValue = "2.5.29.17:2=" + nameValue;
         error = X509FindValue::Create(X509FindType::FindByExtension, invalidFindValue, findValue);
         VERIFY_IS_TRUE(error.IsError(ErrorCode::FromNtStatus(STATUS_NOT_SUPPORTED).ReadValue()));
 
-        wstring invalidFindValue2 = L"2.5.29.17=xyz" + nameValue;
+        string invalidFindValue2 = "2.5.29.17=xyz" + nameValue;
         error = X509FindValue::Create(X509FindType::FindByExtension, invalidFindValue2, findValue);
         VERIFY_IS_TRUE(error.IsError(ErrorCodeValue::InvalidArgument));
 
-        wstring invalidFindValue3 = L"2.5.29.17:3:xyz" + nameValue;
+        string invalidFindValue3 = "2.5.29.17:3:xyz" + nameValue;
         error = X509FindValue::Create(X509FindType::FindByExtension, invalidFindValue3, findValue);
         VERIFY_IS_TRUE(error.IsError(ErrorCodeValue::InvalidArgument));
 
-        wstring invalidFindValue4 = L"2.5.29.8:3=" + nameValue;
+        string invalidFindValue4 = "2.5.29.8:3=" + nameValue;
         error = X509FindValue::Create(X509FindType::FindByExtension, invalidFindValue4, findValue);
         VERIFY_IS_TRUE(error.IsError(ErrorCode::FromNtStatus(STATUS_NOT_SUPPORTED).ReadValue()));
 
         SecuritySettings secSettings = TTestUtil::CreateX509Settings3(
             findValueString,
             nameValue,
-            L"ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f1");
+            "ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f1");
 
         VERIFY_IS_TRUE(secSettings.X509FindValue()->Type() == X509FindType::FindByExtension);
         CERT_ALT_NAME_ENTRY const & certAltName2 = *((CERT_ALT_NAME_ENTRY const *)secSettings.X509FindValue()->Value());
@@ -87,9 +87,9 @@ namespace Transport
     {
         ENTER;
         RoundTripTest(
-            L"",
-            L"",
-            L"");
+            "",
+            "",
+            "");
         LEAVE;
     }
 
@@ -97,9 +97,9 @@ namespace Transport
     {
         ENTER;
         RoundTripTest(
-            L"ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f1",
-            L"",
-            L"");
+            "ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f1",
+            "",
+            "");
         LEAVE;
     }
 
@@ -107,9 +107,9 @@ namespace Transport
     {
         ENTER;
         RoundTripTest(
-            L"",
-            L"ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f2",
-            L"");
+            "",
+            "ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f2",
+            "");
         LEAVE;
     }
 
@@ -117,9 +117,9 @@ namespace Transport
     {
         ENTER;
         RoundTripTest(
-            L"ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f3",
-            L"ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f2",
-            L"");
+            "ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f3",
+            "ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f2",
+            "");
         LEAVE;
     }
 
@@ -127,9 +127,9 @@ namespace Transport
     {
         ENTER;
         RoundTripTest(
-            L"",
-            L"",
-            L"ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f4");
+            "",
+            "",
+            "ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f4");
         LEAVE;
     }
 
@@ -137,9 +137,9 @@ namespace Transport
     {
         ENTER;
         RoundTripTest(
-            L"ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f1",
-            L"",
-            L"ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f4");
+            "ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f1",
+            "",
+            "ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f4");
         LEAVE;
     }
 
@@ -147,9 +147,9 @@ namespace Transport
     {
         ENTER;
         RoundTripTest(
-            L"",
-            L"ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f2",
-            L"ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f4");
+            "",
+            "ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f2",
+            "ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f4");
         LEAVE;
     }
 
@@ -157,18 +157,18 @@ namespace Transport
     {
         ENTER;
         RoundTripTest(
-            L"ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f1",
-            L"ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f2",
-            L"ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f4");
+            "ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f1",
+            "ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f2",
+            "ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f4");
         LEAVE;
     }
 
     BOOST_AUTO_TEST_CASE(RoundTripTest8)
     {
         ENTER;
-        RoundTripTest(L"", L"", L"", X509FindType::FindBySubjectName);
-        RoundTripTest(L"", L"", L"CN=NameSecondary", X509FindType::FindBySubjectName);
-        RoundTripTest(L"", L"", L"NameSecondary", X509FindType::FindBySubjectName);
+        RoundTripTest("", "", "", X509FindType::FindBySubjectName);
+        RoundTripTest("", "", "CN=NameSecondary", X509FindType::FindBySubjectName);
+        RoundTripTest("", "", "NameSecondary", X509FindType::FindBySubjectName);
         LEAVE;
     }
 
@@ -177,9 +177,9 @@ namespace Transport
         ENTER;
 
         SecuritySettings fromConfig = TTestUtil::CreateX509Settings(
-            L"CN=SomeName",
-            L"rn1,RN2,rN3,Rn4,rn5",
-            L"a3449b018d0f6839a2c5d62b5b6c6ac822b6f662,b3449b018d0f6839a2c5d62b5b6c6ac822b6f662,b3449b018d0f6839a2c5d62b5b6c6ac822b6f663");
+            "CN=SomeName",
+            "rn1,RN2,rN3,Rn4,rn5",
+            "a3449b018d0f6839a2c5d62b5b6c6ac822b6f662,b3449b018d0f6839a2c5d62b5b6c6ac822b6f662,b3449b018d0f6839a2c5d62b5b6c6ac822b6f663");
 
         Trace.WriteInfo(TraceType, "FromConfiguration={0}", fromConfig);
 
@@ -218,9 +218,9 @@ namespace Transport
         {
             // create fromConfig in inner scope to detect missing memory allocation in ToPublicApi
             SecuritySettings fromConfig = TTestUtil::CreateX509Settings(
-                L"CN=SomeName",
-                L"rn1,RN2,rN3,Rn4,rn5",
-                L"a3449b018d0f6839a2c5d62b5b6c6ac822b6f662,b3449b018d0f6839a2c5d62b5b6c6ac822b6f662,b3449b018d0f6839a2c5d62b5b6c6ac822b6f663");
+                "CN=SomeName",
+                "rn1,RN2,rN3,Rn4,rn5",
+                "a3449b018d0f6839a2c5d62b5b6c6ac822b6f662,b3449b018d0f6839a2c5d62b5b6c6ac822b6f662,b3449b018d0f6839a2c5d62b5b6c6ac822b6f663");
 
             fromConfig2 = fromConfig;
 
@@ -241,8 +241,8 @@ namespace Transport
     {
         ENTER;
 
-        vector<wstring> subjectAltNames;
-        subjectAltNames.push_back(L"TestDns.TestSubDomain.Microsoft.Com");
+        vector<string> subjectAltNames;
+        subjectAltNames.push_back("TestDns.TestSubDomain.Microsoft.Com");
 
         SecuritySettings fromConfig = TTestUtil::CreateX509SettingsBySan(
             X509Default::StoreName(),
@@ -270,8 +270,8 @@ namespace Transport
     {
         ENTER;
 
-        vector<wstring> subjectAltNames;
-        subjectAltNames.push_back(L"TestDns.TestSubDomain.Microsoft.Com");
+        vector<string> subjectAltNames;
+        subjectAltNames.push_back("TestDns.TestSubDomain.Microsoft.Com");
 
         FABRIC_SECURITY_CREDENTIALS publicType = {};
         ScopedHeap heap;
@@ -306,8 +306,8 @@ namespace Transport
     {
         ENTER;
 
-        vector<wstring> subjectAltNames;
-        subjectAltNames.push_back(L"TestDns.TestSubDomain.Microsoft.Com");
+        vector<string> subjectAltNames;
+        subjectAltNames.push_back("TestDns.TestSubDomain.Microsoft.Com");
 
         FABRIC_SECURITY_CREDENTIALS publicType = {};
         ScopedHeap heap;
@@ -341,27 +341,27 @@ namespace Transport
         ENTER;
 
         Thumbprint::SPtr certIssuerThumbprint1;
-        auto err = Thumbprint::Create(L"ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f1", certIssuerThumbprint1);
+        auto err = Thumbprint::Create("ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f1", certIssuerThumbprint1);
         VERIFY_ARE_EQUAL2(err.ReadValue(), ErrorCodeValue::Success);
         Thumbprint::SPtr certIssuerThumbprint2;
-        err = Thumbprint::Create(L"b3449b018d0f6839a2c5d62b5b6c6ac822b6f662", certIssuerThumbprint2);
+        err = Thumbprint::Create("b3449b018d0f6839a2c5d62b5b6c6ac822b6f662", certIssuerThumbprint2);
         VERIFY_ARE_EQUAL2(err.ReadValue(), ErrorCodeValue::Success);
         Thumbprint::SPtr certIssuerThumbprint3;
-        err = Thumbprint::Create(L"a3449b018d0f6839a2c5d62b5b6c6ac822b6f662", certIssuerThumbprint3);
+        err = Thumbprint::Create("a3449b018d0f6839a2c5d62b5b6c6ac822b6f662", certIssuerThumbprint3);
         VERIFY_ARE_EQUAL2(err.ReadValue(), ErrorCodeValue::Success);
 
         SecurityConfig::X509NameMap remoteNames;
-        remoteNames.Add(L"RemoteNameWithNoIssuerPinning");
-        remoteNames.Add(L"RemoteNameWithOneIssuer", wformatString(certIssuerThumbprint2));
-        remoteNames.Add(L"RemoteNameWithTwoIssuers", wformatString(certIssuerThumbprint3) + L"," + wformatString(certIssuerThumbprint2));
+        remoteNames.Add("RemoteNameWithNoIssuerPinning");
+        remoteNames.Add("RemoteNameWithOneIssuer", formatString(certIssuerThumbprint2));
+        remoteNames.Add("RemoteNameWithTwoIssuers", formatString(certIssuerThumbprint3) + "," + formatString(certIssuerThumbprint2));
 
-        SecuritySettings fromConfig = TTestUtil::CreateX509Settings(L"CN=LocalCommonName", remoteNames);
+        SecuritySettings fromConfig = TTestUtil::CreateX509Settings("CN=LocalCommonName", remoteNames);
         Trace.WriteInfo(TraceType, "FromConfiguration={0}", fromConfig);
 
         Trace.WriteInfo(TraceType, "test name and issuer matching");
         SecurityConfig::X509NameMapBase::const_iterator match;
         bool matched = fromConfig.RemoteX509Names().Match(
-            L"RemoteNameWithNoIssuerPinning",
+            "RemoteNameWithNoIssuerPinning",
             certIssuerThumbprint1,
             match);
 
@@ -369,7 +369,7 @@ namespace Transport
         VERIFY_IS_TRUE(match->second.IsEmpty());
 
         matched = fromConfig.RemoteX509Names().Match(
-            L"RemoteNameWithOneIssuer",
+            "RemoteNameWithOneIssuer",
             certIssuerThumbprint1,
             match);
 
@@ -377,7 +377,7 @@ namespace Transport
 
 
         matched = fromConfig.RemoteX509Names().Match(
-            L"RemoteNameWithOneIssuer",
+            "RemoteNameWithOneIssuer",
             certIssuerThumbprint2,
             match);
 
@@ -387,7 +387,7 @@ namespace Transport
         VERIFY_IS_FALSE(match->second.Contains(certIssuerThumbprint1));
         VERIFY_IS_FALSE(match->second.Contains(certIssuerThumbprint3));
 
-        match = fromConfig.RemoteX509Names().Find(L"RemoteNameWithTwoIssuers");
+        match = fromConfig.RemoteX509Names().Find("RemoteNameWithTwoIssuers");
         VERIFY_IS_TRUE(match != fromConfig.RemoteX509Names().CEnd());
         matched = fromConfig.RemoteX509Names().MatchIssuer(certIssuerThumbprint2, match);
         VERIFY_IS_TRUE(matched);
@@ -397,19 +397,19 @@ namespace Transport
         VERIFY_IS_FALSE(matched);
 
         matched = fromConfig.RemoteX509Names().Match(
-            L"NoSuchNameInTheMap",
+            "NoSuchNameInTheMap",
             certIssuerThumbprint1,
             match);
         VERIFY_IS_FALSE(matched);
 
         matched = fromConfig.RemoteX509Names().Match(
-            L"NoSuchNameInTheMap",
+            "NoSuchNameInTheMap",
             certIssuerThumbprint2,
             match);
         VERIFY_IS_FALSE(matched);
 
         matched = fromConfig.RemoteX509Names().Match(
-            L"NoSuchNameInTheMap",
+            "NoSuchNameInTheMap",
             certIssuerThumbprint3,
             match);
         VERIFY_IS_FALSE(matched);
@@ -428,7 +428,7 @@ namespace Transport
 
         Trace.WriteInfo(TraceType, "repeat the same match tests after round trip conversion");
         matched = fromConfig.RemoteX509Names().Match(
-            L"RemoteNameWithNoIssuerPinning",
+            "RemoteNameWithNoIssuerPinning",
             certIssuerThumbprint1,
             match);
 
@@ -436,7 +436,7 @@ namespace Transport
         VERIFY_IS_TRUE(match->second.IsEmpty());
 
         matched = fromConfig.RemoteX509Names().Match(
-            L"RemoteNameWithOneIssuer",
+            "RemoteNameWithOneIssuer",
             certIssuerThumbprint1,
             match);
 
@@ -444,7 +444,7 @@ namespace Transport
 
 
         matched = fromConfig.RemoteX509Names().Match(
-            L"RemoteNameWithOneIssuer",
+            "RemoteNameWithOneIssuer",
             certIssuerThumbprint2,
             match);
 
@@ -454,7 +454,7 @@ namespace Transport
         VERIFY_IS_FALSE(match->second.Contains(certIssuerThumbprint1));
         VERIFY_IS_FALSE(match->second.Contains(certIssuerThumbprint3));
 
-        match = fromConfig.RemoteX509Names().Find(L"RemoteNameWithTwoIssuers");
+        match = fromConfig.RemoteX509Names().Find("RemoteNameWithTwoIssuers");
         VERIFY_IS_TRUE(match != fromConfig.RemoteX509Names().CEnd());
         matched = fromConfig.RemoteX509Names().MatchIssuer(certIssuerThumbprint2, match);
         VERIFY_IS_TRUE(matched);
@@ -464,19 +464,19 @@ namespace Transport
         VERIFY_IS_FALSE(matched);
 
         matched = fromConfig.RemoteX509Names().Match(
-            L"NoSuchNameInTheMap",
+            "NoSuchNameInTheMap",
             certIssuerThumbprint1,
             match);
         VERIFY_IS_FALSE(matched);
 
         matched = fromConfig.RemoteX509Names().Match(
-            L"NoSuchNameInTheMap",
+            "NoSuchNameInTheMap",
             certIssuerThumbprint2,
             match);
         VERIFY_IS_FALSE(matched);
 
         matched = fromConfig.RemoteX509Names().Match(
-            L"NoSuchNameInTheMap",
+            "NoSuchNameInTheMap",
             certIssuerThumbprint3,
             match);
         VERIFY_IS_FALSE(matched);
@@ -489,27 +489,27 @@ namespace Transport
         ENTER;
 
         Thumbprint::SPtr certIssuerThumbprint1;
-        auto err = Thumbprint::Create(L"ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f1", certIssuerThumbprint1);
+        auto err = Thumbprint::Create("ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f1", certIssuerThumbprint1);
         VERIFY_ARE_EQUAL2(err.ReadValue(), ErrorCodeValue::Success);
         Thumbprint::SPtr certIssuerThumbprint2;
-        err = Thumbprint::Create(L"b3449b018d0f6839a2c5d62b5b6c6ac822b6f662", certIssuerThumbprint2);
+        err = Thumbprint::Create("b3449b018d0f6839a2c5d62b5b6c6ac822b6f662", certIssuerThumbprint2);
         VERIFY_ARE_EQUAL2(err.ReadValue(), ErrorCodeValue::Success);
         Thumbprint::SPtr certIssuerThumbprint3;
-        err = Thumbprint::Create(L"a3449b018d0f6839a2c5d62b5b6c6ac822b6f662", certIssuerThumbprint3);
+        err = Thumbprint::Create("a3449b018d0f6839a2c5d62b5b6c6ac822b6f662", certIssuerThumbprint3);
         VERIFY_ARE_EQUAL2(err.ReadValue(), ErrorCodeValue::Success);
 
         SecurityConfig::X509NameMap remoteNames;
-        remoteNames.Add(L"RemoteNameWithNoIssuerPinning");
-        remoteNames.Add(L"RemoteNameWithOneIssuer", wformatString(certIssuerThumbprint2));
-        remoteNames.Add(L"RemoteNameWithTwoIssuers", wformatString(certIssuerThumbprint3) + L"," + wformatString(certIssuerThumbprint2));
+        remoteNames.Add("RemoteNameWithNoIssuerPinning");
+        remoteNames.Add("RemoteNameWithOneIssuer", formatString(certIssuerThumbprint2));
+        remoteNames.Add("RemoteNameWithTwoIssuers", formatString(certIssuerThumbprint3) + "," + formatString(certIssuerThumbprint2));
 
-        SecuritySettings fromConfig = TTestUtil::CreateX509Settings2(L"c3449b018d0f6839a2c5d62b5b6c6ac822b6f662", remoteNames);
+        SecuritySettings fromConfig = TTestUtil::CreateX509Settings2("c3449b018d0f6839a2c5d62b5b6c6ac822b6f662", remoteNames);
         Trace.WriteInfo(TraceType, "FromConfiguration={0}", fromConfig);
 
         Trace.WriteInfo(TraceType, "test name and issuer matching");
         SecurityConfig::X509NameMapBase::const_iterator match;
         bool matched = fromConfig.RemoteX509Names().Match(
-            L"RemoteNameWithNoIssuerPinning",
+            "RemoteNameWithNoIssuerPinning",
             certIssuerThumbprint1,
             match);
 
@@ -517,7 +517,7 @@ namespace Transport
         VERIFY_IS_TRUE(match->second.IsEmpty());
 
         matched = fromConfig.RemoteX509Names().Match(
-            L"RemoteNameWithOneIssuer",
+            "RemoteNameWithOneIssuer",
             certIssuerThumbprint1,
             match);
 
@@ -525,7 +525,7 @@ namespace Transport
 
 
         matched = fromConfig.RemoteX509Names().Match(
-            L"RemoteNameWithOneIssuer",
+            "RemoteNameWithOneIssuer",
             certIssuerThumbprint2,
             match);
 
@@ -535,7 +535,7 @@ namespace Transport
         VERIFY_IS_FALSE(match->second.Contains(certIssuerThumbprint1));
         VERIFY_IS_FALSE(match->second.Contains(certIssuerThumbprint3));
 
-        match = fromConfig.RemoteX509Names().Find(L"RemoteNameWithTwoIssuers");
+        match = fromConfig.RemoteX509Names().Find("RemoteNameWithTwoIssuers");
         VERIFY_IS_TRUE(match != fromConfig.RemoteX509Names().CEnd());
         matched = fromConfig.RemoteX509Names().MatchIssuer(certIssuerThumbprint2, match);
         VERIFY_IS_TRUE(matched);
@@ -545,19 +545,19 @@ namespace Transport
         VERIFY_IS_FALSE(matched);
 
         matched = fromConfig.RemoteX509Names().Match(
-            L"NoSuchNameInTheMap",
+            "NoSuchNameInTheMap",
             certIssuerThumbprint1,
             match);
         VERIFY_IS_FALSE(matched);
 
         matched = fromConfig.RemoteX509Names().Match(
-            L"NoSuchNameInTheMap",
+            "NoSuchNameInTheMap",
             certIssuerThumbprint2,
             match);
         VERIFY_IS_FALSE(matched);
 
         matched = fromConfig.RemoteX509Names().Match(
-            L"NoSuchNameInTheMap",
+            "NoSuchNameInTheMap",
             certIssuerThumbprint3,
             match);
         VERIFY_IS_FALSE(matched);
@@ -576,7 +576,7 @@ namespace Transport
 
         Trace.WriteInfo(TraceType, "repeat the same match tests after round trip conversion");
         matched = fromConfig.RemoteX509Names().Match(
-            L"RemoteNameWithNoIssuerPinning",
+            "RemoteNameWithNoIssuerPinning",
             certIssuerThumbprint1,
             match);
 
@@ -584,7 +584,7 @@ namespace Transport
         VERIFY_IS_TRUE(match->second.IsEmpty());
 
         matched = fromConfig.RemoteX509Names().Match(
-            L"RemoteNameWithOneIssuer",
+            "RemoteNameWithOneIssuer",
             certIssuerThumbprint1,
             match);
 
@@ -592,7 +592,7 @@ namespace Transport
 
 
         matched = fromConfig.RemoteX509Names().Match(
-            L"RemoteNameWithOneIssuer",
+            "RemoteNameWithOneIssuer",
             certIssuerThumbprint2,
             match);
 
@@ -602,7 +602,7 @@ namespace Transport
         VERIFY_IS_FALSE(match->second.Contains(certIssuerThumbprint1));
         VERIFY_IS_FALSE(match->second.Contains(certIssuerThumbprint3));
 
-        match = fromConfig.RemoteX509Names().Find(L"RemoteNameWithTwoIssuers");
+        match = fromConfig.RemoteX509Names().Find("RemoteNameWithTwoIssuers");
         VERIFY_IS_TRUE(match != fromConfig.RemoteX509Names().CEnd());
         matched = fromConfig.RemoteX509Names().MatchIssuer(certIssuerThumbprint2, match);
         VERIFY_IS_TRUE(matched);
@@ -612,19 +612,19 @@ namespace Transport
         VERIFY_IS_FALSE(matched);
 
         matched = fromConfig.RemoteX509Names().Match(
-            L"NoSuchNameInTheMap",
+            "NoSuchNameInTheMap",
             certIssuerThumbprint1,
             match);
         VERIFY_IS_FALSE(matched);
 
         matched = fromConfig.RemoteX509Names().Match(
-            L"NoSuchNameInTheMap",
+            "NoSuchNameInTheMap",
             certIssuerThumbprint2,
             match);
         VERIFY_IS_FALSE(matched);
 
         matched = fromConfig.RemoteX509Names().Match(
-            L"NoSuchNameInTheMap",
+            "NoSuchNameInTheMap",
             certIssuerThumbprint3,
             match);
         VERIFY_IS_FALSE(matched);
@@ -636,9 +636,9 @@ namespace Transport
     {
         ENTER;
 
-        wstring const remoteName0 = L"remoteName0";
-        wstring const remoteName1 = L"remoteName1";
-        wchar_t* findValue = L"CN=LocalSubjectName";
+        string const remoteName0 = "remoteName0";
+        string const remoteName1 = "remoteName1";
+        char* findValue = "CN=LocalSubjectName";
 
         FABRIC_X509_CREDENTIALS x509Credentials = {};
         x509Credentials.FindType = FABRIC_X509_FIND_TYPE_FINDBYSUBJECTNAME;
@@ -646,7 +646,7 @@ namespace Transport
         x509Credentials.StoreName = X509Default::StoreName().c_str();
         x509Credentials.StoreLocation = FABRIC_X509_STORE_LOCATION_LOCALMACHINE;
         x509Credentials.AllowedCommonNameCount = 2;
-        LPCWSTR remoteNames[] = { remoteName0.c_str(), remoteName1.c_str() };
+        LPCSTR remoteNames[] = { remoteName0.c_str(), remoteName1.c_str() };
         x509Credentials.AllowedCommonNames = remoteNames;
 
         FABRIC_SECURITY_CREDENTIALS credentials = { FABRIC_SECURITY_CREDENTIAL_KIND_X509, &x509Credentials };
@@ -662,12 +662,12 @@ namespace Transport
         VERIFY_IS_TRUE(settings.RemoteX509Names().Match(remoteName0, thumbprint, matched));
         VERIFY_IS_TRUE(settings.RemoteX509Names().Match(remoteName1, thumbprint, matched));
 
-        VERIFY_IS_TRUE(thumbprint->Initialize(L"ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f1").IsSuccess());
+        VERIFY_IS_TRUE(thumbprint->Initialize("ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f1").IsSuccess());
         Trace.WriteInfo(TraceType, "matching with issuer thumbprint '{0}'", thumbprint);
         VERIFY_IS_TRUE(settings.RemoteX509Names().Match(remoteName0, thumbprint, matched));
         VERIFY_IS_TRUE(settings.RemoteX509Names().Match(remoteName1, thumbprint, matched));
 
-        VERIFY_IS_FALSE(settings.RemoteX509Names().Match(L"NotExists", thumbprint, matched));
+        VERIFY_IS_FALSE(settings.RemoteX509Names().Match("NotExists", thumbprint, matched));
 
         ScopedHeap heap;
         FABRIC_SECURITY_CREDENTIALS publicApiType = {};
@@ -677,7 +677,7 @@ namespace Transport
 
         FABRIC_X509_CREDENTIALS const & x509CredentialsRef = *((FABRIC_X509_CREDENTIALS const *)(publicApiType.Value));
         VERIFY_IS_TRUE(x509CredentialsRef.FindType == x509Credentials.FindType);
-        VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive((LPCWSTR)(x509CredentialsRef.FindValue), (LPCWSTR)(x509Credentials.FindValue)));
+        VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive((LPCSTR)(x509CredentialsRef.FindValue), (LPCSTR)(x509Credentials.FindValue)));
         VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive(x509CredentialsRef.StoreName, x509Credentials.StoreName));
         VERIFY_IS_TRUE(x509CredentialsRef.StoreLocation == x509Credentials.StoreLocation);
         VERIFY_IS_TRUE(x509CredentialsRef.AllowedCommonNameCount == 0);
@@ -706,9 +706,9 @@ namespace Transport
     {
         ENTER;
 
-        wstring const remoteName0 = L"remoteName0";
-        wstring const remoteName1 = L"remoteName1";
-        wchar_t* findValue = L"CN=LocalSubjectName";
+        string const remoteName0 = "remoteName0";
+        string const remoteName1 = "remoteName1";
+        char* findValue = "CN=LocalSubjectName";
 
         FABRIC_X509_CREDENTIALS x509Credentials = {};
         x509Credentials.FindType = FABRIC_X509_FIND_TYPE_FINDBYSUBJECTNAME;
@@ -716,7 +716,7 @@ namespace Transport
         x509Credentials.StoreName = X509Default::StoreName().c_str();
         x509Credentials.StoreLocation = FABRIC_X509_STORE_LOCATION_LOCALMACHINE;
         x509Credentials.AllowedCommonNameCount = 2;
-        LPCWSTR remoteNames[] = { remoteName0.c_str(), remoteName1.c_str() };
+        LPCSTR remoteNames[] = { remoteName0.c_str(), remoteName1.c_str() };
         x509Credentials.AllowedCommonNames = remoteNames;
 
         ScopedHeap h;
@@ -734,14 +734,14 @@ namespace Transport
         FABRIC_X509_CREDENTIALS_EX3 & ex3 = *((FABRIC_X509_CREDENTIALS_EX3*)(ex2.Reserved));
         
         FABRIC_X509_ISSUER_NAME issuer1 = {};
-        issuer1.Name = L"issuer1";
-        LPCWSTR issuerStores1[] = { L"Root", L"My" };
+        issuer1.Name = "issuer1";
+        LPCSTR issuerStores1[] = { "Root", "My" };
         issuer1.IssuerStores = issuerStores1;
         issuer1.IssuerStoreCount = 2;
 
         FABRIC_X509_ISSUER_NAME issuer2 = {};
-        issuer2.Name = L"issuer2";
-        LPCWSTR issuerStores2[] = { L"Root" };
+        issuer2.Name = "issuer2";
+        LPCSTR issuerStores2[] = { "Root" };
         issuer2.IssuerStores = issuerStores2;
         issuer2.IssuerStoreCount = 1;
 
@@ -762,17 +762,17 @@ namespace Transport
         VERIFY_IS_TRUE(settings.RemoteX509Names().Match(remoteName0, thumbprint, matched));
         VERIFY_IS_TRUE(settings.RemoteX509Names().Match(remoteName1, thumbprint, matched));
 
-        VERIFY_IS_TRUE(thumbprint->Initialize(L"ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f1").IsSuccess());
+        VERIFY_IS_TRUE(thumbprint->Initialize("ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f1").IsSuccess());
         Trace.WriteInfo(TraceType, "matching with issuer thumbprint '{0}'", thumbprint);
         VERIFY_IS_TRUE(settings.RemoteX509Names().Match(remoteName0, thumbprint, matched));
         VERIFY_IS_TRUE(settings.RemoteX509Names().Match(remoteName1, thumbprint, matched));
 
-        VERIFY_IS_FALSE(settings.RemoteX509Names().Match(L"NotExists", thumbprint, matched));
+        VERIFY_IS_FALSE(settings.RemoteX509Names().Match("NotExists", thumbprint, matched));
 
         VERIFY_IS_TRUE(settings.RemoteCertIssuers().Size() == 2);
-        VERIFY_IS_TRUE(settings.RemoteCertIssuers().Find(L"issuer1") != settings.RemoteCertIssuers().CEnd());
-        VERIFY_IS_TRUE(settings.RemoteCertIssuers().Find(L"issuer2") != settings.RemoteCertIssuers().CEnd());
-        VERIFY_IS_FALSE(settings.RemoteCertIssuers().Find(L"not exists") != settings.RemoteCertIssuers().CEnd());
+        VERIFY_IS_TRUE(settings.RemoteCertIssuers().Find("issuer1") != settings.RemoteCertIssuers().CEnd());
+        VERIFY_IS_TRUE(settings.RemoteCertIssuers().Find("issuer2") != settings.RemoteCertIssuers().CEnd());
+        VERIFY_IS_FALSE(settings.RemoteCertIssuers().Find("not exists") != settings.RemoteCertIssuers().CEnd());
 
         ScopedHeap heap;
         FABRIC_SECURITY_CREDENTIALS publicApiType = {};
@@ -782,7 +782,7 @@ namespace Transport
 
         FABRIC_X509_CREDENTIALS const & x509CredentialsRef = *((FABRIC_X509_CREDENTIALS const *)(publicApiType.Value));
         VERIFY_IS_TRUE(x509CredentialsRef.FindType == x509Credentials.FindType);
-        VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive((LPCWSTR)(x509CredentialsRef.FindValue), (LPCWSTR)(x509Credentials.FindValue)));
+        VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive((LPCSTR)(x509CredentialsRef.FindValue), (LPCSTR)(x509Credentials.FindValue)));
         VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive(x509CredentialsRef.StoreName, x509Credentials.StoreName));
         VERIFY_IS_TRUE(x509CredentialsRef.StoreLocation == x509Credentials.StoreLocation);
         VERIFY_IS_TRUE(x509CredentialsRef.AllowedCommonNameCount == 0);
@@ -808,12 +808,12 @@ namespace Transport
         FABRIC_X509_CREDENTIALS_EX3 const & x509Ex3 = *((FABRIC_X509_CREDENTIALS_EX3 const*)(x509Ex2.Reserved));
         VERIFY_IS_TRUE(x509Ex3.RemoteCertIssuerCount == 2);
         VERIFY_IS_TRUE(x509Ex3.RemoteCertIssuers[0].IssuerStoreCount == 2);
-        VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive(x509Ex3.RemoteCertIssuers[0].Name, L"issuer1"));
-        VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive(x509Ex3.RemoteCertIssuers[0].IssuerStores[0], L"My"));
-        VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive(x509Ex3.RemoteCertIssuers[0].IssuerStores[1], L"Root"));        
+        VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive(x509Ex3.RemoteCertIssuers[0].Name, "issuer1"));
+        VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive(x509Ex3.RemoteCertIssuers[0].IssuerStores[0], "My"));
+        VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive(x509Ex3.RemoteCertIssuers[0].IssuerStores[1], "Root"));        
         VERIFY_IS_TRUE(x509Ex3.RemoteCertIssuers[1].IssuerStoreCount == 1);
-        VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive(x509Ex3.RemoteCertIssuers[1].Name, L"issuer2"));
-        VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive(x509Ex3.RemoteCertIssuers[1].IssuerStores[0], L"Root"));
+        VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive(x509Ex3.RemoteCertIssuers[1].Name, "issuer2"));
+        VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive(x509Ex3.RemoteCertIssuers[1].IssuerStores[0], "Root"));
         LEAVE;
     }
 
@@ -821,16 +821,16 @@ namespace Transport
     {
         ENTER;
         
-        wstring const remoteName0 = L"remoteName0";
-        wstring const remoteName1 = L"remoteName1";
-        wchar_t* findValue = L"CN=LocalSubjectName";
+        string const remoteName0 = "remoteName0";
+        string const remoteName1 = "remoteName1";
+        char* findValue = "CN=LocalSubjectName";
         FABRIC_X509_CREDENTIALS x509Credentials = {};
         x509Credentials.FindType = FABRIC_X509_FIND_TYPE_FINDBYSUBJECTNAME;
         x509Credentials.FindValue = findValue;
         x509Credentials.StoreName = X509Default::StoreName().c_str();
         x509Credentials.StoreLocation = FABRIC_X509_STORE_LOCATION_LOCALMACHINE;
         x509Credentials.AllowedCommonNameCount = 2;
-        LPCWSTR remoteNames[] = { remoteName0.c_str(), remoteName1.c_str() };
+        LPCSTR remoteNames[] = { remoteName0.c_str(), remoteName1.c_str() };
         x509Credentials.AllowedCommonNames = remoteNames;
         ScopedHeap h;
         ReferencePointer<FABRIC_X509_CREDENTIALS_EX2> x509Ex2RPtr = h.AddItem<FABRIC_X509_CREDENTIALS_EX2>();
@@ -841,7 +841,7 @@ namespace Transport
         FABRIC_X509_CREDENTIALS_EX2 & ex2 = *((FABRIC_X509_CREDENTIALS_EX2*)(ex1.Reserved));
         ex2.RemoteCertThumbprintCount = 1;
         //Null Thumbprint
-        LPCWSTR remoteCertThumbprints[] = { nullptr };
+        LPCSTR remoteCertThumbprints[] = { nullptr };
         ex2.RemoteCertThumbprints = remoteCertThumbprints;
         FABRIC_SECURITY_CREDENTIALS credentials = { FABRIC_SECURITY_CREDENTIAL_KIND_X509, &x509Credentials };
         SecuritySettings settings;
@@ -859,17 +859,17 @@ namespace Transport
 
         InstallTestCertInScope localCert;
 
-        FABRIC_X509_NAME remoteName0 = { L"remoteName0", nullptr };
-        FABRIC_X509_NAME remoteName1 = { L"remoteName1", L"fffffffffffffffffffffffffffffffffffffff1" };
+        FABRIC_X509_NAME remoteName0 = { "remoteName0", nullptr };
+        FABRIC_X509_NAME remoteName1 = { "remoteName1", "fffffffffffffffffffffffffffffffffffffff1" };
         FABRIC_X509_NAME remoteNames[] = {remoteName0, remoteName1 };
 
         FABRIC_X509_CREDENTIALS2 x509Credentials = {};
 
-        auto certLoadPath = StringUtility::Utf8ToUtf16(localCert.X509ContextRef().FilePath());
+        auto certLoadPath = (localCert.X509ContextRef().FilePath());
         x509Credentials.CertLoadPath = certLoadPath.c_str();
 
         x509Credentials.RemoteCertThumbprintCount = 1;
-        LPCWSTR remoteCertThumbprints[] = { L"fffffffffffffffffffffffffffffffffffffff2" };
+        LPCSTR remoteCertThumbprints[] = { "fffffffffffffffffffffffffffffffffffffff2" };
         x509Credentials.RemoteCertThumbprints = remoteCertThumbprints;
 
         x509Credentials.RemoteX509NameCount = ARRAYSIZE(remoteNames);
@@ -905,7 +905,7 @@ namespace Transport
         VERIFY_IS_TRUE(settings.RemoteX509Names().Match(remoteName0.Name, thumbprint, matched));
         VERIFY_IS_TRUE(settings.RemoteX509Names().Match(remoteName1.Name, thumbprint, matched));
 
-        VERIFY_IS_FALSE(settings.RemoteX509Names().Match(L"NotExists", thumbprint, matched));
+        VERIFY_IS_FALSE(settings.RemoteX509Names().Match("NotExists", thumbprint, matched));
 
         ScopedHeap heap;
         FABRIC_SECURITY_CREDENTIALS publicApiType = {};
@@ -955,16 +955,16 @@ namespace Transport
 
         InstallTestCertInScope localCert;
 
-        FABRIC_X509_NAME remoteName0 = { L"remoteName0", nullptr };
+        FABRIC_X509_NAME remoteName0 = { "remoteName0", nullptr };
          FABRIC_X509_NAME remoteNames[] = {remoteName0 };
 
         FABRIC_X509_CREDENTIALS2 x509Credentials = {};
 
-        auto certLoadPath = StringUtility::Utf8ToUtf16(localCert.X509ContextRef().FilePath());
+        auto certLoadPath = (localCert.X509ContextRef().FilePath());
         x509Credentials.CertLoadPath = certLoadPath.c_str();
 
         x509Credentials.RemoteCertThumbprintCount = 1;
-        LPCWSTR remoteCertThumbprints[] = { L"fffffffffffffffffffffffffffffffffffffff2" };
+        LPCSTR remoteCertThumbprints[] = { "fffffffffffffffffffffffffffffffffffffff2" };
         x509Credentials.RemoteCertThumbprints = remoteCertThumbprints;
 
         x509Credentials.RemoteX509NameCount = ARRAYSIZE(remoteNames);
@@ -978,14 +978,14 @@ namespace Transport
         FABRIC_X509_CREDENTIALS_EX3 & ex3 = *((FABRIC_X509_CREDENTIALS_EX3*)(x509Credentials.Reserved));
         
         FABRIC_X509_ISSUER_NAME issuer1 = {};
-        issuer1.Name = L"issuer1";
-        LPCWSTR issuerStores1[] = { L"Root", L"My" };
+        issuer1.Name = "issuer1";
+        LPCSTR issuerStores1[] = { "Root", "My" };
         issuer1.IssuerStores = issuerStores1;
         issuer1.IssuerStoreCount = 2;
 
         FABRIC_X509_ISSUER_NAME issuer2 = {};
-        issuer2.Name = L"issuer2";
-        LPCWSTR issuerStores2[] = { L"Root" };
+        issuer2.Name = "issuer2";
+        LPCSTR issuerStores2[] = { "Root" };
         issuer2.IssuerStores = issuerStores2;
         issuer2.IssuerStoreCount = 1;
 
@@ -1015,12 +1015,12 @@ namespace Transport
         Trace.WriteInfo(TraceType, "matching with issuer thumbprint '{0}'", thumbprint);
         VERIFY_IS_TRUE(settings.RemoteX509Names().Match(remoteName0.Name, thumbprint, matched));
        
-        VERIFY_IS_FALSE(settings.RemoteX509Names().Match(L"NotExists", thumbprint, matched));
+        VERIFY_IS_FALSE(settings.RemoteX509Names().Match("NotExists", thumbprint, matched));
 
         VERIFY_IS_TRUE(settings.RemoteCertIssuers().Size() == 2);
-        VERIFY_IS_TRUE(settings.RemoteCertIssuers().Find(L"issuer1") != settings.RemoteCertIssuers().CEnd());
-        VERIFY_IS_TRUE(settings.RemoteCertIssuers().Find(L"issuer2") != settings.RemoteCertIssuers().CEnd());
-        VERIFY_IS_FALSE(settings.RemoteCertIssuers().Find(L"not exists") != settings.RemoteCertIssuers().CEnd());
+        VERIFY_IS_TRUE(settings.RemoteCertIssuers().Find("issuer1") != settings.RemoteCertIssuers().CEnd());
+        VERIFY_IS_TRUE(settings.RemoteCertIssuers().Find("issuer2") != settings.RemoteCertIssuers().CEnd());
+        VERIFY_IS_FALSE(settings.RemoteCertIssuers().Find("not exists") != settings.RemoteCertIssuers().CEnd());
 
         ScopedHeap heap;
         FABRIC_SECURITY_CREDENTIALS publicApiType = {};
@@ -1055,12 +1055,12 @@ namespace Transport
         FABRIC_X509_CREDENTIALS_EX3 const & x509Ex3 = *((FABRIC_X509_CREDENTIALS_EX3 const*)(x509CredentialsRef.Reserved));
         VERIFY_IS_TRUE(x509Ex3.RemoteCertIssuerCount == 2);
         VERIFY_IS_TRUE(x509Ex3.RemoteCertIssuers[0].IssuerStoreCount == 2);
-        VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive(x509Ex3.RemoteCertIssuers[0].Name, L"issuer1"));
-        VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive(x509Ex3.RemoteCertIssuers[0].IssuerStores[0], L"My"));
-        VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive(x509Ex3.RemoteCertIssuers[0].IssuerStores[1], L"Root"));        
+        VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive(x509Ex3.RemoteCertIssuers[0].Name, "issuer1"));
+        VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive(x509Ex3.RemoteCertIssuers[0].IssuerStores[0], "My"));
+        VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive(x509Ex3.RemoteCertIssuers[0].IssuerStores[1], "Root"));        
         VERIFY_IS_TRUE(x509Ex3.RemoteCertIssuers[1].IssuerStoreCount == 1);
-        VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive(x509Ex3.RemoteCertIssuers[1].Name, L"issuer2"));
-        VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive(x509Ex3.RemoteCertIssuers[1].IssuerStores[0], L"Root"));
+        VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive(x509Ex3.RemoteCertIssuers[1].Name, "issuer2"));
+        VERIFY_IS_TRUE(StringUtility::AreEqualCaseInsensitive(x509Ex3.RemoteCertIssuers[1].IssuerStores[0], "Root"));
         
         SecuritySettings settings2;
         error = SecuritySettings::FromPublicApi(publicApiType, settings2);
@@ -1075,8 +1075,8 @@ namespace Transport
     {
         ENTER;
 
-        wstring certCName = L"cert1";
-        InstallTestCertInScope cert1(L"CN=" + certCName);
+        string certCName = "cert1";
+        InstallTestCertInScope cert1("CN=" + certCName);
 
         X509PubKey::SPtr certIssuerPubKey = make_shared<X509PubKey>(cert1.CertContext());
         Thumbprint::SPtr certIssuerThumbprint;
@@ -1086,12 +1086,12 @@ namespace Transport
         Trace.WriteInfo(TraceType, "only add issuer stores");
         {
             SecurityConfig::X509NameMap remoteNames;
-            remoteNames.Add(certCName, L"");
+            remoteNames.Add(certCName, "");
 
             SecurityConfig::IssuerStoreKeyValueMap issuerMap;
-            issuerMap.Add(certCName, L"My");
+            issuerMap.Add(certCName, "My");
 
-            SecuritySettings fromConfig = TTestUtil::CreateX509Settings(L"CN=LocalCommonName", remoteNames, issuerMap);
+            SecuritySettings fromConfig = TTestUtil::CreateX509Settings("CN=LocalCommonName", remoteNames, issuerMap);
             Trace.WriteInfo(TraceType, "FromConfiguration={0}", fromConfig);
 
             Trace.WriteInfo(TraceType, "test name and issuer matching");
@@ -1164,8 +1164,8 @@ namespace Transport
     {
         ENTER;
 
-        wstring cert1CName = L"cert1.X509NameMapTest";
-        InstallTestCertInScope cert1(L"CN=" + cert1CName);
+        string cert1CName = "cert1.X509NameMapTest";
+        InstallTestCertInScope cert1("CN=" + cert1CName);
 
         X509PubKey::SPtr cert1IssuerPubKey = make_shared<X509PubKey>(cert1.CertContext());
         Thumbprint::SPtr cert1IssuerThumbprint;
@@ -1177,7 +1177,7 @@ namespace Transport
             SecurityConfig::X509NameMap remoteNames;
             remoteNames.Add(cert1CName, cert1IssuerPubKey);
 
-            SecuritySettings fromConfig = TTestUtil::CreateX509Settings(L"CN=LocalCommonName", remoteNames);
+            SecuritySettings fromConfig = TTestUtil::CreateX509Settings("CN=LocalCommonName", remoteNames);
             Trace.WriteInfo(TraceType, "FromConfiguration={0}", fromConfig);
 
             Trace.WriteInfo(TraceType, "test name and issuer matching");
@@ -1212,7 +1212,7 @@ namespace Transport
             SecurityConfig::X509NameMap remoteNames;
             remoteNames.Add(cert1CName, cert1IssuerThumbprint);
 
-            SecuritySettings fromConfig = TTestUtil::CreateX509Settings(L"CN=LocalCommonName", remoteNames);
+            SecuritySettings fromConfig = TTestUtil::CreateX509Settings("CN=LocalCommonName", remoteNames);
             Trace.WriteInfo(TraceType, "FromConfiguration={0}", fromConfig);
 
             Trace.WriteInfo(TraceType, "test name and issuer matching");
@@ -1250,7 +1250,7 @@ namespace Transport
             cert1IssuerIdSet.Add(cert1IssuerThumbprint);
             remoteNames.Add(cert1CName, cert1IssuerIdSet);
 
-            SecuritySettings fromConfig = TTestUtil::CreateX509Settings(L"CN=LocalCommonName", remoteNames);
+            SecuritySettings fromConfig = TTestUtil::CreateX509Settings("CN=LocalCommonName", remoteNames);
             Trace.WriteInfo(TraceType, "FromConfiguration={0}", fromConfig);
 
             Trace.WriteInfo(TraceType, "test name and issuer matching");
@@ -1289,11 +1289,11 @@ namespace Transport
         ENTER;
 
         std::shared_ptr<Common::X509FindValue> findValue;
-        X509FindValue::Create(X509FindType::FindByThumbprint, L"b3 44 9b 01 8d 0f 68 39 a2 c5 d6 2b 5b 6c 6a c8 22 b6 f6 62", findValue);
+        X509FindValue::Create(X509FindType::FindByThumbprint, "b3 44 9b 01 8d 0f 68 39 a2 c5 d6 2b 5b 6c 6a c8 22 b6 f6 62", findValue);
         CertContextUPtr cert;
         auto error = CryptoUtility::GetCertificate(
             X509StoreLocation::LocalMachine,
-            L"Root",
+            "Root",
             findValue,
             cert);
         VERIFY_IS_TRUE(error.IsSuccess());
@@ -1302,17 +1302,17 @@ namespace Transport
         error = Thumbprint::Create(cert.get(), certIssuerThumbprint);
         VERIFY_IS_TRUE(error.IsSuccess());
 
-        wstring certCName = L"WinFabric-Test-SAN1-Alice";
-        wstring certIssuerName = L"WinFabric-Test-TA-CA";
+        string certCName = "WinFabric-Test-SAN1-Alice";
+        string certIssuerName = "WinFabric-Test-TA-CA";
         Trace.WriteInfo(TraceType, "only add issuer stores");
         {
             SecurityConfig::X509NameMap remoteNames;
-            remoteNames.Add(certCName, L"");
+            remoteNames.Add(certCName, "");
 
             SecurityConfig::IssuerStoreKeyValueMap issuerMap;
-            issuerMap.Add(certIssuerName, L"Root");
+            issuerMap.Add(certIssuerName, "Root");
 
-            SecuritySettings fromConfig = TTestUtil::CreateX509Settings(L"CN=LocalCommonName", remoteNames, issuerMap);
+            SecuritySettings fromConfig = TTestUtil::CreateX509Settings("CN=LocalCommonName", remoteNames, issuerMap);
             Trace.WriteInfo(TraceType, "FromConfiguration={0}", fromConfig);
 
             Trace.WriteInfo(TraceType, "test name and issuer matching");
@@ -1384,11 +1384,11 @@ namespace Transport
         ENTER;
 
         std::shared_ptr<Common::X509FindValue> findValue;
-        X509FindValue::Create(X509FindType::FindByThumbprint, L"b3 44 9b 01 8d 0f 68 39 a2 c5 d6 2b 5b 6c 6a c8 22 b6 f6 62", findValue);
+        X509FindValue::Create(X509FindType::FindByThumbprint, "b3 44 9b 01 8d 0f 68 39 a2 c5 d6 2b 5b 6c 6a c8 22 b6 f6 62", findValue);
         CertContextUPtr cert;
         auto error = CryptoUtility::GetCertificate(
             X509StoreLocation::LocalMachine,
-            L"Root",
+            "Root",
             findValue,
             cert);
         VERIFY_IS_TRUE(error.IsSuccess());
@@ -1398,11 +1398,11 @@ namespace Transport
         VERIFY_IS_TRUE(error.IsSuccess());
 
         std::shared_ptr<Common::X509FindValue> findValue2;
-        X509FindValue::Create(X509FindType::FindByThumbprint, L"bc 21 ae 9f 0b 88 cf 6e a9 b4 d6 23 3f 97 2a 60 63 b2 25 a9", findValue2);
+        X509FindValue::Create(X509FindType::FindByThumbprint, "bc 21 ae 9f 0b 88 cf 6e a9 b4 d6 23 3f 97 2a 60 63 b2 25 a9", findValue2);
         CertContextUPtr cert2;
         error = CryptoUtility::GetCertificate(
             X509StoreLocation::LocalMachine,
-            L"Root",
+            "Root",
             findValue,
             cert2);
         VERIFY_IS_TRUE(error.IsSuccess());
@@ -1411,20 +1411,20 @@ namespace Transport
         error = Thumbprint::Create(cert2.get(), certIssuerThumbprint2);
         VERIFY_IS_TRUE(error.IsSuccess());
 
-        wstring certCName = L"WinFabric-Test-SAN1-Alice";
+        string certCName = "WinFabric-Test-SAN1-Alice";
 
-        wstring certIssuerName = L"WinFabric-Test-TA-CA";
-        wstring certIssuerName2 = L"WinFabric-Test-Expired";
+        string certIssuerName = "WinFabric-Test-TA-CA";
+        string certIssuerName2 = "WinFabric-Test-Expired";
         Trace.WriteInfo(TraceType, "only add issuer stores");
         {
             SecurityConfig::X509NameMap remoteNames;
-            remoteNames.Add(certCName, L"");
+            remoteNames.Add(certCName, "");
 
             SecurityConfig::IssuerStoreKeyValueMap issuerMap;
-            issuerMap.Add(certIssuerName, L"Root");
-            issuerMap.Add(certIssuerName2, L"Root");
+            issuerMap.Add(certIssuerName, "Root");
+            issuerMap.Add(certIssuerName2, "Root");
 
-            SecuritySettings fromConfig = TTestUtil::CreateX509Settings(L"CN=LocalCommonName", remoteNames, issuerMap);
+            SecuritySettings fromConfig = TTestUtil::CreateX509Settings("CN=LocalCommonName", remoteNames, issuerMap);
             Trace.WriteInfo(TraceType, "FromConfiguration={0}", fromConfig);
 
             Trace.WriteInfo(TraceType, "test name and issuer matching");
@@ -1542,11 +1542,11 @@ namespace Transport
         ENTER;
 
         std::shared_ptr<Common::X509FindValue> findValue;
-        X509FindValue::Create(X509FindType::FindByThumbprint, L"b3 44 9b 01 8d 0f 68 39 a2 c5 d6 2b 5b 6c 6a c8 22 b6 f6 62", findValue);
+        X509FindValue::Create(X509FindType::FindByThumbprint, "b3 44 9b 01 8d 0f 68 39 a2 c5 d6 2b 5b 6c 6a c8 22 b6 f6 62", findValue);
         CertContextUPtr cert;
         auto error = CryptoUtility::GetCertificate(
             X509StoreLocation::LocalMachine,
-            L"Root",
+            "Root",
             findValue,
             cert);
         VERIFY_IS_TRUE(error.IsSuccess());
@@ -1555,17 +1555,17 @@ namespace Transport
         error = Thumbprint::Create(cert.get(), certIssuerThumbprint);
         VERIFY_IS_TRUE(error.IsSuccess());
 
-        wstring certCName = L"WinFabric-Test-SAN1-Alice";
+        string certCName = "WinFabric-Test-SAN1-Alice";
         Trace.WriteInfo(TraceType, "only add issuer stores");
         {
             SecurityConfig::X509NameMap remoteNames;
-            remoteNames.Add(certCName, L"");
+            remoteNames.Add(certCName, "");
 
             // verify for empty issuer store name. In this case all certs in ROOT should be white-listed
             SecurityConfig::IssuerStoreKeyValueMap issuerMap;
-            issuerMap.Add(L"", L"Root");
+            issuerMap.Add("", "Root");
 
-            SecuritySettings fromConfig = TTestUtil::CreateX509Settings(L"CN=LocalCommonName", remoteNames, issuerMap);
+            SecuritySettings fromConfig = TTestUtil::CreateX509Settings("CN=LocalCommonName", remoteNames, issuerMap);
             Trace.WriteInfo(TraceType, "FromConfiguration={0}", fromConfig);
 
             Trace.WriteInfo(TraceType, "test name and issuer matching");
@@ -1636,20 +1636,20 @@ namespace Transport
     {
         ENTER;
 
-        wstring certCName = L"WinFabric-Test-SAN1-Alice";
-        wstring certCNIssuerName = L"Dummy-Issuer-Not-PresentInStore";
+        string certCName = "WinFabric-Test-SAN1-Alice";
+        string certCNIssuerName = "Dummy-Issuer-Not-PresentInStore";
         Thumbprint::SPtr certIssuerThumbprint;
-        auto err = Thumbprint::Create(L"ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f1", certIssuerThumbprint);
+        auto err = Thumbprint::Create("ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f1", certIssuerThumbprint);
         Trace.WriteInfo(TraceType, "only add issuer stores");
         {
             SecurityConfig::X509NameMap remoteNames;
-            remoteNames.Add(certCName, L"");
+            remoteNames.Add(certCName, "");
 
             // Verify if issuer is not present in store. By design we will whitelist everything.
             SecurityConfig::IssuerStoreKeyValueMap issuerMap;
-            issuerMap.Add(certCNIssuerName, L"Root");
+            issuerMap.Add(certCNIssuerName, "Root");
 
-            SecuritySettings fromConfig = TTestUtil::CreateX509Settings(L"CN=LocalCommonName", remoteNames, issuerMap);
+            SecuritySettings fromConfig = TTestUtil::CreateX509Settings("CN=LocalCommonName", remoteNames, issuerMap);
             Trace.WriteInfo(TraceType, "FromConfiguration={0}", fromConfig);
 
             Trace.WriteInfo(TraceType, "test name and issuer matching");
@@ -1695,11 +1695,11 @@ namespace Transport
         Trace.WriteInfo(TraceType, "testing conversion");
         {
             X509FindValue::SPtr findValue;
-            wstring const primaryValue = L"primaryValue";
+            string const primaryValue = "primaryValue";
             auto error = X509FindValue::Create(X509FindType::FindBySubjectName, primaryValue, findValue);
             VERIFY_IS_TRUE(error.IsSuccess());
 
-            pair<wstring, wstring> values = findValue->ToStrings();
+            pair<string, string> values = findValue->ToStrings();
             VERIFY_ARE_EQUAL2(values.first, primaryValue);
             VERIFY_IS_TRUE(values.second.empty());
         }
@@ -1707,13 +1707,13 @@ namespace Transport
         Trace.WriteInfo(TraceType, "testing conversion 2");
         {
             X509FindValue::SPtr findValue;
-            wstring const primaryValue = L"primaryValue";
-            wstring const secondaryValue = L"secondaryValue";
+            string const primaryValue = "primaryValue";
+            string const secondaryValue = "secondaryValue";
             auto error = X509FindValue::Create(X509FindType::FindBySubjectName, primaryValue, secondaryValue, findValue);
             VERIFY_IS_TRUE(error.IsSuccess());
             VERIFY_IS_TRUE(findValue->Secondary() != nullptr);
 
-            pair<wstring, wstring> values = findValue->ToStrings();
+            pair<string, string> values = findValue->ToStrings();
             Trace.WriteInfo(TraceType, "first = {0}, second = {1}", values.first, values.second);
             VERIFY_ARE_EQUAL2(values.first, primaryValue);
             VERIFY_ARE_EQUAL2(values.second, secondaryValue);
@@ -1722,13 +1722,13 @@ namespace Transport
         Trace.WriteInfo(TraceType, "testing conversion 3");
         {
             X509FindValue::SPtr findValue;
-            wstring const primaryValue = L"ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f1";
-            wstring const secondaryValue = L"ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f2";
+            string const primaryValue = "ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f1";
+            string const secondaryValue = "ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff f2";
             auto error = X509FindValue::Create(X509FindType::FindByThumbprint, primaryValue, secondaryValue, findValue);
             VERIFY_IS_TRUE(error.IsSuccess());
             VERIFY_IS_TRUE(findValue->Secondary() != nullptr);
 
-            pair<wstring, wstring> values = findValue->ToStrings();
+            pair<string, string> values = findValue->ToStrings();
             Trace.WriteInfo(TraceType, "first = {0}, second = {1}", values.first, values.second);
 
             Thumbprint t1;
@@ -1750,12 +1750,12 @@ namespace Transport
 
         Trace.WriteInfo(TraceType, "testing secondary subject name");
         {
-            wstring commonNameExpected = L"WinFabric-Test-SAN1-Alice";
+            string commonNameExpected = "WinFabric-Test-SAN1-Alice";
             SecuritySettings sslSettings = TTestUtil::CreateX509Settings(
-                L"CN=NoSuchNameExistOrWeFail",
-                L"CN=" + commonNameExpected,
-                L"AnyNonEmptyStringIsFine",
-                L"");
+                "CN=NoSuchNameExistOrWeFail",
+                "CN=" + commonNameExpected,
+                "AnyNonEmptyStringIsFine",
+                "");
 
             Trace.WriteInfo(TraceType, "sslSettings={0}", sslSettings);
 
@@ -1781,12 +1781,12 @@ namespace Transport
 
         Trace.WriteInfo(TraceType, "testing secondary thumbprint");
         {
-            wstring expectedThumbprintString = L"78 12 20 5a 39 d2 23 76 da a0 37 f0 5a ed e3 60 1a 7e 64 bf";
+            string expectedThumbprintString = "78 12 20 5a 39 d2 23 76 da a0 37 f0 5a ed e3 60 1a 7e 64 bf";
             SecuritySettings sslSettings = TTestUtil::CreateX509Settings2(
-                L"ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff",
+                "ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff",
                 expectedThumbprintString,
-                L"AnyNonEmptyStringIsFine",
-                L"");
+                "AnyNonEmptyStringIsFine",
+                "");
 
             FABRIC_SECURITY_CREDENTIALS publicType = {};
             ScopedHeap heap;
@@ -1813,17 +1813,17 @@ namespace Transport
     {
         ENTER;
 
-        wstring certCName = L"WinFabric-Test-SAN1-Alice";
-        wstring certIssuerName = L"WinFabric-Test-TA-CA";
+        string certCName = "WinFabric-Test-SAN1-Alice";
+        string certIssuerName = "WinFabric-Test-TA-CA";
         Trace.WriteInfo(TraceType, "only add issuer stores");
         {
             SecurityConfig::X509NameMap remoteNames;
-            remoteNames.Add(certCName, L"");
+            remoteNames.Add(certCName, "");
 
             SecurityConfig::IssuerStoreKeyValueMap issuerMap;
-            issuerMap.Add(certIssuerName, L"Root");
+            issuerMap.Add(certIssuerName, "Root");
 
-            SecuritySettings fromConfig = TTestUtil::CreateX509Settings(L"CN=LocalCommonName", remoteNames, issuerMap);
+            SecuritySettings fromConfig = TTestUtil::CreateX509Settings("CN=LocalCommonName", remoteNames, issuerMap);
             Trace.WriteInfo(TraceType, "FromConfiguration={0}", fromConfig);
 
             SecuritySettings sslSettings = fromConfig;
@@ -1834,10 +1834,10 @@ namespace Transport
 
     BOOST_AUTO_TEST_CASE(SslEqualityTest2)
     {
-        wstring thumbprintStr1 = L"b3 44 9b 01 8d 0f 68 39 a2 c5 d6 2b 5b 6c 6a c8 22 b6 f6 62";
-        wstring thumbprintStr11 = L"b3449b018d0f6839a2c5d62b5b6c6ac822b6f662";
-        wstring thumbprintStr2 = L"b4 44 9b 01 8d 0f 68 39 a2 c5 d6 2b 5b 6c 6a c8 22 b6 f6 62";
-        wstring thumbprintStr3 = L"85 37 1c a6 e5 50 14 3d ce 28 03 47 1b de 3a 09 e8 f8 77 0f";
+        string thumbprintStr1 = "b3 44 9b 01 8d 0f 68 39 a2 c5 d6 2b 5b 6c 6a c8 22 b6 f6 62";
+        string thumbprintStr11 = "b3449b018d0f6839a2c5d62b5b6c6ac822b6f662";
+        string thumbprintStr2 = "b4 44 9b 01 8d 0f 68 39 a2 c5 d6 2b 5b 6c 6a c8 22 b6 f6 62";
+        string thumbprintStr3 = "85 37 1c a6 e5 50 14 3d ce 28 03 47 1b de 3a 09 e8 f8 77 0f";
 
         Thumbprint thumbprint1;
         VERIFY_IS_TRUE(thumbprint1.Initialize(thumbprintStr1).IsSuccess());
@@ -1851,7 +1851,7 @@ namespace Transport
             VERIFY_IS_FALSE(thumbprintTmp2 == thumbprintTmp);
 
             Thumbprint thumbprintTmp3;
-            VERIFY_IS_TRUE(thumbprintTmp3.Initialize(wformatString(thumbprintTmp2)).IsSuccess());
+            VERIFY_IS_TRUE(thumbprintTmp3.Initialize(formatString(thumbprintTmp2)).IsSuccess());
             VERIFY_IS_TRUE(thumbprintTmp3 == thumbprint1);
         }
 
@@ -1895,7 +1895,7 @@ namespace Transport
         VERIFY_IS_TRUE(thumbprintSet.Contains(*thumbprint3));
 
         // Test on SSL settings
-        SecuritySettings sslSettings0 = TTestUtil::CreateX509Settings(L"CN=WinFabric-Test-SAN1-Alice", L"RemoteName", thumbprintStr1);
+        SecuritySettings sslSettings0 = TTestUtil::CreateX509Settings("CN=WinFabric-Test-SAN1-Alice", "RemoteName", thumbprintStr1);
 
         SecuritySettings sslSettings = sslSettings0;
         VERIFY_IS_TRUE(sslSettings == sslSettings0);
@@ -1906,53 +1906,53 @@ namespace Transport
         auto thumbprint2SPtr = make_shared<Thumbprint>(thumbprint2);
         VERIFY_IS_TRUE(!sslSettings.RemoteX509Names().CBegin()->second.Contains(thumbprint2SPtr));
 
-        SecuritySettings sslSettings2 = TTestUtil::CreateX509Settings(L"CN=WinFabric-Test-SAN1-Alice", L"RemoteName", thumbprintStr11);
+        SecuritySettings sslSettings2 = TTestUtil::CreateX509Settings("CN=WinFabric-Test-SAN1-Alice", "RemoteName", thumbprintStr11);
         VERIFY_IS_TRUE(sslSettings2 == sslSettings0);
 
-        SecuritySettings sslSettings3 = TTestUtil::CreateX509Settings(L"CN=WinFabric-Test-SAN1-Alice", L"RemoteName", thumbprintStr2);
+        SecuritySettings sslSettings3 = TTestUtil::CreateX509Settings("CN=WinFabric-Test-SAN1-Alice", "RemoteName", thumbprintStr2);
         VERIFY_IS_TRUE(sslSettings3 != sslSettings0);
         VERIFY_IS_TRUE(sslSettings3 != sslSettings2);
 
         SecuritySettings sslSettings4 = TTestUtil::CreateX509Settings(
-            L"CN=WinFabric-Test-SAN1-Alice",
-            L"RemoteName",
-            thumbprintStr11 + L"," + thumbprintStr3);
+            "CN=WinFabric-Test-SAN1-Alice",
+            "RemoteName",
+            thumbprintStr11 + "," + thumbprintStr3);
 
         VERIFY_IS_TRUE(sslSettings4 != sslSettings0);
         VERIFY_IS_TRUE(sslSettings4 != sslSettings2);
         VERIFY_IS_TRUE(sslSettings4 != sslSettings3);
 
         SecuritySettings sslSettings5 = TTestUtil::CreateX509Settings(
-            L"CN=WinFabric-Test-SAN1-Alice",
-            L"RemoteName",
+            "CN=WinFabric-Test-SAN1-Alice",
+            "RemoteName",
             thumbprintStr1);
 
         SecuritySettings sslSettings6 = TTestUtil::CreateX509Settings(
-            L"CN=WinFabric-Test-SAN1-Alice",
-            L"RemoteName",
+            "CN=WinFabric-Test-SAN1-Alice",
+            "RemoteName",
             thumbprintStr2);
 
         VERIFY_IS_TRUE(sslSettings5 != sslSettings6);
 
         SecuritySettings sslSettings7 = TTestUtil::CreateX509Settings(
-            L"CN=WinFabric-Test-SAN1-Alice",
-            L"rn1,rn2,rn3",
+            "CN=WinFabric-Test-SAN1-Alice",
+            "rn1,rn2,rn3",
             thumbprintStr1);
 
         SecuritySettings sslSettings8 = TTestUtil::CreateX509Settings(
-            L"CN=WinFabric-Test-SAN1-Alice",
-            L"rn2,rn1,rn3",
+            "CN=WinFabric-Test-SAN1-Alice",
+            "rn2,rn1,rn3",
             thumbprintStr11);
 
         VERIFY_IS_TRUE(sslSettings7 == sslSettings8);
 
         // Test on claims settings
         SecuritySettings claimsSettings;
-        VERIFY_IS_TRUE(SecuritySettings::CreateClaimTokenClient(L"t1=v1", thumbprintStr1, L"someName", L"", wformatString(ProtectionLevel::EncryptAndSign), claimsSettings).IsSuccess());
+        VERIFY_IS_TRUE(SecuritySettings::CreateClaimTokenClient("t1=v1", thumbprintStr1, "someName", "", formatString(ProtectionLevel::EncryptAndSign), claimsSettings).IsSuccess());
 
         // Test on Kerberos settings
         SecuritySettings kerbSettings;
-        VERIFY_IS_TRUE(SecuritySettings::CreateKerberos(L"someSpn", L"someClient", wformatString(ProtectionLevel::EncryptAndSign), kerbSettings).IsSuccess());
+        VERIFY_IS_TRUE(SecuritySettings::CreateKerberos("someSpn", "someClient", formatString(ProtectionLevel::EncryptAndSign), kerbSettings).IsSuccess());
     }
 
     BOOST_AUTO_TEST_CASE(RoleClaimsTest)
@@ -1960,30 +1960,30 @@ namespace Transport
         ENTER;
 
         SecuritySettings::RoleClaims rc1;
-        rc1.AddClaim(L"t1", L"v1");
-        rc1.AddClaim(L"t1", L"V2");
-        rc1.AddClaim(L"T2", L"v3");
-        rc1.AddClaim(L"t1", L"v1");
+        rc1.AddClaim("t1", "v1");
+        rc1.AddClaim("t1", "V2");
+        rc1.AddClaim("T2", "v3");
+        rc1.AddClaim("t1", "v1");
         Trace.WriteInfo(TraceType, "rc1: {0}", rc1);
 
         SecuritySettings::RoleClaims rc2;
-        rc2.AddClaim(L"t2", L"V3");
-        rc2.AddClaim(L"T1", L"v2");
-        rc2.AddClaim(L"t1", L"v1");
+        rc2.AddClaim("t2", "V3");
+        rc2.AddClaim("T1", "v2");
+        rc2.AddClaim("t1", "v1");
         Trace.WriteInfo(TraceType, "rc2: {0}", rc2);
 
         VERIFY_IS_TRUE(rc1 == rc2);
 
         SecuritySettings::RoleClaims rc3;
-        rc3.AddClaim(L"t1", L"V2");
-        rc3.AddClaim(L"T2", L"v3");
+        rc3.AddClaim("t1", "V2");
+        rc3.AddClaim("T2", "v3");
         Trace.WriteInfo(TraceType, "rc3: {0}", rc3);
 
         VERIFY_IS_TRUE(rc1 != rc3);
         VERIFY_IS_TRUE(rc2 != rc3);
 
         SecuritySettings::RoleClaims rc4;
-        rc4.AddClaim(L"t2", L"v2");
+        rc4.AddClaim("t2", "v2");
         Trace.WriteInfo(TraceType, "rc4: {0}", rc4);
 
         SecuritySettings::RoleClaims rcNull1;
@@ -2004,8 +2004,8 @@ namespace Transport
         ENTER;
 
         SecuritySettings::RoleClaims rc1;
-        rc1.AddClaim(L"t1", L"v1");
-        rc1.AddClaim(L"t2", L"v2");
+        rc1.AddClaim("t1", "v1");
+        rc1.AddClaim("t2", "v2");
 
         SecuritySettings::RoleClaimsOrList roleClaimsOrList;
         roleClaimsOrList.AddRoleClaims(rc1);
@@ -2017,22 +2017,22 @@ namespace Transport
         VERIFY_IS_TRUE(roleClaimsOrList.Value().size() == 1);
 
         SecuritySettings::RoleClaims rc2;
-        rc2.AddClaim(L"t2", L"V2");
+        rc2.AddClaim("t2", "V2");
         roleClaimsOrList.AddRoleClaims(rc2);
         Trace.WriteInfo(TraceType, "added rc2({0}), roleClaimsOrList: {1}", rc2, roleClaimsOrList);
         VERIFY_IS_TRUE(roleClaimsOrList.Value().size() == 1);
 
         SecuritySettings::RoleClaims rc3;
-        rc3.AddClaim(L"T1", L"v1");
-        rc3.AddClaim(L"T2", L"V2");
-        rc3.AddClaim(L"T3", L"V3");
+        rc3.AddClaim("T1", "v1");
+        rc3.AddClaim("T2", "V2");
+        rc3.AddClaim("T3", "V3");
         roleClaimsOrList.AddRoleClaims(rc3);
         Trace.WriteInfo(TraceType, "added rc3({0}), roleClaimsOrList: {1}", rc3, roleClaimsOrList);
         VERIFY_IS_TRUE(roleClaimsOrList.Value().size() == 1);
 
         SecuritySettings::RoleClaims rc4;
-        rc4.AddClaim(L"t4", L"v4");
-        rc4.AddClaim(L"t3", L"v3");
+        rc4.AddClaim("t4", "v4");
+        rc4.AddClaim("t3", "v3");
         roleClaimsOrList.AddRoleClaims(rc4);
         Trace.WriteInfo(TraceType, "added rc4({0}), roleClaimsOrList: {1}", rc4, roleClaimsOrList);
         VERIFY_IS_TRUE(roleClaimsOrList.Value().size() == 2);
@@ -2064,22 +2064,22 @@ namespace Transport
         Trace.WriteInfo(TraceType, "client settings");
         SecuritySettings clientSettings1;
         auto error = SecuritySettings::CreateClaimTokenClient(
-            L"c1=v1",
-            L"",
-            L"server1,server2",
-            L"",
-            wformatString(ProtectionLevel::EncryptAndSign),
+            "c1=v1",
+            "",
+            "server1,server2",
+            "",
+            formatString(ProtectionLevel::EncryptAndSign),
             clientSettings1);
 
         VERIFY_IS_TRUE(error.IsSuccess());
 
         SecuritySettings clientSettings2;
         error = SecuritySettings::CreateClaimTokenClient(
-            L"c1=v1",
-            L"",
-            L"server2,SERVER1",
-            L"",
-            wformatString(ProtectionLevel::EncryptAndSign),
+            "c1=v1",
+            "",
+            "server2,SERVER1",
+            "",
+            formatString(ProtectionLevel::EncryptAndSign),
             clientSettings2);
 
         VERIFY_IS_TRUE(error.IsSuccess());
@@ -2087,11 +2087,11 @@ namespace Transport
 
         SecuritySettings clientSettings3;
         error = SecuritySettings::CreateClaimTokenClient(
-            L"c1=v1",
-            L"",
-            L"server2",
-            L"",
-            wformatString(ProtectionLevel::EncryptAndSign),
+            "c1=v1",
+            "",
+            "server2",
+            "",
+            formatString(ProtectionLevel::EncryptAndSign),
             clientSettings3);
 
         VERIFY_IS_TRUE(error.IsSuccess());
@@ -2099,11 +2099,11 @@ namespace Transport
 
         SecuritySettings clientSettings4;
         error = SecuritySettings::CreateClaimTokenClient(
-            L"c1=v1",
-            L"",
-            L"server1,server2,server3",
-            L"",
-            wformatString(ProtectionLevel::EncryptAndSign),
+            "c1=v1",
+            "",
+            "server1,server2,server3",
+            "",
+            formatString(ProtectionLevel::EncryptAndSign),
             clientSettings4);
 
         VERIFY_IS_TRUE(error.IsSuccess());
@@ -2111,23 +2111,23 @@ namespace Transport
 
         Trace.WriteInfo(TraceType, "server settings");
 
-        SecuritySettings serverSettings1 = TTestUtil::CreateX509Settings(L"CN=WinFabric-Test-SAN1-Alice");
-        error = serverSettings1.EnableClaimBasedAuthOnClients(L"c1=v1&&c2=v2||c3=v3", L"c0=v0");
+        SecuritySettings serverSettings1 = TTestUtil::CreateX509Settings("CN=WinFabric-Test-SAN1-Alice");
+        error = serverSettings1.EnableClaimBasedAuthOnClients("c1=v1&&c2=v2||c3=v3", "c0=v0");
         VERIFY_IS_TRUE(error.IsSuccess());
 
-        SecuritySettings serverSettings2 = TTestUtil::CreateX509Settings(L"CN=WinFabric-Test-SAN1-Alice");
-        error = serverSettings2.EnableClaimBasedAuthOnClients(L"c3=v3 || c2=V2 && C1=v1", L"c0=v0");
+        SecuritySettings serverSettings2 = TTestUtil::CreateX509Settings("CN=WinFabric-Test-SAN1-Alice");
+        error = serverSettings2.EnableClaimBasedAuthOnClients("c3=v3 || c2=V2 && C1=v1", "c0=v0");
         VERIFY_IS_TRUE(error.IsSuccess());
         VERIFY_IS_TRUE(serverSettings1 == serverSettings2);
 
-        SecuritySettings serverSettings3 = TTestUtil::CreateX509Settings(L"CN=WinFabric-Test-SAN1-Alice");
-        error = serverSettings3.EnableClaimBasedAuthOnClients(L"c3=v3 || c2=v2", L"c0=v0");
+        SecuritySettings serverSettings3 = TTestUtil::CreateX509Settings("CN=WinFabric-Test-SAN1-Alice");
+        error = serverSettings3.EnableClaimBasedAuthOnClients("c3=v3 || c2=v2", "c0=v0");
         VERIFY_IS_TRUE(error.IsSuccess());
         VERIFY_IS_TRUE(serverSettings1 != serverSettings3);
         VERIFY_IS_TRUE(serverSettings2 != serverSettings3);
 
-        SecuritySettings serverSettings4 = TTestUtil::CreateX509Settings(L"CN=WinFabric-Test-SAN1-Alice");
-        error = serverSettings4.EnableClaimBasedAuthOnClients(L"c1=v1&&c2=v2", L"c0=v0");
+        SecuritySettings serverSettings4 = TTestUtil::CreateX509Settings("CN=WinFabric-Test-SAN1-Alice");
+        error = serverSettings4.EnableClaimBasedAuthOnClients("c1=v1&&c2=v2", "c0=v0");
         VERIFY_IS_TRUE(error.IsSuccess());
         VERIFY_IS_TRUE(serverSettings1 != serverSettings4);
         VERIFY_IS_TRUE(serverSettings2 != serverSettings4);
@@ -2142,18 +2142,18 @@ namespace Transport
 
         SecuritySettings settings1;
         auto error = SecuritySettings::CreateKerberos(
-            L"WindowsFabric/a.b.c",
-            L"redmond\\u1,redmond\\u2",
-            wformatString(ProtectionLevel::EncryptAndSign),
+            "WindowsFabric/a.b.c",
+            "redmond\\u1,redmond\\u2",
+            formatString(ProtectionLevel::EncryptAndSign),
             settings1);
 
         VERIFY_IS_TRUE(error.IsSuccess());
 
         SecuritySettings settings2;
         error = SecuritySettings::CreateKerberos(
-            L"WindowsFabric/a.b.c",
-            L"redmond\\U2,redmond\\u1",
-            wformatString(ProtectionLevel::EncryptAndSign),
+            "WindowsFabric/a.b.c",
+            "redmond\\U2,redmond\\u1",
+            formatString(ProtectionLevel::EncryptAndSign),
             settings2);
 
         VERIFY_IS_TRUE(error.IsSuccess());
@@ -2161,9 +2161,9 @@ namespace Transport
 
         SecuritySettings settings3;
         error = SecuritySettings::CreateKerberos(
-            L"WindowsFabric/a.b.c",
-            L"redmond\\u2",
-            wformatString(ProtectionLevel::EncryptAndSign),
+            "WindowsFabric/a.b.c",
+            "redmond\\u2",
+            formatString(ProtectionLevel::EncryptAndSign),
             settings3);
 
         VERIFY_IS_TRUE(error.IsSuccess());
@@ -2171,9 +2171,9 @@ namespace Transport
 
         SecuritySettings settings4;
         error = SecuritySettings::CreateKerberos(
-            L"WindowsFabric/a.b.c",
-            L"redmond\\u2,redmond\\u1,redmond\\u3",
-            wformatString(ProtectionLevel::EncryptAndSign),
+            "WindowsFabric/a.b.c",
+            "redmond\\u2,redmond\\u1,redmond\\u3",
+            formatString(ProtectionLevel::EncryptAndSign),
             settings4);
 
         VERIFY_IS_TRUE(error.IsSuccess());
@@ -2187,30 +2187,30 @@ namespace Transport
         ENTER;
 
         SecuritySettings settings1 = TTestUtil::CreateX509Settings(
-            L"CN=WinFabric-Test-SAN1-Alice",
-            L"WinFabricRing.Rings.WinFabricTestDomain.com");
+            "CN=WinFabric-Test-SAN1-Alice",
+            "WinFabricRing.Rings.WinFabricTestDomain.com");
 
         SecuritySettings settings2 = TTestUtil::CreateX509Settings(
-            L"CN=WinFabric-Test-SAN1-Alice",
-            L"WinFabricRing.Rings.WinFabricTestDomain.com");
+            "CN=WinFabric-Test-SAN1-Alice",
+            "WinFabricRing.Rings.WinFabricTestDomain.com");
 
         VERIFY_IS_TRUE(settings1 == settings2);
 
         SecuritySettings settings3 = TTestUtil::CreateX509Settings(
-            L"CN=WinFabric-Test-SAN1-Alice",
-            L"WinFabricRing.Rings.WinFabricTestDomain.com,SomethingExtra");
+            "CN=WinFabric-Test-SAN1-Alice",
+            "WinFabricRing.Rings.WinFabricTestDomain.com,SomethingExtra");
 
         VERIFY_IS_TRUE(settings1 != settings3);
 
         SecuritySettings settings4 = TTestUtil::CreateX509Settings(
-            L"CN=WinFabric-Test-SAN1-Alice",
-            L"SomethingExtra,WinFabricRing.Rings.WinFabricTestDomain.com");
+            "CN=WinFabric-Test-SAN1-Alice",
+            "SomethingExtra,WinFabricRing.Rings.WinFabricTestDomain.com");
 
         VERIFY_IS_TRUE(settings3 == settings4);
 
         SecuritySettings settings5 = TTestUtil::CreateX509Settings(
-            L"CN=WinFabric-Test-SAN1-Alice",
-            L"SomethingExtra,WinFabricRing.Rings.WinFabricTestDomain.com,Extra2");
+            "CN=WinFabric-Test-SAN1-Alice",
+            "SomethingExtra,WinFabricRing.Rings.WinFabricTestDomain.com,Extra2");
 
         VERIFY_IS_TRUE(settings3 != settings5);
 
@@ -2223,14 +2223,14 @@ namespace Transport
 
         // basic test
         {
-            SecuritySettings serverSecuritySettings0 = TTestUtil::CreateX509Settings(L"CN=WinFabric-Test-SAN1-Alice");
+            SecuritySettings serverSecuritySettings0 = TTestUtil::CreateX509Settings("CN=WinFabric-Test-SAN1-Alice");
 
-            const wstring claimTypes[] = {L"Type0", L"Type1"};
-            const wstring claimValues[] = {L"Value0", L"Value1"};
+            const string claimTypes[] = {L"Type0", "Type1"};
+            const string claimValues[] = {L"Value0", "Value1"};
 
             auto error = serverSecuritySettings0.EnableClaimBasedAuthOnClients(
-                claimTypes[0] + L"=" + claimValues[0],
-                claimTypes[1] + L"=" + claimValues[1]);
+                claimTypes[0] + "=" + claimValues[0],
+                claimTypes[1] + "=" + claimValues[1]);
 
             VERIFY_IS_TRUE(error.IsSuccess());
 
@@ -2240,9 +2240,9 @@ namespace Transport
             VERIFY_IS_TRUE(serverSecuritySettings == serverSecuritySettings0);
 
             SecuritySettings::RoleClaims rc0;
-            rc0.AddClaim(L"type0", L"value0");
+            rc0.AddClaim("type0", "value0");
             SecuritySettings::RoleClaims rc1;
-            rc1.AddClaim(L"type1", L"value1");
+            rc1.AddClaim("type1", "value1");
 
             VERIFY_IS_TRUE(serverSecuritySettings.AdminClientClaims().Value().size() == 1);
 
@@ -2265,27 +2265,27 @@ namespace Transport
             VERIFY_IS_TRUE(!empty.IsInRole(serverSecuritySettings.ClientClaims()));
 
             SecuritySettings::RoleClaims rc2;
-            rc2.AddClaim(L"type3", L"value3");
+            rc2.AddClaim("type3", "value3");
             VERIFY_IS_TRUE(!rc2.IsInRole(serverSecuritySettings.AdminClientClaims()));
             VERIFY_IS_TRUE(!rc2.IsInRole(serverSecuritySettings.ClientClaims()));
 
-            rc2.AddClaim(L"type0", L"value0");
-            rc2.AddClaim(L"type1", L"value1");
+            rc2.AddClaim("type0", "value0");
+            rc2.AddClaim("type1", "value1");
             VERIFY_IS_TRUE(rc2.IsInRole(serverSecuritySettings.AdminClientClaims()));
             VERIFY_IS_TRUE(rc2.IsInRole(serverSecuritySettings.ClientClaims()));
 
-            rc2.AddClaim(L"type2", L"value2");
+            rc2.AddClaim("type2", "value2");
             VERIFY_IS_TRUE(rc2.IsInRole(serverSecuritySettings.AdminClientClaims()));
             VERIFY_IS_TRUE(rc2.IsInRole(serverSecuritySettings.ClientClaims()));
         }
 
         // test combinations
         {
-            SecuritySettings serverSecuritySettings = TTestUtil::CreateX509Settings(L"CN=WinFabric-Test-SAN1-Alice");
+            SecuritySettings serverSecuritySettings = TTestUtil::CreateX509Settings("CN=WinFabric-Test-SAN1-Alice");
 
             auto error = serverSecuritySettings.EnableClaimBasedAuthOnClients(
-                L"t1 = v1&&t2=v2 && t3 = v3 || t4 = v4 || t2 = v2 && t1 = v1 && t2=v2",
-                L"t5 = v5 || t6 = v6 && t7=v7 || t2=v2 && t3=v3 && t1=v1 && t4=v4 || t5 = vv || t6 = v6 && t5 = vv");
+                "t1 = v1&&t2=v2 && t3 = v3 || t4 = v4 || t2 = v2 && t1 = v1 && t2=v2",
+                "t5 = v5 || t6 = v6 && t7=v7 || t2=v2 && t3=v3 && t1=v1 && t4=v4 || t5 = vv || t6 = v6 && t5 = vv");
 
             VERIFY_IS_TRUE(error.IsSuccess());
 
@@ -2293,27 +2293,27 @@ namespace Transport
             VERIFY_IS_TRUE(serverSecuritySettings.ClientClaims().Value().size() == 5);
 
             SecuritySettings::RoleClaims rc1;
-            rc1.AddClaim(L"t2", L"V2");
+            rc1.AddClaim("t2", "V2");
             VERIFY_IS_TRUE(!rc1.IsInRole(serverSecuritySettings.ClientClaims()));
 
-            rc1.AddClaim(L"t1", L"v1");
+            rc1.AddClaim("t1", "v1");
             VERIFY_IS_TRUE(rc1.IsInRole(serverSecuritySettings.ClientClaims()));
 
-            rc1.AddClaim(L"tx", L"vx");
+            rc1.AddClaim("tx", "vx");
             VERIFY_IS_TRUE(rc1.IsInRole(serverSecuritySettings.ClientClaims()));
             VERIFY_IS_TRUE(!rc1.IsInRole(serverSecuritySettings.AdminClientClaims()));
 
-            rc1.AddClaim(L"t3", L"v3");
+            rc1.AddClaim("t3", "v3");
             VERIFY_IS_TRUE(!rc1.IsInRole(serverSecuritySettings.AdminClientClaims()));
 
-            rc1.AddClaim(L"t4", L"v4");
+            rc1.AddClaim("t4", "v4");
             VERIFY_IS_TRUE(rc1.IsInRole(serverSecuritySettings.AdminClientClaims()));
 
-            rc1.AddClaim(L"ty", L"vy");
+            rc1.AddClaim("ty", "vy");
             VERIFY_IS_TRUE(rc1.IsInRole(serverSecuritySettings.AdminClientClaims()));
 
             SecuritySettings::RoleClaims rc2;
-            rc2.AddClaim(L"t5", L"vv");
+            rc2.AddClaim("t5", "vv");
             VERIFY_IS_TRUE(rc1.IsInRole(serverSecuritySettings.ClientClaims()));
             VERIFY_IS_TRUE(rc1.IsInRole(serverSecuritySettings.AdminClientClaims()));
         }
@@ -2321,66 +2321,66 @@ namespace Transport
         // security provider negative test
         {
             SecuritySettings serverSecuritySettings;
-            auto error = SecuritySettings::CreateNegotiateServer(L"", serverSecuritySettings);
+            auto error = SecuritySettings::CreateNegotiateServer("", serverSecuritySettings);
             VERIFY_IS_TRUE(error.IsSuccess());
 
             error = serverSecuritySettings.EnableClaimBasedAuthOnClients(
-                L"ClaimType1=ClaimValue1",
-                L"ClaimType2=ClaimValue2");
+                "ClaimType1=ClaimValue1",
+                "ClaimType2=ClaimValue2");
 
             VERIFY_IS_TRUE(error.IsError(ErrorCodeValue::InvalidArgument));
         }
 
         // negative tests with invalid claim strings
         {
-            SecuritySettings serverSecuritySettings = TTestUtil::CreateX509Settings(L"CN=WinFabric-Test-SAN1-Alice");
+            SecuritySettings serverSecuritySettings = TTestUtil::CreateX509Settings("CN=WinFabric-Test-SAN1-Alice");
 
-            auto error = serverSecuritySettings.EnableClaimBasedAuthOnClients(L"||", L"");
+            auto error = serverSecuritySettings.EnableClaimBasedAuthOnClients("||", "");
             VERIFY_IS_TRUE(error.IsError(ErrorCodeValue::InvalidArgument));
 
-            error = serverSecuritySettings.EnableClaimBasedAuthOnClients(L"||||", L"");
+            error = serverSecuritySettings.EnableClaimBasedAuthOnClients("||||", "");
             VERIFY_IS_TRUE(error.IsError(ErrorCodeValue::InvalidArgument));
 
-            error = serverSecuritySettings.EnableClaimBasedAuthOnClients(L"|| ||", L"");
+            error = serverSecuritySettings.EnableClaimBasedAuthOnClients("|| ||", "");
             VERIFY_IS_TRUE(error.IsError(ErrorCodeValue::InvalidArgument));
 
-            error = serverSecuritySettings.EnableClaimBasedAuthOnClients(L"&&", L"");
+            error = serverSecuritySettings.EnableClaimBasedAuthOnClients("&&", "");
             VERIFY_IS_TRUE(error.IsError(ErrorCodeValue::InvalidArgument));
 
-            error = serverSecuritySettings.EnableClaimBasedAuthOnClients(L"&&&&", L"");
+            error = serverSecuritySettings.EnableClaimBasedAuthOnClients("&&&&", "");
             VERIFY_IS_TRUE(error.IsError(ErrorCodeValue::InvalidArgument));
 
-            error = serverSecuritySettings.EnableClaimBasedAuthOnClients(L"&& &&", L"");
+            error = serverSecuritySettings.EnableClaimBasedAuthOnClients("&& &&", "");
             VERIFY_IS_TRUE(error.IsError(ErrorCodeValue::InvalidArgument));
 
-            error = serverSecuritySettings.EnableClaimBasedAuthOnClients(L"&&||", L"");
+            error = serverSecuritySettings.EnableClaimBasedAuthOnClients("&&||", "");
             VERIFY_IS_TRUE(error.IsError(ErrorCodeValue::InvalidArgument));
 
-            error = serverSecuritySettings.EnableClaimBasedAuthOnClients(L" && || ", L"");
+            error = serverSecuritySettings.EnableClaimBasedAuthOnClients(" && || ", "");
             VERIFY_IS_TRUE(error.IsError(ErrorCodeValue::InvalidArgument));
 
-            error = serverSecuritySettings.EnableClaimBasedAuthOnClients(L"||&&", L"");
+            error = serverSecuritySettings.EnableClaimBasedAuthOnClients("||&&", "");
             VERIFY_IS_TRUE(error.IsError(ErrorCodeValue::InvalidArgument));
 
-            error = serverSecuritySettings.EnableClaimBasedAuthOnClients(L"|| &&", L"");
+            error = serverSecuritySettings.EnableClaimBasedAuthOnClients("|| &&", "");
             VERIFY_IS_TRUE(error.IsError(ErrorCodeValue::InvalidArgument));
 
-            error = serverSecuritySettings.EnableClaimBasedAuthOnClients(L"t=", L"t1=v1");
+            error = serverSecuritySettings.EnableClaimBasedAuthOnClients("t=", "t1=v1");
             VERIFY_IS_TRUE(error.IsError(ErrorCodeValue::InvalidArgument));
 
-            error = serverSecuritySettings.EnableClaimBasedAuthOnClients(L"=v", L"t1=v1");
+            error = serverSecuritySettings.EnableClaimBasedAuthOnClients("=v", "t1=v1");
             VERIFY_IS_TRUE(error.IsError(ErrorCodeValue::InvalidArgument));
 
-            error = serverSecuritySettings.EnableClaimBasedAuthOnClients(L"=", L"t1=v1");
+            error = serverSecuritySettings.EnableClaimBasedAuthOnClients("=", "t1=v1");
             VERIFY_IS_TRUE(error.IsError(ErrorCodeValue::InvalidArgument));
 
-            error = serverSecuritySettings.EnableClaimBasedAuthOnClients(L" = ", L"t1=v1");
+            error = serverSecuritySettings.EnableClaimBasedAuthOnClients(" = ", "t1=v1");
             VERIFY_IS_TRUE(error.IsError(ErrorCodeValue::InvalidArgument));
 
-            error = serverSecuritySettings.EnableClaimBasedAuthOnClients(L"= && = || =", L"t1=v1");
+            error = serverSecuritySettings.EnableClaimBasedAuthOnClients("= && = || =", "t1=v1");
             VERIFY_IS_TRUE(error.IsError(ErrorCodeValue::InvalidArgument));
 
-            error = serverSecuritySettings.EnableClaimBasedAuthOnClients(L"t= && =v || x=y", L"t1=v1");
+            error = serverSecuritySettings.EnableClaimBasedAuthOnClients("t= && =v || x=y", "t1=v1");
             VERIFY_IS_TRUE(error.IsError(ErrorCodeValue::InvalidArgument));
         }
 
@@ -2393,7 +2393,7 @@ namespace Transport
 
         Trace.WriteInfo(TraceType, "test duplicate names without issuer pinning");
         SecurityConfig::X509NameMap nameMap;
-        auto name = L"testName";
+        auto name = "testName";
         nameMap.Add(name);
         nameMap.Add(name);
 
@@ -2412,8 +2412,8 @@ namespace Transport
 
         Trace.WriteInfo(TraceType, "test duplicate names, one with issuer pinning, one without issuer");
         SecurityConfig::X509NameMap nameMap;
-        auto name = L"testName";
-        auto issuerCertThumbprint = L"99 88 77 66 55 44 33 22 11 00 aa bb cc dd ee ff 00 11 22 33";
+        auto name = "testName";
+        auto issuerCertThumbprint = "99 88 77 66 55 44 33 22 11 00 aa bb cc dd ee ff 00 11 22 33";
         nameMap.Add(name, issuerCertThumbprint);
         nameMap.Add(name);
 
@@ -2433,9 +2433,9 @@ namespace Transport
         Trace.WriteInfo(TraceType, "test duplicate names, one with issuer pinning, one without");
 
         SecurityConfig::X509NameMap nameMap;
-        auto name = L"testName";
+        auto name = "testName";
         nameMap.Add(name);
-        auto issuerCertThumbprint = L"99 88 77 66 55 44 33 22 11 00 aa bb cc dd ee ff 00 11 22 33";
+        auto issuerCertThumbprint = "99 88 77 66 55 44 33 22 11 00 aa bb cc dd ee ff 00 11 22 33";
         nameMap.Add(name, issuerCertThumbprint);
 
         VERIFY_IS_TRUE(nameMap.Size() == 1);
@@ -2454,8 +2454,8 @@ namespace Transport
         Trace.WriteInfo(TraceType, "test duplicate names, both with the same issuer pinning");
 
         SecurityConfig::X509NameMap nameMap;
-        auto name = L"testName";
-        auto issuerCertThumbprint = L"99 88 77 66 55 44 33 22 11 00 aa bb cc dd ee ff 00 11 22 33";
+        auto name = "testName";
+        auto issuerCertThumbprint = "99 88 77 66 55 44 33 22 11 00 aa bb cc dd ee ff 00 11 22 33";
         nameMap.Add(name, issuerCertThumbprint);
         nameMap.Add(name, issuerCertThumbprint);
 
@@ -2480,11 +2480,11 @@ namespace Transport
         Trace.WriteInfo(TraceType, "test duplicate names, both with different issuer pinning");
 
         SecurityConfig::X509NameMap nameMap;
-        auto name = L"testName";
-        auto issuerCertThumbprint1 = L"99 88 77 66 55 44 33 22 11 00 aa bb cc dd ee ff 00 11 22 33";
+        auto name = "testName";
+        auto issuerCertThumbprint1 = "99 88 77 66 55 44 33 22 11 00 aa bb cc dd ee ff 00 11 22 33";
         nameMap.Add(name, issuerCertThumbprint1);
 
-        auto issuerCertThumbprint2 = L"aa 88 77 66 55 44 33 22 11 00 aa bb cc dd ee ff 00 11 22 bb";
+        auto issuerCertThumbprint2 = "aa 88 77 66 55 44 33 22 11 00 aa bb cc dd ee ff 00 11 22 bb";
         nameMap.Add(name, issuerCertThumbprint2);
 
         VERIFY_IS_TRUE(nameMap.Size() == 1);
@@ -2509,9 +2509,9 @@ namespace Transport
     BOOST_AUTO_TEST_SUITE_END()
 
     void SecuritySettingsTest::RoundTripTest(
-        wstring const & certIssuerThumbprints,
-        wstring const & remoteCertThumbprnits,
-        wstring const & findValueSecondary,
+        string const & certIssuerThumbprints,
+        string const & remoteCertThumbprnits,
+        string const & findValueSecondary,
         X509FindType::Enum findType)
     {
         {
