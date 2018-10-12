@@ -7,23 +7,34 @@
 
 namespace PyHost
 {
-	class PyInterpreter
-	{
-	public:
-		//
-		// C++ -> Python
-		//
-		static void Execute(
+
+#define DECLARE_PY_CALLBACK( Name, ... ) \
+    using Name##Callback = std::function<Common::ErrorCode( __VA_ARGS__ )>; \
+    void Register_##Name(Name##Callback const &); \
+
+    class PyInterpreter
+    {
+    public:
+        //
+        // C++ -> Python
+        //
+        Common::ErrorCode Execute(
             std::string const & moduleName, 
             std::string const & funcName, 
             std::vector<std::string> const & args);
 
-	public:
-		//
-		// Python -> C++
-		//
-		using SetNodeIdOwnershipCallback = std::function<void(std::string const &, std::string const &)>;
+        Common::ErrorCode ExecuteIfFound(
+            std::string const & moduleName, 
+            std::string const & funcName, 
+            std::vector<std::string> const & args);
 
-		void Register_SetNodeIdOwnership(SetNodeIdOwnershipCallback const &);
-	};
+    public:
+        //
+        // Python -> C++
+        //
+
+        DECLARE_PY_CALLBACK( SetNodeIdOwnership, std::string const &, std::string const & )
+        DECLARE_PY_CALLBACK( Broadcast, std::string const & )
+        DECLARE_PY_CALLBACK( Query, std::string const &, std::string & )
+    };
 }

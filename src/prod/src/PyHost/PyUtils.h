@@ -19,4 +19,17 @@ namespace PyHost
         static void CheckPyErrAndThrow(std::string && debugTag);
     };
 
+#define TRY_PARSE_PY_STRING( Input ) \
+        string parsed_##Input; \
+        { \
+            auto parseError = StringUtility::LpcwstrToWstring2( Input, false, parsed_##Input ); \
+            if (!parseError.IsSuccess()) \
+            { \
+                auto msg = formatString("Function '{0}': Parse({1}, __out {2}) failed: {3}", __FUNCTION__, #Input, parsed_##Input, parseError); \
+                Trace.WriteWarning("PyUtils", "{0}", msg); \
+                PyErr_SetString(PyExc_RuntimeError, msg.c_str()); \
+                return NULL; \
+            } \
+        } \
+
 }

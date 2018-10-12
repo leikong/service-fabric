@@ -109,7 +109,9 @@ namespace Transport
             // Central Secret Service
             CSS = 48,
 
-            EndValidEnum = 49,
+            PyHost = 49,
+
+            EndValidEnum = 50,
 
             // !!! Please add new actor values above this !!!
             FirstValidEnum = Empty,

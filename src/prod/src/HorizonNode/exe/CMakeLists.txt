@@ -2,7 +2,9 @@ include_directories(".")
 
 set(exe_Horizon "Horizon.exe" CACHE STRING "Horizon node executable")
 
-add_executable(${exe_Horizon} ../Main.cpp)
+add_executable(${exe_Horizon} 
+    ../Main.cpp
+    ../Node.cpp)
 
 set_target_properties(${exe_Horizon} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_DIR}) 
 set_target_properties(${exe_Horizon} PROPERTIES LINK_FLAGS "-stdlib=libc++")

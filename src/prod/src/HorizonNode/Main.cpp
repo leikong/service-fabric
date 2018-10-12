@@ -18,9 +18,9 @@ StringLiteral const TraceComponent("Main");
 
 const size_t MaxArgLen = 128;
 
-void OnRoutingTokenChanged(shared_ptr<FederationSubsystem> const & fs)
+void OnRoutingTokenChanged()
 {
-    PyHost_OnRoutingTokenChanged(fs);
+    PyHost_OnRoutingTokenChanged();
 }
 
 int main(int argc, char* argv[])
@@ -84,12 +84,12 @@ int main(int argc, char* argv[])
 
     printf("Created FederationSubsystem \n");
 
-    PyHost_Initialize();
+    PyHost_Initialize(federation);
 
     printf("Initialized Python host\n");
 
     auto unusedHandlerId = federation->RegisterRoutingTokenChangedEvent(
-        [federation](EventArgs const &) { OnRoutingTokenChanged(federation); });
+        [federation](EventArgs const &) { OnRoutingTokenChanged(); });
 
     AutoResetEvent event(false);
 

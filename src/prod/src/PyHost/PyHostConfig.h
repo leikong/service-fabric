@@ -12,6 +12,6 @@ namespace PyHost
         DECLARE_SINGLETON_COMPONENT_CONFIG(PyHostConfig, "PyHost")
 
         // TODO: currently only for testing
-        INTERNAL_CONFIG_ENTRY(std::string, "PyHost", ModuleName, "", Common::ConfigEntryUpgradePolicy::Dynamic)
+        INTERNAL_CONFIG_ENTRY(std::string, "PyHost", ModuleNames, "", Common::ConfigEntryUpgradePolicy::Dynamic)
     };
 }

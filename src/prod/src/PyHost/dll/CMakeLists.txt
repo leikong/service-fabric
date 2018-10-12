@@ -1,4 +1,5 @@
 set( SOURCES
+    ../BroadcastMessageBody.cpp
     ../Host.cpp
     ../PyHostConfig.cpp
     ../PyInterpreter.cpp

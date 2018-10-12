@@ -92,6 +92,8 @@ namespace Transport
             // Central Secret Service
             case CSS: w << "CSS"; return;            
 
+            case PyHost: w << "PyHost"; return;            
+
             // Test
             case WindowsFabricTestApi: w << "WindowsFabricTestApi"; return;
             case GenericTestActor: w << "GenericTestActor"; return;

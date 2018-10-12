@@ -5,20 +5,23 @@
 
 #pragma once
 
-namespace PyHost
+namespace HorizonNode
 {
-    class Host
+    class Node
     {
     public:
-        Host();
 
-        Common::ErrorCode Initialize(std::shared_ptr<Federation::FederationSubsystem> const &);
-        Common::ErrorCode OnRoutingTokenChanged();
-        Common::ErrorCode OnBroadcast(Transport::MessageUPtr &);
+        Node(Federation::NodeConfig const &);
+    
+        // TODO: Synchronous for now since this is only called from Main.cpp
+        //       though all new async code should start using coroutines
+        //       rather than the begin/end pattern
+        //
+        Common::ErrorCode Open();
 
     private:
         class Impl;
 
         std::shared_ptr<Impl> impl_;
     };
-}
+};
