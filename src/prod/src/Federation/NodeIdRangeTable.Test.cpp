@@ -163,20 +163,20 @@ namespace FederationUnitTests
     {
         NodeIdRangeTable table;
 
-        vector<pair<wstring, wstring>> nodeIdRanges;
-        nodeIdRanges.push_back(make_pair(L"80000000000000000000000000002801", L"8"));
-        nodeIdRanges.push_back(make_pair(L"9", L"18"));
-        nodeIdRanges.push_back(make_pair(L"39", L"48"));
-        nodeIdRanges.push_back(make_pair(L"49", L"58"));
-        nodeIdRanges.push_back(make_pair(L"19", L"28"));
-        nodeIdRanges.push_back(make_pair(L"29", L"38"));
-        nodeIdRanges.push_back(make_pair(L"881", L"3000"));
-        nodeIdRanges.push_back(make_pair(L"89", L"c8"));
-        nodeIdRanges.push_back(make_pair(L"79", L"88"));
-        nodeIdRanges.push_back(make_pair(L"69", L"78"));
-        nodeIdRanges.push_back(make_pair(L"59", L"68"));
-        nodeIdRanges.push_back(make_pair(L"c9", L"880"));
-        nodeIdRanges.push_back(make_pair(L"3001", L"80000000000000000000000000002800"));
+        vector<pair<string, string>> nodeIdRanges;
+        nodeIdRanges.push_back(make_pair("80000000000000000000000000002801", "8"));
+        nodeIdRanges.push_back(make_pair("9", "18"));
+        nodeIdRanges.push_back(make_pair("39", "48"));
+        nodeIdRanges.push_back(make_pair("49", "58"));
+        nodeIdRanges.push_back(make_pair("19", "28"));
+        nodeIdRanges.push_back(make_pair("29", "38"));
+        nodeIdRanges.push_back(make_pair("881", "3000"));
+        nodeIdRanges.push_back(make_pair("89", "c8"));
+        nodeIdRanges.push_back(make_pair("79", "88"));
+        nodeIdRanges.push_back(make_pair("69", "78"));
+        nodeIdRanges.push_back(make_pair("59", "68"));
+        nodeIdRanges.push_back(make_pair("c9", "880"));
+        nodeIdRanges.push_back(make_pair("3001", "80000000000000000000000000002800"));
 
         size_t size = nodeIdRanges.size();
         size_t current = 0;

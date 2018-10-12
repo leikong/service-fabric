@@ -39,61 +39,61 @@ class DomRoot;
 
 
 //*** Defintions of reserved XML text values
-#define KXmlNs L"xsi"
+#define KXmlNs "xsi"
     #define SizeOfKXmlNs 3
-#define KXmlTypeName L"type"
+#define KXmlTypeName "type"
     #define SizeOfKXmlTypeName 4
 
-#define KXmlCommonTypeAttr L" " KXmlNs L":" KXmlTypeName L"=\""
+#define KXmlCommonTypeAttr " " KXmlNs ":" KXmlTypeName "=\""
 
-#define KtlXmlTypePrefix        L"ktl:"
+#define KtlXmlTypePrefix        "ktl:"
     #define SizeOfKtlXmlTypePrefix 4
 
 //** Supported type names
-#define KXmlTypeNameLONG        L"ktl:LONG"
+#define KXmlTypeNameLONG        "ktl:LONG"
     #define SizeOfKXmlTypeNameLONG 8
 
-#define KXmlTypeNameULONG       L"ktl:ULONG"
+#define KXmlTypeNameULONG       "ktl:ULONG"
     #define SizeOfKXmlTypeNameULONG 9
 
-#define KXmlTypeNameLONGLONG    L"ktl:LONGLONG"
+#define KXmlTypeNameLONGLONG    "ktl:LONGLONG"
     #define SizeOfKXmlTypeNameLONGLONG 12
 
-#define KXmlTypeNameULONGLONG   L"ktl:ULONGLONG"
+#define KXmlTypeNameULONGLONG   "ktl:ULONGLONG"
     #define SizeOfKXmlTypeNameULONGLONG 13
 
-#define KXmlTypeNameGUID        L"ktl:GUID"
+#define KXmlTypeNameGUID        "ktl:GUID"
     #define SizeOfKXmlTypeNameGUID 8
 
-#define KXmlTypeNameSTRING      L"ktl:STRING"
+#define KXmlTypeNameSTRING      "ktl:STRING"
     #define SizeOfKXmlTypeNameSTRING 10
 
-#define KXmlTypeNameURI           L"ktl:URI"
+#define KXmlTypeNameURI           "ktl:URI"
     #define SizeOfKXmlTypeNameURI 7
 
-#define KXmlTypeNameDURATION      L"ktl:DURATION"
+#define KXmlTypeNameDURATION      "ktl:DURATION"
     #define SizeOfKXmlTypeNameDURATION 12
 
-#define KXmlTypeNameDATETIME      L"ktl:DATETIME"
+#define KXmlTypeNameDATETIME      "ktl:DATETIME"
     #define SizeOfKXmlTypeNameDATETIME 12
 
-#define KXmlTypeNameBOOLEAN      L"ktl:BOOLEAN"
+#define KXmlTypeNameBOOLEAN      "ktl:BOOLEAN"
     #define SizeOfKXmlTypeNameBOOLEAN 11
 
 
 
 //** Supported type attribute strings
-#define KXmlTypeAttrLONG (KXmlCommonTypeAttr KXmlTypeNameLONG L"\"")
-#define KXmlTypeAttrULONG (KXmlCommonTypeAttr KXmlTypeNameULONG L"\"")
-#define KXmlTypeAttrLONGLONG (KXmlCommonTypeAttr KXmlTypeNameLONGLONG L"\"")
-#define KXmlTypeAttrULONGLONG (KXmlCommonTypeAttr KXmlTypeNameULONGLONG L"\"")
-#define KXmlTypeAttrGUID (KXmlCommonTypeAttr KXmlTypeNameGUID L"\"")
-#define KXmlTypeAttrSTRING (KXmlCommonTypeAttr KXmlTypeNameSTRING L"\"")
+#define KXmlTypeAttrLONG (KXmlCommonTypeAttr KXmlTypeNameLONG "\"")
+#define KXmlTypeAttrULONG (KXmlCommonTypeAttr KXmlTypeNameULONG "\"")
+#define KXmlTypeAttrLONGLONG (KXmlCommonTypeAttr KXmlTypeNameLONGLONG "\"")
+#define KXmlTypeAttrULONGLONG (KXmlCommonTypeAttr KXmlTypeNameULONGLONG "\"")
+#define KXmlTypeAttrGUID (KXmlCommonTypeAttr KXmlTypeNameGUID "\"")
+#define KXmlTypeAttrSTRING (KXmlCommonTypeAttr KXmlTypeNameSTRING "\"")
 
-#define KXmlTypeAttrURI      (KXmlCommonTypeAttr KXmlTypeNameURI L"\"")
-#define KXmlTypeAttrDURATION (KXmlCommonTypeAttr KXmlTypeNameDURATION L"\"")
-#define KXmlTypeAttrDATETIME (KXmlCommonTypeAttr KXmlTypeNameDATETIME L"\"")
-#define KXmlTypeAttrBOOLEAN  (KXmlCommonTypeAttr KXmlTypeNameBOOLEAN L"\"")
+#define KXmlTypeAttrURI      (KXmlCommonTypeAttr KXmlTypeNameURI "\"")
+#define KXmlTypeAttrDURATION (KXmlCommonTypeAttr KXmlTypeNameDURATION "\"")
+#define KXmlTypeAttrDATETIME (KXmlCommonTypeAttr KXmlTypeNameDATETIME "\"")
+#define KXmlTypeAttrBOOLEAN  (KXmlCommonTypeAttr KXmlTypeNameBOOLEAN "\"")
 
 
 
@@ -113,7 +113,7 @@ public:
 
 private:        // KIOutoutStream
     NTSTATUS
-    Put(__in WCHAR Value) override;
+    Put(__in CHAR Value) override;
 
     NTSTATUS
     Put(__in LONG Value) override;
@@ -131,7 +131,7 @@ private:        // KIOutoutStream
     Put(__in GUID& Value) override;
 
     NTSTATUS
-    Put(__in_z const WCHAR* Value) override;
+    Put(__in_z const CHAR* Value) override;
 
     virtual
     NTSTATUS
@@ -165,7 +165,7 @@ private:
     NextBufferAddr();
 
     __inline NTSTATUS
-    AppendToBuffer(__in_ecount(WCSize) WCHAR* Source, __in ULONG WCSize);
+    AppendToBuffer(__in_ecount(WCSize) CHAR* Source, __in ULONG WCSize);
 
 private:
     KBuffer::SPtr       _Buffer;
@@ -182,17 +182,17 @@ public:
     NTSTATUS
     static Create(
         __out SharedWString::SPtr& Result,
-        __in_z const WCHAR* String,
+        __in_z const CHAR* String,
         __in KAllocator& Allocator);
 
     NTSTATUS
     static Create(
         __out SharedWString::SPtr& Result,
-        __in_ecount_z(StringSize) const WCHAR* String,
+        __in_ecount_z(StringSize) const CHAR* String,
         __in ULONG StringSize,
         __in KAllocator& Allocator);
 
-    __inline LPCWSTR
+    __inline LPCSTR
     GetValue()
     {
         return &_Data[0];
@@ -205,7 +205,7 @@ public:
     }
 
     __inline BOOLEAN
-    IsEqual(LPCWSTR To)
+    IsEqual(LPCSTR To)
     {
         if (To == &_Data[0])
         {
@@ -217,7 +217,7 @@ public:
             return _Size == 0;
         }
 
-        return wcscmp(To, &_Data[0]) == 0;
+        return strcmp(To, &_Data[0]) == 0;
     }
 
     __inline BOOLEAN
@@ -229,7 +229,7 @@ public:
             {
                 return TRUE;
             }
-            return memcmp(&_Data[0], &To._Data[0], _Size * sizeof(WCHAR)) == 0;
+            return memcmp(&_Data[0], &To._Data[0], _Size * sizeof(CHAR)) == 0;
         }
 
         return FALSE;
@@ -237,7 +237,7 @@ public:
 
 private:
     USHORT          _Size;
-    WCHAR           _Data[1];
+    CHAR           _Data[1];
 };
 
 //*** Class used to key SharedWString dictionaries
@@ -246,9 +246,9 @@ class SharedWStringKey
 public:
     SharedWStringKey();
 
-    SharedWStringKey(__in_z WCHAR* Init);
+    SharedWStringKey(__in_z CHAR* Init);
 
-    SharedWStringKey(__in WCHAR* Init, ULONG Size);
+    SharedWStringKey(__in CHAR* Init, ULONG Size);
 
     SharedWStringKey(SharedWString& SharedString);
 
@@ -272,7 +272,7 @@ public:
     ULONG
     static HashFunc(const SharedWStringKey& Key);
 
-    __inline WCHAR*
+    __inline CHAR*
     GetString()
     {
         return _String;
@@ -285,7 +285,7 @@ public:
     }
 
 private:
-    WCHAR*          _String;
+    CHAR*          _String;
     USHORT          _Size;
 };
 
@@ -760,9 +760,9 @@ public:
 
     NTSTATUS
     GetOrCreateQName(
-        __in WCHAR* Namespace,
+        __in CHAR* Namespace,
         __in ULONG NamespaceSize,
-        __in WCHAR* Name,
+        __in CHAR* Name,
         __in ULONG NameSize,
         __out NamedDomValue::FQN& Fqn);
 
@@ -819,20 +819,20 @@ private:
 private:    // IHook implementation
     NTSTATUS
     OpenElement(
-        __in_ecount(ElementNsLength) WCHAR* ElementNs, 
+        __in_ecount(ElementNsLength) CHAR* ElementNs, 
         __in ULONG  ElementNsLength, 
-        __in_ecount(ElementNameLength) WCHAR* ElementName, 
+        __in_ecount(ElementNameLength) CHAR* ElementName, 
         __in ULONG  ElementNameLength, 
-        __in_z const WCHAR* StartElementSection);
+        __in_z const CHAR* StartElementSection);
 
     NTSTATUS
     AddAttribute(
         __in BOOLEAN HeaderAttributes,    // Set to true if these are the <?xml header attributes
-        __in_ecount(AttributeNsLength) WCHAR* AttributeNs,
+        __in_ecount(AttributeNsLength) CHAR* AttributeNs,
         __in ULONG  AttributeNsLength,
-        __in_ecount(AttributeNameLength) WCHAR* AttributeName,
+        __in_ecount(AttributeNameLength) CHAR* AttributeName,
         __in ULONG  AttributeNameLength,
-        __in_ecount(ValueLength) WCHAR* Value,
+        __in_ecount(ValueLength) CHAR* Value,
         __in ULONG  ValueLength);
 
     NTSTATUS
@@ -841,7 +841,7 @@ private:    // IHook implementation
     NTSTATUS AddContent(
         __in ULONG  ContentIndex,
         __in ULONG  ContentType,
-        __in_ecount(ContentLength) WCHAR* ContentText,
+        __in_ecount(ContentLength) CHAR* ContentText,
         __in ULONG  ContentLength);
 
     NTSTATUS
@@ -864,15 +864,15 @@ SharedWString::SharedWString()
 }
 
 NTSTATUS
-SharedWString::Create(__out SharedWString::SPtr& Result, __in_z const WCHAR* String, __in KAllocator& Allocator)
+SharedWString::Create(__out SharedWString::SPtr& Result, __in_z const CHAR* String, __in KAllocator& Allocator)
 {
     ULONG       chars = 0;
 
     // BUG: RLH: Not Kernel friendly - possible overflow
-    KInvariant(SizeTToULong(wcslen(String), &chars) == 0);
+    KInvariant(SizeTToULong(strlen(String), &chars) == 0);
     KInvariant(chars <= MAXUSHORT);
 
-    ULONG       size = (ULONG)((chars + 1) * sizeof(WCHAR));
+    ULONG       size = (ULONG)((chars + 1) * sizeof(CHAR));
     HRESULT hr;
     ULONG result;
     hr = ULongAdd(size, sizeof(SharedWString), &result);
@@ -897,12 +897,12 @@ SharedWString::Create(__out SharedWString::SPtr& Result, __in_z const WCHAR* Str
 NTSTATUS
 SharedWString::Create(
     __out SharedWString::SPtr& Result,
-    __in_ecount_z(StringSize) const WCHAR* String,
+    __in_ecount_z(StringSize) const CHAR* String,
     __in ULONG StringSize,
     __in KAllocator& Allocator)
 {
     KInvariant(StringSize <= MAXUSHORT);
-    ULONG       size = (StringSize + 1) * sizeof(WCHAR);
+    ULONG       size = (StringSize + 1) * sizeof(CHAR);
 
     HRESULT hr;
     ULONG result;
@@ -936,13 +936,13 @@ SharedWStringKey::SharedWStringKey()
 {
 }
 
-SharedWStringKey::SharedWStringKey(__in_z WCHAR* Init)
+SharedWStringKey::SharedWStringKey(__in_z CHAR* Init)
 {
     _String = Init;
-    _Size = (USHORT)wcslen(Init);
+    _Size = (USHORT)strlen(Init);
 }
 
-SharedWStringKey::SharedWStringKey(__in WCHAR* Init, ULONG Size)
+SharedWStringKey::SharedWStringKey(__in CHAR* Init, ULONG Size)
 {
     KFatal(Size <= MAXUSHORT);
     _String = Init;
@@ -951,7 +951,7 @@ SharedWStringKey::SharedWStringKey(__in WCHAR* Init, ULONG Size)
 
 SharedWStringKey::SharedWStringKey(SharedWString& SharedString)
 {
-    _String = (WCHAR*)(SharedString.GetValue());
+    _String = (CHAR*)(SharedString.GetValue());
     _Size = SharedString.GetSize();
 }
 
@@ -969,7 +969,7 @@ SharedWStringKey::operator== (const SharedWStringKey& Other) const
         {
             return TRUE;
         }
-        return memcmp(_String, Other._String, _Size * sizeof(WCHAR)) == 0;
+        return memcmp(_String, Other._String, _Size * sizeof(CHAR)) == 0;
     }
 
     return FALSE;
@@ -978,7 +978,7 @@ SharedWStringKey::operator== (const SharedWStringKey& Other) const
 ULONG
 SharedWStringKey::HashFunc(const SharedWStringKey& Key)
 {
-    KMemRef     mRef(Key._Size * sizeof(WCHAR), Key._String);
+    KMemRef     mRef(Key._Size * sizeof(CHAR), Key._String);
     return K_DefaultHashFunction(mRef);
 }
 
@@ -991,22 +991,22 @@ NamedDomValue::FQN::ToStream(KIOutputStream& Output)
 {
     NTSTATUS        status;
 
-    if ((_Namespace != nullptr) && !_Namespace->IsEqual(L""))
+    if ((_Namespace != nullptr) && !_Namespace->IsEqual(""))
     {
-        status = Output.Put((WCHAR*)(_Namespace->GetValue()));
+        status = Output.Put((CHAR*)(_Namespace->GetValue()));
         if (!NT_SUCCESS(status))
         {
             return status;
         }
 
-        status = Output.Put(L':');
+        status = Output.Put(':');
         if (!NT_SUCCESS(status))
         {
             return status;
         }
     }
 
-    return Output.Put((WCHAR*)(_Name->GetValue()));
+    return Output.Put((CHAR*)(_Name->GetValue()));
 }
 
 
@@ -1097,13 +1097,13 @@ DomRoot::GetOrCreateQName(
 
 NTSTATUS
 DomRoot::GetOrCreateQName(
-    __in WCHAR* Namespace,
+    __in CHAR* Namespace,
     __in ULONG NamespaceSize,
-    __in WCHAR* Name,
+    __in CHAR* Name,
     __in ULONG NameSize,
     __out NamedDomValue::FQN& Fqn)
 {
-    WCHAR*              ns = (Namespace == nullptr) ? (WCHAR*)L"" : Namespace;
+    CHAR*              ns = (Namespace == nullptr) ? (CHAR*)L"" : Namespace;
     SharedWStringKey    namespaceKey(ns, NamespaceSize);
     SharedWStringKey    nameKey(Name, NameSize);
 
@@ -1115,9 +1115,9 @@ DomRoot::GetOrCreateQName(
     __in const KIDomNode::QName& QName,
     __out FQN& Fqn)
 {
-    WCHAR*              ns = (QName.Namespace == nullptr) ? (WCHAR*)L"" : (WCHAR*)&QName.Namespace[0];
+    CHAR*              ns = (QName.Namespace == nullptr) ? (CHAR*)L"" : (CHAR*)&QName.Namespace[0];
     SharedWStringKey    namespaceKey(ns);
-    SharedWStringKey    nameKey((WCHAR*)QName.Name);
+    SharedWStringKey    nameKey((CHAR*)QName.Name);
 
     return GetOrCreateQName(namespaceKey, nameKey, Fqn);
 }
@@ -1282,12 +1282,12 @@ DomNode::Create(BOOLEAN IsMutable, FQN& Fqn, DomNode& Parent, DomNode::SPtr& Res
 NTSTATUS
 DomNode::CreateFromBuffer(__in KBuffer::SPtr& Source, __in DomNode::ParserHookBase& ParserHook)
 {
-     if (Source->QuerySize() < sizeof(WCHAR))
+     if (Source->QuerySize() < sizeof(CHAR))
      {
          return STATUS_BUFFER_TOO_SMALL;
      }
 
-     if (*(WCHAR*)(Source->GetBuffer()) != KTextFile::UnicodeBom)
+     if (*(CHAR*)(Source->GetBuffer()) != KTextFile::UnicodeBom)
      {
          // Not flagged as a UNICODE stream
          return STATUS_OBJECT_TYPE_MISMATCH;
@@ -1300,7 +1300,7 @@ DomNode::CreateFromBuffer(__in KBuffer::SPtr& Source, __in DomNode::ParserHookBa
          return status;
      }
 
-     return parser->Parse(((WCHAR*)(Source->GetBuffer())) + 1, Source->QuerySize() - sizeof(WCHAR), ParserHook);
+     return parser->Parse(((CHAR*)(Source->GetBuffer())) + 1, Source->QuerySize() - sizeof(CHAR), ParserHook);
 }
 
 //* Depth first graph enumerator
@@ -1438,7 +1438,7 @@ DomNode::ToStream(__in KIOutputStream& Output)
             NTSTATUS        status = STATUS_SUCCESS;
             for (ULONG ix = 0; ix < Count; ix++)
             {
-                status = _Output->Put(L"   ");
+                status = _Output->Put("   ");
                 if (!NT_SUCCESS(status))
                 {
                     return status;
@@ -1451,7 +1451,7 @@ DomNode::ToStream(__in KIOutputStream& Output)
         NTSTATUS
         OutputElementClosure(NamedDomValue::FQN& Name)
         {
-            NTSTATUS status = _Output->Put(L"</");
+            NTSTATUS status = _Output->Put("</");
             if (!NT_SUCCESS(status))
             {
                 return status;
@@ -1463,7 +1463,7 @@ DomNode::ToStream(__in KIOutputStream& Output)
                 return status;
             }
 
-            return _Output->Put(L'>');
+            return _Output->Put('>');
         }
 
 
@@ -1483,7 +1483,7 @@ DomNode::ToStream(__in KIOutputStream& Output)
                     return status;
                 }
 
-                status = _Output->Put(L'<');
+                status = _Output->Put('<');
                 if (!NT_SUCCESS(status))
                 {
                     return status;
@@ -1501,7 +1501,7 @@ DomNode::ToStream(__in KIOutputStream& Output)
                     return status;
                 }
 
-                status = _Output->Put(L'>');
+                status = _Output->Put('>');
                 if (!NT_SUCCESS(status))
                 {
                     return status;
@@ -1518,7 +1518,7 @@ DomNode::ToStream(__in KIOutputStream& Output)
 
                 if (hasChildren)
                 {
-                    return _Output->Put(L'\n');
+                    return _Output->Put('\n');
                 }
             }
             else
@@ -1539,7 +1539,7 @@ DomNode::ToStream(__in KIOutputStream& Output)
                     return status;
                 }
 
-                return _Output->Put(L'\n');
+                return _Output->Put('\n');
             }
 
             return STATUS_SUCCESS;
@@ -1706,7 +1706,7 @@ DomNode::AttributuesToStream(__in KIOutputStream& Output)
     DomElementAttribute*    currentAttr = _Attributes.PeekHead();
     while (currentAttr != nullptr)
     {
-        status = Output.Put(L' ');
+        status = Output.Put(' ');
         if (!NT_SUCCESS(status))
         {
             return status;
@@ -1718,20 +1718,20 @@ DomNode::AttributuesToStream(__in KIOutputStream& Output)
             return status;
         }
 
-        status = Output.Put(L"=\"");
+        status = Output.Put("=\"");
         if (!NT_SUCCESS(status))
         {
             return status;
         }
 
         KVariant&       attr = currentAttr->GetValue();
-        NTSTATUS        status1 = Output.Put((WCHAR*)attr);
+        NTSTATUS        status1 = Output.Put((CHAR*)attr);
         if (!NT_SUCCESS(status1))
         {
             return status1;
         }
 
-        status1 = Output.Put(L'"');
+        status1 = Output.Put('"');
         if (!NT_SUCCESS(status1))
         {
             return status1;
@@ -2470,11 +2470,11 @@ DomNode::ParserHookBase::~ParserHookBase()
 
 NTSTATUS
 DomNode::ParserHookBase::OpenElement(
-    __in_ecount(ElementNsLength) WCHAR* ElementNs, 
+    __in_ecount(ElementNsLength) CHAR* ElementNs, 
     __in ULONG  ElementNsLength, 
-    __in_ecount(ElementNameLength) WCHAR* ElementName, 
+    __in_ecount(ElementNameLength) CHAR* ElementName, 
     __in ULONG  ElementNameLength, 
-    __in_z const WCHAR* StartElementSection)
+    __in_z const CHAR* StartElementSection)
 {
     NTSTATUS                status = STATUS_SUCCESS;
     NamedDomValue::FQN      elementName;
@@ -2518,11 +2518,11 @@ DomNode::ParserHookBase::OpenElement(
 NTSTATUS
 DomNode::ParserHookBase::AddAttribute(
     __in BOOLEAN HeaderAttributes,    // Set to true if these are the <?xml header attributes
-    __in_ecount(AttributeNsLength) WCHAR* AttributeNs,
+    __in_ecount(AttributeNsLength) CHAR* AttributeNs,
     __in ULONG  AttributeNsLength,
-    __in_ecount(AttributeNameLength) WCHAR* AttributeName,
+    __in_ecount(AttributeNameLength) CHAR* AttributeName,
     __in ULONG  AttributeNameLength,
-    __in_ecount(ValueLength) WCHAR* Value,
+    __in_ecount(ValueLength) CHAR* Value,
     __in ULONG  ValueLength)
 {
     // Drop header attributes
@@ -2535,84 +2535,84 @@ DomNode::ParserHookBase::AddAttribute(
     // Detect reserved attributes
     if ((AttributeNsLength == SizeOfKXmlNs) &&
         (AttributeNameLength == SizeOfKXmlTypeName) &&
-        (memcmp(KXmlNs, AttributeNs, SizeOfKXmlNs * sizeof(WCHAR)) == 0) &&
-        (memcmp(KXmlTypeName, AttributeName, SizeOfKXmlTypeName * sizeof(WCHAR)) == 0))
+        (memcmp(KXmlNs, AttributeNs, SizeOfKXmlNs * sizeof(CHAR)) == 0) &&
+        (memcmp(KXmlTypeName, AttributeName, SizeOfKXmlTypeName * sizeof(CHAR)) == 0))
     {
         // NOTE: Imp is aimed at perf
         if ((ValueLength == SizeOfKXmlTypeNameGUID) &&
-            (memcmp(KXmlTypeNameGUID, Value, SizeOfKXmlTypeNameGUID * sizeof(WCHAR)) == 0))
+            (memcmp(KXmlTypeNameGUID, Value, SizeOfKXmlTypeNameGUID * sizeof(CHAR)) == 0))
         {
             _CurrentNodeType = KVariant::KVariantType::Type_GUID;
             _CurrentNodeTypeDefaulted = FALSE;
             return STATUS_SUCCESS;
         }
         else if ((ValueLength == SizeOfKXmlTypeNameLONG) &&
-                 (memcmp(KXmlTypeNameLONG, Value, SizeOfKXmlTypeNameLONG * sizeof(WCHAR)) == 0))
+                 (memcmp(KXmlTypeNameLONG, Value, SizeOfKXmlTypeNameLONG * sizeof(CHAR)) == 0))
         {
             _CurrentNodeType = KVariant::KVariantType::Type_LONG;
             _CurrentNodeTypeDefaulted = FALSE;
             return STATUS_SUCCESS;
         }
         else if ((ValueLength == SizeOfKXmlTypeNameULONG) &&
-                 (memcmp(KXmlTypeNameULONG, Value, SizeOfKXmlTypeNameULONG * sizeof(WCHAR)) == 0))
+                 (memcmp(KXmlTypeNameULONG, Value, SizeOfKXmlTypeNameULONG * sizeof(CHAR)) == 0))
         {
             _CurrentNodeType = KVariant::KVariantType::Type_ULONG;
             _CurrentNodeTypeDefaulted = FALSE;
             return STATUS_SUCCESS;
         }
         else if ((ValueLength == SizeOfKXmlTypeNameLONGLONG) &&
-                 (memcmp(KXmlTypeNameLONGLONG, Value, SizeOfKXmlTypeNameLONGLONG * sizeof(WCHAR)) == 0))
+                 (memcmp(KXmlTypeNameLONGLONG, Value, SizeOfKXmlTypeNameLONGLONG * sizeof(CHAR)) == 0))
         {
             _CurrentNodeType = KVariant::KVariantType::Type_LONGLONG;
             _CurrentNodeTypeDefaulted = FALSE;
             return STATUS_SUCCESS;
         }
         else if ((ValueLength == SizeOfKXmlTypeNameULONGLONG) &&
-                 (memcmp(KXmlTypeNameULONGLONG, Value, SizeOfKXmlTypeNameULONGLONG * sizeof(WCHAR)) == 0))
+                 (memcmp(KXmlTypeNameULONGLONG, Value, SizeOfKXmlTypeNameULONGLONG * sizeof(CHAR)) == 0))
         {
             _CurrentNodeType = KVariant::KVariantType::Type_ULONGLONG;
             _CurrentNodeTypeDefaulted = FALSE;
             return STATUS_SUCCESS;
         }
         else if ((ValueLength == SizeOfKXmlTypeNameBOOLEAN) &&
-                 (memcmp(KXmlTypeNameBOOLEAN, Value, SizeOfKXmlTypeNameBOOLEAN * sizeof(WCHAR)) == 0))
+                 (memcmp(KXmlTypeNameBOOLEAN, Value, SizeOfKXmlTypeNameBOOLEAN * sizeof(CHAR)) == 0))
         {
             _CurrentNodeType = KVariant::KVariantType::Type_BOOLEAN;
             _CurrentNodeTypeDefaulted = FALSE;
             return STATUS_SUCCESS;
         }
         else if ((ValueLength == SizeOfKXmlTypeNameDURATION) &&
-                 (memcmp(KXmlTypeNameDURATION, Value, SizeOfKXmlTypeNameDURATION * sizeof(WCHAR)) == 0))
+                 (memcmp(KXmlTypeNameDURATION, Value, SizeOfKXmlTypeNameDURATION * sizeof(CHAR)) == 0))
         {
             _CurrentNodeType = KVariant::KVariantType::Type_KDuration;
             _CurrentNodeTypeDefaulted = FALSE;
             return STATUS_SUCCESS;
         }
         else if ((ValueLength == SizeOfKXmlTypeNameDATETIME) &&
-                 (memcmp(KXmlTypeNameDATETIME, Value, SizeOfKXmlTypeNameDATETIME * sizeof(WCHAR)) == 0))
+                 (memcmp(KXmlTypeNameDATETIME, Value, SizeOfKXmlTypeNameDATETIME * sizeof(CHAR)) == 0))
         {
             _CurrentNodeType = KVariant::KVariantType::Type_KDateTime;
             _CurrentNodeTypeDefaulted = FALSE;
             return STATUS_SUCCESS;
         }
         else if ((ValueLength == SizeOfKXmlTypeNameURI) &&
-                 (memcmp(KXmlTypeNameURI, Value, SizeOfKXmlTypeNameURI * sizeof(WCHAR)) == 0))
+                 (memcmp(KXmlTypeNameURI, Value, SizeOfKXmlTypeNameURI * sizeof(CHAR)) == 0))
         {
             _CurrentNodeType = KVariant::KVariantType::Type_KUri_SPtr;
             _CurrentNodeTypeDefaulted = FALSE;
             return STATUS_SUCCESS;
         }
         else if ((ValueLength == SizeOfKXmlTypeNameSTRING) &&
-                 (memcmp(KXmlTypeNameSTRING, Value, SizeOfKXmlTypeNameSTRING * sizeof(WCHAR)) == 0))
+                 (memcmp(KXmlTypeNameSTRING, Value, SizeOfKXmlTypeNameSTRING * sizeof(CHAR)) == 0))
         {
             _CurrentNodeType = KVariant::KVariantType::Type_KString_SPtr;
             _CurrentNodeTypeDefaulted = FALSE;
             return STATUS_SUCCESS;
         }
 
-        __analysis_assume(wcslen(KtlXmlTypePrefix) >= SizeOfKXmlTypeNameLONG);
+        __analysis_assume(strlen(KtlXmlTypePrefix) >= SizeOfKXmlTypeNameLONG);
         if ((ValueLength >= SizeOfKXmlTypeNameLONG) &&
-            (memcmp(KtlXmlTypePrefix, Value, SizeOfKXmlTypeNameLONG * sizeof(WCHAR)) == 0))
+            (memcmp(KtlXmlTypePrefix, Value, SizeOfKXmlTypeNameLONG * sizeof(CHAR)) == 0))
         {
             // invalid reserved ktl:<type>
             return STATUS_INVALID_INFO_CLASS;
@@ -2659,7 +2659,7 @@ NTSTATUS
 DomNode::ParserHookBase::AddContent(
     __in ULONG  ContentIndex,
     __in ULONG  ContentType,
-    __in_ecount(ContentLength) WCHAR* ContentText,
+    __in_ecount(ContentLength) CHAR* ContentText,
     __in ULONG  ContentLength)
 {
     NTSTATUS        status = STATUS_SUCCESS;
@@ -2828,7 +2828,7 @@ DomNode::ParserHookBase::CloseElement(ULONG ElementSectionLength)
     if (_CurrentNodeType == KVariant::KVariantType::Type_KString_SPtr)
     {
         _CurrentNode->_IsValueDefaulted = _CurrentNodeTypeDefaulted;
-        _CurrentNode->GetValue() = KVariant::Create(L"", _Allocator);
+        _CurrentNode->GetValue() = KVariant::Create("", _Allocator);
         NTSTATUS  status = _CurrentNode->GetValue().Status();
         if (!NT_SUCCESS(status))
         {
@@ -3161,10 +3161,10 @@ DomNodeApi::GetValue(__in const KDomPath& Path, __out KVariant& Value)
     // name matches the first token in the path.
     DomNode::SPtr CurrentNode = _BackingNode;
     QName Qn;
-    Qn.Name = (LPWSTR) *ParseOutput[0]._Ident;
+    Qn.Name = (LPSTR) *ParseOutput[0]._Ident;
     if (ParseOutput[0]._NsPrefix)
     {
-        Qn.Namespace = (LPWSTR) *ParseOutput[0]._NsPrefix;
+        Qn.Namespace = (LPSTR) *ParseOutput[0]._NsPrefix;
     }
     if (!CurrentNode->NamedDomValue::GetName().IsEqual(Qn))
     {
@@ -3174,10 +3174,10 @@ DomNodeApi::GetValue(__in const KDomPath& Path, __out KVariant& Value)
     // Check the remaining tokens
     for (ULONG i = 1; i < ParseOutput.Count(); i++)
     {
-        Qn.Name = (LPWSTR) *ParseOutput[i]._Ident;
+        Qn.Name = (LPSTR) *ParseOutput[i]._Ident;
         if (ParseOutput[i]._NsPrefix)
         {
-            Qn.Namespace = (LPWSTR) *ParseOutput[i]._NsPrefix;
+            Qn.Namespace = (LPSTR) *ParseOutput[i]._NsPrefix;
         }
 
         switch (ParseOutput[i]._IdentType)
@@ -3257,10 +3257,10 @@ DomNodeApi::GetNode(__in const KDomPath& Path, KIDomNode::SPtr& TargetNode)
 
     DomNode::SPtr CurrentNode = _BackingNode;
     QName Qn;
-    Qn.Name = (LPWSTR) *ParseOutput[0]._Ident;
+    Qn.Name = (LPSTR) *ParseOutput[0]._Ident;
     if (ParseOutput[0]._NsPrefix)
     {
-        Qn.Namespace = (LPWSTR) *ParseOutput[0]._NsPrefix;
+        Qn.Namespace = (LPSTR) *ParseOutput[0]._NsPrefix;
     }
     if (!CurrentNode->NamedDomValue::GetName().IsEqual(Qn))
     {
@@ -3269,10 +3269,10 @@ DomNodeApi::GetNode(__in const KDomPath& Path, KIDomNode::SPtr& TargetNode)
 
     for (ULONG i = 1; i < ParseOutput.Count(); i++)
     {
-        Qn.Name = (LPWSTR) *ParseOutput[i]._Ident;
+        Qn.Name = (LPSTR) *ParseOutput[i]._Ident;
         if (ParseOutput[i]._NsPrefix)
         {
-            Qn.Namespace = (LPWSTR) *ParseOutput[i]._NsPrefix;
+            Qn.Namespace = (LPSTR) *ParseOutput[i]._NsPrefix;
         }
 
         switch (ParseOutput[i]._IdentType)
@@ -3350,10 +3350,10 @@ DomNodeApi::GetNodes(__in const KDomPath& Path, __out KArray<KIDomNode::SPtr>& R
 
     DomNode::SPtr CurrentNode = _BackingNode;
     QName Qn;
-    Qn.Name = (LPWSTR) *ParseOutput[0]._Ident;
+    Qn.Name = (LPSTR) *ParseOutput[0]._Ident;
     if (ParseOutput[0]._NsPrefix)
     {
-        Qn.Namespace = (LPWSTR) *ParseOutput[0]._NsPrefix;
+        Qn.Namespace = (LPSTR) *ParseOutput[0]._NsPrefix;
     }
     if (!CurrentNode->NamedDomValue::GetName().IsEqual(Qn))
     {
@@ -3384,10 +3384,10 @@ DomNodeApi::GetNodes(__in const KDomPath& Path, __out KArray<KIDomNode::SPtr>& R
     DomNode::SPtr Parent = Alias->GetBackingNode()->_Parent;
 
     // Now we just need the last token name in the path
-    Qn.Name = (LPWSTR) *ParseOutput[ParseOutput.Count()-1]._Ident;
+    Qn.Name = (LPSTR) *ParseOutput[ParseOutput.Count()-1]._Ident;
     if (ParseOutput[ParseOutput.Count()-1]._NsPrefix)
     {
-        Qn.Namespace = (LPWSTR) *ParseOutput[ParseOutput.Count()-1]._NsPrefix;
+        Qn.Namespace = (LPSTR) *ParseOutput[ParseOutput.Count()-1]._NsPrefix;
     }
 
     // Now return the children based on the last token name in the path
@@ -3407,10 +3407,10 @@ DomNodeApi::GetCount(__in const KDomPath& Path, __out ULONG& Count)
 
     DomNode::SPtr CurrentNode = _BackingNode;
     QName Qn;
-    Qn.Name = (LPWSTR) *ParseOutput[0]._Ident;
+    Qn.Name = (LPSTR) *ParseOutput[0]._Ident;
     if (ParseOutput[0]._NsPrefix)
     {
-        Qn.Namespace = (LPWSTR) *ParseOutput[0]._NsPrefix;
+        Qn.Namespace = (LPSTR) *ParseOutput[0]._NsPrefix;
     }
     if (!CurrentNode->NamedDomValue::GetName().IsEqual(Qn))
     {
@@ -3420,10 +3420,10 @@ DomNodeApi::GetCount(__in const KDomPath& Path, __out ULONG& Count)
     ULONG i = 1;
     for ( ; i < ParseOutput.Count(); i++)
     {
-        Qn.Name = (LPWSTR) *ParseOutput[i]._Ident;
+        Qn.Name = (LPSTR) *ParseOutput[i]._Ident;
         if (ParseOutput[i]._NsPrefix)
         {
-            Qn.Namespace = (LPWSTR) *ParseOutput[i]._NsPrefix;
+            Qn.Namespace = (LPSTR) *ParseOutput[i]._NsPrefix;
         }
 
         switch (ParseOutput[i]._IdentType)
@@ -3545,8 +3545,8 @@ DomNodeApi::GetPath(__out KString::SPtr& PathToThis)
                     return STATUS_INTERNAL_ERROR;
                 }
 
-                Tmp.PrependChar(L'[');   // Can't fail
-                Tmp.AppendChar(L']');    // Nor this
+                Tmp.PrependChar('[');   // Can't fail
+                Tmp.AppendChar(']');    // Nor this
 
                 if (!PathToThis->Prepend(Tmp))
                 {
@@ -3560,7 +3560,7 @@ DomNodeApi::GetPath(__out KString::SPtr& PathToThis)
         }
         if (!KStringView(currentName.Namespace).IsEmpty())
         {
-            if (!PathToThis->PrependChar(L':'))
+            if (!PathToThis->PrependChar(':'))
             {
                 return STATUS_INSUFFICIENT_RESOURCES;
             }
@@ -3573,7 +3573,7 @@ DomNodeApi::GetPath(__out KString::SPtr& PathToThis)
         currentNode = currentNode->_Parent;
         if (currentNode)
         {
-            if (!PathToThis->PrependChar(L'/'))
+            if (!PathToThis->PrependChar('/'))
             {
                 return STATUS_INSUFFICIENT_RESOURCES;
             }
@@ -3590,18 +3590,18 @@ DomNodeApi::GetPath(__out KString::SPtr& PathToThis)
 
 
 NTSTATUS
-KIDomNode::ValidateNamespaceAttribute(__in_z LPCWSTR Namespace)
+KIDomNode::ValidateNamespaceAttribute(__in_z LPCSTR Namespace)
 {
     NTSTATUS status = STATUS_SUCCESS;
     KVariant ns;
 
-    status = GetAttribute(QName(L"xmlns"), ns);
+    status = GetAttribute(QName("xmlns"), ns);
     if (!NT_SUCCESS(status))
     {
         return status;
     }
 
-    if (wcscmp((PWSTR)ns, Namespace) != 0)
+    if (strcmp((PWSTR)ns, Namespace) != 0)
     {
         return STATUS_OBJECT_TYPE_MISMATCH;
     }
@@ -3688,7 +3688,7 @@ UnicodeOutputStreamImp::Create(
 __inline NTSTATUS
 UnicodeOutputStreamImp::GuaranteeSpace(ULONG WCSizeNeeded)
 {
-    ULONG   sizeNeeded = (WCSizeNeeded * sizeof(WCHAR)) + _NextOffset;
+    ULONG   sizeNeeded = (WCSizeNeeded * sizeof(CHAR)) + _NextOffset;
 
     if (sizeNeeded > _Buffer->QuerySize())
     {
@@ -3709,7 +3709,7 @@ UnicodeOutputStreamImp::NextBufferAddr()
 }
 
 __inline NTSTATUS
-UnicodeOutputStreamImp::AppendToBuffer(__in_ecount(WCSize) WCHAR* Source, __in ULONG WCSize)
+UnicodeOutputStreamImp::AppendToBuffer(__in_ecount(WCSize) CHAR* Source, __in ULONG WCSize)
 {
     NTSTATUS    status = GuaranteeSpace(WCSize + 1);
     if (!NT_SUCCESS(status))
@@ -3717,8 +3717,8 @@ UnicodeOutputStreamImp::AppendToBuffer(__in_ecount(WCSize) WCHAR* Source, __in U
         return status;
     }
 
-    WCHAR*      base = (WCHAR*)NextBufferAddr();
-    ULONGLONG       bytesToDo = WCSize * sizeof(WCHAR);
+    CHAR*      base = (CHAR*)NextBufferAddr();
+    ULONGLONG       bytesToDo = WCSize * sizeof(CHAR);
     KAssert(bytesToDo <= MAXULONG);
 
     KMemCpySafe(base, (ULONG)bytesToDo, Source, (ULONG)bytesToDo);
@@ -3743,7 +3743,7 @@ UnicodeOutputStreamImp::GetStreamSize()
 
 
 NTSTATUS
-UnicodeOutputStreamImp::Put(__in WCHAR Value)
+UnicodeOutputStreamImp::Put(__in CHAR Value)
 {
     NTSTATUS    status = GuaranteeSpace(1);
     if (!NT_SUCCESS(status))
@@ -3751,10 +3751,10 @@ UnicodeOutputStreamImp::Put(__in WCHAR Value)
         return status;
     }
 
-    KStringView         output((WCHAR*)NextBufferAddr(), 1);
+    KStringView         output((CHAR*)NextBufferAddr(), 1);
     KFatal(output.AppendChar(Value));
 
-    _NextOffset += (output.Length() * sizeof(WCHAR));
+    _NextOffset += (output.Length() * sizeof(CHAR));
     KAssert(_NextOffset <= _Buffer->QuerySize());
 
     return STATUS_SUCCESS;
@@ -3769,10 +3769,10 @@ UnicodeOutputStreamImp::Put(__in LONG Value)
         return status;
     }
 
-    KStringView         output((WCHAR*)NextBufferAddr(), 12);
+    KStringView         output((CHAR*)NextBufferAddr(), 12);
     KFatal(output.FromLONG(Value));
 
-    _NextOffset += (output.Length() * sizeof(WCHAR));
+    _NextOffset += (output.Length() * sizeof(CHAR));
     KAssert(_NextOffset <= _Buffer->QuerySize());
 
     return STATUS_SUCCESS;
@@ -3787,10 +3787,10 @@ UnicodeOutputStreamImp::Put(__in ULONG Value)
         return status;
     }
 
-    KStringView         output((WCHAR*)NextBufferAddr(), 12);
+    KStringView         output((CHAR*)NextBufferAddr(), 12);
     KFatal(output.FromULONG(Value));
 
-    _NextOffset += (output.Length() * sizeof(WCHAR));
+    _NextOffset += (output.Length() * sizeof(CHAR));
     KAssert(_NextOffset <= _Buffer->QuerySize());
     return STATUS_SUCCESS;
 }
@@ -3804,10 +3804,10 @@ UnicodeOutputStreamImp::Put(__in LONGLONG Value)
         return status;
     }
 
-    KStringView         output((WCHAR*)NextBufferAddr(), 21);
+    KStringView         output((CHAR*)NextBufferAddr(), 21);
     KFatal(output.FromLONGLONG(Value));
 
-    _NextOffset += (output.Length() * sizeof(WCHAR));
+    _NextOffset += (output.Length() * sizeof(CHAR));
     KAssert(_NextOffset <= _Buffer->QuerySize());
     return STATUS_SUCCESS;
 }
@@ -3821,10 +3821,10 @@ UnicodeOutputStreamImp::Put(__in ULONGLONG Value)
         return status;
     }
 
-    KStringView         output((WCHAR*)NextBufferAddr(), 21);
+    KStringView         output((CHAR*)NextBufferAddr(), 21);
     KFatal(output.FromULONGLONG(Value));
 
-    _NextOffset += (output.Length() * sizeof(WCHAR));
+    _NextOffset += (output.Length() * sizeof(CHAR));
     KAssert(_NextOffset <= _Buffer->QuerySize());
     return STATUS_SUCCESS;
 }
@@ -3838,26 +3838,26 @@ UnicodeOutputStreamImp::Put(__in GUID& Value)
         return status;
     }
 
-    KStringView         output((WCHAR*)NextBufferAddr(), 39);
+    KStringView         output((CHAR*)NextBufferAddr(), 39);
     KFatal(output.FromGUID(Value));
 
-    _NextOffset += (output.Length() * sizeof(WCHAR));
+    _NextOffset += (output.Length() * sizeof(CHAR));
     KAssert(_NextOffset <= _Buffer->QuerySize());
     return STATUS_SUCCESS;
 }
 
 
 NTSTATUS
-UnicodeOutputStreamImp::Put(__in_z const WCHAR* Value)
+UnicodeOutputStreamImp::Put(__in_z const CHAR* Value)
 {
-    return AppendToBuffer(const_cast<WCHAR*>(Value), (ULONG)wcslen(Value));
+    return AppendToBuffer(const_cast<CHAR*>(Value), (ULONG)strlen(Value));
 }
 
 NTSTATUS
 UnicodeOutputStreamImp::Put(__in KUri::SPtr Value)
 {
     KStringView view = *Value;
-    return AppendToBuffer(PWCHAR(view), view.Length());
+    return AppendToBuffer(PCHAR(view), view.Length());
 }
 
 
@@ -3865,7 +3865,7 @@ NTSTATUS
 UnicodeOutputStreamImp::Put(__in KString::SPtr Value)
 {
     KStringView view = *Value;
-    return AppendToBuffer(PWCHAR(view), view.Length());
+    return AppendToBuffer(PCHAR(view), view.Length());
 }
 
 NTSTATUS
@@ -3878,7 +3878,7 @@ UnicodeOutputStreamImp::Put(__in KDateTime Value)
         return status;
     }
 
-    return AppendToBuffer(PWCHAR(*tmp), tmp->Length());
+    return AppendToBuffer(PCHAR(*tmp), tmp->Length());
 }
 
 NTSTATUS
@@ -3891,7 +3891,7 @@ UnicodeOutputStreamImp::Put(__in KDuration Value)
         return status;
     }
 
-    return AppendToBuffer(PWCHAR(*tmp), tmp->Length());
+    return AppendToBuffer(PCHAR(*tmp), tmp->Length());
 }
 
 NTSTATUS
@@ -3905,7 +3905,7 @@ UnicodeOutputStreamImp::Put(__in BOOLEAN Value)
         return STATUS_INSUFFICIENT_RESOURCES;
     }
 
-    return AppendToBuffer(PWCHAR(*tmp), tmp->Length());
+    return AppendToBuffer(PCHAR(*tmp), tmp->Length());
 }
 
 //*** KDom static class implementation
@@ -4065,7 +4065,7 @@ KDom::ToString(
         return status;
     }
 
-    KStringView xmlStr(PWCHAR(uioStreamBuffer->GetBuffer()), uioStreamBuffer->QuerySize()/2, uioStreamBuffer->QuerySize()/2);
+    KStringView xmlStr(PCHAR(uioStreamBuffer->GetBuffer()), uioStreamBuffer->QuerySize()/2, uioStreamBuffer->QuerySize()/2);
     xmlStr.SkipBOM();
 
     String = KString::Create(xmlStr, Allocator);
@@ -4118,7 +4118,7 @@ KDom::FromString(
         return status;
     }
 
-    KStringView bufferOverlay(PWCHAR(buf->GetBuffer()), allocLength / 2);
+    KStringView bufferOverlay(PCHAR(buf->GetBuffer()), allocLength / 2);
     bufferOverlay.EnsureBOM();
     bufferOverlay.SkipBOM();
     bufferOverlay.CopyFrom(Src);

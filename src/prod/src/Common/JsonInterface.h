@@ -16,8 +16,8 @@ IJsonWriter : public IUnknown
         virtual HRESULT STDMETHODCALLTYPE ObjectEnd() = 0;
         virtual HRESULT STDMETHODCALLTYPE ArrayStart() = 0;
         virtual HRESULT STDMETHODCALLTYPE ArrayEnd() = 0;
-        virtual HRESULT STDMETHODCALLTYPE PropertyName(LPCWSTR pszName) = 0;
-        virtual HRESULT STDMETHODCALLTYPE StringValue(LPCWSTR pszValue) = 0;
+        virtual HRESULT STDMETHODCALLTYPE PropertyName(LPCSTR pszName) = 0;
+        virtual HRESULT STDMETHODCALLTYPE StringValue(LPCSTR pszValue) = 0;
         virtual HRESULT STDMETHODCALLTYPE FragmentValue(LPCSTR pszFragment) = 0;
         virtual HRESULT STDMETHODCALLTYPE IntValue(__int64 nValue) = 0;
         virtual HRESULT STDMETHODCALLTYPE UIntValue(unsigned __int64 nValue) = 0;
@@ -52,8 +52,8 @@ IJsonReader : public IUnknown
         virtual HRESULT STDMETHODCALLTYPE GetNumberValue(DOUBLE* pdblValue) = 0;
         virtual HRESULT STDMETHODCALLTYPE GetFieldNameLength(ULONG* pnLength) = 0;
         virtual HRESULT STDMETHODCALLTYPE GetStringLength(ULONG* pnLength) = 0; 
-        virtual HRESULT STDMETHODCALLTYPE GetFieldName(__in_ecount(nLength) LPWSTR pszBuffer, __in ULONG nLength) = 0;
-        virtual HRESULT STDMETHODCALLTYPE GetStringValue(__in_ecount(nLength) LPWSTR pszBuffer, __in ULONG nLength) = 0;
+        virtual HRESULT STDMETHODCALLTYPE GetFieldName(__in_ecount(nLength) LPSTR pszBuffer, __in ULONG nLength) = 0;
+        virtual HRESULT STDMETHODCALLTYPE GetStringValue(__in_ecount(nLength) LPSTR pszBuffer, __in ULONG nLength) = 0;
         virtual HRESULT STDMETHODCALLTYPE GetDepth(ULONG* pnDepth) = 0;
         virtual HRESULT STDMETHODCALLTYPE SkipObject() = 0;
         virtual HRESULT STDMETHODCALLTYPE SaveContext() = 0;

@@ -20,7 +20,7 @@ ComProxyXmlLiteReader::~ComProxyXmlLiteReader()
 {
 }
 ErrorCode ComProxyXmlLiteReader::Create(
-    __in std::wstring const & inputName,
+    __in std::string const & inputName,
     __in IStream *inputStream,
     __out ComProxyXmlLiteReaderUPtr & xmlLiteReader)
 {
@@ -68,7 +68,7 @@ ErrorCode ComProxyXmlLiteReader::Create(
 }
 
 ErrorCode ComProxyXmlLiteReader::Create(
-__in std::wstring const & inputName,
+__in std::string const & inputName,
 __out ComProxyXmlLiteReaderUPtr & xmlLiteReader)
 {
     ComPointer<IXmlReader> reader;
@@ -121,7 +121,7 @@ ErrorCode ComProxyXmlLiteReader::Create(
 }
 #endif
 
-ErrorCode ComProxyXmlLiteReader::SetInput(wstring const & inputName, ComPointer<IStream> const & stream)
+ErrorCode ComProxyXmlLiteReader::SetInput(string const & inputName, ComPointer<IStream> const & stream)
 {
     auto hr = reader_->SetInput(stream.GetRawPointer());
     if (hr != S_OK)
@@ -142,46 +142,46 @@ ErrorCode ComProxyXmlLiteReader::GetAttributeCount(__out UINT & attributeCount)
 {
     return ToErrorCode(
         reader_->GetAttributeCount(&attributeCount),
-        L"GetAttributeCount");
+        "GetAttributeCount");
 }
 
 ErrorCode ComProxyXmlLiteReader::GetDepth(__out UINT & depth)
 {
     return ToErrorCode(
         reader_->GetDepth(&depth),
-        L"GetDepth");
+        "GetDepth");
 }
 
 ErrorCode ComProxyXmlLiteReader::GetLineNumber(__out UINT & lineNumber)
 {
     return ToErrorCode(
         reader_->GetLineNumber(&lineNumber),
-        L"GetLineNumber");
+        "GetLineNumber");
 }
 
 ErrorCode ComProxyXmlLiteReader::GetLinePosition(__out UINT & linePosition)
 {
     return ToErrorCode(
         reader_->GetLinePosition(&linePosition),
-        L"GetLinePosition");
+        "GetLinePosition");
 }
 
-ErrorCode ComProxyXmlLiteReader::GetLocalName(__out wstring & localName)
+ErrorCode ComProxyXmlLiteReader::GetLocalName(__out string & localName)
 {
     
-    LPCWSTR outString;
+    LPCSTR outString;
     auto hr = reader_->GetLocalName(&outString, NULL);
-    if (hr != S_OK) { return OnReaderError(hr, L"GetLocalName"); }
+    if (hr != S_OK) { return OnReaderError(hr, "GetLocalName"); }
 
     localName.assign(outString);
     return ErrorCode(ErrorCodeValue::Success);
 }
 
-ErrorCode ComProxyXmlLiteReader::GetNamespaceUri(__out wstring & namespaceUri)
+ErrorCode ComProxyXmlLiteReader::GetNamespaceUri(__out string & namespaceUri)
 {
-    LPCWSTR outString;
+    LPCSTR outString;
     auto hr = reader_->GetNamespaceUri(&outString, NULL);
-    if (hr != S_OK) { return OnReaderError(hr, L"GetNamespaceUri"); }
+    if (hr != S_OK) { return OnReaderError(hr, "GetNamespaceUri"); }
 
     namespaceUri.assign(outString);
     return ErrorCode(ErrorCodeValue::Success);
@@ -191,34 +191,34 @@ ErrorCode ComProxyXmlLiteReader::GetNodeType(__out ::XmlNodeType & nodeType)
 {
     return ToErrorCode(
         reader_->GetNodeType(&nodeType),
-        L"GetNodeType");
+        "GetNodeType");
 }
 
-ErrorCode ComProxyXmlLiteReader::GetPrefix(__out wstring & prefix)
+ErrorCode ComProxyXmlLiteReader::GetPrefix(__out string & prefix)
 {
-    LPCWSTR outString;
+    LPCSTR outString;
     auto hr = reader_->GetPrefix(&outString, NULL);
-    if (hr != S_OK) { return OnReaderError(hr, L"GetPrefix"); }
+    if (hr != S_OK) { return OnReaderError(hr, "GetPrefix"); }
 
     prefix.assign(outString);
     return ErrorCode(ErrorCodeValue::Success);
 }
 
-ErrorCode ComProxyXmlLiteReader::GetQualifiedName(__out wstring & qualifiedName)
+ErrorCode ComProxyXmlLiteReader::GetQualifiedName(__out string & qualifiedName)
 {
-    LPCWSTR outString;
+    LPCSTR outString;
     auto hr = reader_->GetQualifiedName(&outString, NULL);
-    if (hr != S_OK) { return OnReaderError(hr, L"GetQualifiedName"); }
+    if (hr != S_OK) { return OnReaderError(hr, "GetQualifiedName"); }
 
     qualifiedName.assign(outString);
     return ErrorCode(ErrorCodeValue::Success);
 }
 
-ErrorCode ComProxyXmlLiteReader::GetValue(__out wstring & value)
+ErrorCode ComProxyXmlLiteReader::GetValue(__out string & value)
 {
-    LPCWSTR outString;
+    LPCSTR outString;
     auto hr = reader_->GetValue(&outString, NULL);
-    if (hr != S_OK) { return OnReaderError(hr, L"GetValue"); }
+    if (hr != S_OK) { return OnReaderError(hr, "GetValue"); }
 
     value.assign(outString);
     return ErrorCode(ErrorCodeValue::Success);
@@ -234,7 +234,7 @@ bool ComProxyXmlLiteReader::IsEOF()
     return (reader_->IsEOF() != 0);
 }
 
-ErrorCode ComProxyXmlLiteReader::MoveToAttributeByName(wstring const & attrName, wstring const & namespaceUri, __out bool & attrFound)
+ErrorCode ComProxyXmlLiteReader::MoveToAttributeByName(string const & attrName, string const & namespaceUri, __out bool & attrFound)
 {
     HRESULT hr;
     if (namespaceUri.length() > 0)
@@ -259,14 +259,14 @@ ErrorCode ComProxyXmlLiteReader::MoveToAttributeByName(wstring const & attrName,
     {
         return OnReaderError(
             hr, 
-            wstring(L"MoveToAttributeByName(" + attrName + L"," + namespaceUri + L")"));
+            string("MoveToAttributeByName(" + attrName + "," + namespaceUri + ")"));
     }
 }
 
 ErrorCode ComProxyXmlLiteReader::MoveToElement()
 {
     auto hr = reader_->MoveToElement();
-    if (hr != S_OK) { return OnReaderError(hr, L"MoveToElement"); }
+    if (hr != S_OK) { return OnReaderError(hr, "MoveToElement"); }
 
     return ErrorCode(ErrorCodeValue::Success);
 }
@@ -282,7 +282,7 @@ ErrorCode ComProxyXmlLiteReader::MoveToFirstAttribute(__out bool & success)
 
     if (hr != S_OK)
     {
-        return OnReaderError(hr, L"MoveToNextAttribute"); 
+        return OnReaderError(hr, "MoveToNextAttribute"); 
     }
     else
     {
@@ -302,7 +302,7 @@ ErrorCode ComProxyXmlLiteReader::MoveToNextAttribute(__out bool & success)
 
     if (hr != S_OK)
     {
-        return OnReaderError(hr, L"MoveToNextAttribute"); 
+        return OnReaderError(hr, "MoveToNextAttribute"); 
     }
     else
     {
@@ -324,7 +324,7 @@ ErrorCode ComProxyXmlLiteReader::Read(__out ::XmlNodeType & nodeType, __out bool
 
     if (hr != S_OK)
     {
-        return OnReaderError(hr, L"Read"); 
+        return OnReaderError(hr, "Read"); 
     }
     else
     {
@@ -336,7 +336,7 @@ ErrorCode ComProxyXmlLiteReader::Read(__out ::XmlNodeType & nodeType, __out bool
 
 ErrorCode ComProxyXmlLiteReader::ToErrorCode(
     HRESULT hr, 
-    wstring const & operationName)
+    string const & operationName)
 {
     if (hr != S_OK)
     {
@@ -350,7 +350,7 @@ ErrorCode ComProxyXmlLiteReader::ToErrorCode(
 
 ErrorCode ComProxyXmlLiteReader::OnReaderError(
     HRESULT hr, 
-    wstring const & operationName)
+    string const & operationName)
 {
    
     UINT lineNumber = 0;

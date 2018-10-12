@@ -37,27 +37,27 @@ Abstract:
 
 //** Main entry points for unit tests
 NTSTATUS
-RvdLoggerAliasTests(__in int argc, __in_ecount(argc) WCHAR* args[]);
+RvdLoggerAliasTests(__in int argc, __in_ecount(argc) CHAR* args[]);
 
 NTSTATUS
-BasicDiskLoggerTest(__in int argc, __in_ecount(argc) WCHAR* args[]);
+BasicDiskLoggerTest(__in int argc, __in_ecount(argc) CHAR* args[]);
 
 NTSTATUS
-DiskLoggerStructureVerifyTests(__in int argc, __in_ecount(argc) WCHAR* args[]);
+DiskLoggerStructureVerifyTests(__in int argc, __in_ecount(argc) CHAR* args[]);
 
 NTSTATUS
-LogStreamAsyncIoTests(__in int argc, __in_ecount(argc) WCHAR* args[]);
+LogStreamAsyncIoTests(__in int argc, __in_ecount(argc) CHAR* args[]);
 
 NTSTATUS
-RvdLoggerRecoveryTests(__in int argc, __in_ecount(argc) WCHAR* args[]);
+RvdLoggerRecoveryTests(__in int argc, __in_ecount(argc) CHAR* args[]);
 
 NTSTATUS
-RvdLoggerReservationTests(__in int argc, __in_ecount(argc) WCHAR* args[]);
+RvdLoggerReservationTests(__in int argc, __in_ecount(argc) CHAR* args[]);
 
 //** Misc externs
 NTSTATUS
 BasicLogStreamTest(
-    WCHAR const TestDriveLetter,
+    CHAR const TestDriveLetter,
     BOOLEAN DoFinalStreamDeleteTest = TRUE,
     LogState::SPtr *const ResultingState = nullptr);
 

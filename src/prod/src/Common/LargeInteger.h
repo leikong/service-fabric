@@ -71,7 +71,7 @@ namespace Common
         // Exceptions: (optional)
         //          none (this must be guaranteed)
         //
-        static bool TryParse(std::wstring const & from, LargeInteger & value);
+        static bool TryParse(std::string const & from, LargeInteger & value);
 
         // Generate a random LargeInteger_.
         static LargeInteger RandomLargeInteger_();
@@ -134,7 +134,7 @@ namespace Common
         const LargeInteger operator ~() const;
         const LargeInteger operator -() const;
 
-        std::wstring ToString() const;
+        std::string ToString() const;
         void WriteTo(Common::TextWriter&, Common::FormatOptions const &) const;
 
         // The maximum value allowed for a LargeInteger_.

@@ -26,5 +26,5 @@ Abstract:
 
 const KU_TEST_ENTRY gs_KuTestCases[] = 
 {
-    {   L"BasicStateMachine",       BasicStateMachine,  L"CIT,BVT", L"no parameters for BasicStateMachine"},
+    {   "BasicStateMachine",       BasicStateMachine,  "CIT,BVT", "no parameters for BasicStateMachine"},
 };

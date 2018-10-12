@@ -41,7 +41,7 @@ namespace AccessControl
 
         Common::ErrorCode Status() const;
 
-        virtual bool CheckCommonName(std::wstring const & commonName) const;
+        virtual bool CheckCommonName(std::string const & commonName) const;
         virtual bool CheckClaim(Transport::SecuritySettings::RoleClaims const & claims) const;
         virtual bool CheckTokenMembership(HANDLE token) const;
 
@@ -84,49 +84,49 @@ private: \
     {
     public:
         SecurityPrincipalX509();
-        SecurityPrincipalX509(std::wstring const & commonName);
+        SecurityPrincipalX509(std::string const & commonName);
 
-        bool CheckCommonName(std::wstring const & commonName) const override;
-        std::wstring const & CommonName() const;
+        bool CheckCommonName(std::string const & commonName) const override;
+        std::string const & CommonName() const;
 
         FABRIC_FIELDS_01(commonName_)
         DECLARE_PRINCIPAL_IDENTIFIER_TYPE(SecurityPrincipalType::X509)
 
     private:
-        std::wstring commonName_;
+        std::string commonName_;
     };
 
     class SecurityPrincipalClaim : public SecurityPrincipal
     {
     public:
         SecurityPrincipalClaim();
-        SecurityPrincipalClaim(std::wstring const & claim);
+        SecurityPrincipalClaim(std::string const & claim);
 
         bool CheckClaim(Transport::SecuritySettings::RoleClaims const & claims) const;
-        std::wstring Claim() const;
+        std::string Claim() const;
 
         FABRIC_FIELDS_02(claimType_, claimValue_)
         DECLARE_PRINCIPAL_IDENTIFIER_TYPE(SecurityPrincipalType::Claim)
 
     private:
         static Common::ErrorCode TryParseClaim(
-            std::wstring const & claim,
-            std::wstring & claimType,
-            std::wstring & claimValue);
+            std::string const & claim,
+            std::string & claimType,
+            std::string & claimValue);
 
     private:
-        std::wstring claimType_;
-        std::wstring claimValue_;
+        std::string claimType_;
+        std::string claimValue_;
     };
 
     class SecurityPrincipalWindows : public SecurityPrincipal
     {
     public:
         SecurityPrincipalWindows();
-        SecurityPrincipalWindows(std::wstring const & accountName);
+        SecurityPrincipalWindows(std::string const & accountName);
 
         bool CheckTokenMembership(HANDLE token) const override;
-        Common::ErrorCode GetAccountName(_Out_ std::wstring & accountName) const;
+        Common::ErrorCode GetAccountName(_Out_ std::string & accountName) const;
 
         FABRIC_FIELDS_01(sid_);
         DECLARE_PRINCIPAL_IDENTIFIER_TYPE(SecurityPrincipalType::Windows)

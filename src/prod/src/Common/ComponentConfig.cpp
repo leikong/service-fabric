@@ -31,7 +31,7 @@ ComponentConfig::~ComponentConfig()
 {
 }
 
-void ComponentConfig::AddEntry(wstring const & section, ConfigEntryBase & entry)
+void ComponentConfig::AddEntry(string const & section, ConfigEntryBase & entry)
 {
     vector<ComponentConfigSectionUPtr>::iterator it;
     for (it = sections_.begin(); it != sections_.end() && (*it)->Name != section; ++it);
@@ -49,7 +49,7 @@ void ComponentConfig::AddEntry(wstring const & section, ConfigEntryBase & entry)
     }
 }
 
-bool ComponentConfig::OnUpdate(wstring const & section, wstring const & key)
+bool ComponentConfig::OnUpdate(string const & section, string const & key)
 {
     AcquireReadLock grab(configLock_);
     for (auto it = sections_.begin(); it != sections_.end(); ++it)
@@ -68,7 +68,7 @@ bool ComponentConfig::OnUpdate(wstring const & section, wstring const & key)
     return true;
 }
 
-bool ComponentConfig::CheckUpdate(wstring const & section, wstring const & key, wstring const & value, bool isEncrypted)
+bool ComponentConfig::CheckUpdate(string const & section, string const & key, string const & value, bool isEncrypted)
 {
     AcquireReadLock grab(configLock_);
 
@@ -104,7 +104,7 @@ void ComponentConfig::ComponentConfigSection::ClearCachedValue()
     }
 }
 
-bool ComponentConfig::ComponentConfigSection::OnUpdate(wstring const & key)
+bool ComponentConfig::ComponentConfigSection::OnUpdate(string const & key)
 {
     for (auto it = entries_.begin(); it != entries_.end(); ++it)
     {
@@ -117,7 +117,7 @@ bool ComponentConfig::ComponentConfigSection::OnUpdate(wstring const & key)
     return true;
 }
 
-bool ComponentConfig::ComponentConfigSection::CheckUpdate(wstring const & key, wstring const & value, bool isEncrypted)
+bool ComponentConfig::ComponentConfigSection::CheckUpdate(string const & key, string const & value, bool isEncrypted)
 {
     for (auto it = entries_.begin(); it != entries_.end(); ++it)
     {

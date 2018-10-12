@@ -52,7 +52,7 @@ ErrorCode::ErrorCode(ErrorCodeValue::Enum value)
 {
 }
 
-ErrorCode::ErrorCode(ErrorCodeValue::Enum value, wstring && msg)
+ErrorCode::ErrorCode(ErrorCodeValue::Enum value, string && msg)
     : value_(value),
       message_(move(msg)),
       messageTid_(UninitializedTid),
@@ -163,7 +163,7 @@ void ErrorCode::WriteTo(Common::TextWriter & w, Common::FormatOptions const &) c
 
 void ErrorCode::WriteToEtw(uint16 contextSequenceId) const
 {
-    wstring temp;
+    string temp;
     StringWriter(temp).Write("{0}", value_);
 
     CommonEventSource::Events->ErrorCode(contextSequenceId, temp);
@@ -223,7 +223,7 @@ ErrorCode ErrorCode::FromHResult(HRESULT hr, bool captureThreadErrorMessage)
     }
 }
 
-ErrorCode ErrorCode::FromHResult(HRESULT hr, std::wstring && message)
+ErrorCode ErrorCode::FromHResult(HRESULT hr, std::string && message)
 {
     if (SUCCEEDED(hr))
     {
@@ -278,7 +278,7 @@ ErrorCode ErrorCode::TraceReturn(
     ErrorCode const error, 
     TraceTaskCodes::Enum const & taskCode, 
     StringLiteral const & traceType,
-    wstring const & traceId,
+    string const & traceId,
     StringLiteral const & operation)
 {
     
@@ -313,9 +313,9 @@ ErrorCode ErrorCode::TraceReturn(
     return error;
 }
 
-wstring ErrorCode::ErrorCodeValueToString() const
+string ErrorCode::ErrorCodeValueToString() const
 {
-    wstring valueString;
+    string valueString;
     StringWriter writer(valueString);
     writer.Write(static_cast<ErrorCodeValue::Enum>(value_));
     return valueString;

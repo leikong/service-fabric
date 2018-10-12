@@ -10,8 +10,8 @@ namespace Common
     class GeneralEventSource
     { 
     public:
-        TraceEventWriter<std::string, std::wstring> Assert;
-        TraceEventWriter<std::wstring> ExitProcess;
+        TraceEventWriter<std::string, std::string> Assert;
+        TraceEventWriter<std::string> ExitProcess;
 
         GeneralEventSource()
             : Assert(TraceTaskCodes::General, 4, "Assert", LogLevel::Error, "Throwing coding error - {0}\r\n{1}", "explanation", "stackTrace")

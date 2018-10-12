@@ -13,8 +13,8 @@ namespace Transport
     class UnreliableTransportEventSource
     {
     public:
-        DECLARE_STRUCTURED_TRACE(Drop, std::wstring, std::wstring, Transport::MessageId);
-        DECLARE_STRUCTURED_TRACE(Delay, std::wstring, std::wstring, Transport::MessageId, Common::TimeSpan);
+        DECLARE_STRUCTURED_TRACE(Drop, std::string, std::string, Transport::MessageId);
+        DECLARE_STRUCTURED_TRACE(Delay, std::string, std::string, Transport::MessageId, Common::TimeSpan);
 
         static UnreliableTransportEventSource const Trace;
 

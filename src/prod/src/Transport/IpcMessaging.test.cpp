@@ -36,15 +36,15 @@ namespace Transport
         void RequestReplyTest(bool secureMode);
         void ReconnectTest(bool secureMode);
 
-        IpcServerSPtr OpenServer(std::wstring const & serverAddress, bool secureMode);
+        IpcServerSPtr OpenServer(std::string const & serverAddress, bool secureMode);
         IpcServerSPtr OpenServer(
-            std::wstring const & serverAddress,
-            std::wstring const & serverAddress2,
+            std::string const & serverAddress,
+            std::string const & serverAddress2,
             bool secureMode);
 
         IpcClientSPtr OpenClient(
-            std::wstring const & clientId,
-            std::wstring const & serverAddress,
+            std::string const & clientId,
+            std::string const & serverAddress,
             bool secureMode);
 
         void CloseServer(IpcServerSPtr server);
@@ -91,18 +91,18 @@ namespace Transport
     {
         ENTER;
 
-        wstring serverName;
+        string serverName;
         auto error = TcpTransportUtility::GetLocalFqdn(serverName);
         VERIFY_IS_TRUE(error.IsSuccess());
 
-        wstring localhost = L"localhost";
+        string localhost = "localhost";
         VERIFY_IS_FALSE(StringUtility::AreEqualCaseInsensitive(serverName, localhost));
 
-        wstring serverAddress = serverName + L":1234";
+        string serverAddress = serverName + ":1234";
         Trace.WriteInfo(TraceType, "test with invalid IPC address {0}", serverAddress);
         {
             auto server = std::make_shared<IpcServer>(
-                *root_, serverAddress, L"IpcServer", false /* disallow use of unreliable transport */, L"IpcTestBase::InvalidAddressTest");
+                *root_, serverAddress, "IpcServer", false /* disallow use of unreliable transport */, "IpcTestBase::InvalidAddressTest");
             VERIFY_IS_TRUE(server->Open().IsError(ErrorCodeValue::InvalidAddress));
         }
 
@@ -113,7 +113,7 @@ namespace Transport
         Trace.WriteInfo(TraceType, "test with invalid IPC address {0}", serverAddress);
         {
             auto server = std::make_shared<IpcServer>(
-                *root_, serverAddress, L"IpcServer", false /* disallow use of unreliable transport */, L"IpcTestBase::InvalidAddressTest");
+                *root_, serverAddress, "IpcServer", false /* disallow use of unreliable transport */, "IpcTestBase::InvalidAddressTest");
             VERIFY_IS_TRUE(server->Open().IsError(ErrorCodeValue::InvalidAddress));
         }
 #endif
@@ -145,16 +145,16 @@ namespace Transport
 
         // set up IpcServer
         auto& server = root_->server_;
-        std::wstring serverListenAddress = TTestUtil::GetListenAddress();
+        std::string serverListenAddress = TTestUtil::GetListenAddress();
         server = OpenServer(serverListenAddress, false);
 
-        ErrorCode errorCode = server->SendOneWay(L"NoSuchClient", CreateServerMessage(clientSideActor_));
+        ErrorCode errorCode = server->SendOneWay("NoSuchClient", CreateServerMessage(clientSideActor_));
         VERIFY_IS_TRUE(errorCode.IsError(ErrorCodeValue::NotFound));
 
         Common::AutoResetEvent requestCompleted(false);
         server->BeginRequest(
             CreateServerMessage(clientSideActor_),
-            L"NotSuchClient",
+            "NotSuchClient",
             Common::TimeSpan::MaxValue,
             [&] (AsyncOperationSPtr const & operation)
             {
@@ -196,12 +196,12 @@ namespace Transport
         Assert::DisableDebugBreakInThisScope disableDebugBreakInThisScope;
         Assert::DisableTestAssertInThisScope disableTestAssertInThisScope;
 
-        std::wstring clientStr = L"client";        
+        std::string clientStr = "client";        
 
         auto& server = root_->server_;
         auto& client = root_->client_;
 
-        std::wstring serverListenAddress = TTestUtil::GetListenAddress();
+        std::string serverListenAddress = TTestUtil::GetListenAddress();
         server = OpenServer(serverListenAddress, true);
         auto isMessageHandled = make_shared<AutoResetEvent>(false);
         server->RegisterMessageHandler(
@@ -270,16 +270,16 @@ namespace Transport
         Endpoint ep;
         auto err = TcpTransportUtility::GetFirstLocalAddress(ep, ResolveOptions::IPv4);
         VERIFY_IS_TRUE(err.IsSuccess());
-        vector<wstring> addresses = { TTestUtil::GetListenAddress(), wformatString("{0}", ep) };
+        vector<string> addresses = { TTestUtil::GetListenAddress(), formatString.L("{0}", ep) };
 
         auto& server = root_->server_;
         auto& clients = root_->clients_;
 
-        std::wstring clientIdArray[] = { L"client0", L"client1" };
-        LONG const numberOfClients = sizeof(clientIdArray) / sizeof(std::wstring);
+        std::string clientIdArray[] = { "client0", "client1" };
+        LONG const numberOfClients = sizeof(clientIdArray) / sizeof(std::string);
 
         server = OpenServer(addresses[0], addresses[1], false);
-        vector<wstring> serverListenAddresses = { server->TransportListenAddress, server->TransportListenAddressTls};
+        vector<string> serverListenAddresses = { server->TransportListenAddress, server->TransportListenAddressTls};
 
         Common::atomic_long serverRequestCounter;
         ManualResetEvent serverReceivedAllRequests(false);
@@ -341,7 +341,7 @@ namespace Transport
                 {
                     MessageUPtr reply;
                     ErrorCode endRequestErrorCode = client->EndRequest(operation, reply);
-                    VERIFY_IS_TRUE(endRequestErrorCode.IsSuccess(), L"Client got a reply");
+                    VERIFY_IS_TRUE(endRequestErrorCode.IsSuccess(), "Client got a reply");
                     Trace.WriteInfo(TraceType, "client got a reply {0}", reply->TraceId());
                     if (++clientReplyCounter == numberOfClients)
                     {
@@ -357,7 +357,7 @@ namespace Transport
         Trace.WriteInfo(TraceType, "Sending requests from server to clients...");
         Common::atomic_long serverReplyCounter;
         Common::ManualResetEvent serverReceivedAllReplies(false);
-        for (std::wstring const & clientId : clientIdArray)
+        for (std::string const & clientId : clientIdArray)
         {
             server->BeginRequest(
                 CreateServerMessage(clientSideActor_),
@@ -367,7 +367,7 @@ namespace Transport
                 {
                     MessageUPtr reply;
                     ErrorCode endRequestErrorCode = server->EndRequest(operation, reply);
-                    VERIFY_IS_TRUE(endRequestErrorCode.IsSuccess(), L"server got a reply");
+                    VERIFY_IS_TRUE(endRequestErrorCode.IsSuccess(), "server got a reply");
                     Trace.WriteInfo(TraceType, "server got a reply {0}", reply->TraceId());
                     if (++serverReplyCounter == numberOfClients)
                     {
@@ -400,14 +400,14 @@ namespace Transport
     {
         KFinally([this] { Cleanup(); });
 
-        std::wstring clientIdArray[] = {L"client0", L"client1"};
-        LONG const numberOfClients = sizeof(clientIdArray)/sizeof(std::wstring);
+        std::string clientIdArray[] = {L"client0", "client1"};
+        LONG const numberOfClients = sizeof(clientIdArray)/sizeof(std::string);
 
         auto& server = root_->server_;
         auto& clients = root_->clients_;
 
         // set up IpcServer
-        std::wstring serverListenAddress = TTestUtil::GetListenAddress();
+        std::string serverListenAddress = TTestUtil::GetListenAddress();
         server = OpenServer(serverListenAddress, secureMode);
         Common::atomic_long serverRequestCounter;
         Common::ManualResetEvent serverReceiveDone(false);
@@ -476,7 +476,7 @@ namespace Transport
         Trace.WriteInfo(TraceType, "serverReceiveDone.WaitOne returned, serverRequestCounter = {0}", serverRequestCounter.load());
 
         // Send from server to clients
-        for (std::wstring const & clientId : clientIdArray)
+        for (std::string const & clientId : clientIdArray)
         {
             Trace.WriteInfo(TraceType, "server sending bad message");
             server->SendOneWay(clientId, CreateServerMessage(Actor::GenericTestActor2)); // message will be dropped
@@ -507,13 +507,13 @@ namespace Transport
         auto saved = TransportConfig::GetConfig().IpcReconnectDelay;
         KFinally([=] { TransportConfig::GetConfig().IpcReconnectDelay = saved; });
 
-        std::wstring clientId = L"clientX";
+        std::string clientId = "clientX";
 
         auto& server = root_->server_;
         auto& client = root_->client_;
 
         // set up IpcServer
-        std::wstring serverListenAddress = TTestUtil::GetListenAddress();
+        std::string serverListenAddress = TTestUtil::GetListenAddress();
         server = OpenServer(serverListenAddress, secureMode);
         Common::atomic_long serverRequestCounter;
         auto serverReceivedClientRequest = make_shared<AutoResetEvent>(false);
@@ -606,14 +606,14 @@ namespace Transport
     {
         KFinally([this] { Cleanup(); });
 
-        std::wstring clientIdArray[] = {L"client0", L"client1"};
-        LONG const numberOfClients = sizeof(clientIdArray)/sizeof(std::wstring);
+        std::string clientIdArray[] = {L"client0", "client1"};
+        LONG const numberOfClients = sizeof(clientIdArray)/sizeof(std::string);
 
         auto& server = root_->server_;
         auto& clients = root_->clients_;
 
         // set up IpcServer
-        std::wstring serverListenAddress = TTestUtil::GetListenAddress();
+        std::string serverListenAddress = TTestUtil::GetListenAddress();
         server = OpenServer(serverListenAddress, secureMode);
         Common::atomic_long serverRequestCounter;
         Common::ManualResetEvent serverReceivedAllRequests(false);
@@ -676,7 +676,7 @@ namespace Transport
                 {
                     MessageUPtr reply;
                     ErrorCode endRequestErrorCode = client->EndRequest(operation, reply);
-                    VERIFY_IS_TRUE(endRequestErrorCode.IsSuccess(), L"Client got a reply");
+                    VERIFY_IS_TRUE(endRequestErrorCode.IsSuccess(), "Client got a reply");
                     Trace.WriteInfo(TraceType, "client got a reply {0}", reply->TraceId());
                     if (++ clientReplyCounter == numberOfClients)
                     {
@@ -692,7 +692,7 @@ namespace Transport
         Trace.WriteInfo(TraceType, "Sending requests from server to clients...");
         Common::atomic_long serverReplyCounter;
         Common::ManualResetEvent serverReceivedAllReplies(false);
-        for (std::wstring const & clientId : clientIdArray)
+        for (std::string const & clientId : clientIdArray)
         {
             server->BeginRequest(
                 CreateServerMessage(clientSideActor_),
@@ -702,7 +702,7 @@ namespace Transport
                 {
                     MessageUPtr reply;
                     ErrorCode endRequestErrorCode = server->EndRequest(operation, reply);
-                    VERIFY_IS_TRUE(endRequestErrorCode.IsSuccess(), L"server got a reply");
+                    VERIFY_IS_TRUE(endRequestErrorCode.IsSuccess(), "server got a reply");
                     Trace.WriteInfo(TraceType, "server got a reply {0}", reply->TraceId());
                     if (++ serverReplyCounter == numberOfClients)
                     {
@@ -734,43 +734,43 @@ namespace Transport
         root_.reset();
     }
 
-    IpcServerSPtr IpcTestBase::OpenServer(std::wstring const & serverAddress, bool secureMode)
+    IpcServerSPtr IpcTestBase::OpenServer(std::string const & serverAddress, bool secureMode)
     {
-        return OpenServer(serverAddress, L"", secureMode);
+        return OpenServer(serverAddress, "", secureMode);
     }
 
-    IpcServerSPtr IpcTestBase::OpenServer(wstring const & serverAddress, wstring const & serverAddress2, bool secureMode)
+    IpcServerSPtr IpcTestBase::OpenServer(string const & serverAddress, string const & serverAddress2, bool secureMode)
     {
         IpcServerSPtr server = std::make_shared<IpcServer>(
             *root_,
             serverAddress,
             serverAddress2,
-            L"IpcTestBase",
+            "IpcTestBase",
             false /* disallow use of unreliable transport */,
-            L"IpcTestBase");
+            "IpcTestBase");
 
         if (secureMode)
         {
             SecuritySettings securitySettings;
-            auto error = SecuritySettings::CreateNegotiateServer(L"", securitySettings);
+            auto error = SecuritySettings::CreateNegotiateServer("", securitySettings);
             VERIFY_IS_TRUE(error.IsSuccess());
 
             VERIFY_IS_TRUE(server->SetSecurity(securitySettings).IsSuccess());
         }
 
         auto errorCode = server->Open();
-        VERIFY_IS_TRUE(errorCode.IsSuccess(), L"IpcServer opened.");
+        VERIFY_IS_TRUE(errorCode.IsSuccess(), "IpcServer opened.");
         
         return server;
     }
 
     IpcClientSPtr IpcTestBase::OpenClient(
-        std::wstring const & clientId,
-        std::wstring const & serverAddress,
+        std::string const & clientId,
+        std::string const & serverAddress,
         bool secureMode)
     {
         IpcClientSPtr client = std::make_shared<IpcClient>(
-            *root_, clientId, serverAddress, false /* disallow use of unreliable transport */, L"IpcTestBase");
+            *root_, clientId, serverAddress, false /* disallow use of unreliable transport */, "IpcTestBase");
 
         if (secureMode)
         {
@@ -784,7 +784,7 @@ namespace Transport
         }
 
         auto errorCode = client->Open();
-        VERIFY_IS_TRUE(errorCode.IsSuccess(), L"IpcClient opened.");
+        VERIFY_IS_TRUE(errorCode.IsSuccess(), "IpcClient opened.");
       
         return client;
     }
@@ -827,24 +827,24 @@ namespace Transport
         {
         }
 
-        IpcTestMessage(std::wstring const & message)
+        IpcTestMessage(std::string const & message)
             : message_(message)
         {
         }
 
         FABRIC_FIELDS_01(message_);
 
-        std::wstring message_;
+        std::string message_;
     };
 
     MessageUPtr IpcTestBase::CreateClientMessageLong(Actor::Enum actor)
     {
-        std::wstring requestBodyString;
-        while(requestBodyString.size() * sizeof(wchar_t) < TransportSecurity::GetInternalMaxFrameSize(TransportConfig::GetConfig().IpcMaxMessageSize))
+        std::string requestBodyString;
+        while(requestBodyString.size() * sizeof(char) < TransportSecurity::GetInternalMaxFrameSize(TransportConfig::GetConfig().IpcMaxMessageSize))
         {
-            requestBodyString += L"Message ";
+            requestBodyString += "Message ";
         }
-        requestBodyString += L"oh yeah now message too long";
+        requestBodyString += "oh yeah now message too long";
         IpcTestMessage requestBody(requestBodyString); 
         MessageUPtr message = make_unique<Message>(requestBody);
         

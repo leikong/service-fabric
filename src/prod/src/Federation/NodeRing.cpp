@@ -221,7 +221,7 @@ namespace Federation
             for (size_t i = 0; i < count - 1; i++, index = GetSucc(index))
             {
                 w.Write(ring_[index]->Id);
-                w.Write(L",");
+                w.Write(",");
             }
 
             w.Write(ring_[index]->Id);
@@ -839,7 +839,7 @@ namespace Federation
         }
     }
 
-    void NodeRingWithHood::SetUnknown(std::wstring const & address) const
+    void NodeRingWithHood::SetUnknown(std::string const & address) const
     {
         auto start = this->addressToNodeMap_.lower_bound(address);
         auto end = this->addressToNodeMap_.upper_bound(address);
@@ -860,14 +860,14 @@ namespace Federation
             {
                 if (ring_[i]->IsAvailable)
                 {
-                    w.Write(L",");
+                    w.Write(",");
                     w.Write(ring_[i]->Id);
                 }
             }
 
             if (predHoodEdge_ != succHoodEdge_)
             {
-                w.Write(L",");
+                w.Write(",");
                 w.Write(ring_[succHoodEdge_]->Id);
             }
         }
@@ -932,7 +932,7 @@ namespace Federation
         }
     }
 
-    ExternalRing::ExternalRing(SiteNode & site, wstring const & ringName)
+    ExternalRing::ExternalRing(SiteNode & site, string const & ringName)
         : site_(site), ringName_(ringName), nextPingIndex_(0), lastCheckTime_(DateTime::Zero), lastCompactTime_(DateTime::Zero)
     {
     }
@@ -1040,7 +1040,7 @@ namespace Federation
         PartnerNodeSPtr node;
         if (it->Type == Constants::SeedNodeVoteType)
         {
-            node = make_shared<PartnerNode>(NodeConfig(it->Id, it->ConnectionString, L"", L"", ringName_), site_);
+            node = make_shared<PartnerNode>(NodeConfig(it->Id, it->ConnectionString, "", "", ringName_), site_);
         }
         else if (it->Type == Constants::WindowsAzureVoteType)
         {

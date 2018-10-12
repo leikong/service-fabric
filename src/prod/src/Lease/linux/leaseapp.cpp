@@ -159,7 +159,7 @@ Return Value:
 
 PLEASING_APPLICATION_CONTEXT
 LeasingApplicationConstructor(
-    __in LPCWSTR LeasingApplicationIdentifier,
+    __in LPCSTR LeasingApplicationIdentifier,
     __in_opt PEPROCESS ProcessHandle
     )
     
@@ -210,7 +210,7 @@ Return Value:
 
     if (!NT_SUCCESS(Status))
     {
-        EventWriteLeaseDriverTextTraceError(NULL, L"Str length check failed with ", Status);
+        EventWriteLeaseDriverTextTraceError(NULL, "Str length check failed with ", Status);
         goto Error;
     }
 
@@ -223,7 +223,7 @@ Return Value:
     {
         EventWriteLeaseDriverTextTraceError(
             NULL,
-            L"AppIdSize RtlULongLongAdd failed in LeasingApplicationConstructor",
+            "AppIdSize RtlULongLongAdd failed in LeasingApplicationConstructor",
             Status);
 
         goto Error;
@@ -231,20 +231,20 @@ Return Value:
 
     Status = RtlULongLongMult(
         AppIdLength,
-        sizeof(WCHAR),
+        sizeof(CHAR),
         &AppIdSize);
 
     if (!NT_SUCCESS(Status))
     {
         EventWriteLeaseDriverTextTraceError(
             NULL,
-            L"AppIdSize RtlULongLongMult failed in LeasingApplicationConstructor",
+            "AppIdSize RtlULongLongMult failed in LeasingApplicationConstructor",
             Status);
 
         goto Error;
     }
 
-    LeasingApplicationContext->LeasingApplicationIdentifier = (LPWSTR)ExAllocatePoolWithTag(
+    LeasingApplicationContext->LeasingApplicationIdentifier = (LPSTR)ExAllocatePoolWithTag(
         NonPagedPool,
         AppIdSize,
         LEASE_APPLICATION_ID_TAG
@@ -269,7 +269,7 @@ Return Value:
 
     if (!NT_SUCCESS(Status))
     {
-        EventWriteLeaseDriverTextTraceError(NULL, L"Str copy failed with ", Status);
+        EventWriteLeaseDriverTextTraceError(NULL, "Str copy failed with ", Status);
         goto Error;
     }
 
@@ -277,7 +277,7 @@ Return Value:
     // Used during serialization.
     //
     LeasingApplicationContext->LeasingApplicationIdentifierByteCount = 
-        (ULONG)(WcharLength + 1) * sizeof(WCHAR);
+        (ULONG)(WcharLength + 1) * sizeof(CHAR);
 
     //
     // Set process handle.
@@ -384,7 +384,7 @@ Routine Description:
     auto ListenEndPoint = new TRANSPORT_LISTEN_ENDPOINT();
     if (NULL == ListenEndPoint)
     {
-        EventWriteLeaseDriverTextTraceError(NULL, L"Listen endpoint allocation failed", 0);
+        EventWriteLeaseDriverTextTraceError(NULL, "Listen endpoint allocation failed", 0);
         return NULL;
     }
 
@@ -415,7 +415,7 @@ MessageExtensionConstructor( )
     auto MsgExt = new LEASE_MESSAGE_EXT();
     if (NULL == MsgExt)
     {
-        EventWriteLeaseDriverTextTraceError(NULL, L"Message extension allocation failed", 0);
+        EventWriteLeaseDriverTextTraceError(NULL, "Message extension allocation failed", 0);
         return NULL;
     }
 
@@ -656,7 +656,7 @@ Return Value:
     return NT_SUCCESS(Status);
 }
 
-const LPWSTR GetEventType(
+const LPSTR GetEventType(
     __in LEASE_LAYER_EVENT_TYPE Eventype
     )
     
@@ -677,27 +677,27 @@ Return Value:
 --*/
 
 {
-    LPWSTR EventTypeString = L"";
+    LPSTR EventTypeString = "";
 
     switch (Eventype) {
 
     case LEASING_APPLICATION_NONE:
-        EventTypeString = L"NONE";
+        EventTypeString = "NONE";
         break;
     case LEASING_APPLICATION_EXPIRED:
-        EventTypeString = L"EXPIRED";
+        EventTypeString = "EXPIRED";
         break;
     case LEASING_APPLICATION_LEASE_ESTABLISHED:
-        EventTypeString = L"LEASE ESTABLISHED";
+        EventTypeString = "LEASE ESTABLISHED";
         break;
     case LEASING_APPLICATION_ARBITRATE:
-        EventTypeString = L"ARBITRATE";
+        EventTypeString = "ARBITRATE";
         break;
     case REMOTE_LEASING_APPLICATION_EXPIRED:
-        EventTypeString = L"REMOTE EXPIRED";
+        EventTypeString = "REMOTE EXPIRED";
         break;
     case REMOTE_CERTIFICATE_VERIFY:
-        EventTypeString = L"REMOTE CERTIFICATE VERIFY";
+        EventTypeString = "REMOTE CERTIFICATE VERIFY";
         break;
     }
 
@@ -939,7 +939,7 @@ DelayedRequestCompletion(
     __in LEASE_LAYER_EVENT_TYPE EventType,
     __in_opt HANDLE LeaseHandle,
     __in HANDLE LeasingApplicationHandle,
-    __in_opt LPCWSTR RemoteLeasingApplicationIdentifier,
+    __in_opt LPCSTR RemoteLeasingApplicationIdentifier,
     __in LONG RemoteTTL,
     __in LONG LocalTTL,
     __in_opt PTRANSPORT_LISTEN_ENDPOINT RemoteSocketAddress,
@@ -1057,7 +1057,7 @@ ASSERT_IF(FALSE == Decremented, "Failed to decrement ref count");});
         }
         else if(LEASING_APPLICATION_LEASE_ESTABLISHED == EventType){
             auto callback = LeasingApplicationContext->Callbacks.LeasingApplicationLeaseEstablished;
-            wstring remoteLeasingApplicationIdentifier(RemoteLeasingApplicationIdentifier); //LINUXTODO, avoid copying this everytime?
+            string remoteLeasingApplicationIdentifier(RemoteLeasingApplicationIdentifier); //LINUXTODO, avoid copying this everytime?
             Threadpool::Post([callback, context, LeaseHandle, remoteLeasingApplicationIdentifier,LeasingApplicationContext,LeasingApplicationHandle]
             {
                 callback(LeaseHandle, remoteLeasingApplicationIdentifier.c_str(), context);
@@ -1077,7 +1077,7 @@ ASSERT_IF(FALSE == Decremented, "Failed to decrement ref count");});
         }
         else if(REMOTE_LEASING_APPLICATION_EXPIRED == EventType){
             auto callback = LeasingApplicationContext->Callbacks.RemoteLeasingApplicationExpired;
-            wstring remoteLeasingApplicationIdentifier(RemoteLeasingApplicationIdentifier); //LINUXTODO, avoid copying this everytime?
+            string remoteLeasingApplicationIdentifier(RemoteLeasingApplicationIdentifier); //LINUXTODO, avoid copying this everytime?
             Threadpool::Post([callback, context, remoteLeasingApplicationIdentifier,LeasingApplicationContext,LeasingApplicationHandle] { callback(remoteLeasingApplicationIdentifier.c_str(), context);
             auto Decremented = LeasingApplicationChangeRefCount( &LeasingApplicationContext->Callbacks,  LeasingApplicationHandle, FALSE);
             ASSERT_IF(FALSE == Decremented, "Failed to decrement ref count");});
@@ -1104,7 +1104,7 @@ TryDelayedRequestCompletion(
     __in LEASE_LAYER_EVENT_TYPE EventType,
     __in_opt HANDLE LeaseHandle,
     __in HANDLE LeasingApplicationHandle,
-    __in_opt LPCWSTR RemoteLeasingApplicationIdentifier,
+    __in_opt LPCSTR RemoteLeasingApplicationIdentifier,
     __in LONG RemoteTTL,
     __in LONG LocalTTL,
     __in_opt PTRANSPORT_LISTEN_ENDPOINT RemoteSocketAddress,

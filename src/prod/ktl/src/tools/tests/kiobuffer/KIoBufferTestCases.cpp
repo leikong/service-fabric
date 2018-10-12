@@ -26,5 +26,5 @@ Abstract:
 
 const KU_TEST_ENTRY gs_KuTestCases[] =
 {
-    {   L"KIoBufferTest",              KIoBufferTest,         L"BVT", L"KIoBuffer unit test"}
+    {   "KIoBufferTest",              KIoBufferTest,         "BVT", "KIoBuffer unit test"}
 };

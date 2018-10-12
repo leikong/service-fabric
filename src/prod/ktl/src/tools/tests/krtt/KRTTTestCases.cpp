@@ -26,7 +26,7 @@ Abstract:
 
 const KU_TEST_ENTRY gs_KuTestCases[] =
 {
-    {   L"KRTTTest",              KRTTTest,         L"BVT", L"Template for first test"}
+    {   "KRTTTest",              KRTTTest,         "BVT", "Template for first test"}
 };
 
 const ULONG gs_KuTestCasesSize = ARRAYSIZE(gs_KuTestCases);

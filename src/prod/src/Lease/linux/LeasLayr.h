@@ -95,13 +95,13 @@ DEFINE_GUID (LEASELAYER_WMI_NOTIFICATION_EVENT,
 //
 // MOF
 //
-#define MOFRESOURCENAME L"WmiLeaseLayer"
+#define MOFRESOURCENAME "WmiLeaseLayer"
 
 //
 // Device root name.
 //
-#define LEASELAYER_DEVICE_NAME_STRING L"\\Device\\LeaseLayer"
-#define LEASELAYER_SYMBOLIC_NAME_STRING L"\\DosDevices\\LeaseLayer"
+#define LEASELAYER_DEVICE_NAME_STRING "\\Device\\LeaseLayer"
+#define LEASELAYER_SYMBOLIC_NAME_STRING "\\DosDevices\\LeaseLayer"
 
 //
 // Common LARGE_INTEGER operations.
@@ -734,14 +734,14 @@ LeaseTrace::WriteInfo("ProcessStalePing", "Lease relationship ({0}/{1}, subject 
 //#define RtlLookupElementGenericTableAvl(a,b) NULL
 #define RtlULongLongAdd(a,b,c) 0,*c=a+b
 #define RtlULongLongMult(a,b,c) 0,*c=a*b;
-#define RtlStringCchCopyW(a,b,c) 0,wcsncpy(a,c,b);
+#define RtlStringCchCopyW(a,b,c) 0,strncpy(a,c,b);
 #define RtlULongAdd(a,b,c) 0,*c=a+b
 //#define RtlDeleteElementGenericTable(a,b) TRUE
 //#define RtlInsertElementGenericTable(a,b,c,d) NULL
 #define RtlULongSub(a,b,c) 0,*c=a-b
-#define RtlStringCbCopyW(a,b,c) 0,wcsncpy(a,c,b);
+#define RtlStringCbCopyW(a,b,c) 0,strncpy(a,c,b);
 
-#define RtlStringCchLengthW(a,b,c)0,*c=wcslen(a);
+#define RtlStringCchLengthW(a,b,c)0,*c=strlen(a);
 typedef UCHAR KIRQL;
 
 typedef KIRQL *PKIRQL;
@@ -1393,7 +1393,7 @@ typedef struct _LEASING_APPLICATION_CONTEXT {
     //
     // Identifier of this application for this lease agent.
     //
-    LPWSTR LeasingApplicationIdentifier;
+    LPSTR LeasingApplicationIdentifier;
     //
     // Instance of this lease application.
     //
@@ -1460,7 +1460,7 @@ typedef struct _LEASE_RELATIONSHIP_IDENTIFIER {
     //
     // The remote leasing application used by this lease.
     //
-    LPWSTR RemoteLeasingApplicationIdentifier;
+    LPSTR RemoteLeasingApplicationIdentifier;
     //
     // Count in bytes of the remote leasing application identifier.
     //
@@ -1489,7 +1489,7 @@ typedef struct _REMOTE_LEASE_AGENT_CONTEXT {
     // 
     // Remote lease agent identifier (tracing).
     //
-    WCHAR RemoteLeaseAgentIdentifier[LEASE_AGENT_ID_CCH_MAX];
+    CHAR RemoteLeaseAgentIdentifier[LEASE_AGENT_ID_CCH_MAX];
     //
     // The remote socket address of the remote lease agent.
     //
@@ -1690,7 +1690,7 @@ ProcessLeaseMessageBuffer(
 //
 PLEASING_APPLICATION_CONTEXT 
 LeasingApplicationConstructor(
-    __in LPCWSTR LeasingApplicationIdentifier,
+    __in LPCSTR LeasingApplicationIdentifier,
     __in_opt PEPROCESS ProcessHandle
     );
 
@@ -1704,8 +1704,8 @@ LeasingApplicationDestructor(
 //
 PLEASE_RELATIONSHIP_IDENTIFIER 
 LeaseRelationshipIdentifierConstructor(
-    __in LPCWSTR LeasingApplicationIdentifier,
-    __in LPCWSTR RemoteLeasingApplicationIdentifier
+    __in LPCSTR LeasingApplicationIdentifier,
+    __in LPCSTR RemoteLeasingApplicationIdentifier
     );
 
 VOID LeaseRelationshipIdentifierDestructor(
@@ -1722,7 +1722,7 @@ SwitchLeaseRelationshipLeasingApplicationIdentifiers(
 //
 BOOLEAN
 IsValidString(
-    PWCHAR String,
+    PCHAR String,
     __in ULONG StringWcharLengthIncludingNullTerminator
     );
 
@@ -1862,7 +1862,7 @@ ClearLeasingApplicationList(
 PLEASE_RELATIONSHIP_IDENTIFIER 
 AddToLeaseRelationshipIdentifierList(
     __in PLEASING_APPLICATION_CONTEXT LeasingApplicationContext,
-    __in LPCWSTR RemoteLeasingApplicationIdentifier,
+    __in LPCSTR RemoteLeasingApplicationIdentifier,
     __in LEASE_RELATIONSHIP_IDENTIFIER_SET & HashTable
     );
 
@@ -1939,7 +1939,7 @@ DelayedRequestCompletion(
     __in LEASE_LAYER_EVENT_TYPE EventType,
     __in_opt HANDLE LeaseHandle,
     __in HANDLE LeasingApplicationHandle,
-    __in_opt LPCWSTR RemoteLeasingApplicationIdentifier,
+    __in_opt LPCSTR RemoteLeasingApplicationIdentifier,
     __in LONG MonitorTTL,
     __in LONG SubjectTTL,
     __in_opt PTRANSPORT_LISTEN_ENDPOINT RemoteSocketAddress,
@@ -1962,7 +1962,7 @@ TryDelayedRequestCompletion(
     __in LEASE_LAYER_EVENT_TYPE EventType,
     __in_opt HANDLE LeaseHandle,
     __in HANDLE LeasingApplicationHandle,
-    __in_opt LPCWSTR RemoteLeasingApplicationIdentifier,
+    __in_opt LPCSTR RemoteLeasingApplicationIdentifier,
     __in LONG MonitorTTL,
     __in LONG SubjectTTL,
     __in_opt PTRANSPORT_LISTEN_ENDPOINT RemoteSocketAddress,
@@ -2026,19 +2026,19 @@ TryDequeueLeasingApplicationLeaseEvent(
 //
 // Tracing/Supportability.
 //
-const LPWSTR GetLeaseState(
+const LPSTR GetLeaseState(
     __in ONE_WAY_LEASE_STATE State
     );
 
-const LPWSTR GetLeaseAgentState(
+const LPSTR GetLeaseAgentState(
     __in LEASE_AGENT_STATE State
     );
 
-const LPWSTR GetMessageType(
+const LPSTR GetMessageType(
     __in LEASE_MESSAGE_TYPE MessageType
     );
 
-const LPWSTR GetBlockMessageType(
+const LPSTR GetBlockMessageType(
     __in LEASE_BLOCKING_ACTION_TYPE BlockMessageType
     );
 
@@ -2341,7 +2341,7 @@ typedef struct _TRANSPORT_BLOCKING_TEST_DESCRIPTOR {
     BOOLEAN ToAny;
     LEASE_BLOCKING_ACTION_TYPE BlockingType;
     LARGE_INTEGER Instance;
-    WCHAR Alias[TEST_TRANSPORT_ALIAS_LENGTH];
+    CHAR Alias[TEST_TRANSPORT_ALIAS_LENGTH];
 } TRANSPORT_BLOCKING_TEST_DESCRIPTOR, *PTRANSPORT_BLOCKING_TEST_DESCRIPTOR;
 
 VOID
@@ -2376,7 +2376,7 @@ CrashLeasingApplication(
     __in size_t InputBufferLength
     );
 
-const LPWSTR GetLeaseIoCode(
+const LPSTR GetLeaseIoCode(
     __in ULONG IoControlCode
     );
 

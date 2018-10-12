@@ -48,91 +48,91 @@ extern volatile LONGLONG gs_AllocsRemaining;
 
 #endif
 
-LPCWSTR LegalUris[] =
+LPCSTR LegalUris[] =
 {
-    L"foo#",
+    "foo#",
 
     // Mainline simple cases
 
-    L"foo-2://",
-    L"foo:",
-    L"foo+1:",
-    L"foo.a.b://",
+    "foo-2://",
+    "foo:",
+    "foo+1:",
+    "foo.a.b://",
 
-    L"foo://b",
-    L"foo://b/c"
-    L"foo://bb/cc"
+    "foo://b",
+    "foo://b/c"
+    "foo://bb/cc"
 
     // Schemeless
 
-    L"foo",
-    L"foo/a",
-    L"foo#",
-    L"foo?#",
-    L"foo?a#b",
-    L"124abc/foo"
+    "foo",
+    "foo/a",
+    "foo#",
+    "foo?#",
+    "foo?a#b",
+    "124abc/foo"
 
-    L"//foo",
-    L"//foo/a",
+    "//foo",
+    "//foo/a",
 
     // Complex authority
 
-    L"foo://b.a",
-    L"foo://b.a:80",
-    L"foo://[fe80::202:b3ff:fe1e:8329]",      // ipv6 inset
-    L"foo://[fe80::202:b3ff:fe1e:8329]:80",
-    L"foo://121.32.355.12:80",
+    "foo://b.a",
+    "foo://b.a:80",
+    "foo://[fe80::202:b3ff:fe1e:8329]",      // ipv6 inset
+    "foo://[fe80::202:b3ff:fe1e:8329]:80",
+    "foo://121.32.355.12:80",
 
     // Fragment weirdness
 
-    L"foo:#",
-    L"foo://#",
-    L"foo://b#",
-    L"foo://b/c#",
-    L"foo://bb/cc#"
+    "foo:#",
+    "foo://#",
+    "foo://b#",
+    "foo://b/c#",
+    "foo://bb/cc#"
 
-    L"foo:#f",
-    L"foo://#f",
-    L"foo://b#f",
-    L"foo://b/c#f",
-    L"foo://bb/cc#f",
+    "foo:#f",
+    "foo://#f",
+    "foo://b#f",
+    "foo://b/c#f",
+    "foo://bb/cc#f",
 
     // Query string
 
-    L"foo://b/cc?",
-    L"foo://b/cc?a",
-    L"foo://b/cc?ab",
-    L"foo://b/cc?abc=def",
+    "foo://b/cc?",
+    "foo://b/cc?a",
+    "foo://b/cc?ab",
+    "foo://b/cc?abc=def",
 
     // Delimiters
 
-    L"foo://b/cc?abc=def&xyz=123",
-    L"foo://b/cc?abc=def|xyz=123",
-    L"foo://b/cc?abc=def,xyz=123",
-    L"foo://b/cc?abc=def;xyz=123",
-    L"foo://b/cc?abc=def+xyz=123",
+    "foo://b/cc?abc=def&xyz=123",
+    "foo://b/cc?abc=def|xyz=123",
+    "foo://b/cc?abc=def,xyz=123",
+    "foo://b/cc?abc=def;xyz=123",
+    "foo://b/cc?abc=def+xyz=123",
 
     // Authorityless
 
-    L"foo:b",
-    L"foo:b/c",
-    L"foo:/bb/cc",
-    L"foo:./bb/cc",
-    L"foo:../bb/cc",
+    "foo:b",
+    "foo:b/c",
+    "foo:/bb/cc",
+    "foo:./bb/cc",
+    "foo:../bb/cc",
 
     // Weird
-    L"foo://",
-    L"http://fred/"
-    L"//fred/"
+    "foo://",
+    "http://fred/"
+    "//fred/"
 
 };
 
-LPCWSTR IllegalUris[] =
+LPCSTR IllegalUris[] =
 {
-    L"foo~x://a",
-    L"1foo://a",
-    L"foo://[abc]",
-    L"foo:/[abc]"
+    "foo~x://a",
+    "1foo://a",
+    "foo://[abc]",
+    "foo:/[abc]"
 };
 
 
@@ -149,12 +149,12 @@ VOID DumpUri(
     )
 {
     KTestPrintf("\n---Uri Parse Result:---\n");
-    KTestPrintf("IsValid    = %S\n", Uri.IsValid() ? L"TRUE" : L"FALSE");
+    KTestPrintf("IsValid    = %S\n", Uri.IsValid() ? "TRUE" : "FALSE");
     if (!Uri.IsValid())
     {
         KTestPrintf("!!! Error at position %d\n", Uri.GetErrorPosition());
     }
-    KTestPrintf("StdQueryStr= %S\n", Uri.HasStandardQueryString() ? L"TRUE" : L"FALSE");
+    KTestPrintf("StdQueryStr= %S\n", Uri.HasStandardQueryString() ? "TRUE" : "FALSE");
 
     KTestPrintf("Raw         = ");
     PrintStr(Uri.Get(KUriView::eRaw));
@@ -221,7 +221,7 @@ VOID DumpUri(
 
 NTSTATUS ValidationSuite()
 {
-    const ULONG TestCount = sizeof(LegalUris)/sizeof(wchar_t*);
+    const ULONG TestCount = sizeof(LegalUris)/sizeof(char*);
 
     for (ULONG i = 0; i < TestCount; i++)
     {
@@ -239,20 +239,20 @@ NTSTATUS ValidationSuite()
 
 NTSTATUS BasicKUriViewTest()
 {
-    KUriView v1(L"http://foo:82/a/b?x=y#ff");
+    KUriView v1("http://foo:82/a/b?x=y#ff");
     if (v1.IsEmpty() || !v1.IsValid())
     {
         return STATUS_UNSUCCESSFUL;
     }
 
     KStringView sc = v1.Get(KUriView::eScheme);
-    if (sc.Compare(KStringView(L"http")) != 0)
+    if (sc.Compare(KStringView("http")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
 
     KStringView host = v1.Get(KUriView::eHost);
-    if (host.Compare(KStringView(L"foo")) != 0)
+    if (host.Compare(KStringView("foo")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
@@ -264,25 +264,25 @@ NTSTATUS BasicKUriViewTest()
     }
 
     KStringView auth = v1.Get(KUriView::eAuthority);
-    if (auth.Compare(KStringView(L"foo:82")) != 0)
+    if (auth.Compare(KStringView("foo:82")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
 
     KStringView path = v1.Get(KUriView::ePath);
-    if (path.Compare(KStringView(L"a/b")) != 0)
+    if (path.Compare(KStringView("a/b")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
 
     KStringView q = v1.Get(KUriView::eQueryString);
-    if (q.Compare(KStringView(L"x=y")) != 0)
+    if (q.Compare(KStringView("x=y")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
 
     KStringView fr = v1.Get(KUriView::eFragment);
-    if (fr.Compare(KStringView(L"ff")) != 0)
+    if (fr.Compare(KStringView("ff")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
@@ -293,20 +293,20 @@ NTSTATUS BasicKUriViewTest()
 
 NTSTATUS BasicKUriViewTest_Const()
 {
-    const KUriView v1(L"http://foo:82/a/b?x=y#ff");
+    const KUriView v1("http://foo:82/a/b?x=y#ff");
     if (v1.IsEmpty() || !v1.IsValid())
     {
         return STATUS_UNSUCCESSFUL;
     }
 
     const KStringView sc = v1.Get(KUriView::eScheme);
-    if (sc.Compare(KStringView(L"http")) != 0)
+    if (sc.Compare(KStringView("http")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
 
     const KStringView host = v1.Get(KUriView::eHost);
-    if (host.Compare(KStringView(L"foo")) != 0)
+    if (host.Compare(KStringView("foo")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
@@ -318,25 +318,25 @@ NTSTATUS BasicKUriViewTest_Const()
     }
 
     const KStringView auth = v1.Get(KUriView::eAuthority);
-    if (auth.Compare(KStringView(L"foo:82")) != 0)
+    if (auth.Compare(KStringView("foo:82")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
 
     const KStringView path = v1.Get(KUriView::ePath);
-    if (path.Compare(KStringView(L"a/b")) != 0)
+    if (path.Compare(KStringView("a/b")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
 
     const KStringView q = v1.Get(KUriView::eQueryString);
-    if (q.Compare(KStringView(L"x=y")) != 0)
+    if (q.Compare(KStringView("x=y")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
 
     const KStringView fr = v1.Get(KUriView::eFragment);
-    if (fr.Compare(KStringView(L"ff")) != 0)
+    if (fr.Compare(KStringView("ff")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
@@ -347,9 +347,9 @@ NTSTATUS BasicKUriViewTest_Const()
 VOID
 ComparisonOperatorTests()
 {
-    KUriView uri1(L"fabric:/a");
-    KUriView uri2(L"fabric:/a");
-    KUriView uri3(L"fabric:/b");
+    KUriView uri1("fabric:/a");
+    KUriView uri2("fabric:/a");
+    KUriView uri3("fabric:/b");
 
     KInvariant(uri1 == uri2);
     KInvariant((uri1 == uri3) == FALSE);
@@ -361,20 +361,20 @@ ComparisonOperatorTests()
 
 NTSTATUS KUriViewTest2()
 {
-    KUriView v1(L"http://foo:82/a/b");
+    KUriView v1("http://foo:82/a/b");
     if (v1.IsEmpty() || !v1.IsValid())
     {
         return STATUS_UNSUCCESSFUL;
     }
 
     KStringView sc = v1.Get(KUriView::eScheme);
-    if (sc.Compare(KStringView(L"http")) != 0)
+    if (sc.Compare(KStringView("http")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
 
     KStringView host = v1.Get(KUriView::eHost);
-    if (host.Compare(KStringView(L"foo")) != 0)
+    if (host.Compare(KStringView("foo")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
@@ -386,13 +386,13 @@ NTSTATUS KUriViewTest2()
     }
 
     KStringView auth = v1.Get(KUriView::eAuthority);
-    if (auth.Compare(KStringView(L"foo:82")) != 0)
+    if (auth.Compare(KStringView("foo:82")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
 
     KStringView path = v1.Get(KUriView::ePath);
-    if (path.Compare(KStringView(L"a/b")) != 0)
+    if (path.Compare(KStringView("a/b")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
@@ -408,7 +408,7 @@ NTSTATUS KUriViewTest2()
     }
 
 
-    KUriView v2(L"http://foo:82/a/b");
+    KUriView v2("http://foo:82/a/b");
 
     if (!v2.Compare(KUriView::eScheme, v1))
     {
@@ -420,7 +420,7 @@ NTSTATUS KUriViewTest2()
         return STATUS_UNSUCCESSFUL;
     }
 
-    KUriView v3(L"http://foo:82/c/b");
+    KUriView v3("http://foo:82/c/b");
     if (v3.Compare(KUriView::ePath, v1))
     {
         return STATUS_UNSUCCESSFUL;
@@ -431,7 +431,7 @@ NTSTATUS KUriViewTest2()
         return STATUS_UNSUCCESSFUL;
     }
 
-    if (v3.Compare(KUriView(L"http://foo:82/c/b")) == FALSE)
+    if (v3.Compare(KUriView("http://foo:82/c/b")) == FALSE)
     {
         return STATUS_UNSUCCESSFUL;
     }
@@ -441,7 +441,7 @@ NTSTATUS KUriViewTest2()
 
 NTSTATUS KDynUriViewTest()
 {
-    KDynUri v2(KStringView(L"http://foo:82/a/bc?a1=b2|c3=d4"), *g_Allocator);
+    KDynUri v2(KStringView("http://foo:82/a/bc?a1=b2|c3=d4"), *g_Allocator);
     KDynUri v1(*g_Allocator);
     v1.Set(v2);
 
@@ -458,13 +458,13 @@ NTSTATUS KDynUriViewTest()
 
     KStringView seg;
     v1.GetSegment(0, seg);
-    if (seg.Compare(KStringView(L"a")) != 0)
+    if (seg.Compare(KStringView("a")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
 
     v1.GetSegment(1, seg);
-    if (seg.Compare(KStringView(L"bc")) != 0)
+    if (seg.Compare(KStringView("bc")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
@@ -478,21 +478,21 @@ NTSTATUS KDynUriViewTest()
     KStringView p, v;
 
     v1.GetQueryStringParam(0, p, v);
-    if (p.Compare(KStringView(L"a1")) != 0)
+    if (p.Compare(KStringView("a1")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
-    if (v.Compare(KStringView(L"b2")) != 0)
+    if (v.Compare(KStringView("b2")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
 
     v1.GetQueryStringParam(1, p, v);
-    if (p.Compare(KStringView(L"c3")) != 0)
+    if (p.Compare(KStringView("c3")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
-    if (v.Compare(KStringView(L"d4")) != 0)
+    if (v.Compare(KStringView("d4")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
@@ -509,14 +509,14 @@ GetRelativeUri()
 
     // Create two URIs for the sample
 
-    Res = KUri::Create(KStringView(L"rvdtcp://foo:5003/rvd"), *g_Allocator, RootUri);
+    Res = KUri::Create(KStringView("rvdtcp://foo:5003/rvd"), *g_Allocator, RootUri);
     if (!NT_SUCCESS(Res))
     {
         return Res;
     }
 
     KUri::SPtr FullUri;
-    Res = KUri::Create(KStringView(L"rvdtcp://foo:5003/rvd/xx/yy/zz"), *g_Allocator, FullUri);
+    Res = KUri::Create(KStringView("rvdtcp://foo:5003/rvd/xx/yy/zz"), *g_Allocator, FullUri);
     if (!NT_SUCCESS(Res))
     {
         return Res;
@@ -559,7 +559,7 @@ KUriTest()
     KUri::SPtr PUri;
     NTSTATUS Res;
 
-    Res = KUri::Create(KStringView(L"http://foo:82/a/bc?a1=b2|c3=d4"), *g_Allocator, PUri);
+    Res = KUri::Create(KStringView("http://foo:82/a/bc?a1=b2|c3=d4"), *g_Allocator, PUri);
     if (!NT_SUCCESS(Res))
     {
         return Res;
@@ -589,7 +589,7 @@ KUriTest()
     }
 
     KUri::SPtr Uri2;
-    Res = KUri::Create(KStringView(L"http://foo:81/a/bc?a1=b2|c3=d4"), *g_Allocator, Uri2);
+    Res = KUri::Create(KStringView("http://foo:81/a/bc?a1=b2|c3=d4"), *g_Allocator, Uri2);
     if (!NT_SUCCESS(Res))
     {
         return Res;
@@ -630,17 +630,17 @@ KUriTest()
 NTSTATUS
 PrefixTests()
 {
-    KDynUri Base(KStringView(L"foo://a/b"), *g_Allocator);
+    KDynUri Base(KStringView("foo://a/b"), *g_Allocator);
 
-    KDynUri Candidate1(KStringView(L"foo://a/b?x=y"), *g_Allocator);
-    KDynUri Candidate2(KStringView(L"foo://a/b"), *g_Allocator);
-    KDynUri Candidate3(KStringView(L"foo://a/b/c"), *g_Allocator);
-    KDynUri Candidate4(KStringView(L"foo://a/b/c#af"), *g_Allocator);
-    KDynUri Candidate5(KStringView(L"foo://a/b#af"), *g_Allocator);
+    KDynUri Candidate1(KStringView("foo://a/b?x=y"), *g_Allocator);
+    KDynUri Candidate2(KStringView("foo://a/b"), *g_Allocator);
+    KDynUri Candidate3(KStringView("foo://a/b/c"), *g_Allocator);
+    KDynUri Candidate4(KStringView("foo://a/b/c#af"), *g_Allocator);
+    KDynUri Candidate5(KStringView("foo://a/b#af"), *g_Allocator);
 
-    KDynUri Candidate6(KStringView(L"foo://a/c"), *g_Allocator);
-    KDynUri Candidate7(KStringView(L"foo://a:9/b/c"), *g_Allocator);
-    KDynUri Candidate8(KStringView(L"fox://a/b/c"), *g_Allocator);
+    KDynUri Candidate6(KStringView("foo://a/c"), *g_Allocator);
+    KDynUri Candidate7(KStringView("foo://a:9/b/c"), *g_Allocator);
+    KDynUri Candidate8(KStringView("fox://a/b/c"), *g_Allocator);
 
 
     if (Base.IsPrefixFor(Candidate1) != TRUE)
@@ -688,8 +688,8 @@ PrefixTests()
 
     // Test case from driver
 
-    KDynUri RvdTestBase(KStringView(L"rvd://343659C03-01:5005"), *g_Allocator);
-    KDynUri Other(KStringView(L"rvd://343659C03-01:5005/csi/{c43c8c05-0648-3d30-8d70-2b075e3092f0}"), *g_Allocator);
+    KDynUri RvdTestBase(KStringView("rvd://343659C03-01:5005"), *g_Allocator);
+    KDynUri Other(KStringView("rvd://343659C03-01:5005/csi/{c43c8c05-0648-3d30-8d70-2b075e3092f0}"), *g_Allocator);
 
     if (RvdTestBase.IsPrefixFor(Other) == FALSE)
     {
@@ -701,8 +701,8 @@ PrefixTests()
 NTSTATUS
 ComposeTests()
 {
-    KDynUri Base(KStringView(L"foo://a/b"), *g_Allocator);
-    KUriView Suffix(L"x/y");
+    KDynUri Base(KStringView("foo://a/b"), *g_Allocator);
+    KUriView Suffix("x/y");
 
     KUri::SPtr NewUri;
     NTSTATUS Res = KUri::Create(Base, Suffix, *g_Allocator, NewUri);
@@ -712,7 +712,7 @@ ComposeTests()
     }
     KStringView Result = *NewUri;
 
-    if (Result.Compare(KStringView(L"foo://a/b/x/y")) != 0)
+    if (Result.Compare(KStringView("foo://a/b/x/y")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
@@ -759,10 +759,10 @@ DumpOutput(
 
         }
 
-        KTestPrintf("   Ident = '%S'\n", LPWSTR(*Output[i]._Ident));
+        KTestPrintf("   Ident = '%S'\n", LPSTR(*Output[i]._Ident));
         if (Output[i]._NsPrefix)
         {
-            KTestPrintf("   Ns    = %S\n", LPWSTR(*Output[i]._NsPrefix));
+            KTestPrintf("   Ns    = %S\n", LPSTR(*Output[i]._NsPrefix));
         }
         else
         {
@@ -774,35 +774,35 @@ DumpOutput(
 
 NTSTATUS KDomPathTests()
 {
-    LPCWSTR GoodPaths[] = {
-        L"xns:ab",
-        L"a/@xns:ccc",
-        L"a/b/c[1]/d[2]/@x",
-        L"ab[2]/@x",
-        L"aa/bb[]",
-        L"ab",
-        L"a/b",
-        L"a/b.c/c_d",
-        L"a/b/@x",
-        L"a/b/c[1]/@x",
-        L"a/ns1:b/c[1]/ns2:d[2]/@ns3:x"
+    LPCSTR GoodPaths[] = {
+        "xns:ab",
+        "a/@xns:ccc",
+        "a/b/c[1]/d[2]/@x",
+        "ab[2]/@x",
+        "aa/bb[]",
+        "ab",
+        "a/b",
+        "a/b.c/c_d",
+        "a/b/@x",
+        "a/b/c[1]/@x",
+        "a/ns1:b/c[1]/ns2:d[2]/@ns3:x"
         };
 
-    ULONG GoodPathsCount = sizeof(GoodPaths)/sizeof(LPCWSTR);
+    ULONG GoodPathsCount = sizeof(GoodPaths)/sizeof(LPCSTR);
 
-    LPCWSTR BadPaths[] = {
-        L"",
-        L"/a",
-        L"a/b/",
-        L"//",
-        L"a/b/@@x",
-        L"a/b/c[0]/@x@",
-        L"a/b/c]/@x",
-        L"a/[b]/c[1]/d[2]/@x"
-        L"a/ns1::b/"
+    LPCSTR BadPaths[] = {
+        "",
+        "/a",
+        "a/b/",
+        "//",
+        "a/b/@@x",
+        "a/b/c[0]/@x@",
+        "a/b/c]/@x",
+        "a/[b]/c[1]/d[2]/@x"
+        "a/ns1::b/"
         };
 
-    ULONG BadPathsCount = sizeof(BadPaths)/sizeof(LPCWSTR);
+    ULONG BadPathsCount = sizeof(BadPaths)/sizeof(LPCSTR);
 
 
     for (ULONG i = 0; i < GoodPathsCount; i++)
@@ -842,7 +842,7 @@ SuffixTests()
     NTSTATUS Status;
     KDynUri Tmp1(*g_Allocator);
 
-    Status = Tmp1.Set(KStringView(L"foo://basic/uri"));
+    Status = Tmp1.Set(KStringView("foo://basic/uri"));
 
     if (!NT_SUCCESS(Status))
     {
@@ -858,7 +858,7 @@ SuffixTests()
     }
 
     Tmp1.Clear();
-    Status = Tmp1.Set(KStringView(L"foo://basic/uri/longer/than/original"));
+    Status = Tmp1.Set(KStringView("foo://basic/uri/longer/than/original"));
     if (!NT_SUCCESS(Status))
     {
         return STATUS_UNSUCCESSFUL;
@@ -871,7 +871,7 @@ SuffixTests()
         return STATUS_UNSUCCESSFUL;
     }
 
-    if (!Diff.Compare(KUriView(L"longer/than/original")))
+    if (!Diff.Compare(KUriView("longer/than/original")))
     {
         return STATUS_UNSUCCESSFUL;
     }
@@ -880,7 +880,7 @@ SuffixTests()
 
 
     Tmp1.Clear();
-    Status = Tmp1.Set(KStringView(L"foo://basic/uri/longer/than/original?q1=v1&q2=v2#frag"));
+    Status = Tmp1.Set(KStringView("foo://basic/uri/longer/than/original?q1=v1&q2=v2#frag"));
     if (!NT_SUCCESS(Status))
     {
         return STATUS_UNSUCCESSFUL;
@@ -892,7 +892,7 @@ SuffixTests()
         return STATUS_UNSUCCESSFUL;
     }
 
-    if (!Diff.Compare(KUriView(L"longer/than/original?q1=v1&q2=v2#frag")))
+    if (!Diff.Compare(KUriView("longer/than/original?q1=v1&q2=v2#frag")))
     {
         return STATUS_UNSUCCESSFUL;
     }
@@ -902,13 +902,13 @@ SuffixTests()
     //
     KDynUri LongUri(*g_Allocator);
 
-    Status = LongUri.Set(KStringView(L"http://RAYMCCMOBILE8:80/pav/svc/fabric:/rvd/testnodeservice:129905745079993957"));
+    Status = LongUri.Set(KStringView("http://RAYMCCMOBILE8:80/pav/svc/fabric:/rvd/testnodeservice:129905745079993957"));
     if (!NT_SUCCESS(Status))
     {
         return STATUS_UNSUCCESSFUL;
     }
 
-    Status = Tmp1.Set(KStringView(L"http://RAYMCCMOBILE8:80/pav/svc/fabric:/rvd/testnodeservice:129905745079993957"));
+    Status = Tmp1.Set(KStringView("http://RAYMCCMOBILE8:80/pav/svc/fabric:/rvd/testnodeservice:129905745079993957"));
     Diff.Clear();
     Status = LongUri.GetSuffix(Tmp1, Diff);
     if (!NT_SUCCESS(Status))
@@ -921,13 +921,13 @@ SuffixTests()
     //
     KDynUri RootUri(*g_Allocator);
 
-    Status = RootUri.Set(KStringView(L"http://fred/"));
+    Status = RootUri.Set(KStringView("http://fred/"));
     if (!NT_SUCCESS(Status))
     {
         return STATUS_UNSUCCESSFUL;
     }
 
-    Status = Tmp1.Set(KStringView(L"http://fred/nodes/mynode/blah"));
+    Status = Tmp1.Set(KStringView("http://fred/nodes/mynode/blah"));
     Diff.Clear();
     Status = RootUri.GetSuffix(Tmp1, Diff);
     if (!NT_SUCCESS(Status))
@@ -937,13 +937,13 @@ SuffixTests()
 
     KDynUri RootUri2(*g_Allocator);
 
-    Status = RootUri2.Set(KStringView(L"//fred/"));
+    Status = RootUri2.Set(KStringView("//fred/"));
     if (!NT_SUCCESS(Status))
     {
         return STATUS_UNSUCCESSFUL;
     }
 
-    Status = Tmp1.Set(KStringView(L"//fred/nodes/mynode/blah"));
+    Status = Tmp1.Set(KStringView("//fred/nodes/mynode/blah"));
     Diff.Clear();
     Status = RootUri2.GetSuffix(Tmp1, Diff);
     if (!NT_SUCCESS(Status))
@@ -958,9 +958,9 @@ SuffixTests()
 NTSTATUS
 WildcardTests()
 {
-    KUriView Auth(L"foo://*/blah/blah2");
-    KUriView Test(L"foo://auth/blah/blah2");
-    KUriView Test2(L"foo://xx/blah/blah2");
+    KUriView Auth("foo://*/blah/blah2");
+    KUriView Test("foo://auth/blah/blah2");
+    KUriView Test2("foo://xx/blah/blah2");
 
     if (Auth.Compare(Test))
     {
@@ -1082,7 +1082,7 @@ TestSequence()
 
 
 VOID TestCommandLineUri(
-    __in LPCWSTR Test
+    __in LPCSTR Test
     )
 {
     KDynUri v(*g_Allocator);
@@ -1093,7 +1093,7 @@ VOID TestCommandLineUri(
 
 NTSTATUS
 KUriTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     KTestPrintf("KUriTest: STARTED\n");
@@ -1147,7 +1147,7 @@ KUriTest(
 #if CONSOLE_TEST
 int
 #if !defined(PLATFORM_UNIX)
-wmain(int argc, WCHAR* args[])
+wmain(int argc, CHAR* args[])
 {
 #else
 main(int argc, char* cargs[])

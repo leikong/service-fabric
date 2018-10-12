@@ -26,5 +26,5 @@ Abstract:
 
 const KU_TEST_ENTRY gs_KuTestCases[] =
 {
-    {   L"KThreadTest",              KThreadTest,         L"BVT", L"KThread unit test"}
+    {   "KThreadTest",              KThreadTest,         "BVT", "KThread unit test"}
 };

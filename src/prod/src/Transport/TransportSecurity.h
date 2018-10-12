@@ -20,7 +20,7 @@ namespace Transport
 
         Common::ErrorCode Set(SecuritySettings const & securitySettings);
         SecuritySettings const & Settings() const;
-        std::wstring ToString() const;
+        std::string ToString() const;
 
         Common::ErrorCode CanUpgradeTo(TransportSecurity const & rhs);
 
@@ -45,7 +45,7 @@ namespace Transport
 
         bool UsingWindowsCredential() const;
 
-        std::wstring const & LocalWindowsIdentity();
+        std::string const & LocalWindowsIdentity();
         bool RunningAsMachineAccount();
 
         PSECURITY_DESCRIPTOR ConnectionAuthSecurityDescriptor() const;
@@ -68,12 +68,12 @@ namespace Transport
             DWORD allowedAccess,
             _Out_ Common::SecurityDescriptorSPtr & securityDescriptor);
 
-        static Common::ErrorCode GetMachineAccount(_Out_ std::wstring & machineAccount);
+        static Common::ErrorCode GetMachineAccount(_Out_ std::string & machineAccount);
 
         static Common::ErrorCode RegisterWindowsFabricSpn();
         static Common::ErrorCode UnregisterWindowsFabricSpn();
 
-        typedef std::function<void(std::wstring const & claims, SecurityContextSPtr const & context)> ClaimsHandler;
+        typedef std::function<void(std::string const & claims, SecurityContextSPtr const & context)> ClaimsHandler;
         typedef std::function<void(ClaimsRetrievalMetadataSPtr const &, SecurityContextSPtr const & context)> ClaimsRetrievalHandler;
 
         void SetClaimsRetrievalMetadata(ClaimsRetrievalMetadata &&);
@@ -97,14 +97,14 @@ namespace Transport
 
         Common::ErrorCode AcquireCredentials_CallerHoldingWLock();
 
-        static std::wstring AddressToSpn(std::wstring const & address);
-        std::wstring GetServerIdentity(std::wstring const & address) const;
-        std::wstring GetPeerIdentity(std::wstring const & address) const;
+        static std::string AddressToSpn(std::string const & address);
+        std::string GetServerIdentity(std::string const & address) const;
+        std::string GetPeerIdentity(std::string const & address) const;
 
         static ULONG GetInternalMaxFrameSize(ULONG value);
 
 #ifndef PLATFORM_UNIX
-        static Common::ErrorCode GetDomainNameDns(_Out_ std::wstring & domain);
+        static Common::ErrorCode GetDomainNameDns(_Out_ std::string & domain);
         static Common::ErrorCode UpdateWindowsFabricSpn(DS_SPN_WRITE_OP operation);
 #endif
 
@@ -131,7 +131,7 @@ namespace Transport
         // Windows credential specific settings
         HANDLE localTokenHandle_;
         std::vector<byte> localUserToken_;
-        std::wstring localWindowsIdentity_;
+        std::string localWindowsIdentity_;
         bool runningAsMachineAccount_;
         Common::SecurityDescriptorSPtr connectionAuthSecurityDescriptor_; // For incoming connection authorization
 

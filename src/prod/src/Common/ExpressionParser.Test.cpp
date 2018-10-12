@@ -22,299 +22,299 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(EmptyString)
     {
-        wstring error;
-        map<wstring, wstring> params;
-        params.insert(make_pair<wstring, wstring>(L"A", L"5"));
+        string error;
+        map<string, string> params;
+        params.insert(make_pair<string, string>("A", "5"));
 
-        ExpressionSPtr compiledExpression = Expression::Build(L"");
+        ExpressionSPtr compiledExpression = Expression::Build("");
         bool result = compiledExpression->Evaluate(params, error);
         VERIFY_IS_TRUE(result);
-        VERIFY_IS_TRUE(error == L"");
+        VERIFY_IS_TRUE(error == "");
     }
 
     BOOST_AUTO_TEST_CASE(ComparisonOperatorTest)
     {
-        ExpressionSPtr compiledExpression = Expression::Build(L"a == 5");
-        map<wstring, wstring> params;
-        params.insert(make_pair<wstring, wstring>(L"a", L"5"));
+        ExpressionSPtr compiledExpression = Expression::Build("a == 5");
+        map<string, string> params;
+        params.insert(make_pair<string, string>("a", "5"));
         OperationResult result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_TRUE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"6"));
+        params.insert(make_pair<string, string>("a", "6"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_FALSE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"b", L"3"));
-        wstring error;
+        params.insert(make_pair<string, string>("b", "3"));
+        string error;
         bool boolResult = compiledExpression->Evaluate(params, error);
-        VERIFY_ARE_NOT_EQUAL(L"", error);
+        VERIFY_ARE_NOT_EQUAL("", error);
         VERIFY_IS_FALSE(boolResult);
 
         params.clear();
-        error = L"";
+        error = "";
         boolResult = compiledExpression->Evaluate(params, error);
-        VERIFY_ARE_NOT_EQUAL(L"", error);
+        VERIFY_ARE_NOT_EQUAL("", error);
         VERIFY_IS_FALSE(boolResult);
 
-        compiledExpression = Expression::Build(L"a == alpha");
+        compiledExpression = Expression::Build("a == alpha");
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"6"));
+        params.insert(make_pair<string, string>("a", "6"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_FALSE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"alpha"));
+        params.insert(make_pair<string, string>("a", "alpha"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_TRUE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"b", L"beta"));
-        error = L"";
+        params.insert(make_pair<string, string>("b", "beta"));
+        error = "";
         boolResult = compiledExpression->Evaluate(params, error);
-        VERIFY_ARE_NOT_EQUAL(L"", error);
+        VERIFY_ARE_NOT_EQUAL("", error);
         VERIFY_IS_FALSE(boolResult);
 
-        compiledExpression = Expression::Build(L"a != 5");
+        compiledExpression = Expression::Build("a != 5");
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"6"));
+        params.insert(make_pair<string, string>("a", "6"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_TRUE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"5"));
+        params.insert(make_pair<string, string>("a", "5"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_FALSE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"b", L"3"));
-        error = L"";
+        params.insert(make_pair<string, string>("b", "3"));
+        error = "";
         boolResult = compiledExpression->Evaluate(params, error);
-        VERIFY_ARE_NOT_EQUAL(L"", error);
+        VERIFY_ARE_NOT_EQUAL("", error);
         VERIFY_IS_FALSE(boolResult);
 
-        compiledExpression = Expression::Build(L"a != alpha");
+        compiledExpression = Expression::Build("a != alpha");
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"alpha"));
+        params.insert(make_pair<string, string>("a", "alpha"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_FALSE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"6"));
+        params.insert(make_pair<string, string>("a", "6"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_TRUE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"b", L"beta"));
-        error = L"";
+        params.insert(make_pair<string, string>("b", "beta"));
+        error = "";
         boolResult = compiledExpression->Evaluate(params, error);
-        VERIFY_ARE_NOT_EQUAL(L"", error);
+        VERIFY_ARE_NOT_EQUAL("", error);
         VERIFY_IS_FALSE(boolResult);
 
-        compiledExpression = Expression::Build(L"a >= 5");
+        compiledExpression = Expression::Build("a >= 5");
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"5"));
+        params.insert(make_pair<string, string>("a", "5"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_TRUE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"4"));
+        params.insert(make_pair<string, string>("a", "4"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_FALSE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"b", L"3"));
-        error = L"";
+        params.insert(make_pair<string, string>("b", "3"));
+        error = "";
         boolResult = compiledExpression->Evaluate(params, error);
-        VERIFY_ARE_NOT_EQUAL(L"", error);
+        VERIFY_ARE_NOT_EQUAL("", error);
         VERIFY_IS_FALSE(boolResult);
 
-        compiledExpression = Expression::Build(L"a > 5");
+        compiledExpression = Expression::Build("a > 5");
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"6"));
+        params.insert(make_pair<string, string>("a", "6"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_TRUE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"5"));
+        params.insert(make_pair<string, string>("a", "5"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_FALSE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"b", L"3"));
-        error = L"";
+        params.insert(make_pair<string, string>("b", "3"));
+        error = "";
         boolResult = compiledExpression->Evaluate(params, error);
-        VERIFY_ARE_NOT_EQUAL(L"", error);
+        VERIFY_ARE_NOT_EQUAL("", error);
         VERIFY_IS_FALSE(boolResult);
 
-        compiledExpression = Expression::Build(L"a < 5");
+        compiledExpression = Expression::Build("a < 5");
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"4"));
+        params.insert(make_pair<string, string>("a", "4"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_TRUE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"5"));
+        params.insert(make_pair<string, string>("a", "5"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_FALSE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"b", L"3"));
-        error = L"";
+        params.insert(make_pair<string, string>("b", "3"));
+        error = "";
         boolResult = compiledExpression->Evaluate(params, error);
-        VERIFY_ARE_NOT_EQUAL(L"", error);
+        VERIFY_ARE_NOT_EQUAL("", error);
         VERIFY_IS_FALSE(boolResult);
 
-        compiledExpression = Expression::Build(L"a <= 5");
+        compiledExpression = Expression::Build("a <= 5");
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"5"));
+        params.insert(make_pair<string, string>("a", "5"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_TRUE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"6"));
+        params.insert(make_pair<string, string>("a", "6"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_FALSE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"b", L"3"));
-        error = L"";
+        params.insert(make_pair<string, string>("b", "3"));
+        error = "";
         boolResult = compiledExpression->Evaluate(params, error);
-        VERIFY_ARE_NOT_EQUAL(L"", error);
+        VERIFY_ARE_NOT_EQUAL("", error);
         VERIFY_IS_FALSE(boolResult);
 
-        compiledExpression = Expression::Build(L"!(a > 5)");
+        compiledExpression = Expression::Build("!(a > 5)");
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"5"));
+        params.insert(make_pair<string, string>("a", "5"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_TRUE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"6"));
+        params.insert(make_pair<string, string>("a", "6"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_FALSE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"b", L"3"));
-        error = L"";
+        params.insert(make_pair<string, string>("b", "3"));
+        error = "";
         boolResult = compiledExpression->Evaluate(params, error);
-        VERIFY_ARE_NOT_EQUAL(L"", error);
+        VERIFY_ARE_NOT_EQUAL("", error);
         VERIFY_IS_FALSE(boolResult);
 
         // operator ^ for string
-        compiledExpression = Expression::Build(L"a ^ Str");
+        compiledExpression = Expression::Build("a ^ Str");
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"String"));
+        params.insert(make_pair<string, string>("a", "String"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_TRUE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"Str"));
+        params.insert(make_pair<string, string>("a", "Str"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_TRUE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"tring"));
+        params.insert(make_pair<string, string>("a", "tring"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_FALSE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"b", L"Str"));
-        error = L"";
+        params.insert(make_pair<string, string>("b", "Str"));
+        error = "";
         boolResult = compiledExpression->Evaluate(params, error);
-        VERIFY_ARE_NOT_EQUAL(L"", error);
+        VERIFY_ARE_NOT_EQUAL("", error);
         VERIFY_IS_FALSE(boolResult);
 
         // operator ^ for Uri
-        compiledExpression = Expression::Build(L"FaultDomain ^ fd:/DC0");
+        compiledExpression = Expression::Build("FaultDomain ^ fd:/DC0");
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"FaultDomain", L"fd:/DC0/Rack0/Shelf0"));
+        params.insert(make_pair<string, string>("FaultDomain", "fd:/DC0/Rack0/Shelf0"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_TRUE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"FaultDomain", L"fd:/DC0/Rack0"));
+        params.insert(make_pair<string, string>("FaultDomain", "fd:/DC0/Rack0"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_TRUE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"FaultDomain", L"fd:/DC0"));
+        params.insert(make_pair<string, string>("FaultDomain", "fd:/DC0"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_TRUE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"FaultDomain", L"fd:/DC00/Rack0"));
+        params.insert(make_pair<string, string>("FaultDomain", "fd:/DC00/Rack0"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_FALSE(result.NonLiteral);
 
         // operator !^ for Uri
-        compiledExpression = Expression::Build(L"FaultDomain !^ fd:/DC0");
+        compiledExpression = Expression::Build("FaultDomain !^ fd:/DC0");
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"FaultDomain", L"fd:/DC0/Rack0"));
+        params.insert(make_pair<string, string>("FaultDomain", "fd:/DC0/Rack0"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_FALSE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"FaultDomain", L"fd:/DC0"));
+        params.insert(make_pair<string, string>("FaultDomain", "fd:/DC0"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_FALSE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"FaultDomain", L"fd:/DC1"));
+        params.insert(make_pair<string, string>("FaultDomain", "fd:/DC1"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_TRUE(result.NonLiteral);
 
         // operator ^P for Uri
-        compiledExpression = Expression::Build(L"FaultDomain ^P fd:/DC0");
+        compiledExpression = Expression::Build("FaultDomain ^P fd:/DC0");
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"FaultDomain", L"fd:/DC0/Rack0"));
+        params.insert(make_pair<string, string>("FaultDomain", "fd:/DC0/Rack0"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_TRUE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"FaultDomain", L"fd:/DC00/Rack0"));
+        params.insert(make_pair<string, string>("FaultDomain", "fd:/DC00/Rack0"));
         result = compiledExpression->Evaluate(params);
         // the result is true because ^P is skipped when evaluate for regular (non-primary) value
         VERIFY_IS_TRUE(result.IsNonLiteral());
@@ -326,27 +326,27 @@ namespace Common
         VERIFY_IS_FALSE(result.NonLiteral);
 
         // numberic inputs are invalid for ^ 
-        compiledExpression = Expression::Build(L"FaultDomain ^ 5");
+        compiledExpression = Expression::Build("FaultDomain ^ 5");
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"FaultDomain", L"55"));
-        error = L"";
+        params.insert(make_pair<string, string>("FaultDomain", "55"));
+        error = "";
         boolResult = compiledExpression->Evaluate(params, error);
-        VERIFY_ARE_NOT_EQUAL(L"", error);
+        VERIFY_ARE_NOT_EQUAL("", error);
         VERIFY_IS_FALSE(boolResult);
 
         // operator ~ for FDPolicy
-        compiledExpression = Expression::Build(L"FaultDomain ^P fd:/DC0 && FDPolicy ~ Nonpacking");
-        VERIFY_IS_TRUE(compiledExpression->FDPolicy == L"Nonpacking");
+        compiledExpression = Expression::Build("FaultDomain ^P fd:/DC0 && FDPolicy ~ Nonpacking");
+        VERIFY_IS_TRUE(compiledExpression->FDPolicy == "Nonpacking");
 
-        compiledExpression = Expression::Build(L"FDPolicy ~ Ignore && a == 5 ");
-        VERIFY_IS_TRUE(compiledExpression->FDPolicy == L"Ignore");
+        compiledExpression = Expression::Build("FDPolicy ~ Ignore && a == 5 ");
+        VERIFY_IS_TRUE(compiledExpression->FDPolicy == "Ignore");
 
-        compiledExpression = Expression::Build(L"PlacePolicy ~ NonPartially ");
-        VERIFY_IS_TRUE(compiledExpression->PlacePolicy == L"NonPartially");
+        compiledExpression = Expression::Build("PlacePolicy ~ NonPartially ");
+        VERIFY_IS_TRUE(compiledExpression->PlacePolicy == "NonPartially");
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"5"));
+        params.insert(make_pair<string, string>("a", "5"));
         result = compiledExpression->Evaluate(params, error);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_TRUE(result.NonLiteral);
@@ -354,89 +354,89 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(BooleanOperatorTest)
     {
-        ExpressionSPtr compiledExpression = Expression::Build(L"a == 5 && b != 6");
-        map<wstring, wstring> params;
-        params.insert(make_pair<wstring, wstring>(L"a", L"5"));
-        params.insert(make_pair<wstring, wstring>(L"b", L"5"));
+        ExpressionSPtr compiledExpression = Expression::Build("a == 5 && b != 6");
+        map<string, string> params;
+        params.insert(make_pair<string, string>("a", "5"));
+        params.insert(make_pair<string, string>("b", "5"));
         OperationResult result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_TRUE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"6"));
-        params.insert(make_pair<wstring, wstring>(L"b", L"6"));
+        params.insert(make_pair<string, string>("a", "6"));
+        params.insert(make_pair<string, string>("b", "6"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_FALSE(result.NonLiteral);
 
         params.clear();
-        wstring error;
+        string error;
         bool boolResult = compiledExpression->Evaluate(params, error);
-        VERIFY_ARE_NOT_EQUAL(L"", error);
+        VERIFY_ARE_NOT_EQUAL("", error);
         VERIFY_IS_FALSE(boolResult);
 
-        compiledExpression = Expression::Build(L"a == 5 || b != 6");
+        compiledExpression = Expression::Build("a == 5 || b != 6");
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"5"));
-        params.insert(make_pair<wstring, wstring>(L"b", L"5"));
+        params.insert(make_pair<string, string>("a", "5"));
+        params.insert(make_pair<string, string>("b", "5"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_TRUE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"6"));
-        params.insert(make_pair<wstring, wstring>(L"b", L"6"));
+        params.insert(make_pair<string, string>("a", "6"));
+        params.insert(make_pair<string, string>("b", "6"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_FALSE(result.NonLiteral);
 
         params.clear();
-        error = L"";
+        error = "";
         boolResult = compiledExpression->Evaluate(params, error);
-        VERIFY_ARE_NOT_EQUAL(L"", error);
+        VERIFY_ARE_NOT_EQUAL("", error);
         VERIFY_IS_FALSE(boolResult);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"6"));
-        error = L"";
+        params.insert(make_pair<string, string>("a", "6"));
+        error = "";
         boolResult = compiledExpression->Evaluate(params, error);
-        VERIFY_ARE_NOT_EQUAL(L"", error);
+        VERIFY_ARE_NOT_EQUAL("", error);
         VERIFY_IS_FALSE(boolResult);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"b", L"6"));
-        error = L"";
+        params.insert(make_pair<string, string>("b", "6"));
+        error = "";
         boolResult = compiledExpression->Evaluate(params, error);
-        VERIFY_ARE_NOT_EQUAL(L"", error);
+        VERIFY_ARE_NOT_EQUAL("", error);
         VERIFY_IS_FALSE(boolResult);
 
-        compiledExpression = Expression::Build(L"(a == 5) == (b == 5)");
+        compiledExpression = Expression::Build("(a == 5) == (b == 5)");
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"5"));
-        error = L"";
+        params.insert(make_pair<string, string>("a", "5"));
+        error = "";
         boolResult = compiledExpression->Evaluate(params, error);
-        VERIFY_ARE_NOT_EQUAL(L"", error);
+        VERIFY_ARE_NOT_EQUAL("", error);
         VERIFY_IS_FALSE(boolResult);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"b", L"5"));
-        error = L"";
+        params.insert(make_pair<string, string>("b", "5"));
+        error = "";
         boolResult = compiledExpression->Evaluate(params, error);
-        VERIFY_ARE_NOT_EQUAL(L"", error);
+        VERIFY_ARE_NOT_EQUAL("", error);
         VERIFY_IS_FALSE(boolResult);
 
-        compiledExpression = Expression::Build(L"! (a == 5)");
+        compiledExpression = Expression::Build("! (a == 5)");
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"6"));
+        params.insert(make_pair<string, string>("a", "6"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_TRUE(result.NonLiteral);
 
         params.clear();
-        params.insert(make_pair<wstring, wstring>(L"a", L"5"));
+        params.insert(make_pair<string, string>("a", "5"));
         result = compiledExpression->Evaluate(params);
         VERIFY_IS_TRUE(result.IsNonLiteral());
         VERIFY_IS_FALSE(result.NonLiteral);
@@ -444,23 +444,23 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(InvalidExpressionTest)
     {
-        VERIFY_IS_TRUE(Expression::Build(L"(abc") == nullptr);
+        VERIFY_IS_TRUE(Expression::Build("(abc") == nullptr);
 
-        VERIFY_IS_TRUE(Expression::Build(L"abc)") == nullptr);
+        VERIFY_IS_TRUE(Expression::Build("abc)") == nullptr);
 
-        VERIFY_IS_TRUE(Expression::Build(L"1==") == nullptr);
+        VERIFY_IS_TRUE(Expression::Build("1==") == nullptr);
 
-        VERIFY_IS_TRUE(Expression::Build(L"==1") == nullptr);
+        VERIFY_IS_TRUE(Expression::Build("==1") == nullptr);
 
-        VERIFY_IS_TRUE(Expression::Build(L"==") == nullptr);
+        VERIFY_IS_TRUE(Expression::Build("==") == nullptr);
 
-        VERIFY_IS_TRUE(Expression::Build(L"!") == nullptr);
+        VERIFY_IS_TRUE(Expression::Build("!") == nullptr);
 
-        VERIFY_IS_TRUE(Expression::Build(L"!a && !") == nullptr);
+        VERIFY_IS_TRUE(Expression::Build("!a && !") == nullptr);
 
-        VERIFY_IS_TRUE(Expression::Build(L"a!Param)") == nullptr);
+        VERIFY_IS_TRUE(Expression::Build("a!Param)") == nullptr);
 
-        VERIFY_IS_TRUE(Expression::Build(L"()var") == nullptr);
+        VERIFY_IS_TRUE(Expression::Build("()var") == nullptr);
     }
 
     BOOST_AUTO_TEST_SUITE_END()

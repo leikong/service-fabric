@@ -42,7 +42,7 @@ Abstract:
 
 //* Sub-tree deletion helper
 void
-DeleteDir(WCHAR* DirPath, KAllocator& Allocator)
+DeleteDir(CHAR* DirPath, KAllocator& Allocator)
 {
     KSynchronizer       compSync;
     NTSTATUS            status = STATUS_SUCCESS;
@@ -69,7 +69,7 @@ DeleteDir(WCHAR* DirPath, KAllocator& Allocator)
         delPath += namesToDelete[ix];
         KInvariant(NT_SUCCESS(delPath.Status()));
 
-        DeleteDir((WCHAR*)delPath, Allocator);
+        DeleteDir((CHAR*)delPath, Allocator);
     }
 
     // Waste any files
@@ -111,7 +111,7 @@ FileExists(const KStringView& FullFileNamePath)
 }
 
 NTSTATUS
-InternalLoggerAliasTest(__in int argc, __in_ecount(argc) WCHAR* args[])
+InternalLoggerAliasTest(__in int argc, __in_ecount(argc) CHAR* args[])
 {
     KInvariant(argc == 1);
 
@@ -126,11 +126,11 @@ InternalLoggerAliasTest(__in int argc, __in_ecount(argc) WCHAR* args[])
 #if !defined(PLATFORM_UNIX)
     KWString        driveRootStore(allocator, args[0]);
     KInvariant(NT_SUCCESS(driveRootStore.Status()));
-    KStringView     driveRoot((WCHAR*)driveRootStore);
+    KStringView     driveRoot((CHAR*)driveRootStore);
 	
     if (driveRoot.Length() == 1)
     {
-        driveRootStore += L":";
+        driveRootStore += ":";
         KInvariant(NT_SUCCESS(driveRootStore.Status()));
         driveRoot.KStringView::KStringView((UNICODE_STRING)driveRootStore);
     }
@@ -147,16 +147,16 @@ InternalLoggerAliasTest(__in int argc, __in_ecount(argc) WCHAR* args[])
     dedicatedLogFilesDirRoot = driveRootStore;
     aliasLogFilesDirRoot = driveRootStore;
 #else
-    dedicatedLogFilesDirRoot = L"";
-    aliasLogFilesDirRoot = L"";
+    dedicatedLogFilesDirRoot = "";
+    aliasLogFilesDirRoot = "";
 #endif
 	
     dedicatedLogFilesDirRoot += KVolumeNamespace::PathSeparator;
     KInvariant(NT_SUCCESS(dedicatedLogFilesDirRoot.Status()));
-    dedicatedLogFilesDirRoot += (WCHAR*)&RvdDiskLogConstants::RawDirectoryNameStr();
+    dedicatedLogFilesDirRoot += (CHAR*)&RvdDiskLogConstants::RawDirectoryNameStr();
     KInvariant(NT_SUCCESS(dedicatedLogFilesDirRoot.Status()));
     aliasLogFilesDirRoot += KVolumeNamespace::PathSeparator;
-    aliasLogFilesDirRoot += L"RvdLogAliasTest";
+    aliasLogFilesDirRoot += "RvdLogAliasTest";
     KInvariant(NT_SUCCESS(aliasLogFilesDirRoot.Status()));
 	
     DeleteDir(dedicatedLogFilesDirRoot, allocator);
@@ -194,16 +194,16 @@ InternalLoggerAliasTest(__in int argc, __in_ecount(argc) WCHAR* args[])
     log1PathBuffer = driveRoot;
     status = log1PathBuffer.Status();
     KInvariant(NT_SUCCESS(status));
-    log1PathBuffer += L"\\RvdLogAliasTest\\TestLog1.Alias.log";
+    log1PathBuffer += "\\RvdLogAliasTest\\TestLog1.Alias.log";
 #else
-    log1PathBuffer = L"/tmp/TestLog1.Alias.log";
+    log1PathBuffer = "/tmp/TestLog1.Alias.log";
 #endif
     status = log1PathBuffer.Status();
     KInvariant(NT_SUCCESS(status));
 
-    KStringView     log1Path((WCHAR*)log1PathBuffer);
+    KStringView     log1Path((CHAR*)log1PathBuffer);
 
-    KWString logType(KtlSystem::GlobalNonPagedAllocator(), L"RvdLog");
+    KWString logType(KtlSystem::GlobalNonPagedAllocator(), "RvdLog");
     KInvariant(NT_SUCCESS(logType.Status()));
 
     createLogOp->StartCreateLog(
@@ -355,7 +355,7 @@ InternalLoggerAliasTest(__in int argc, __in_ecount(argc) WCHAR* args[])
 
 //** Test Entry Point: AliasTest
 NTSTATUS
-RvdLoggerAliasTests(__in int argc, __in_ecount(argc) WCHAR* args[])
+RvdLoggerAliasTests(__in int argc, __in_ecount(argc) CHAR* args[])
 {
     NTSTATUS result;
     KtlSystem* underlyingSystem;

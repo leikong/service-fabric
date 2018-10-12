@@ -122,24 +122,24 @@ namespace Common
         void Write(PEVENT_DATA_DESCRIPTOR data);
 
         template<class T>
-        void WriteToTextSink(T const & a0, std::wstring const & data, bool useConsole, bool useFile, bool useETW)
+        void WriteToTextSink(T const & a0, std::string const & data, bool useConsole, bool useFile, bool useETW)
         {
-            WriteToTextSinkInternal(HasIdField() ? wformatString(a0) : std::wstring(), data, useConsole, useFile, useETW);
+            WriteToTextSinkInternal(HasIdField() ? formatString(a0) : std::string(), data, useConsole, useFile, useETW);
         }
 
         template<>
-        void WriteToTextSink<std::wstring>(std::wstring const & a0, std::wstring const & data, bool useConsole, bool useFile, bool useETW)
+        void WriteToTextSink<std::string>(std::string const & a0, std::string const & data, bool useConsole, bool useFile, bool useETW)
         {
-            WriteToTextSinkInternal(HasIdField() ? a0 : std::wstring(), data, useConsole, useFile, useETW);
+            WriteToTextSinkInternal(HasIdField() ? a0 : std::string(), data, useConsole, useFile, useETW);
         }
 
         template<>
-        void WriteToTextSink<Guid>(Guid const & a0, std::wstring const & data, bool useConsole, bool useFile, bool useETW)
+        void WriteToTextSink<Guid>(Guid const & a0, std::string const & data, bool useConsole, bool useFile, bool useETW)
         {
-            WriteToTextSinkInternal(HasIdField() ? a0.ToString() : std::wstring(), data, useConsole, useFile, useETW);
+            WriteToTextSinkInternal(HasIdField() ? a0.ToString() : std::string(), data, useConsole, useFile, useETW);
         }
 
-        void WriteTextEvent(StringLiteral type, std::wstring const & id, std::wstring const & text, bool useETW, bool useFile, bool useConsole);
+        void WriteTextEvent(StringLiteral type, std::string const & id, std::string const & text, bool useETW, bool useFile, bool useConsole);
 
         template<class T>
         void AddEventField(std::string & format, std::string const & name, size_t & index)
@@ -321,25 +321,7 @@ namespace Common
         };
 
         template<>
-        struct AddFieldTraits<std::wstring>
-        {
-            static void AddField(TraceEvent & traceEvent, std::string const & name)
-            {
-                traceEvent.AddFieldDescription(name, "win:UnicodeString", "xs:string");
-            }
-        };
-
-        template<>
-        struct AddFieldTraits<LPCWSTR>
-        {
-            static void AddField(TraceEvent & traceEvent, std::string const & name)
-            {
-                traceEvent.AddFieldDescription(name, "win:UnicodeString", "xs:string");
-            }
-        };
-
-        template<>
-        struct AddFieldTraits<WStringLiteral>
+        struct AddFieldTraits<LPCSTR>
         {
             static void AddField(TraceEvent & traceEvent, std::string const & name)
             {
@@ -485,7 +467,7 @@ namespace Common
             StringLiteral MapName;
         };
 
-        void WriteToTextSinkInternal(std::wstring const & id, std::wstring const & data, bool useConsole, bool useFile, bool useETW);
+        void WriteToTextSinkInternal(std::string const & id, std::string const & data, bool useConsole, bool useFile, bool useETW);
 
         static size_t CountArguments(std::string const & format);
 

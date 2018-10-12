@@ -53,9 +53,9 @@ namespace Federation
         /// </summary>
         /// <param name="value">The value to search</param>
         /// <returns>The pointer to the partner node</returns>
-        PartnerNodeSPtr FindClosest(NodeId const& value, std::wstring const & toRing) const;
+        PartnerNodeSPtr FindClosest(NodeId const& value, std::string const & toRing) const;
 
-        PartnerNodeSPtr GetRoutingHop(NodeId const& value, std::wstring const & ringName, bool safeMode, bool& ownsToken) const;
+        PartnerNodeSPtr GetRoutingHop(NodeId const& value, std::string const & ringName, bool safeMode, bool& ownsToken) const;
 
         /// <summary>
         /// Get the PartnerNode with the id in the input.
@@ -63,7 +63,7 @@ namespace Federation
         /// <param name="value">The instance of the node.</param>
         /// <returns>The pointer to the partner node if it exists, else returns null.</returns>
         PartnerNodeSPtr Get(NodeInstance const & value) const;
-        PartnerNodeSPtr Get(NodeInstance const & value, std::wstring const & ringName) const;
+        PartnerNodeSPtr Get(NodeInstance const & value, std::string const & ringName) const;
 
         /// <summary>
         /// Get the Predecessor of the current node
@@ -83,7 +83,7 @@ namespace Federation
         /// <param name="value">The id of the node.</param>
         /// <returns>The pointer to the partner node if it exists, else returns null.</returns>
         PartnerNodeSPtr Get(NodeId value) const;
-        PartnerNodeSPtr Get(NodeId value, std::wstring const & ringName) const;
+        PartnerNodeSPtr Get(NodeId value, std::string const & ringName) const;
 
         /// <summary>
         /// Consider update or insert the partner node
@@ -134,19 +134,19 @@ namespace Federation
         /// Set the specified node's state to shutdown
         /// </summary>
         /// <param name="shutdownNode">The node instance we know that is shutdown</param>
-        void SetShutdown(NodeInstance const& shutdownNode, std::wstring const & ringName);
+        void SetShutdown(NodeInstance const& shutdownNode, std::string const & ringName);
 
         /// <summary>
         /// Set the specified node's state to unknown
         /// </summary>
         /// <param name="unknownNode">The node instance we know that is unknown</param>
-        void SetUnknown(NodeInstance const& unknownNode, std::wstring const & ringName);
+        void SetUnknown(NodeInstance const& unknownNode, std::string const & ringName);
 
         /// <summary>
         /// Set the nodes with specified address to unknown
         /// </summary>
         /// <param name="unknownNode">The node instance we know that is unknown</param>
-        void SetUnknown(std::wstring const& unreachableAddress);
+        void SetUnknown(std::string const& unreachableAddress);
 
         bool IsDown(NodeInstance const & nodeInstance) const;
 
@@ -161,9 +161,9 @@ namespace Federation
         /// <summary>
         /// Process the routing headers in the incoming message.
         /// </summary>
-        PartnerNodeSPtr ProcessNeighborHeaders(Transport::Message & message, NodeInstance const & from, std::wstring const & fromRing, bool instanceMatched);
+        PartnerNodeSPtr ProcessNeighborHeaders(Transport::Message & message, NodeInstance const & from, std::string const & fromRing, bool instanceMatched);
 
-        PartnerNodeSPtr ProcessNodeHeaders(Transport::Message & message, NodeInstance const & from, std::wstring const & fromRing);
+        PartnerNodeSPtr ProcessNodeHeaders(Transport::Message & message, NodeInstance const & from, std::string const & fromRing);
 
         /// <summary>
         /// Add the routing headers to the outgoing message.
@@ -241,7 +241,7 @@ namespace Federation
         std::vector<NodeInstance> RemoveDownNodes(std::vector<NodeInstance> & nodes);
 
         void UpdateExternalRingVotes();
-        void GetExternalRings(std::vector<std::wstring> & externalRings);
+        void GetExternalRings(std::vector<std::string> & externalRings);
 
         void BecomeLeader();
         void AddGlobalTimeExchangeHeader(Transport::Message & message, PartnerNodeSPtr const & target);
@@ -251,7 +251,7 @@ namespace Federation
         bool HasGlobalTime() const;
 
         void ReportImplicitArbitrationResult(bool result);
-        void ReportArbitrationQueryResult(std::wstring const & address, int64 instance, Common::StopwatchTime remoteResult);
+        void ReportArbitrationQueryResult(std::string const & address, int64 instance, Common::StopwatchTime remoteResult);
 
         void WriteTo(Common::TextWriter& w, Common::FormatOptions const & options) const;
 
@@ -335,7 +335,7 @@ namespace Federation
             void Update(PartnerNodeSPtr const & succ, PartnerNodeSPtr const & pred);
 
             void ReportImplicitArbitrationResult(bool result);
-            void ReportArbitrationQueryResult(std::wstring const & address, int64 instance, Common::StopwatchTime remoteResult);
+            void ReportArbitrationQueryResult(std::string const & address, int64 instance, Common::StopwatchTime remoteResult);
 
             void RunStateMachine(StateMachineActionCollection & actions);
 
@@ -382,7 +382,7 @@ namespace Federation
         /// </summary>
         NodeRingWithHood knownTable_;
 
-        std::map<std::wstring, ExternalRing> externalRings_;
+        std::map<std::string, ExternalRing> externalRings_;
 
         /// <summary>
         /// The lock object
@@ -431,7 +431,7 @@ namespace Federation
 
         ImplicitLeaseContext implicitLeaseContext_;
 
-        PartnerNodeSPtr const& InternalFindClosest(NodeId const& value, std::wstring const & toRing, bool safeMode) const;
+        PartnerNodeSPtr const& InternalFindClosest(NodeId const& value, std::string const & toRing, bool safeMode) const;
         PartnerNodeSPtr const& InternalFindClosest(NodeId const& value, NodeRingBase const & ring) const;
 
         PartnerNodeSPtr const& InternalConsider(FederationPartnerNodeHeader const & nodeInfo, bool isInserting = false, int64 now = 0);
@@ -477,7 +477,7 @@ namespace Federation
         /// </summary>
         void OnRoutingTokenChanged(bool tokenVersionChanged);
 
-        void InternalSetShutdown(NodeInstance const& shutdownNode, std::wstring const & ringName);
+        void InternalSetShutdown(NodeInstance const& shutdownNode, std::string const & ringName);
 
         void OnNeighborhoodLost();
 
@@ -507,7 +507,7 @@ namespace Federation
         void TryReleaseToken(Transport::Message & message, PartnerNodeSPtr const & partner);
 
         void VerifyConsistency() const;
-        PartnerNodeSPtr const & GetInternal(NodeId value, std::wstring const & ringName) const;
+        PartnerNodeSPtr const & GetInternal(NodeId value, std::string const & ringName) const;
         PartnerNodeSPtr const & GetInternal(NodeId value, NodeRingBase const* ring) const;
         PartnerNodeSPtr const & GetInternal(NodeInstance const& value) const;
         Transport::MessageUPtr PrepareProbeMessage(FederationTraceProbeHeader & header, bool successorDirection, PartnerNodeSPtr & to);
@@ -518,7 +518,7 @@ namespace Federation
         void InternalPartitionRanges(NodeIdRange const & range, size_t start, size_t end, size_t count, std::vector<PartnerNodeSPtr> & targets, std::vector<NodeIdRange> & subRanges) const;
         bool InternalIsDown(NodeInstance const & nodeInstance) const;
 
-        void ReportNeighborhoodLost(std::wstring const & extraDescription);
+        void ReportNeighborhoodLost(std::string const & extraDescription);
         void ReportNeighborhoodRecovered();
 
         void IncreaseGlobalTimeUpperLimitForNodes(Common::TimeSpan delta);

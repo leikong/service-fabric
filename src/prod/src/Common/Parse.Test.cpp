@@ -17,12 +17,12 @@ namespace Common
     BOOST_AUTO_TEST_CASE(Smoke0)
     {
         int value = 101;
-        auto retval = StringUtility::TryFromWString(L"0", value);
+        auto retval = StringUtility::TryFromWString("0", value);
         VERIFY_IS_TRUE(retval);
         VERIFY_ARE_EQUAL2(value, 0);
 
         uint uvalue = 101;
-        retval = StringUtility::TryFromWString(L"0", uvalue);
+        retval = StringUtility::TryFromWString("0", uvalue);
         VERIFY_IS_TRUE(retval);
         VERIFY_ARE_EQUAL2(uvalue, 0U);
     }
@@ -48,24 +48,24 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(Smoke4)
     {
-        VERIFY_IS_TRUE(Int32_Parse(L"-42   ") == -42);
+        VERIFY_IS_TRUE(Int32_Parse("-42   ") == -42);
     }
 
     BOOST_AUTO_TEST_CASE(Smoke5)
     {
-        VERIFY_IS_TRUE(Int32_Parse(std::wstring(L"5")) == 5);
+        VERIFY_IS_TRUE(Int32_Parse(std::string("5")) == 5);
     }
 
     BOOST_AUTO_TEST_CASE(Smoke6)
     {
         // Expected format: [whitespace] [sign] [digits] [.digits] [ {e | E}[sign]digits]
-        VERIFY_ARE_EQUAL2(Double_Parse(std::wstring(L"  3.14")), 3.14);
+        VERIFY_ARE_EQUAL2(Double_Parse(std::string("  3.14")), 3.14);
         VERIFY_ARE_EQUAL2(Double_Parse(std::string("-3.14")), -3.14);
 
-        VERIFY_ARE_EQUAL2(Double_Parse(L"-3.14   "), -3.14);
+        VERIFY_ARE_EQUAL2(Double_Parse("-3.14   "), -3.14);
         VERIFY_ARE_EQUAL2(Double_Parse("3.14 Followed by some string"), 3.14);
 
-        VERIFY_ARE_EQUAL2(Double_Parse(L"3.14e-2"), 3.14e-2);
+        VERIFY_ARE_EQUAL2(Double_Parse("3.14e-2"), 3.14e-2);
         VERIFY_ARE_EQUAL2(Double_Parse("3.14e8"), 3.14e8);
         VERIFY_ARE_EQUAL2(Double_Parse("-3.14e3"), -3.14e3);
         VERIFY_ARE_EQUAL2(Double_Parse("-3.14e8"), -3.14e8);
@@ -186,33 +186,33 @@ namespace Common
         VERIFY_IS_TRUE(success);
 
         uint32 uint32Result = 0;
-        success = StringUtility::TryFromWString(L"0xffffffff", uint32Result);
+        success = StringUtility::TryFromWString("0xffffffff", uint32Result);
         VERIFY_IS_TRUE(success);
-        success = StringUtility::TryFromWString(L"ffffffff", uint32Result, 16);
+        success = StringUtility::TryFromWString("ffffffff", uint32Result, 16);
         VERIFY_IS_TRUE(success);
     }
 
     BOOST_AUTO_TEST_CASE(TryFromWStringError)
     {
         bool b = false;
-        auto retval = StringUtility::TryFromWString(L"notbool", b);
+        auto retval = StringUtility::TryFromWString("notbool", b);
         VERIFY_IS_FALSE(retval);
 
         int i = 0;
-        retval = StringUtility::TryFromWString(L"notint", i);
+        retval = StringUtility::TryFromWString("notint", i);
         VERIFY_IS_FALSE(retval);
 
-        retval = StringUtility::TryFromWString(L"0x333", i, 10);
+        retval = StringUtility::TryFromWString("0x333", i, 10);
         VERIFY_IS_FALSE(retval);
 
         unsigned short s = 0;
-        retval = StringUtility::TryFromWString(L"notshort", s);
+        retval = StringUtility::TryFromWString("notshort", s);
         VERIFY_IS_FALSE(retval);
 
-        retval = StringUtility::TryFromWString(L"999999", s);
+        retval = StringUtility::TryFromWString("999999", s);
         VERIFY_IS_FALSE(retval);
 
-        retval = StringUtility::TryFromWString(L"-1", s);
+        retval = StringUtility::TryFromWString("-1", s);
         VERIFY_IS_FALSE(retval);
     }
 
@@ -271,7 +271,7 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(Underflow_Int16_W)
     {
-        std::wstring s;
+        std::string s;
         StringWriter(s).Write("{0}", (std::numeric_limits<__int16>::min() - 1));
 
         Assert::DisableDebugBreakInThisScope disableDebugBreakInThisScope;
@@ -280,7 +280,7 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(Overflow_Int16_W)
     {
-        std::wstring s;
+        std::string s;
         StringWriter(s).Write("{0}", (std::numeric_limits<__int16>::max() + 1));
 
         Assert::DisableDebugBreakInThisScope disableDebugBreakInThisScope;
@@ -289,7 +289,7 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(Underflow_Int32_W)
     {
-        std::wstring s;
+        std::string s;
         StringWriter(s).Write("{0}1", (std::numeric_limits<__int32>::min()));
 
         Assert::DisableDebugBreakInThisScope disableDebugBreakInThisScope;
@@ -298,7 +298,7 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(Overflow_Int32_W)
     {
-        std::wstring s;
+        std::string s;
         StringWriter(s).Write("{0}1", (std::numeric_limits<__int32>::max()));
 
         Assert::DisableDebugBreakInThisScope disableDebugBreakInThisScope;
@@ -307,7 +307,7 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(Underflow_Int64_W)
     {
-        std::wstring s;
+        std::string s;
         StringWriter(s).Write("{0}1", std::numeric_limits<__int64>::min());
 
         Assert::DisableDebugBreakInThisScope disableDebugBreakInThisScope;
@@ -316,7 +316,7 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(Overflow_Int64_W)
     {
-        std::wstring s = L"27670116110564327422";  //0X26666,6666,6666,6666*0xa+2
+        std::string s = "27670116110564327422";  //0X26666,6666,6666,6666*0xa+2
 
         Assert::DisableDebugBreakInThisScope disableDebugBreakInThisScope;
         VERIFY_THROWS(Int64_Parse(s), std::system_error);

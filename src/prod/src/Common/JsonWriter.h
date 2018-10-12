@@ -37,7 +37,7 @@
 namespace Common
 {
     //-------------------------------------------------------------------------------------------------------------------------------------------
-    // Note: This class is NOT a generalized stack of WCHARs. It ONLY supports '{' and '['
+    // Note: This class is NOT a generalized stack of chars. It ONLY supports '{' and '['
     class JSONStack
     {
     public:
@@ -56,22 +56,22 @@ namespace Common
         }
         // peek will never fail because it returns char if it finds it, but it returns 0 if it does not find it
         //
-        inline WCHAR Peek() const
+        inline char Peek() const
         {
             return IsEmpty() ? 0 : GetChar();
         }
 
-        HRESULT Pop(__in_ecount(1) WCHAR* pChar)
+        HRESULT Pop(__in_ecount(1) char* pChar)
         {
             if(!pChar) return E_POINTER;
             if(IsEmpty()) return E_FAIL;
-            WCHAR result = GetChar();
+            char result = GetChar();
             m_nIndex--;
             *pChar = result;
             return S_OK;
         }
 
-        HRESULT Push(WCHAR value)
+        HRESULT Push(char value)
         {
             if(m_nIndex + 1 >= MAX_STACK_SIZE || (value != '{' && value != '[')) return E_FAIL;
             m_nIndex++;
@@ -111,7 +111,7 @@ namespace Common
         //      If the stack currently contains 5 items, then 5 / 8 = 0, so we need the m_values[0].
         //      5 % 8 = 5, so we shift 1 left by 5 places and we get the 5th bit.
         //
-        inline WCHAR GetChar() const
+        inline char GetChar() const
         {
             return (m_values[m_nIndex / 8] & GetMask()) == 0 ? '[' : '{';
         }
@@ -163,7 +163,7 @@ namespace Common
 
     public:
         //IJsonWriter
-        STDMETHODIMP PropertyName(LPCWSTR pszStr)
+        STDMETHODIMP PropertyName(LPCSTR pszStr)
         {
             if(!pszStr) return E_POINTER;
 
@@ -201,7 +201,7 @@ namespace Common
             return S_OK;
         }
 
-        STDMETHODIMP StringValue(LPCWSTR pszStr)
+        STDMETHODIMP StringValue(LPCSTR pszStr)
         {
             if(!pszStr) return E_POINTER;
 
@@ -356,12 +356,12 @@ namespace Common
             return hr;
         }
 
-        HRESULT Append(LPCWSTR pszValue)
+        HRESULT Append(LPCSTR pszValue)
         {
-            ULONG nLen = (ULONG)wcslen(pszValue);
+            ULONG nLen = (ULONG)strlen(pszValue);
             for(ULONG nIndex=0; nIndex < nLen; nIndex++)
             {
-                WCHAR c = pszValue[nIndex];
+                char c = pszValue[nIndex];
                 AppendChar(c);
             }
             return S_OK;
@@ -395,99 +395,100 @@ namespace Common
         // except for the code points that must be escaped: quotation mark (U+0022), reverse solidus (U+005C), and the control characters U+0000 to U+001F. 
         // There are two-character escape sequence representations of some characters."
         //
-        char* GetEscapeSequence(WCHAR inputChar)
+        char* GetEscapeSequence(char inputChar)
         {
             switch (inputChar)
             {
-            case L'\\':
+            case '\\':
                 return  "\\\\";
-            case L'"':
+            case '"':
                 return  "\\\"";
-            case L'/':
+            case '/':
                 return  "\\/";
-            case L'\x00': 
+            case '\x00': 
                 return "\\u0000";
-            case L'\x01':
+            case '\x01':
                 return "\\u0001";
-            case L'\x02':
+            case '\x02':
                 return "\\u0002";
-            case L'\x03':
+            case '\x03':
                 return "\\u0003";
-            case L'\x04':
+            case '\x04':
                 return "\\u0004";
-            case L'\x05':
+            case '\x05':
                 return "\\u0005";
-            case L'\x06':
+            case '\x06':
                 return "\\u0006";
-            case L'\x07':
+            case '\x07':
                 return "\\u0007";
-            case L'\b': // L'\x08'
+            case '\b': // '\x08'
                 return  "\\b";
-            case L'\f': // L'\x09'
+            case '\f': // '\x09'
                 return  "\\f";
-            case L'\n': // L'\x0A'
+            case '\n': // '\x0A'
                 return  "\\n";
-            case L'\r': // L'\x0B'
+            case '\r': // '\x0B'
                 return  "\\r";
-            case L'\v': // L'\x0C'
+            case '\v': // '\x0C'
                 return  "\\v";
-            case L'\t': // L'\x0D'
+            case '\t': // '\x0D'
                 return  "\\t";
-            case L'\x0E':
+            case '\x0E':
                 return "\\u000E";
-            case L'\x0F':
+            case '\x0F':
                 return "\\u000F";
-            case L'\x10':
+            case '\x10':
                 return "\\u0010";
-            case L'\x11':
+            case '\x11':
                 return "\\u0011";
-            case L'\x12':
+            case '\x12':
                 return "\\u0012";
-            case L'\x13':
+            case '\x13':
                 return "\\u0013";
-            case L'\x14':
+            case '\x14':
                 return "\\u0014";
-            case L'\x15':
+            case '\x15':
                 return "\\u0015";
-            case L'\x16':
+            case '\x16':
                 return "\\u0016";
-            case L'\x17':
+            case '\x17':
                 return "\\u0017";
-            case L'\x18':
+            case '\x18':
                 return "\\u0018";
-            case L'\x19':
+            case '\x19':
                 return "\\u0019";
-            case L'\x1A':
+            case '\x1A':
                 return "\\u001A";
-            case L'\x1B':
+            case '\x1B':
                 return "\\u001B";
-            case L'\x1C':
+            case '\x1C':
                 return "\\u001C";
-            case L'\x1D':
+            case '\x1D':
                 return "\\u001D";
-            case L'\x1E':
+            case '\x1E':
                 return "\\u001E";
-            case L'\x1F':
+            case '\x1F':
                 return "\\u001F";
             default:
                 return nullptr;
             }
         }
 
-        void AppendChar(WCHAR c)
+        void AppendChar(char c)
         {
             // encode 0 with two bytes
             if(c && c <= 0x7f)
             {
                 m_strBuffer += (char)c;
             }
-            else if(c <= 0x7ff)
-            {
-                char c1 = (char)(0xc0 | (c >> 6));
-                char c2 = (char)(0x80 | (c & 0x3f));
-                m_strBuffer += c1;
-                m_strBuffer += c2;
-            }
+//todo.utf8, handle it in UTF8
+//            else if(c <= 0x7ff)
+//            {
+//                char c1 = (char)(0xc0 | (c >> 6));
+//                char c2 = (char)(0x80 | (c & 0x3f));
+//                m_strBuffer += c1;
+//                m_strBuffer += c2;
+//            }
             else
             {
                 char c1 = (char)(0xe0 | (c >> 12));
@@ -499,7 +500,7 @@ namespace Common
             }
         }
 
-        void AppendEscapeString(LPCWSTR pszStr)
+        void AppendEscapeString(LPCSTR pszStr)
         {
             for(int i = 0; pszStr[i] != '\0'; i++)
             {
@@ -516,7 +517,7 @@ namespace Common
             }
         }
 
-        HRESULT PushArrayOrObjectStart(WCHAR charToPush)
+        HRESULT PushArrayOrObjectStart(char charToPush)
         {
             if(m_stack.Push(charToPush) != S_OK)
             {
@@ -568,9 +569,9 @@ namespace Common
             return S_OK;
         }
 
-        bool InArrayOrObject(WCHAR charToCheck)
+        bool InArrayOrObject(char charToCheck)
         {
-            WCHAR charInStack = m_stack.Peek();
+            char charInStack = m_stack.Peek();
             // check if passed input character is present on top of the stack, if it is present on top then pop it and return true,
             // otherwise do not pop from stack because we do not change stack in an error.
             //
@@ -578,7 +579,7 @@ namespace Common
             {
                 // pop
                 //
-                WCHAR tempChar;
+                char tempChar;
                 m_stack.Pop(&tempChar);
                 return true;
             }

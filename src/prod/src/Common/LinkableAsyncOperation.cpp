@@ -74,7 +74,7 @@ namespace Common
         // beginlock
         {
             AcquireExclusiveLock grab(lock_);
-            CheckIsPrimaryCallerHoldsLock(L"CompleteSecondaries");
+            CheckIsPrimaryCallerHoldsLock("CompleteSecondaries");
 
             // exchange unique pointers
             secondaries.swap(secondaries_);
@@ -108,7 +108,7 @@ namespace Common
             // Check promoted primary under the lock, determine whether the secondary 
             // will be promoted to primary or will be linked to the already promoted primary
             AcquireExclusiveLock grab(lock_);
-            CheckIsPrimaryCallerHoldsLock(L"TryCompleteSecondary");
+            CheckIsPrimaryCallerHoldsLock("TryCompleteSecondary");
             if (promotedPrimary_)
             {
                 if (!linkableSecondary->TryChangePrimary(promotedPrimary_))
@@ -157,7 +157,7 @@ namespace Common
     bool LinkableAsyncOperation::TryPromoteToPrimary()
     {
         AcquireExclusiveLock grab(lock_);
-        CheckIsSecondaryCallerHoldsLock(L"PromoteToPrimary");
+        CheckIsSecondaryCallerHoldsLock("PromoteToPrimary");
 
         if (this->InternalIsCompleted)
         {
@@ -172,7 +172,7 @@ namespace Common
     bool LinkableAsyncOperation::TryChangePrimary(AsyncOperationSPtr const & primary)
     {
         AcquireExclusiveLock grab(lock_);
-        CheckIsSecondaryCallerHoldsLock(L"ChangePrimary");
+        CheckIsSecondaryCallerHoldsLock("ChangePrimary");
         
         if (this->InternalIsCompleted)
         {
@@ -190,7 +190,7 @@ namespace Common
         // beginlock
         {
             AcquireExclusiveLock grab(lock_);
-            CheckIsPrimaryCallerHoldsLock(L"AddOrTryCompleteSecondary");
+            CheckIsPrimaryCallerHoldsLock("AddOrTryCompleteSecondary");
      
             if (secondaries_.get() != 0)
             {
@@ -214,7 +214,7 @@ namespace Common
         }
     }
 
-    void LinkableAsyncOperation::CheckIsSecondaryCallerHoldsLock(wstring const & methodName)
+    void LinkableAsyncOperation::CheckIsSecondaryCallerHoldsLock(string const & methodName)
     {
         if (primary_.get() == 0)
         {
@@ -222,7 +222,7 @@ namespace Common
         }
     }
 
-    void LinkableAsyncOperation::CheckIsPrimaryCallerHoldsLock(wstring const & methodName)
+    void LinkableAsyncOperation::CheckIsPrimaryCallerHoldsLock(string const & methodName)
     {
         if (primary_.get() != 0)
         {

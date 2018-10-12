@@ -15,8 +15,8 @@ namespace Common
 {
     struct TEST_APPLICATION_TYPE_PARAMETER
     {
-        LPCWSTR Name;
-        LPCWSTR Value;
+        LPCSTR Name;
+        LPCSTR Value;
     };
 
     struct TEST_APPLICATION_TYPE_PARAMETER_LIST
@@ -27,9 +27,9 @@ namespace Common
 
     struct TEST_APPLICATION_DESCRIPTION
     {
-        LPCWSTR ApplicationName;
-        LPCWSTR ApplicationTypeName;
-        LPCWSTR ApplicationTypeVersion;
+        LPCSTR ApplicationName;
+        LPCSTR ApplicationTypeName;
+        LPCSTR ApplicationTypeVersion;
         TEST_APPLICATION_TYPE_PARAMETER_LIST * ApplicationTypeParameterValues;
     };
 
@@ -37,8 +37,8 @@ namespace Common
     {
     protected:
         ErrorCode InitializeDescription();
-        std::wstring GenerateName(size_t index);
-        std::wstring GenerateValue(size_t index);
+        std::string GenerateName(size_t index);
+        std::string GenerateValue(size_t index);
     };
 
     BOOST_FIXTURE_TEST_SUITE(TestScopedHeapSuite,TestScopedHeap)
@@ -55,15 +55,15 @@ namespace Common
     {
         ScopedHeap heap;
 
-        std::wstring appName(L"app");
-        std::wstring appTypeName(
-            L"Application type name that is a bit longer than the application name, which was especially short. \
-              It was, in fact, shorter than the threshhold where std::wstring allocates.  The idea is to verify \
+        std::string appName("app");
+        std::string appTypeName(
+            "Application type name that is a bit longer than the application name, which was especially short. \
+              It was, in fact, shorter than the threshhold where std::string allocates.  The idea is to verify \
               both strings that allocate and strings that don't can be transferred into the heap without messing \
               up the heap. \
               \
               Also, appTypeVersion (below) verifies that empty strings work as well.");
-        std::wstring appTypeVersion(L"");
+        std::string appTypeVersion("");
         size_t count = 1000U;
 
         auto description = heap.AddItem<TEST_APPLICATION_DESCRIPTION>();
@@ -93,7 +93,7 @@ namespace Common
         // Add 1000 strings of increasing length
         for (size_t i=0; i<count; i++)
         {
-            LPCWSTR x = heap.AddString(GenerateName(i));
+            LPCSTR x = heap.AddString(GenerateName(i));
             parameters[i].Name = x;
             parameters[i].Value = heap.AddString(GenerateValue(i));
 
@@ -129,14 +129,14 @@ namespace Common
         return ErrorCode::Success();
     }
 
-    std::wstring TestScopedHeap::GenerateName(size_t index)
+    std::string TestScopedHeap::GenerateName(size_t index)
     {
-        std::wstring x = std::wstring(index, L'n');
-        return std::wstring(index, L'n');
+        std::string x = std::string(index, 'n');
+        return std::string(index, 'n');
     }
 
-    std::wstring TestScopedHeap::GenerateValue(size_t index)
+    std::string TestScopedHeap::GenerateValue(size_t index)
     {
-        return std::wstring(index, L'v');
+        return std::string(index, 'v');
     }
 }

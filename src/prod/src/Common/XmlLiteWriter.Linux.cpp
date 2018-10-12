@@ -10,17 +10,17 @@
 using namespace std;
 using namespace Common;
 
-// UTF-8 to UTF-16 Conversion. TODO: wchar_t seems still 4-bytes in to_bytes()
-static wstring utf8to16(const char *str)
+// UTF-8 to UTF-16 Conversion. TODO: char seems still 4-bytes in to_bytes()
+static string utf8to16(const char *str)
 {
-    wstring_convert<codecvt_utf8_utf16<char16_t>, char16_t> conv;
+    string_convert<codecvt_utf8_utf16<char16_t>, char16_t> conv;
     u16string u16str = conv.from_bytes(str);
-    return wstring((wchar_t *) u16str.c_str());
+    return string((char *) u16str.c_str());
 }
 
-static string utf16to8(const wchar_t *wstr)
+static string utf16to8(const char *wstr)
 {
-    wstring_convert<codecvt_utf8_utf16<char16_t>, char16_t> conv;
+    string_convert<codecvt_utf8_utf16<char16_t>, char16_t> conv;
     return conv.to_bytes((const char16_t *) wstr);
 }
 
@@ -34,7 +34,7 @@ static HRESULT xmlBytesResultConv(int xmlResult)
     return xmlResult == -1 ? E_FAIL : S_OK;
 }
 
-STDAPI CreateXmlWriter(_In_ REFIID riid, _In_ LPCWSTR ppwszFileName, _Outptr_ void **ppvObject, _In_opt_ IMalloc *pMalloc)
+STDAPI CreateXmlWriter(_In_ REFIID riid, _In_ LPCSTR ppwszFileName, _Outptr_ void **ppvObject, _In_opt_ IMalloc *pMalloc)
 {
     string filename = utf16to8(ppwszFileName);
     xmlTextWriterPtr xmlWriter = xmlNewTextWriterFilename(filename.c_str(), 0);
@@ -73,7 +73,7 @@ LWSTDAPI_(IStream *) SHCreateMemStream(
 STDAPI CreateXmlWriterOutputWithEncodingName (
     _In_ IUnknown *pOutputStream,
     _In_opt_ IMalloc *pMalloc,
-    _In_ LPCWSTR pwszEncodingName,
+    _In_ LPCSTR pwszEncodingName,
     _Out_ IXmlWriterOutput **ppOutput)
 {
     *ppOutput = (IXmlWriterOutput*) pOutputStream;
@@ -108,7 +108,7 @@ HRESULT STDMETHODCALLTYPE XmlLiteWriterOutputStream::Read(
     ULONG cb,
     __out_opt  ULONG *pcbRead)
 {
-    cb /= sizeof(wchar_t);
+    cb /= sizeof(char);
 
     ULONG left = buf_->use - pos_;
     ULONG sz = left > cb ? cb : left;
@@ -117,10 +117,10 @@ HRESULT STDMETHODCALLTYPE XmlLiteWriterOutputStream::Read(
 
     memset(buf, 0, sz + 1);
     memcpy(buf, buf_->content + pos_, sz);
-    wstring wstr = utf8to16(buf);
+    string wstr = utf8to16(buf);
 
-    memcpy(pv, wstr.c_str(), sz * sizeof(wchar_t));
-    *pcbRead = sz * sizeof(wchar_t);
+    memcpy(pv, wstr.c_str(), sz * sizeof(char));
+    *pcbRead = sz * sizeof(char);
 
     delete[] buf;
 
@@ -148,7 +148,7 @@ HRESULT STDMETHODCALLTYPE XmlLiteWriterOutputStream::Seek(
             plibNewPosition->HighPart = 0;
             plibNewPosition->LowPart = dlibMove.LowPart;
         }
-        pos_ = (int) dlibMove.LowPart / sizeof(wchar_t);
+        pos_ = (int) dlibMove.LowPart / sizeof(char);
         return S_OK;
     }
     return E_NOTIMPL;
@@ -159,7 +159,7 @@ HRESULT STDMETHODCALLTYPE XmlLiteWriterOutputStream::Stat(
     DWORD grfStatFlag)
 {
     memset(pstatstg, 0, sizeof(*pstatstg));
-    pstatstg->cbSize.LowPart = buf_->use * sizeof(wchar_t);
+    pstatstg->cbSize.LowPart = buf_->use * sizeof(char);
     return S_OK;
 }
 
@@ -283,10 +283,10 @@ HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteAttributes(
 }
 
 HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteAttributeString( 
-    _In_opt_  LPCWSTR pwszPrefix,
-    _In_opt_  LPCWSTR pwszLocalName,
-    _In_opt_  LPCWSTR pwszNamespaceUri,
-    _In_opt_  LPCWSTR pwszValue)
+    _In_opt_  LPCSTR pwszPrefix,
+    _In_opt_  LPCSTR pwszLocalName,
+    _In_opt_  LPCSTR pwszNamespaceUri,
+    _In_opt_  LPCSTR pwszValue)
 {
     string pszPrefix = utf16to8(pwszPrefix);
     string pszLocalName = utf16to8(pwszLocalName);
@@ -305,7 +305,7 @@ HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteAttributeString(
 }
 
 HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteCData( 
-    _In_opt_  LPCWSTR pwszText)
+    _In_opt_  LPCSTR pwszText)
 {
     string pszText = utf16to8(pwszText);
     int result = xmlTextWriterWriteCDATA(writer_, (const xmlChar *) pszText.c_str());
@@ -313,21 +313,21 @@ HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteCData(
 }
 
 HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteCharEntity( 
-    _In_  WCHAR wch)
+    _In_  CHAR wch)
 {
-    int result = xmlTextWriterWriteBinHex(writer_, (const char*)&wch, 0, sizeof(WCHAR));
+    int result = xmlTextWriterWriteBinHex(writer_, (const char*)&wch, 0, sizeof(CHAR));
     return xmlBytesResultConv(result);
 }
 
 HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteChars( 
-    _In_reads_opt_(cwch)  const WCHAR *pwch,
+    _In_reads_opt_(cwch)  const CHAR *pwch,
     _In_  UINT cwch)
 {
     return E_NOTIMPL;
 }
 
 HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteComment( 
-    _In_opt_  LPCWSTR pwszComment)
+    _In_opt_  LPCSTR pwszComment)
 {
     string pszComment = utf16to8(pwszComment);
     int result = xmlTextWriterWriteComment(writer_, (const xmlChar *) pszComment.c_str()); 
@@ -335,10 +335,10 @@ HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteComment(
 }
 
 HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteDocType( 
-    _In_opt_  LPCWSTR pwszName,
-    _In_opt_  LPCWSTR pwszPublicId,
-    _In_opt_  LPCWSTR pwszSystemId,
-    _In_opt_  LPCWSTR pwszSubset)
+    _In_opt_  LPCSTR pwszName,
+    _In_opt_  LPCSTR pwszPublicId,
+    _In_opt_  LPCSTR pwszSystemId,
+    _In_opt_  LPCSTR pwszSubset)
 {
     string pszName = utf16to8(pwszName);
     string pszPublicId = utf16to8(pwszPublicId);
@@ -356,10 +356,10 @@ HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteDocType(
 }
 
 HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteElementString( 
-    _In_opt_  LPCWSTR pwszPrefix,
-    _In_      LPCWSTR pwszLocalName,
-    _In_opt_  LPCWSTR pwszNamespaceUri,
-    _In_opt_  LPCWSTR pwszValue)
+    _In_opt_  LPCSTR pwszPrefix,
+    _In_      LPCSTR pwszLocalName,
+    _In_opt_  LPCSTR pwszNamespaceUri,
+    _In_opt_  LPCSTR pwszValue)
 {
     string pszPrefix = utf16to8(pwszPrefix);
     string pszLocalName = utf16to8(pwszLocalName);
@@ -389,7 +389,7 @@ HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteEndElement(void)
 }
 
 HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteEntityRef( 
-    _In_  LPCWSTR pwszName)
+    _In_  LPCSTR pwszName)
 {
     return E_NOTIMPL;
 }
@@ -401,13 +401,13 @@ HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteFullEndElement( void)
 }
 
 HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteName( 
-    _In_  LPCWSTR pwszName)
+    _In_  LPCSTR pwszName)
 {
     return E_NOTIMPL;
 }
 
 HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteNmToken( 
-    _In_  LPCWSTR pwszNmToken)
+    _In_  LPCSTR pwszNmToken)
 {
     return E_NOTIMPL;
 }
@@ -427,27 +427,27 @@ HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteNodeShallow(
 }
 
 HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteProcessingInstruction( 
-    _In_  LPCWSTR pwszName,
-    _In_opt_  LPCWSTR pwszText)
+    _In_  LPCSTR pwszName,
+    _In_opt_  LPCSTR pwszText)
 {
     return E_NOTIMPL;
 }
 
 HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteQualifiedName( 
-    _In_  LPCWSTR pwszLocalName,
-    _In_opt_  LPCWSTR pwszNamespaceUri)
+    _In_  LPCSTR pwszLocalName,
+    _In_opt_  LPCSTR pwszNamespaceUri)
 {
     return E_NOTIMPL;
 }
 
 HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteRaw( 
-    _In_opt_  LPCWSTR pwszData)
+    _In_opt_  LPCSTR pwszData)
 {
     return E_NOTIMPL;
 }
 
 HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteRawChars( 
-    _In_reads_opt_(cwch)  const WCHAR *pwch,
+    _In_reads_opt_(cwch)  const CHAR *pwch,
     _In_  UINT cwch)
 {
     return E_NOTIMPL;
@@ -461,9 +461,9 @@ HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteStartDocument(
 }
 
 HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteStartElement( 
-    _In_opt_  LPCWSTR pwszPrefix,
-    _In_  LPCWSTR pwszLocalName,
-    _In_opt_  LPCWSTR pwszNamespaceUri)
+    _In_opt_  LPCSTR pwszPrefix,
+    _In_  LPCSTR pwszLocalName,
+    _In_opt_  LPCSTR pwszNamespaceUri)
 {
     string pszPrefix = utf16to8(pwszPrefix);
     string pszLocalName = utf16to8(pwszLocalName);
@@ -476,7 +476,7 @@ HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteStartElement(
 }
 
 HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteString( 
-    _In_opt_  LPCWSTR pwszText)
+    _In_opt_  LPCSTR pwszText)
 {
     string pszText = utf16to8(pwszText);
     int result = xmlTextWriterWriteString(writer_, (const xmlChar *) pszText.c_str());
@@ -484,14 +484,14 @@ HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteString(
 }
 
 HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteSurrogateCharEntity( 
-    _In_  WCHAR wchLow,
-    _In_  WCHAR wchHigh)
+    _In_  CHAR wchLow,
+    _In_  CHAR wchHigh)
 {
     return E_NOTIMPL;
 }
 
 HRESULT STDMETHODCALLTYPE XmlLiteWriter::WriteWhitespace( 
-    _In_opt_  LPCWSTR pwszWhitespace)
+    _In_opt_  LPCSTR pwszWhitespace)
 {
     return E_NOTIMPL;
 }

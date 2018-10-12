@@ -32,18 +32,18 @@ public:
     //
     // The caller can specifiy a literal path, or a parameterized path for arrays.
     //
-    //  Dom->GetValue(KDomPath(L"a/b/c"), Val);                 Value at element
-    //  Dom->GetValue(KDomPath(L"a/b/c[]", ix), Val);           Value from an array of 'c'
-    //  Dom->GetValue(KDomPath(L"a/b/c[]/d[]", ix, ix2), Val);  Value from two-level array of 'c' and 'd'
-    //  Dom->GetValue(KDomPath(L"a/b/c/@x"), Val);              Value from an attribute
-    //  Dom->GetValue(KDomPath(L"ns1:a/ns2:b/c/@ns3:x"), Val);  Value based on namespace prefixes
+    //  Dom->GetValue(KDomPath("a/b/c"), Val);                 Value at element
+    //  Dom->GetValue(KDomPath("a/b/c[]", ix), Val);           Value from an array of 'c'
+    //  Dom->GetValue(KDomPath("a/b/c[]/d[]", ix, ix2), Val);  Value from two-level array of 'c' and 'd'
+    //  Dom->GetValue(KDomPath("a/b/c/@x"), Val);              Value from an attribute
+    //  Dom->GetValue(KDomPath("ns1:a/ns2:b/c/@ns3:x"), Val);  Value based on namespace prefixes
     //
     //  Notes:
     //      (a) Arrays can exist up to three levels in this implementation.
     //      (b) Namespace prefixes are tested literally as tokens and do not do real-time namespace lookup/matching.
     //
     //
-    KDomPath(__in LPCWSTR RawPath, LONG Index1 = -1, LONG Index2 = -1, LONG Index3 = -1)
+    KDomPath(__in LPCSTR RawPath, LONG Index1 = -1, LONG Index2 = -1, LONG Index3 = -1)
     {
         _RawPath = RawPath;
         _Indices[0] = Index1;
@@ -87,7 +87,7 @@ public:
         __out KArray<PToken>& Output
         ) const;
 
-    LPCWSTR _RawPath;
+    LPCSTR _RawPath;
     LONG    _Indices[MaxIndices];
 
 private:

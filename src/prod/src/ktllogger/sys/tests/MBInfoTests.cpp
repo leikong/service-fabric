@@ -86,10 +86,10 @@ NTSTATUS GenerateFileName(
         return(STATUS_UNSUCCESSFUL);
     }   
 
-    FileName = L"\\GLOBAL??\\Volume";
-    FileName += static_cast<WCHAR*>(*guidString);
+    FileName = "\\GLOBAL??\\Volume";
+    FileName += static_cast<CHAR*>(*guidString);
 #else
-    FileName = L"";
+    FileName = "";
 #endif
 
     b = guidString->FromGUID(Guid);
@@ -105,12 +105,12 @@ NTSTATUS GenerateFileName(
     }   
 
     FileName += KVolumeNamespace::PathSeparator;
-    FileName += L"MBInfoTest";
+    FileName += "MBInfoTest";
     FileName += KVolumeNamespace::PathSeparator;
-    FileName += L"Test";
-    FileName += static_cast<WCHAR*>(*guidString);
+    FileName += "Test";
+    FileName += static_cast<CHAR*>(*guidString);
 #if defined(PLATFORM_UNIX)
-    FileName += L":MBInfo";
+    FileName += ":MBInfo";
 #endif
     return(FileName.Status());
 }
@@ -153,11 +153,11 @@ NTSTATUS GenerateFileName2(
         return(STATUS_UNSUCCESSFUL);
     }   
 
-    FileName = L"\\GLOBAL??\\Volume";
-    FileName += static_cast<WCHAR*>(*guidString);
+    FileName = "\\GLOBAL??\\Volume";
+    FileName += static_cast<CHAR*>(*guidString);
 
 #else
-    FileName = L"";
+    FileName = "";
 #endif
 
     b = guidString->FromGUID(Guid);
@@ -173,14 +173,14 @@ NTSTATUS GenerateFileName2(
     }   
     
     FileName += KVolumeNamespace::PathSeparator;
-    FileName += L"MBInfoTest";
+    FileName += "MBInfoTest";
     FileName += KVolumeNamespace::PathSeparator;
-    FileName += L"Log";
+    FileName += "Log";
 
-    FileName += static_cast<WCHAR*>(*guidString);
-    FileName += L".Log";
+    FileName += static_cast<CHAR*>(*guidString);
+    FileName += ".Log";
 #if defined(PLATFORM_UNIX)
-    FileName += L":MBInfo";
+    FileName += ":MBInfo";
 #endif
     return(FileName.Status());
 }
@@ -223,11 +223,11 @@ NTSTATUS GenerateFileName3(
         return(STATUS_UNSUCCESSFUL);
     }   
 
-    FileName = L"\\GLOBAL??\\Volume";
-    FileName += static_cast<WCHAR*>(*guidString);
+    FileName = "\\GLOBAL??\\Volume";
+    FileName += static_cast<CHAR*>(*guidString);
 
 #else
-    FileName = L"";
+    FileName = "";
 #endif
 
     b = guidString->FromGUID(Guid);
@@ -243,13 +243,13 @@ NTSTATUS GenerateFileName3(
     }
     
     FileName += KVolumeNamespace::PathSeparator;
-    FileName += L"RvdLog";
+    FileName += "RvdLog";
     FileName += KVolumeNamespace::PathSeparator;
-    FileName += L"Log";
-    FileName += static_cast<WCHAR*>(*guidString);
-    FileName += L".Log";
+    FileName += "Log";
+    FileName += static_cast<CHAR*>(*guidString);
+    FileName += ".Log";
 #if defined(PLATFORM_UNIX)
-    FileName += L":MBInfo";
+    FileName += ":MBInfo";
 #endif
     return(FileName.Status());
 }
@@ -272,7 +272,7 @@ NTSTATUS CreateMBInfoFile(
     status = GenerateFileName(fileName, DiskId, Guid);
     VERIFY_IS_TRUE(NT_SUCCESS(status));
 
-    fileNameString = KString::Create((LPCWSTR)fileName,
+    fileNameString = KString::Create((LPCSTR)fileName,
                                      *g_Allocator);
     VERIFY_IS_TRUE(fileNameString ? TRUE : FALSE);
     
@@ -399,7 +399,7 @@ NTSTATUS RawReadDataBlock(
     status = GenerateFileName(fileName, DiskId, Guid);
     VERIFY_IS_TRUE(NT_SUCCESS(status));
     
-    fileName += L":MBInfo";
+    fileName += ":MBInfo";
     VERIFY_IS_TRUE(NT_SUCCESS(fileName.Status()));
 
     status = KBlockFile::Create(fileName,
@@ -461,7 +461,7 @@ NTSTATUS RawWriteDataBlock(
     status = GenerateFileName(fileName, DiskId, Guid);
     VERIFY_IS_TRUE(NT_SUCCESS(status));
     
-    fileName += L":MBInfo";
+    fileName += ":MBInfo";
     VERIFY_IS_TRUE(NT_SUCCESS(fileName.Status()));
 
     status = KBlockFile::Create(fileName,
@@ -597,7 +597,7 @@ VOID BasicMBInfoTest(
                                   BlockSize,
                                   *g_Allocator,
                                   ALLOCATION_TAG);
-    VERIFY_IS_TRUE(NT_SUCCESS(status), L"Create MBInfoAccess");
+    VERIFY_IS_TRUE(NT_SUCCESS(status), "Create MBInfoAccess");
 
 
     //
@@ -1488,7 +1488,7 @@ VOID FailOpenCorruptedMBInfoTest(
     status = GenerateFileName(fileName, DiskId, Guid);
     VERIFY_IS_TRUE(NT_SUCCESS(status));
 
-    fileNameString = KString::Create((LPCWSTR)fileName,
+    fileNameString = KString::Create((LPCSTR)fileName,
                                      *g_Allocator);
     VERIFY_IS_TRUE(fileNameString ? TRUE : FALSE);
     
@@ -1695,7 +1695,7 @@ NTSTATUS SharedLCMBInfoTestClass::ExpectEmptyEnumCallback(__in SharedLCMBInfoAcc
     VERIFY_IS_TRUE(! IsEqualGUID(Entry.LogStreamId.Get(), nullGUID));
     
     #pragma warning(disable:4127)   // C4127: conditional expression is constant
-    VERIFY_IS_TRUE(FALSE, L"Expected no entries but called back for one");
+    VERIFY_IS_TRUE(FALSE, "Expected no entries but called back for one");
     return(STATUS_UNSUCCESSFUL);
 }
 
@@ -1810,7 +1810,7 @@ VOID SharedLCMBInfoTest(
     KString::SPtr path;
     KSynchronizer syncArr[16536];
 
-    VERIFY_IS_TRUE((NumberOfEntries < 16536), L"Number of entries must be less than 16536");
+    VERIFY_IS_TRUE((NumberOfEntries < 16536), "Number of entries must be less than 16536");
     logContainerGuid.CreateNew();
     logContainerId = static_cast<KtlLogContainerId>(logContainerGuid);
     
@@ -1821,7 +1821,7 @@ VOID SharedLCMBInfoTest(
                                           NumberOfEntries,
                                           *g_Allocator,
                                           ALLOCATION_TAG);
-    VERIFY_IS_TRUE(NT_SUCCESS(status), L"Create SharedLCMBInfoAccess");
+    VERIFY_IS_TRUE(NT_SUCCESS(status), "Create SharedLCMBInfoAccess");
 
     ULONG_PTR foo = (ULONG_PTR)slcmb.RawPtr();
     ULONG foo1 = (ULONG)foo;
@@ -1902,7 +1902,7 @@ VOID SharedLCMBInfoTest(
                 VERIFY_IS_TRUE((alias != nullptr) ? TRUE : FALSE);
                 b = alias->FromGUID(id);
                 VERIFY_IS_TRUE(b ? TRUE : FALSE);
-                b = alias->Concat(KStringView(L"_Alias"), TRUE);   // AppendNul
+                b = alias->Concat(KStringView("_Alias"), TRUE);   // AppendNul
                 VERIFY_IS_TRUE(b ? TRUE : FALSE);
             } else {
                 alias = nullptr;
@@ -1918,7 +1918,7 @@ VOID SharedLCMBInfoTest(
                 VERIFY_IS_TRUE((path != nullptr) ? TRUE : FALSE);
                 b = path->FromGUID(id);
                 VERIFY_IS_TRUE(b ? TRUE : FALSE);
-                b = path->Concat(KStringView(L"_Path"), TRUE);   // AppendNul
+                b = path->Concat(KStringView("_Path"), TRUE);   // AppendNul
                 VERIFY_IS_TRUE(b ? TRUE : FALSE);
             } else {
                 path = nullptr;
@@ -1974,7 +1974,7 @@ VOID SharedLCMBInfoTest(
                     VERIFY_IS_TRUE((alias != nullptr) ? TRUE : FALSE);
                     b = alias->FromGUID(id);
                     VERIFY_IS_TRUE(b ? TRUE : FALSE);
-                    b = alias->Concat(KStringView(L"_2Alias"), TRUE);   // AppendNul
+                    b = alias->Concat(KStringView("_2Alias"), TRUE);   // AppendNul
                     VERIFY_IS_TRUE(b ? TRUE : FALSE);
                     
                     test->_TestArray[i].Alias = nullptr;
@@ -1984,7 +1984,7 @@ VOID SharedLCMBInfoTest(
 
                 case 1:
                 {
-                    alias = KString::Create(KStringView(L""),
+                    alias = KString::Create(KStringView(""),
                                             *g_Allocator);
                     VERIFY_IS_TRUE((alias != nullptr) ? TRUE : FALSE);
                     test->_TestArray[i].Alias = nullptr;
@@ -2009,7 +2009,7 @@ VOID SharedLCMBInfoTest(
                     VERIFY_IS_TRUE((path != nullptr) ? TRUE : FALSE);
                     b = path->FromGUID(id);
                     VERIFY_IS_TRUE(b ? TRUE : FALSE);
-                    b = path->Concat(KStringView(L"_2Path"), TRUE);   // AppendNul
+                    b = path->Concat(KStringView("_2Path"), TRUE);   // AppendNul
                     VERIFY_IS_TRUE(b ? TRUE : FALSE);
                     
                     test->_TestArray[i].Path = nullptr;
@@ -2019,7 +2019,7 @@ VOID SharedLCMBInfoTest(
 
                 case 1:
                 {
-                    path = KString::Create(KStringView(L""),
+                    path = KString::Create(KStringView(""),
                                             *g_Allocator);
                     VERIFY_IS_TRUE((path != nullptr) ? TRUE : FALSE);
                     test->_TestArray[i].Path = nullptr;
@@ -2202,7 +2202,7 @@ VOID DedicatedLCMBInfoTest(
                                               maxLLMetadataSize,
                                               *g_Allocator,
                                               ALLOCATION_TAG);
-        VERIFY_IS_TRUE(NT_SUCCESS(status), L"Create DedicatedLCMBInfoAccess");
+        VERIFY_IS_TRUE(NT_SUCCESS(status), "Create DedicatedLCMBInfoAccess");
 
 
         status = dlcmb->CreateAsyncWriteMetadataContext(writeContext);
@@ -2371,7 +2371,7 @@ VOID SetupMBInfoTests(
 
 #if !defined(PLATFORM_UNIX)
     UCHAR driveLetter = 0;
-    WCHAR driveLetterW[2];
+    CHAR driveLetterW[2];
     status = FindDiskIdForDriveLetter(driveLetter, DiskId);
     VERIFY_IS_TRUE(NT_SUCCESS(status));
 #endif
@@ -2394,14 +2394,14 @@ VOID SetupMBInfoTests(
 #if !defined(PLATFORM_UNIX)
     driveLetterW[0] = driveLetter;
     driveLetterW[1] = 0;
-    s = L"\\??\\";
+    s = "\\??\\";
     s += KStringView(driveLetterW);
-    s += L":";
+    s += ":";
 #else
-    s = L"";
+    s = "";
 #endif
     s += KVolumeNamespace::PathSeparator;
-    s += L"MBInfoTest";
+    s += "MBInfoTest";
     
     status = KVolumeNamespace::CreateDirectory(s, *g_Allocator, sync1, NULL);
     VERIFY_IS_TRUE(NT_SUCCESS(status));
@@ -2411,14 +2411,14 @@ VOID SetupMBInfoTests(
 #if !defined(PLATFORM_UNIX)
     driveLetterW[0] = driveLetter;
     driveLetterW[1] = 0;
-    s = L"\\??\\";
+    s = "\\??\\";
     s += KStringView(driveLetterW);
-    s += L":";
+    s += ":";
 #else
-    s = L"";
+    s = "";
 #endif
     s += KVolumeNamespace::PathSeparator;
-    s += L"RvdLog";
+    s += "RvdLog";
     
     status = KVolumeNamespace::CreateDirectory(s, *g_Allocator, sync1, NULL);
     VERIFY_IS_TRUE(NT_SUCCESS(status));

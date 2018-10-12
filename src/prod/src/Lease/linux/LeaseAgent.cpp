@@ -107,7 +107,7 @@ Parameters Description:
 
     EventWriteDelayTimer(
         NULL,
-        L" fired ",
+        " fired ",
         TransportIdentifier(LeaseAgentContext->Transport),
         LeaseAgentContext->Instance.QuadPart
         );
@@ -263,9 +263,9 @@ void LeaseAgentMessageCallback(PLEASE_TRANSPORT Listner, PTRANSPORT_SENDTARGET c
     Check to see if we want to block this message (test only)
 */
 //jc
-BOOLEAN IsBlockTransport(/*from*/PTRANSPORT_LISTEN_ENDPOINT targetEndpoint, /*to*/std::wstring listenerEndpoint, LEASE_BLOCKING_ACTION_TYPE blockingType)
+BOOLEAN IsBlockTransport(/*from*/PTRANSPORT_LISTEN_ENDPOINT targetEndpoint, /*to*/std::string listenerEndpoint, LEASE_BLOCKING_ACTION_TYPE blockingType)
 {
-    std::wstring listenerHostname;
+    std::string listenerHostname;
     unsigned short listenerPort;
     Transport::TcpTransportUtility::TryParseHostNameAddress(listenerEndpoint, listenerHostname, listenerPort);
     PVOID IterTransportBlockingBehavior = NULL;
@@ -281,10 +281,10 @@ BOOLEAN IsBlockTransport(/*from*/PTRANSPORT_LISTEN_ENDPOINT targetEndpoint, /*to
         descriptor = *iter;
         
         BOOLEAN fromAddressMatch = descriptor->FromAny ||
-            (std::wstring(descriptor->LocalSocketAddress.Address) == std::wstring(targetEndpoint->Address) && descriptor->LocalSocketAddress.Port == targetEndpoint->Port);
+            (std::string(descriptor->LocalSocketAddress.Address) == std::string(targetEndpoint->Address) && descriptor->LocalSocketAddress.Port == targetEndpoint->Port);
 
         BOOLEAN toAddressMatch = descriptor->ToAny ||
-            (std::wstring(descriptor->RemoteSocketAddress.Address) == listenerHostname && descriptor->RemoteSocketAddress.Port == listenerPort);
+            (std::string(descriptor->RemoteSocketAddress.Address) == listenerHostname && descriptor->RemoteSocketAddress.Port == listenerPort);
         
         BOOLEAN addressMatch = fromAddressMatch && toAddressMatch;
 
@@ -784,7 +784,7 @@ Return Value:
     {
         EventWriteLeaseDriverTextTraceError(
             NULL,
-            L"RLA ref count is non-zero: ",
+            "RLA ref count is non-zero: ",
             RemoteLeaseAgentContext->RefCount
             );
     }
@@ -1998,7 +1998,7 @@ Return Value:
         );
 }
 
-const LPWSTR GetLeaseAgentState(
+const LPSTR GetLeaseAgentState(
     __in LEASE_AGENT_STATE State
     )
     
@@ -2019,25 +2019,25 @@ Return Value:
 --*/
 
 {
-    LPWSTR StateString = L"";
+    LPSTR StateString = "";
 
     switch (State) {
         
     case OPEN:
-        StateString = L"OPEN";
+        StateString = "OPEN";
         break;
     case SUSPENDED:
-        StateString = L"SUSPENDED";
+        StateString = "SUSPENDED";
         break;
     case FAILED:
-        StateString = L"FAILED";
+        StateString = "FAILED";
         break;
     }
 
     return StateString;
 }
 
-const LPWSTR GetMessageType(
+const LPSTR GetMessageType(
     __in LEASE_MESSAGE_TYPE MessageType
     )
     
@@ -2058,40 +2058,40 @@ Return Value:
 --*/
 
 {
-    LPWSTR MessageTypeString = L"";
+    LPSTR MessageTypeString = "";
 
     switch (MessageType) {
 
     case LEASE_REQUEST:
-        MessageTypeString = L"REQUEST";
+        MessageTypeString = "REQUEST";
         break;
     case LEASE_RESPONSE:
-        MessageTypeString = L"RESPONSE";
+        MessageTypeString = "RESPONSE";
         break;
     case PING_REQUEST:
-        MessageTypeString = L"PING REQUEST";
+        MessageTypeString = "PING REQUEST";
         break;
     case PING_RESPONSE:
-        MessageTypeString = L"PING RESPONSE";
+        MessageTypeString = "PING RESPONSE";
         break;
     case FORWARD_REQUEST:
-        MessageTypeString = L"FORWARD REQUEST";
+        MessageTypeString = "FORWARD REQUEST";
         break;
     case FORWARD_RESPONSE:
-        MessageTypeString = L"FORWARD RESPONSE";
+        MessageTypeString = "FORWARD RESPONSE";
         break;
     case RELAY_REQUEST:
-        MessageTypeString = L"RELAY REQUEST";
+        MessageTypeString = "RELAY REQUEST";
         break;
     case RELAY_RESPONSE:
-        MessageTypeString = L"RELAY RESPONSE";
+        MessageTypeString = "RELAY RESPONSE";
         break;
     }
 
     return MessageTypeString;
 }
 
-const LPWSTR GetBlockMessageType(
+const LPSTR GetBlockMessageType(
     __in LEASE_BLOCKING_ACTION_TYPE BlockMessageType
     )
 
@@ -2112,27 +2112,27 @@ const LPWSTR GetBlockMessageType(
     --*/
 
 {
-    LPWSTR BlockMessageTypeString = L"";
+    LPSTR BlockMessageTypeString = "";
 
     switch (BlockMessageType) {
 
     case LEASE_ESTABLISH_ACTION:
-        BlockMessageTypeString = L"LEASE ESTABLISH ACTION";
+        BlockMessageTypeString = "LEASE ESTABLISH ACTION";
         break;
     case LEASE_ESTABLISH_RESPONSE:
-        BlockMessageTypeString = L"LEASE ESTABLISH RESPONSE";
+        BlockMessageTypeString = "LEASE ESTABLISH RESPONSE";
         break;
     case LEASE_PING_RESPONSE:
-        BlockMessageTypeString = L"LEASE PING RESPONSE";
+        BlockMessageTypeString = "LEASE PING RESPONSE";
         break;
     case LEASE_PING_REQUEST:
-        BlockMessageTypeString = L"LEASE PING REQUEST";
+        BlockMessageTypeString = "LEASE PING REQUEST";
         break;
     case LEASE_INDIRECT:
-        BlockMessageTypeString = L"LEASE INDIRECT";
+        BlockMessageTypeString = "LEASE INDIRECT";
         break;
     case LEASE_BLOCKING_ALL:
-        BlockMessageTypeString = L"LEASE BLOCKING ALL";
+        BlockMessageTypeString = "LEASE BLOCKING ALL";
         break;
     }
 
@@ -2200,7 +2200,7 @@ GrantLargerDurations(
     if(DURATION_MAX_VALUE == *IncomingLeaseSuspendDuration ||
         DURATION_MAX_VALUE == *IncomingArbitrationDuration)
     {
-        EventWriteLeaseDriverTextTraceError(NULL, L"Invalid inputs when update durations",0);
+        EventWriteLeaseDriverTextTraceError(NULL, "Invalid inputs when update durations",0);
         return;
     }
 
@@ -2484,7 +2484,7 @@ Return Value:
             // RLA is I-A, but the subject table is empty
             EventWriteLeaseDriverTextTraceInfo(
                 NULL,
-                L"Received ping response in I-A state, wait for remote side termination"
+                "Received ping response in I-A state, wait for remote side termination"
                 );
         }
 
@@ -2944,7 +2944,7 @@ emptySet,
                         {
                             EventWriteLeaseDriverTextTraceError(
                                 NULL,
-                                L"Monitor hash table is not empty for two way termination",
+                                "Monitor hash table is not empty for two way termination",
                                 0);
                         }
 
@@ -3214,7 +3214,7 @@ Return Value:
         //
         // Compare the remote lease agent address.
         //
-        if (0 == wcscmp(
+        if (0 == strcmp(
             RemoteLeaseAgentContext->RemoteLeaseAgentIdentifier, 
             RemoteLeaseAgentContextMatch->RemoteLeaseAgentIdentifier))
         {
@@ -4009,12 +4009,12 @@ Return Value:
     {
         EventWriteLeaseDriverTextTraceError(
             NULL,
-            L"Relay Message: Deserialize lease listent endpoint error ",
+            "Relay Message: Deserialize lease listent endpoint error ",
             Status);
     }
 
-    std::wstring listenerEndpoint = TransportListenEndpoint(Target);
-    std::wstring targetEndpoint = TransportTargetEndpoint(Target);
+    std::string listenerEndpoint = TransportListenEndpoint(Target);
+    std::string targetEndpoint = TransportTargetEndpoint(Target);
     
     if (PING_REQUEST == LeaseMessageHeader->MessageType)
     {
@@ -4099,7 +4099,7 @@ Return Value:
         {
             EventWriteLeaseDriverTextTraceError(
                 NULL,
-                L"Did not find Active RLA for Relay messages ",
+                "Did not find Active RLA for Relay messages ",
                 Status);
         }
     }
@@ -4116,7 +4116,7 @@ Return Value:
         {
             EventWriteLeaseDriverTextTraceError(
                 NULL,
-                L"Did not find Active RLA for messages ",
+                "Did not find Active RLA for messages ",
                 Status);
         }
 
@@ -4524,7 +4524,7 @@ Routine Description:
 
     if (!NT_SUCCESS(Status))
     {
-        EventWriteDeserializeForwardMessageError(NULL, L" src ", Status);
+        EventWriteDeserializeForwardMessageError(NULL, " src ", Status);
         goto Error;
     }
 
@@ -4535,7 +4535,7 @@ Routine Description:
 
     if (!NT_SUCCESS(Status))
     {
-        EventWriteDeserializeForwardMessageError(NULL, L" dst ", Status);
+        EventWriteDeserializeForwardMessageError(NULL, " dst ", Status);
         goto Error;
     }
 
@@ -4574,7 +4574,7 @@ GetCurrentActiveRemoteLeaseAgent(
 
     if (!NT_SUCCESS(status))
     {
-        EventWriteLeaseDriverTextTraceError(NULL, L"GetCurrentActiveRemoteLeaseAgent: RemoteLeaseAgentConstructor failed", status);
+        EventWriteLeaseDriverTextTraceError(NULL, "GetCurrentActiveRemoteLeaseAgent: RemoteLeaseAgentConstructor failed", status);
         return NULL;
     }
 
@@ -4667,7 +4667,7 @@ Routine Description:
     {
         EventWriteLeaseDriverTextTraceError(
             NULL,
-            L"SerializeAndSendRelayMessages failed in RtlULongSub ",
+            "SerializeAndSendRelayMessages failed in RtlULongSub ",
             Status);
 
         return Status;
@@ -4682,7 +4682,7 @@ Routine Description:
     {
         EventWriteLeaseDriverTextTraceError(
             NULL,
-            L"SerializeAndSendRelayMessages failed in RtlULongAdd ",
+            "SerializeAndSendRelayMessages failed in RtlULongAdd ",
             Status);
 
         return Status;
@@ -4758,7 +4758,7 @@ Routine Description:
     {
         EventWriteLeaseDriverTextTraceError(
             NULL,
-            L"Serialize MessageListenEndPoint failed",
+            "Serialize MessageListenEndPoint failed",
             Status);
 
         goto Error;
@@ -4776,7 +4776,7 @@ Routine Description:
     {
         EventWriteLeaseDriverTextTraceError(
             NULL,
-            L"Serialize LeaseListenEndPoint failed",
+            "Serialize LeaseListenEndPoint failed",
             Status);
 
         goto Error;

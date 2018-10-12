@@ -18,7 +18,7 @@ public:
     ConfigUpdateSink(ComConfigStore * owner)
         : lock_(),
         owner_(owner),
-        traceId_(L"ComConfigStore::ConfigUpdateSink")
+        traceId_("ComConfigStore::ConfigUpdateSink")
     {
     }
 
@@ -32,12 +32,12 @@ public:
         owner_ = NULL;
     }
 
-    const std::wstring & GetTraceId() const override
+    const std::string & GetTraceId() const override
     {
         return traceId_;
     }
 
-    virtual bool OnUpdate(std::wstring const & section, std::wstring const & key)
+    virtual bool OnUpdate(std::string const & section, std::string const & key)
     {
         ComPointer<ComConfigStore> snap;
         {
@@ -59,7 +59,7 @@ public:
         }
     }
 
-    virtual bool CheckUpdate(std::wstring const & section, std::wstring const & key, std::wstring const & value, bool isEncrypted)
+    virtual bool CheckUpdate(std::string const & section, std::string const & key, std::string const & value, bool isEncrypted)
     {
         AcquireReadLock lock(lock_);
         if ((owner_ != NULL) && (owner_->TryAddRef() != 0u))
@@ -73,7 +73,7 @@ public:
     }
 
 private:
-    wstring traceId_;
+    string traceId_;
     RwLock lock_;
     ComConfigStore * owner_;
 };
@@ -84,7 +84,7 @@ ComConfigStore::ComConfigStore(ConfigStoreSPtr const & store, ComPointer<IFabric
     updateSink_()
 {
     auto updateSink = make_shared<ConfigUpdateSink>(this);
-    store->RegisterForUpdate(L"", updateSink.get());
+    store->RegisterForUpdate("", updateSink.get());
     updateSink_ = move(updateSink);
 }
 
@@ -100,7 +100,7 @@ ULONG STDMETHODCALLTYPE ComConfigStore::TryAddRef(void)
 }
 
 HRESULT STDMETHODCALLTYPE ComConfigStore::GetSections( 
-    /* [in] */ LPCWSTR partialSectionName,
+    /* [in] */ LPCSTR partialSectionName,
     /* [retval][out] */ IFabricStringListResult **result)
 {
     if (partialSectionName == NULL || result == NULL) 
@@ -109,13 +109,13 @@ HRESULT STDMETHODCALLTYPE ComConfigStore::GetSections(
     }
 
     StringCollection sectionNames;
-    store_->GetSections(sectionNames, wstring(partialSectionName));
+    store_->GetSections(sectionNames, string(partialSectionName));
     return ComStringCollectionResult::ReturnStringCollectionResult(move(sectionNames), result);
 }
         
 HRESULT STDMETHODCALLTYPE ComConfigStore::GetKeys( 
-    /* [in] */ LPCWSTR sectionName,
-    /* [in] */ LPCWSTR partialKeyName,
+    /* [in] */ LPCSTR sectionName,
+    /* [in] */ LPCSTR partialKeyName,
     /* [retval][out] */ IFabricStringListResult **result)
 {
     if (sectionName == NULL || partialKeyName == NULL || result == NULL) 
@@ -124,13 +124,13 @@ HRESULT STDMETHODCALLTYPE ComConfigStore::GetKeys(
     }
 
     StringCollection KeyNames;
-    store_->GetKeys(wstring(sectionName), KeyNames, wstring(partialKeyName));
+    store_->GetKeys(string(sectionName), KeyNames, string(partialKeyName));
     return ComStringCollectionResult::ReturnStringCollectionResult(move(KeyNames), result);
 }
         
 HRESULT STDMETHODCALLTYPE ComConfigStore::ReadString( 
-    /* [in] */ LPCWSTR section,
-    /* [in] */ LPCWSTR key,
+    /* [in] */ LPCSTR section,
+    /* [in] */ LPCSTR key,
     /* [out] */ BOOLEAN * isEncrypted,
     /* [retval][out] */ IFabricStringResult **result)
 {
@@ -140,7 +140,7 @@ HRESULT STDMETHODCALLTYPE ComConfigStore::ReadString(
     }
 
     bool isEncryptedValue = false;
-    wstring strValue = store_->ReadString(wstring(section), wstring(key), isEncryptedValue);
+    string strValue = store_->ReadString(string(section), string(key), isEncryptedValue);
     *isEncrypted = isEncryptedValue ? TRUE : FALSE;
     return ComStringResult::ReturnStringResult(strValue, result);
 }
@@ -163,7 +163,7 @@ void STDMETHODCALLTYPE ComConfigStore::set_IgnoreUpdateFailures(BOOLEAN value)
 }
 
 
-bool ComConfigStore::OnUpdate(std::wstring const & section, std::wstring const & key)
+bool ComConfigStore::OnUpdate(std::string const & section, std::string const & key)
 {
     // Using isProcessed default as true. If the updateHandler_ is null, we should consider is processed.
     BOOLEAN isProcessed = TRUE;
@@ -196,7 +196,7 @@ bool ComConfigStore::OnUpdate(std::wstring const & section, std::wstring const &
     return isProcessed ? true : false;
 }
 
-bool ComConfigStore::CheckUpdate(wstring const & section, wstring const & key, wstring const & value, bool isEncrypted)
+bool ComConfigStore::CheckUpdate(string const & section, string const & key, string const & value, bool isEncrypted)
 {
     // Using isProcessed default as true. If the updateHandler_ is null, we should consider is processed.
     BOOLEAN result = TRUE;

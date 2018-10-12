@@ -8,6 +8,11 @@
 #include <vector>
 #include <string>
 
+#define Utf16ToUtf8NotNeeded(s) (s)
+#define Utf16ToUtf8NotNeeded2(s1,s2) s2 = s1 
+#define Utf8ToUtf16NotNeeded(s) (s)
+#define Utf8ToUtf16NotNeeded2(s1,s2) s2 = s1 
+
 typedef unsigned int        uint;
 
 #ifdef PLATFORM_UNIX
@@ -51,8 +56,8 @@ typedef std::vector<char> cbuffer;
 
 namespace Common
 {
-    typedef std::vector<std::wstring> StringCollection;
-    typedef std::map<std::wstring, std::wstring> StringMap;
+    typedef std::vector<std::string> StringCollection;
+    typedef std::map<std::string, std::string> StringMap;
 
     typedef std::vector<BYTE> ByteBuffer;
     typedef std::unique_ptr<std::vector<BYTE>> ByteBufferUPtr;
@@ -62,8 +67,8 @@ namespace Common
     bool operator != (ByteBuffer const & b1, ByteBuffer const & b2);
     bool operator < (ByteBuffer const & b1, ByteBuffer const & b2);
 
-    ByteBuffer StringToByteBuffer(std::wstring const& str);
-    std::wstring ByteBufferToString(ByteBuffer const & buffer);
+    ByteBuffer StringToByteBuffer(std::string const& str);
+    std::string ByteBufferToString(ByteBuffer const & buffer);
 
     typedef CertContext* PCertContext;
 
@@ -169,7 +174,7 @@ namespace Common
     {
         typedef T const * const_iterator;
         static const bool is_string_literal = 
-            std::is_same<T, char>::value || std::is_same<T, wchar_t>::value ;
+            std::is_same<T, char>::value || std::is_same<T, char>::value ;
         static const size_t adjustment =
             is_string_literal ? 1 : 0;
 
@@ -206,7 +211,6 @@ namespace Common
     };
 
     typedef literal_holder<char> StringLiteral;
-    typedef literal_holder<wchar_t> WStringLiteral;
 
     template <class T> class is_literal_holder : public std::integral_constant<bool, false> {};
     template <class T> class is_literal_holder<literal_holder<T>> : public std::integral_constant<bool, true> {};

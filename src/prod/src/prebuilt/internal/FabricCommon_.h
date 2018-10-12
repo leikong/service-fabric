@@ -254,8 +254,8 @@ extern RPC_IF_HANDLE __MIDL_itf_fabriccommon__0000_0000_v0_0_s_ifspec;
 #pragma pack(push, 8)
 typedef struct FABRIC_SERVICE_MANIFEST_DESCRIPTION
     {
-    LPCWSTR Name;
-    LPCWSTR Version;
+    LPCSTR Name;
+    LPCSTR Version;
     const FABRIC_SERVICE_TYPE_DESCRIPTION_LIST *ServiceTypes;
     const FABRIC_SERVICE_GROUP_TYPE_DESCRIPTION_LIST *ServiceGroupTypes;
     const FABRIC_CODE_PACKAGE_DESCRIPTION_LIST *CodePackages;
@@ -297,13 +297,13 @@ EXTERN_C const IID IID_IFabricDeploymentSpecification;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE SetDataRoot( 
-            /* [in] */ LPCWSTR value) = 0;
+            /* [in] */ LPCSTR value) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetDataRoot( 
             /* [retval][out] */ IFabricStringResult **value) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE SetLogRoot( 
-            /* [in] */ LPCWSTR value) = 0;
+            /* [in] */ LPCSTR value) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetLogRoot( 
             /* [retval][out] */ IFabricStringResult **value) = 0;
@@ -330,65 +330,65 @@ EXTERN_C const IID IID_IFabricDeploymentSpecification;
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetNodeFolder( 
-            /* [in] */ LPCWSTR nodeName,
+            /* [in] */ LPCSTR nodeName,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetFabricFolder( 
-            /* [in] */ LPCWSTR nodeName,
+            /* [in] */ LPCSTR nodeName,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCurrentClusterManifestFile( 
-            /* [in] */ LPCWSTR nodeName,
+            /* [in] */ LPCSTR nodeName,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetVersionedClusterManifestFile( 
-            /* [in] */ LPCWSTR nodeName,
-            /* [in] */ LPCWSTR version,
+            /* [in] */ LPCSTR nodeName,
+            /* [in] */ LPCSTR version,
             /* [out][retval] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetInstallerScriptFile( 
-            /* [in] */ LPCWSTR nodeName,
+            /* [in] */ LPCSTR nodeName,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetInstallerLogFile( 
-            /* [in] */ LPCWSTR nodeName,
-            /* [in] */ LPCWSTR codeVersion,
+            /* [in] */ LPCSTR nodeName,
+            /* [in] */ LPCSTR codeVersion,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetInfrastructureManfiestFile( 
-            /* [in] */ LPCWSTR nodeName,
+            /* [in] */ LPCSTR nodeName,
             /* [out][retval] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetConfigurationDeploymentFolder( 
-            /* [in] */ LPCWSTR nodeName,
-            /* [in] */ LPCWSTR configVersion,
+            /* [in] */ LPCSTR nodeName,
+            /* [in] */ LPCSTR configVersion,
             /* [out][retval] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetDataDeploymentFolder( 
-            /* [in] */ LPCWSTR nodeName,
+            /* [in] */ LPCSTR nodeName,
             /* [out][retval] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCodeDeploymentFolder( 
-            /* [in] */ LPCWSTR nodeName,
-            /* [in] */ LPCWSTR service,
+            /* [in] */ LPCSTR nodeName,
+            /* [in] */ LPCSTR service,
             /* [out][retval] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetInstalledBinaryFolder( 
-            /* [in] */ LPCWSTR installationFolder,
-            /* [in] */ LPCWSTR service,
+            /* [in] */ LPCSTR installationFolder,
+            /* [in] */ LPCSTR service,
             /* [out][retval] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetWorkFolder( 
-            /* [in] */ LPCWSTR nodeName,
+            /* [in] */ LPCSTR nodeName,
             /* [out][retval] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCurrentFabricPackageFile( 
-            /* [in] */ LPCWSTR nodeName,
+            /* [in] */ LPCSTR nodeName,
             /* [out][retval] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetVersionedFabricPackageFile( 
-            /* [in] */ LPCWSTR nodeName,
-            /* [in] */ LPCWSTR version,
+            /* [in] */ LPCSTR nodeName,
+            /* [in] */ LPCSTR version,
             /* [out][retval] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetQueryTraceFolder( 
@@ -423,7 +423,7 @@ EXTERN_C const IID IID_IFabricDeploymentSpecification;
         
         HRESULT ( STDMETHODCALLTYPE *SetDataRoot )( 
             IFabricDeploymentSpecification * This,
-            /* [in] */ LPCWSTR value);
+            /* [in] */ LPCSTR value);
         
         HRESULT ( STDMETHODCALLTYPE *GetDataRoot )( 
             IFabricDeploymentSpecification * This,
@@ -431,7 +431,7 @@ EXTERN_C const IID IID_IFabricDeploymentSpecification;
         
         HRESULT ( STDMETHODCALLTYPE *SetLogRoot )( 
             IFabricDeploymentSpecification * This,
-            /* [in] */ LPCWSTR value);
+            /* [in] */ LPCSTR value);
         
         HRESULT ( STDMETHODCALLTYPE *GetLogRoot )( 
             IFabricDeploymentSpecification * This,
@@ -467,78 +467,78 @@ EXTERN_C const IID IID_IFabricDeploymentSpecification;
         
         HRESULT ( STDMETHODCALLTYPE *GetNodeFolder )( 
             IFabricDeploymentSpecification * This,
-            /* [in] */ LPCWSTR nodeName,
+            /* [in] */ LPCSTR nodeName,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetFabricFolder )( 
             IFabricDeploymentSpecification * This,
-            /* [in] */ LPCWSTR nodeName,
+            /* [in] */ LPCSTR nodeName,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetCurrentClusterManifestFile )( 
             IFabricDeploymentSpecification * This,
-            /* [in] */ LPCWSTR nodeName,
+            /* [in] */ LPCSTR nodeName,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetVersionedClusterManifestFile )( 
             IFabricDeploymentSpecification * This,
-            /* [in] */ LPCWSTR nodeName,
-            /* [in] */ LPCWSTR version,
+            /* [in] */ LPCSTR nodeName,
+            /* [in] */ LPCSTR version,
             /* [out][retval] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetInstallerScriptFile )( 
             IFabricDeploymentSpecification * This,
-            /* [in] */ LPCWSTR nodeName,
+            /* [in] */ LPCSTR nodeName,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetInstallerLogFile )( 
             IFabricDeploymentSpecification * This,
-            /* [in] */ LPCWSTR nodeName,
-            /* [in] */ LPCWSTR codeVersion,
+            /* [in] */ LPCSTR nodeName,
+            /* [in] */ LPCSTR codeVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetInfrastructureManfiestFile )( 
             IFabricDeploymentSpecification * This,
-            /* [in] */ LPCWSTR nodeName,
+            /* [in] */ LPCSTR nodeName,
             /* [out][retval] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetConfigurationDeploymentFolder )( 
             IFabricDeploymentSpecification * This,
-            /* [in] */ LPCWSTR nodeName,
-            /* [in] */ LPCWSTR configVersion,
+            /* [in] */ LPCSTR nodeName,
+            /* [in] */ LPCSTR configVersion,
             /* [out][retval] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetDataDeploymentFolder )( 
             IFabricDeploymentSpecification * This,
-            /* [in] */ LPCWSTR nodeName,
+            /* [in] */ LPCSTR nodeName,
             /* [out][retval] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetCodeDeploymentFolder )( 
             IFabricDeploymentSpecification * This,
-            /* [in] */ LPCWSTR nodeName,
-            /* [in] */ LPCWSTR service,
+            /* [in] */ LPCSTR nodeName,
+            /* [in] */ LPCSTR service,
             /* [out][retval] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetInstalledBinaryFolder )( 
             IFabricDeploymentSpecification * This,
-            /* [in] */ LPCWSTR installationFolder,
-            /* [in] */ LPCWSTR service,
+            /* [in] */ LPCSTR installationFolder,
+            /* [in] */ LPCSTR service,
             /* [out][retval] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetWorkFolder )( 
             IFabricDeploymentSpecification * This,
-            /* [in] */ LPCWSTR nodeName,
+            /* [in] */ LPCSTR nodeName,
             /* [out][retval] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetCurrentFabricPackageFile )( 
             IFabricDeploymentSpecification * This,
-            /* [in] */ LPCWSTR nodeName,
+            /* [in] */ LPCSTR nodeName,
             /* [out][retval] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetVersionedFabricPackageFile )( 
             IFabricDeploymentSpecification * This,
-            /* [in] */ LPCWSTR nodeName,
-            /* [in] */ LPCWSTR version,
+            /* [in] */ LPCSTR nodeName,
+            /* [in] */ LPCSTR version,
             /* [out][retval] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetQueryTraceFolder )( 
@@ -687,25 +687,25 @@ EXTERN_C const IID IID_IFabricWinFabStoreLayoutSpecification;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE SetRoot( 
-            /* [in] */ LPCWSTR value) = 0;
+            /* [in] */ LPCSTR value) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetRoot( 
             /* [retval][out] */ IFabricStringResult **value) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetPatchFile( 
-            /* [in] */ LPCWSTR codeVersion,
+            /* [in] */ LPCSTR codeVersion,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCabPatchFile( 
-            /* [in] */ LPCWSTR codeVersion,
+            /* [in] */ LPCSTR codeVersion,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCodePackageFolder( 
-            /* [in] */ LPCWSTR codeVersion,
+            /* [in] */ LPCSTR codeVersion,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetClusterManifestFile( 
-            /* [in] */ LPCWSTR clusterManifestVersion,
+            /* [in] */ LPCSTR clusterManifestVersion,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
     };
@@ -731,7 +731,7 @@ EXTERN_C const IID IID_IFabricWinFabStoreLayoutSpecification;
         
         HRESULT ( STDMETHODCALLTYPE *SetRoot )( 
             IFabricWinFabStoreLayoutSpecification * This,
-            /* [in] */ LPCWSTR value);
+            /* [in] */ LPCSTR value);
         
         HRESULT ( STDMETHODCALLTYPE *GetRoot )( 
             IFabricWinFabStoreLayoutSpecification * This,
@@ -739,22 +739,22 @@ EXTERN_C const IID IID_IFabricWinFabStoreLayoutSpecification;
         
         HRESULT ( STDMETHODCALLTYPE *GetPatchFile )( 
             IFabricWinFabStoreLayoutSpecification * This,
-            /* [in] */ LPCWSTR codeVersion,
+            /* [in] */ LPCSTR codeVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetCabPatchFile )( 
             IFabricWinFabStoreLayoutSpecification * This,
-            /* [in] */ LPCWSTR codeVersion,
+            /* [in] */ LPCSTR codeVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetCodePackageFolder )( 
             IFabricWinFabStoreLayoutSpecification * This,
-            /* [in] */ LPCWSTR codeVersion,
+            /* [in] */ LPCSTR codeVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetClusterManifestFile )( 
             IFabricWinFabStoreLayoutSpecification * This,
-            /* [in] */ LPCWSTR clusterManifestVersion,
+            /* [in] */ LPCSTR clusterManifestVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         END_INTERFACE
@@ -825,25 +825,25 @@ EXTERN_C const IID IID_IFabricWinFabRunLayoutSpecification;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE SetRoot( 
-            /* [in] */ LPCWSTR value) = 0;
+            /* [in] */ LPCSTR value) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetRoot( 
             /* [retval][out] */ IFabricStringResult **value) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetPatchFile( 
-            /* [in] */ LPCWSTR codeVersion,
+            /* [in] */ LPCSTR codeVersion,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCabPatchFile( 
-            /* [in] */ LPCWSTR codeVersion,
+            /* [in] */ LPCSTR codeVersion,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCodePackageFolder( 
-            /* [in] */ LPCWSTR codeVersion,
+            /* [in] */ LPCSTR codeVersion,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetClusterManifestFile( 
-            /* [in] */ LPCWSTR clusterManifestVersion,
+            /* [in] */ LPCSTR clusterManifestVersion,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
     };
@@ -869,7 +869,7 @@ EXTERN_C const IID IID_IFabricWinFabRunLayoutSpecification;
         
         HRESULT ( STDMETHODCALLTYPE *SetRoot )( 
             IFabricWinFabRunLayoutSpecification * This,
-            /* [in] */ LPCWSTR value);
+            /* [in] */ LPCSTR value);
         
         HRESULT ( STDMETHODCALLTYPE *GetRoot )( 
             IFabricWinFabRunLayoutSpecification * This,
@@ -877,22 +877,22 @@ EXTERN_C const IID IID_IFabricWinFabRunLayoutSpecification;
         
         HRESULT ( STDMETHODCALLTYPE *GetPatchFile )( 
             IFabricWinFabRunLayoutSpecification * This,
-            /* [in] */ LPCWSTR codeVersion,
+            /* [in] */ LPCSTR codeVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetCabPatchFile )( 
             IFabricWinFabRunLayoutSpecification * This,
-            /* [in] */ LPCWSTR codeVersion,
+            /* [in] */ LPCSTR codeVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetCodePackageFolder )( 
             IFabricWinFabRunLayoutSpecification * This,
-            /* [in] */ LPCWSTR codeVersion,
+            /* [in] */ LPCSTR codeVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetClusterManifestFile )( 
             IFabricWinFabRunLayoutSpecification * This,
-            /* [in] */ LPCWSTR clusterManifestVersion,
+            /* [in] */ LPCSTR clusterManifestVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         END_INTERFACE
@@ -963,7 +963,7 @@ EXTERN_C const IID IID_IFabricBuildLayoutSpecification;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE SetRoot( 
-            /* [in] */ LPCWSTR value) = 0;
+            /* [in] */ LPCSTR value) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetRoot( 
             /* [retval][out] */ IFabricStringResult **value) = 0;
@@ -972,45 +972,45 @@ EXTERN_C const IID IID_IFabricBuildLayoutSpecification;
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetServiceManifestFile( 
-            /* [in] */ LPCWSTR serviceManifestName,
+            /* [in] */ LPCSTR serviceManifestName,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetServiceManifestChecksumFile( 
-            /* [in] */ LPCWSTR serviceManifestName,
+            /* [in] */ LPCSTR serviceManifestName,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCodePackageFolder( 
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR codePackageName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR codePackageName,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCodePackageChecksumFile( 
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR codePackageName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR codePackageName,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetConfigPackageFolder( 
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR configPackageName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR configPackageName,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetConfigPackageChecksumFile( 
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR configPackageName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR configPackageName,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetDataPackageFolder( 
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR dataPackageName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR dataPackageName,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetDataPackageChecksumFile( 
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR dataPackageName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR dataPackageName,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetSettingsFile( 
-            /* [in] */ LPCWSTR configPackageFolder,
+            /* [in] */ LPCSTR configPackageFolder,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
     };
@@ -1036,7 +1036,7 @@ EXTERN_C const IID IID_IFabricBuildLayoutSpecification;
         
         HRESULT ( STDMETHODCALLTYPE *SetRoot )( 
             IFabricBuildLayoutSpecification * This,
-            /* [in] */ LPCWSTR value);
+            /* [in] */ LPCSTR value);
         
         HRESULT ( STDMETHODCALLTYPE *GetRoot )( 
             IFabricBuildLayoutSpecification * This,
@@ -1048,53 +1048,53 @@ EXTERN_C const IID IID_IFabricBuildLayoutSpecification;
         
         HRESULT ( STDMETHODCALLTYPE *GetServiceManifestFile )( 
             IFabricBuildLayoutSpecification * This,
-            /* [in] */ LPCWSTR serviceManifestName,
+            /* [in] */ LPCSTR serviceManifestName,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetServiceManifestChecksumFile )( 
             IFabricBuildLayoutSpecification * This,
-            /* [in] */ LPCWSTR serviceManifestName,
+            /* [in] */ LPCSTR serviceManifestName,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetCodePackageFolder )( 
             IFabricBuildLayoutSpecification * This,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR codePackageName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR codePackageName,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetCodePackageChecksumFile )( 
             IFabricBuildLayoutSpecification * This,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR codePackageName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR codePackageName,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetConfigPackageFolder )( 
             IFabricBuildLayoutSpecification * This,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR configPackageName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR configPackageName,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetConfigPackageChecksumFile )( 
             IFabricBuildLayoutSpecification * This,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR configPackageName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR configPackageName,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetDataPackageFolder )( 
             IFabricBuildLayoutSpecification * This,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR dataPackageName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR dataPackageName,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetDataPackageChecksumFile )( 
             IFabricBuildLayoutSpecification * This,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR dataPackageName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR dataPackageName,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetSettingsFile )( 
             IFabricBuildLayoutSpecification * This,
-            /* [in] */ LPCWSTR configPackageFolder,
+            /* [in] */ LPCSTR configPackageFolder,
             /* [retval][out] */ IFabricStringResult **result);
         
         END_INTERFACE
@@ -1183,11 +1183,11 @@ EXTERN_C const IID IID_IFabricBuildLayoutSpecification2;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetSubPackageArchiveFile( 
-            /* [in] */ LPCWSTR packageFolder,
+            /* [in] */ LPCSTR packageFolder,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetChecksumFile( 
-            /* [in] */ LPCWSTR fileOrDirectoryName,
+            /* [in] */ LPCSTR fileOrDirectoryName,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
     };
@@ -1213,7 +1213,7 @@ EXTERN_C const IID IID_IFabricBuildLayoutSpecification2;
         
         HRESULT ( STDMETHODCALLTYPE *SetRoot )( 
             IFabricBuildLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR value);
+            /* [in] */ LPCSTR value);
         
         HRESULT ( STDMETHODCALLTYPE *GetRoot )( 
             IFabricBuildLayoutSpecification2 * This,
@@ -1225,63 +1225,63 @@ EXTERN_C const IID IID_IFabricBuildLayoutSpecification2;
         
         HRESULT ( STDMETHODCALLTYPE *GetServiceManifestFile )( 
             IFabricBuildLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR serviceManifestName,
+            /* [in] */ LPCSTR serviceManifestName,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetServiceManifestChecksumFile )( 
             IFabricBuildLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR serviceManifestName,
+            /* [in] */ LPCSTR serviceManifestName,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetCodePackageFolder )( 
             IFabricBuildLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR codePackageName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR codePackageName,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetCodePackageChecksumFile )( 
             IFabricBuildLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR codePackageName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR codePackageName,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetConfigPackageFolder )( 
             IFabricBuildLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR configPackageName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR configPackageName,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetConfigPackageChecksumFile )( 
             IFabricBuildLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR configPackageName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR configPackageName,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetDataPackageFolder )( 
             IFabricBuildLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR dataPackageName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR dataPackageName,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetDataPackageChecksumFile )( 
             IFabricBuildLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR dataPackageName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR dataPackageName,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetSettingsFile )( 
             IFabricBuildLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR configPackageFolder,
+            /* [in] */ LPCSTR configPackageFolder,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetSubPackageArchiveFile )( 
             IFabricBuildLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR packageFolder,
+            /* [in] */ LPCSTR packageFolder,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetChecksumFile )( 
             IFabricBuildLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR fileOrDirectoryName,
+            /* [in] */ LPCSTR fileOrDirectoryName,
             /* [retval][out] */ IFabricStringResult **result);
         
         END_INTERFACE
@@ -1377,91 +1377,91 @@ EXTERN_C const IID IID_IFabricStoreLayoutSpecification;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE SetRoot( 
-            /* [in] */ LPCWSTR value) = 0;
+            /* [in] */ LPCSTR value) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetRoot( 
             /* [retval][out] */ IFabricStringResult **value) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetApplicationManifestFile( 
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR applicationTypeVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR applicationTypeVersion,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetApplicationInstanceFile( 
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR aplicationId,
-            /* [in] */ LPCWSTR applicationInstanceVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR aplicationId,
+            /* [in] */ LPCSTR applicationInstanceVersion,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetApplicationPackageFile( 
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR aplicationId,
-            /* [in] */ LPCWSTR applicationRolloutVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR aplicationId,
+            /* [in] */ LPCSTR applicationRolloutVersion,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetServicePackageFile( 
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR aplicationId,
-            /* [in] */ LPCWSTR servicePackageName,
-            /* [in] */ LPCWSTR servicePackageRolloutVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR aplicationId,
+            /* [in] */ LPCSTR servicePackageName,
+            /* [in] */ LPCSTR servicePackageRolloutVersion,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetServiceManifestFile( 
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR serviceManifestVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR serviceManifestVersion,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetServiceManifestChecksumFile( 
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR serviceManifestVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR serviceManifestVersion,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCodePackageFolder( 
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR codePackageName,
-            /* [in] */ LPCWSTR codePackageVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR codePackageName,
+            /* [in] */ LPCSTR codePackageVersion,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCodePackageChecksumFile( 
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR codePackageName,
-            /* [in] */ LPCWSTR codePackageVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR codePackageName,
+            /* [in] */ LPCSTR codePackageVersion,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetConfigPackageFolder( 
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR configPackageName,
-            /* [in] */ LPCWSTR configPackageVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR configPackageName,
+            /* [in] */ LPCSTR configPackageVersion,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetConfigPackageChecksumFile( 
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR configPackageName,
-            /* [in] */ LPCWSTR configPackageVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR configPackageName,
+            /* [in] */ LPCSTR configPackageVersion,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetDataPackageFolder( 
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR dataPackageName,
-            /* [in] */ LPCWSTR dataPackageVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR dataPackageName,
+            /* [in] */ LPCSTR dataPackageVersion,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetDataPackageChecksumFile( 
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR dataPackageName,
-            /* [in] */ LPCWSTR dataPackageVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR dataPackageName,
+            /* [in] */ LPCSTR dataPackageVersion,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetSettingsFile( 
-            /* [in] */ LPCWSTR configPackageFolder,
+            /* [in] */ LPCSTR configPackageFolder,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
     };
@@ -1487,7 +1487,7 @@ EXTERN_C const IID IID_IFabricStoreLayoutSpecification;
         
         HRESULT ( STDMETHODCALLTYPE *SetRoot )( 
             IFabricStoreLayoutSpecification * This,
-            /* [in] */ LPCWSTR value);
+            /* [in] */ LPCSTR value);
         
         HRESULT ( STDMETHODCALLTYPE *GetRoot )( 
             IFabricStoreLayoutSpecification * This,
@@ -1495,97 +1495,97 @@ EXTERN_C const IID IID_IFabricStoreLayoutSpecification;
         
         HRESULT ( STDMETHODCALLTYPE *GetApplicationManifestFile )( 
             IFabricStoreLayoutSpecification * This,
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR applicationTypeVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR applicationTypeVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetApplicationInstanceFile )( 
             IFabricStoreLayoutSpecification * This,
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR aplicationId,
-            /* [in] */ LPCWSTR applicationInstanceVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR aplicationId,
+            /* [in] */ LPCSTR applicationInstanceVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetApplicationPackageFile )( 
             IFabricStoreLayoutSpecification * This,
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR aplicationId,
-            /* [in] */ LPCWSTR applicationRolloutVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR aplicationId,
+            /* [in] */ LPCSTR applicationRolloutVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetServicePackageFile )( 
             IFabricStoreLayoutSpecification * This,
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR aplicationId,
-            /* [in] */ LPCWSTR servicePackageName,
-            /* [in] */ LPCWSTR servicePackageRolloutVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR aplicationId,
+            /* [in] */ LPCSTR servicePackageName,
+            /* [in] */ LPCSTR servicePackageRolloutVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetServiceManifestFile )( 
             IFabricStoreLayoutSpecification * This,
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR serviceManifestVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR serviceManifestVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetServiceManifestChecksumFile )( 
             IFabricStoreLayoutSpecification * This,
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR serviceManifestVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR serviceManifestVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetCodePackageFolder )( 
             IFabricStoreLayoutSpecification * This,
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR codePackageName,
-            /* [in] */ LPCWSTR codePackageVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR codePackageName,
+            /* [in] */ LPCSTR codePackageVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetCodePackageChecksumFile )( 
             IFabricStoreLayoutSpecification * This,
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR codePackageName,
-            /* [in] */ LPCWSTR codePackageVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR codePackageName,
+            /* [in] */ LPCSTR codePackageVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetConfigPackageFolder )( 
             IFabricStoreLayoutSpecification * This,
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR configPackageName,
-            /* [in] */ LPCWSTR configPackageVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR configPackageName,
+            /* [in] */ LPCSTR configPackageVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetConfigPackageChecksumFile )( 
             IFabricStoreLayoutSpecification * This,
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR configPackageName,
-            /* [in] */ LPCWSTR configPackageVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR configPackageName,
+            /* [in] */ LPCSTR configPackageVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetDataPackageFolder )( 
             IFabricStoreLayoutSpecification * This,
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR dataPackageName,
-            /* [in] */ LPCWSTR dataPackageVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR dataPackageName,
+            /* [in] */ LPCSTR dataPackageVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetDataPackageChecksumFile )( 
             IFabricStoreLayoutSpecification * This,
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR dataPackageName,
-            /* [in] */ LPCWSTR dataPackageVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR dataPackageName,
+            /* [in] */ LPCSTR dataPackageVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetSettingsFile )( 
             IFabricStoreLayoutSpecification * This,
-            /* [in] */ LPCWSTR configPackageFolder,
+            /* [in] */ LPCSTR configPackageFolder,
             /* [retval][out] */ IFabricStringResult **result);
         
         END_INTERFACE
@@ -1683,80 +1683,80 @@ EXTERN_C const IID IID_IFabricRunLayoutSpecification;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE SetRoot( 
-            /* [in] */ LPCWSTR value) = 0;
+            /* [in] */ LPCSTR value) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetRoot( 
             /* [retval][out] */ IFabricStringResult **value) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetApplicationFolder( 
-            /* [in] */ LPCWSTR applicationId,
+            /* [in] */ LPCSTR applicationId,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetApplicationWorkFolder( 
-            /* [in] */ LPCWSTR applicationId,
+            /* [in] */ LPCSTR applicationId,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetApplicationLogFolder( 
-            /* [in] */ LPCWSTR applicationId,
+            /* [in] */ LPCSTR applicationId,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetApplicationTempFolder( 
-            /* [in] */ LPCWSTR applicationId,
+            /* [in] */ LPCSTR applicationId,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetApplicationPackageFile( 
-            /* [in] */ LPCWSTR aplicationId,
-            /* [in] */ LPCWSTR applicationRolloutVersion,
+            /* [in] */ LPCSTR aplicationId,
+            /* [in] */ LPCSTR applicationRolloutVersion,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetServicePackageFile( 
-            /* [in] */ LPCWSTR aplicationId,
-            /* [in] */ LPCWSTR servicePackageName,
-            /* [in] */ LPCWSTR servicePackageRolloutVersion,
+            /* [in] */ LPCSTR aplicationId,
+            /* [in] */ LPCSTR servicePackageName,
+            /* [in] */ LPCSTR servicePackageRolloutVersion,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCurrentServicePackageFile( 
-            /* [in] */ LPCWSTR aplicationId,
-            /* [in] */ LPCWSTR servicePackageName,
+            /* [in] */ LPCSTR aplicationId,
+            /* [in] */ LPCSTR servicePackageName,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetEndpointDescriptionsFile( 
-            /* [in] */ LPCWSTR aplicationId,
-            /* [in] */ LPCWSTR servicePackageName,
+            /* [in] */ LPCSTR aplicationId,
+            /* [in] */ LPCSTR servicePackageName,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetServiceManifestFile( 
-            /* [in] */ LPCWSTR applicationId,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR serviceManifestVersion,
+            /* [in] */ LPCSTR applicationId,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR serviceManifestVersion,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCodePackageFolder( 
-            /* [in] */ LPCWSTR applicationId,
-            /* [in] */ LPCWSTR servicePackageName,
-            /* [in] */ LPCWSTR codePackageName,
-            /* [in] */ LPCWSTR codePackageVersion,
+            /* [in] */ LPCSTR applicationId,
+            /* [in] */ LPCSTR servicePackageName,
+            /* [in] */ LPCSTR codePackageName,
+            /* [in] */ LPCSTR codePackageVersion,
             /* [in] */ BOOLEAN isSharedPackage,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetConfigPackageFolder( 
-            /* [in] */ LPCWSTR applicationId,
-            /* [in] */ LPCWSTR servicePackageName,
-            /* [in] */ LPCWSTR configPackageName,
-            /* [in] */ LPCWSTR configPackageVersion,
+            /* [in] */ LPCSTR applicationId,
+            /* [in] */ LPCSTR servicePackageName,
+            /* [in] */ LPCSTR configPackageName,
+            /* [in] */ LPCSTR configPackageVersion,
             /* [in] */ BOOLEAN isSharedPackage,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetDataPackageFolder( 
-            /* [in] */ LPCWSTR applicationId,
-            /* [in] */ LPCWSTR servicePackageName,
-            /* [in] */ LPCWSTR dataPackageName,
-            /* [in] */ LPCWSTR dataPackageVersion,
+            /* [in] */ LPCSTR applicationId,
+            /* [in] */ LPCSTR servicePackageName,
+            /* [in] */ LPCSTR dataPackageName,
+            /* [in] */ LPCSTR dataPackageVersion,
             /* [in] */ BOOLEAN isSharedPackage,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetSettingsFile( 
-            /* [in] */ LPCWSTR configPackageFolder,
+            /* [in] */ LPCSTR configPackageFolder,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
     };
@@ -1782,7 +1782,7 @@ EXTERN_C const IID IID_IFabricRunLayoutSpecification;
         
         HRESULT ( STDMETHODCALLTYPE *SetRoot )( 
             IFabricRunLayoutSpecification * This,
-            /* [in] */ LPCWSTR value);
+            /* [in] */ LPCSTR value);
         
         HRESULT ( STDMETHODCALLTYPE *GetRoot )( 
             IFabricRunLayoutSpecification * This,
@@ -1790,86 +1790,86 @@ EXTERN_C const IID IID_IFabricRunLayoutSpecification;
         
         HRESULT ( STDMETHODCALLTYPE *GetApplicationFolder )( 
             IFabricRunLayoutSpecification * This,
-            /* [in] */ LPCWSTR applicationId,
+            /* [in] */ LPCSTR applicationId,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetApplicationWorkFolder )( 
             IFabricRunLayoutSpecification * This,
-            /* [in] */ LPCWSTR applicationId,
+            /* [in] */ LPCSTR applicationId,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetApplicationLogFolder )( 
             IFabricRunLayoutSpecification * This,
-            /* [in] */ LPCWSTR applicationId,
+            /* [in] */ LPCSTR applicationId,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetApplicationTempFolder )( 
             IFabricRunLayoutSpecification * This,
-            /* [in] */ LPCWSTR applicationId,
+            /* [in] */ LPCSTR applicationId,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetApplicationPackageFile )( 
             IFabricRunLayoutSpecification * This,
-            /* [in] */ LPCWSTR aplicationId,
-            /* [in] */ LPCWSTR applicationRolloutVersion,
+            /* [in] */ LPCSTR aplicationId,
+            /* [in] */ LPCSTR applicationRolloutVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetServicePackageFile )( 
             IFabricRunLayoutSpecification * This,
-            /* [in] */ LPCWSTR aplicationId,
-            /* [in] */ LPCWSTR servicePackageName,
-            /* [in] */ LPCWSTR servicePackageRolloutVersion,
+            /* [in] */ LPCSTR aplicationId,
+            /* [in] */ LPCSTR servicePackageName,
+            /* [in] */ LPCSTR servicePackageRolloutVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetCurrentServicePackageFile )( 
             IFabricRunLayoutSpecification * This,
-            /* [in] */ LPCWSTR aplicationId,
-            /* [in] */ LPCWSTR servicePackageName,
+            /* [in] */ LPCSTR aplicationId,
+            /* [in] */ LPCSTR servicePackageName,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetEndpointDescriptionsFile )( 
             IFabricRunLayoutSpecification * This,
-            /* [in] */ LPCWSTR aplicationId,
-            /* [in] */ LPCWSTR servicePackageName,
+            /* [in] */ LPCSTR aplicationId,
+            /* [in] */ LPCSTR servicePackageName,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetServiceManifestFile )( 
             IFabricRunLayoutSpecification * This,
-            /* [in] */ LPCWSTR applicationId,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR serviceManifestVersion,
+            /* [in] */ LPCSTR applicationId,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR serviceManifestVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetCodePackageFolder )( 
             IFabricRunLayoutSpecification * This,
-            /* [in] */ LPCWSTR applicationId,
-            /* [in] */ LPCWSTR servicePackageName,
-            /* [in] */ LPCWSTR codePackageName,
-            /* [in] */ LPCWSTR codePackageVersion,
+            /* [in] */ LPCSTR applicationId,
+            /* [in] */ LPCSTR servicePackageName,
+            /* [in] */ LPCSTR codePackageName,
+            /* [in] */ LPCSTR codePackageVersion,
             /* [in] */ BOOLEAN isSharedPackage,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetConfigPackageFolder )( 
             IFabricRunLayoutSpecification * This,
-            /* [in] */ LPCWSTR applicationId,
-            /* [in] */ LPCWSTR servicePackageName,
-            /* [in] */ LPCWSTR configPackageName,
-            /* [in] */ LPCWSTR configPackageVersion,
+            /* [in] */ LPCSTR applicationId,
+            /* [in] */ LPCSTR servicePackageName,
+            /* [in] */ LPCSTR configPackageName,
+            /* [in] */ LPCSTR configPackageVersion,
             /* [in] */ BOOLEAN isSharedPackage,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetDataPackageFolder )( 
             IFabricRunLayoutSpecification * This,
-            /* [in] */ LPCWSTR applicationId,
-            /* [in] */ LPCWSTR servicePackageName,
-            /* [in] */ LPCWSTR dataPackageName,
-            /* [in] */ LPCWSTR dataPackageVersion,
+            /* [in] */ LPCSTR applicationId,
+            /* [in] */ LPCSTR servicePackageName,
+            /* [in] */ LPCSTR dataPackageName,
+            /* [in] */ LPCSTR dataPackageVersion,
             /* [in] */ BOOLEAN isSharedPackage,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetSettingsFile )( 
             IFabricRunLayoutSpecification * This,
-            /* [in] */ LPCWSTR configPackageFolder,
+            /* [in] */ LPCSTR configPackageFolder,
             /* [retval][out] */ IFabricStringResult **result);
         
         END_INTERFACE
@@ -1967,17 +1967,17 @@ EXTERN_C const IID IID_IFabricConfigStore;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetSections( 
-            /* [in] */ LPCWSTR partialSectionName,
+            /* [in] */ LPCSTR partialSectionName,
             /* [retval][out] */ IFabricStringListResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetKeys( 
-            /* [in] */ LPCWSTR sectionName,
-            /* [in] */ LPCWSTR partialKeyName,
+            /* [in] */ LPCSTR sectionName,
+            /* [in] */ LPCSTR partialKeyName,
             /* [retval][out] */ IFabricStringListResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ReadString( 
-            /* [in] */ LPCWSTR section,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR section,
+            /* [in] */ LPCSTR key,
             /* [out] */ BOOLEAN *isEncrypted,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
@@ -2004,19 +2004,19 @@ EXTERN_C const IID IID_IFabricConfigStore;
         
         HRESULT ( STDMETHODCALLTYPE *GetSections )( 
             IFabricConfigStore * This,
-            /* [in] */ LPCWSTR partialSectionName,
+            /* [in] */ LPCSTR partialSectionName,
             /* [retval][out] */ IFabricStringListResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetKeys )( 
             IFabricConfigStore * This,
-            /* [in] */ LPCWSTR sectionName,
-            /* [in] */ LPCWSTR partialKeyName,
+            /* [in] */ LPCSTR sectionName,
+            /* [in] */ LPCSTR partialKeyName,
             /* [retval][out] */ IFabricStringListResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *ReadString )( 
             IFabricConfigStore * This,
-            /* [in] */ LPCWSTR section,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR section,
+            /* [in] */ LPCSTR key,
             /* [out] */ BOOLEAN *isEncrypted,
             /* [retval][out] */ IFabricStringResult **result);
         
@@ -2106,19 +2106,19 @@ EXTERN_C const IID IID_IFabricConfigStore2;
         
         HRESULT ( STDMETHODCALLTYPE *GetSections )( 
             IFabricConfigStore2 * This,
-            /* [in] */ LPCWSTR partialSectionName,
+            /* [in] */ LPCSTR partialSectionName,
             /* [retval][out] */ IFabricStringListResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetKeys )( 
             IFabricConfigStore2 * This,
-            /* [in] */ LPCWSTR sectionName,
-            /* [in] */ LPCWSTR partialKeyName,
+            /* [in] */ LPCSTR sectionName,
+            /* [in] */ LPCSTR partialKeyName,
             /* [retval][out] */ IFabricStringListResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *ReadString )( 
             IFabricConfigStore2 * This,
-            /* [in] */ LPCWSTR section,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR section,
+            /* [in] */ LPCSTR key,
             /* [out] */ BOOLEAN *isEncrypted,
             /* [retval][out] */ IFabricStringResult **result);
         
@@ -2195,14 +2195,14 @@ EXTERN_C const IID IID_IFabricConfigStoreUpdateHandler;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE OnUpdate( 
-            /* [in] */ LPCWSTR section,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR section,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ BOOLEAN *isProcessed) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE CheckUpdate( 
-            /* [in] */ LPCWSTR section,
-            /* [in] */ LPCWSTR key,
-            /* [in] */ LPCWSTR value,
+            /* [in] */ LPCSTR section,
+            /* [in] */ LPCSTR key,
+            /* [in] */ LPCSTR value,
             /* [in] */ BOOLEAN isEncrypted,
             /* [retval][out] */ BOOLEAN *canUpdate) = 0;
         
@@ -2229,15 +2229,15 @@ EXTERN_C const IID IID_IFabricConfigStoreUpdateHandler;
         
         HRESULT ( STDMETHODCALLTYPE *OnUpdate )( 
             IFabricConfigStoreUpdateHandler * This,
-            /* [in] */ LPCWSTR section,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR section,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ BOOLEAN *isProcessed);
         
         HRESULT ( STDMETHODCALLTYPE *CheckUpdate )( 
             IFabricConfigStoreUpdateHandler * This,
-            /* [in] */ LPCWSTR section,
-            /* [in] */ LPCWSTR key,
-            /* [in] */ LPCWSTR value,
+            /* [in] */ LPCSTR section,
+            /* [in] */ LPCSTR key,
+            /* [in] */ LPCSTR value,
             /* [in] */ BOOLEAN isEncrypted,
             /* [retval][out] */ BOOLEAN *canUpdate);
         
@@ -2397,18 +2397,18 @@ EXTERN_C const IID IID_IFabricStringMapResult;
     /* [retval][out] */ __RPC__deref_out_opt void **configStore);
 
 /* [entry] */ HRESULT FabricDecryptValue( 
-    /* [in] */ __RPC__in LPCWSTR encryptedValue,
+    /* [in] */ __RPC__in LPCSTR encryptedValue,
     /* [retval][out] */ __RPC__deref_out_opt IFabricStringResult **decryptedValue);
 
 /* [entry] */ HRESULT FabricIsValidExpression( 
-    /* [in] */ __RPC__in LPCWSTR expression,
+    /* [in] */ __RPC__in LPCSTR expression,
     /* [retval][out] */ __RPC__out BOOLEAN *isValid);
 
 /* [entry] */ HRESULT GetLinuxPackageManagerType( 
     /* [out] */ __RPC__out INT32 *packageManagerType);
 
 /* [entry] */ HRESULT FabricGetRoot2( 
-    /* [in] */ __RPC__in LPCWSTR machineName,
+    /* [in] */ __RPC__in LPCSTR machineName,
     /* [out] */ __RPC__deref_out_opt IFabricStringResult **fabricRoot);
 
 /* [entry] */ HRESULT FabricGetRoot( 
@@ -2418,132 +2418,132 @@ EXTERN_C const IID IID_IFabricStringMapResult;
     /* [out] */ __RPC__deref_out_opt IFabricStringResult **fabricBinRoot);
 
 /* [entry] */ HRESULT FabricGetBinRoot2( 
-    /* [in] */ __RPC__in LPCWSTR machineName,
+    /* [in] */ __RPC__in LPCSTR machineName,
     /* [out] */ __RPC__deref_out_opt IFabricStringResult **fabricBinRoot);
 
 /* [entry] */ HRESULT FabricGetCodePath2( 
-    /* [in] */ __RPC__in LPCWSTR machineName,
+    /* [in] */ __RPC__in LPCSTR machineName,
     /* [out] */ __RPC__deref_out_opt IFabricStringResult **fabricCodePath);
 
 /* [entry] */ HRESULT FabricGetCodePath( 
     /* [out] */ __RPC__deref_out_opt IFabricStringResult **fabricCodePath);
 
 /* [entry] */ HRESULT FabricGetDataRoot2( 
-    /* [in] */ __RPC__in LPCWSTR machineName,
+    /* [in] */ __RPC__in LPCSTR machineName,
     /* [out] */ __RPC__deref_out_opt IFabricStringResult **fabricDataRoot);
 
 /* [entry] */ HRESULT FabricGetDataRoot( 
     /* [out] */ __RPC__deref_out_opt IFabricStringResult **fabricDataRoot);
 
 /* [entry] */ HRESULT FabricGetLogRoot2( 
-    /* [in] */ __RPC__in LPCWSTR machineName,
+    /* [in] */ __RPC__in LPCSTR machineName,
     /* [out] */ __RPC__deref_out_opt IFabricStringResult **fabricLogRoot);
 
 /* [entry] */ HRESULT FabricGetLogRoot( 
     /* [out] */ __RPC__deref_out_opt IFabricStringResult **fabricLogRoot);
 
 /* [entry] */ HRESULT FabricSetRoot2( 
-    /* [in] */ __RPC__in LPCWSTR fabricRoot,
-    /* [in] */ __RPC__in LPCWSTR machineName);
+    /* [in] */ __RPC__in LPCSTR fabricRoot,
+    /* [in] */ __RPC__in LPCSTR machineName);
 
 /* [entry] */ HRESULT FabricSetRoot( 
-    /* [in] */ __RPC__in LPCWSTR fabricRoot);
+    /* [in] */ __RPC__in LPCSTR fabricRoot);
 
 /* [entry] */ HRESULT FabricSetBinRoot2( 
-    /* [in] */ __RPC__in LPCWSTR binRoot,
-    /* [in] */ __RPC__in LPCWSTR machineName);
+    /* [in] */ __RPC__in LPCSTR binRoot,
+    /* [in] */ __RPC__in LPCSTR machineName);
 
 /* [entry] */ HRESULT FabricSetBinRoot( 
-    /* [in] */ __RPC__in LPCWSTR binRoot);
+    /* [in] */ __RPC__in LPCSTR binRoot);
 
 /* [entry] */ HRESULT FabricSetCodePath2( 
-    /* [in] */ __RPC__in LPCWSTR codePath,
-    /* [in] */ __RPC__in LPCWSTR machineName);
+    /* [in] */ __RPC__in LPCSTR codePath,
+    /* [in] */ __RPC__in LPCSTR machineName);
 
 /* [entry] */ HRESULT FabricSetCodePath( 
-    /* [in] */ __RPC__in LPCWSTR codePath);
+    /* [in] */ __RPC__in LPCSTR codePath);
 
 /* [entry] */ HRESULT FabricSetDataRoot2( 
-    /* [in] */ __RPC__in LPCWSTR dataRoot,
-    /* [in] */ __RPC__in LPCWSTR machineName);
+    /* [in] */ __RPC__in LPCSTR dataRoot,
+    /* [in] */ __RPC__in LPCSTR machineName);
 
 /* [entry] */ HRESULT FabricSetDataRoot( 
-    /* [in] */ __RPC__in LPCWSTR dataRoot);
+    /* [in] */ __RPC__in LPCSTR dataRoot);
 
 /* [entry] */ HRESULT FabricSetLogRoot2( 
-    /* [in] */ __RPC__in LPCWSTR logRoot,
-    /* [in] */ __RPC__in LPCWSTR machineName);
+    /* [in] */ __RPC__in LPCSTR logRoot,
+    /* [in] */ __RPC__in LPCSTR machineName);
 
 /* [entry] */ HRESULT FabricSetLogRoot( 
-    /* [in] */ __RPC__in LPCWSTR logRoot);
+    /* [in] */ __RPC__in LPCSTR logRoot);
 
 /* [entry] */ HRESULT FabricGetCommonDllVersion( 
     /* [out] */ __RPC__deref_out_opt IFabricStringResult **commonDllVersion);
 
 /* [entry] */ HRESULT FabricDirectoryCreate( 
-    /* [in] */ __RPC__in LPCWSTR path);
+    /* [in] */ __RPC__in LPCSTR path);
 
 /* [entry] */ HRESULT FabricDirectoryGetDirectories( 
-    /* [in] */ __RPC__in LPCWSTR path,
-    /* [in] */ __RPC__in LPCWSTR pattern,
+    /* [in] */ __RPC__in LPCSTR path,
+    /* [in] */ __RPC__in LPCSTR pattern,
     /* [in] */ BOOLEAN getFullPath,
     /* [in] */ BOOLEAN topDirectoryOnly,
     /* [out] */ __RPC__deref_out_opt IFabricStringListResult **result);
 
 /* [entry] */ HRESULT FabricDirectoryGetFiles( 
-    /* [in] */ __RPC__in LPCWSTR path,
-    /* [in] */ __RPC__in LPCWSTR pattern,
+    /* [in] */ __RPC__in LPCSTR path,
+    /* [in] */ __RPC__in LPCSTR pattern,
     /* [in] */ BOOLEAN getFullPath,
     /* [in] */ BOOLEAN topDirectoryOnly,
     /* [out] */ __RPC__deref_out_opt IFabricStringListResult **result);
 
 /* [entry] */ HRESULT FabricDirectoryCopy( 
-    /* [in] */ __RPC__in LPCWSTR src,
-    /* [in] */ __RPC__in LPCWSTR des,
+    /* [in] */ __RPC__in LPCSTR src,
+    /* [in] */ __RPC__in LPCSTR des,
     /* [in] */ BOOLEAN overwrite);
 
 /* [entry] */ HRESULT FabricDirectoryRename( 
-    /* [in] */ __RPC__in LPCWSTR src,
-    /* [in] */ __RPC__in LPCWSTR des,
+    /* [in] */ __RPC__in LPCSTR src,
+    /* [in] */ __RPC__in LPCSTR des,
     /* [in] */ BOOLEAN overwrite);
 
 /* [entry] */ HRESULT FabricDirectoryExists( 
-    /* [in] */ __RPC__in LPCWSTR path,
+    /* [in] */ __RPC__in LPCSTR path,
     /* [out] */ __RPC__out BOOLEAN *isExisted);
 
 /* [entry] */ HRESULT FabricDirectoryDelete( 
-    /* [in] */ __RPC__in LPCWSTR path,
+    /* [in] */ __RPC__in LPCSTR path,
     /* [in] */ BOOLEAN recursive,
     /* [in] */ BOOLEAN deleteReadOnlyFiles);
 
 /* [entry] */ HRESULT FabricDirectoryIsSymbolicLink( 
-    /* [in] */ __RPC__in LPCWSTR path,
+    /* [in] */ __RPC__in LPCSTR path,
     /* [out] */ __RPC__out BOOLEAN *result);
 
 /* [entry] */ HRESULT FabricGetDirectoryName( 
-    /* [in] */ __RPC__in LPCWSTR path,
+    /* [in] */ __RPC__in LPCSTR path,
     /* [out] */ __RPC__deref_out_opt IFabricStringResult **result);
 
 /* [entry] */ HRESULT FabricGetFullPath( 
-    /* [in] */ __RPC__in LPCWSTR path,
+    /* [in] */ __RPC__in LPCSTR path,
     /* [out] */ __RPC__deref_out_opt IFabricStringResult **result);
 
 /* [entry] */ HRESULT FabricSetLastErrorMessage( 
-    /* [in] */ __RPC__in LPCWSTR message,
+    /* [in] */ __RPC__in LPCSTR message,
     /* [out] */ __RPC__out DWORD *threadId);
 
 /* [entry] */ HRESULT FabricClearLastErrorMessage( 
     /* [in] */ DWORD threadId);
 
 /* [entry] */ HRESULT FabricFileOpen( 
-    /* [in] */ __RPC__in LPCWSTR path,
+    /* [in] */ __RPC__in LPCSTR path,
     /* [in] */ FABRIC_FILE_MODE fileMode,
     /* [in] */ FABRIC_FILE_ACCESS fileAccess,
     /* [in] */ FABRIC_FILE_SHARE fileShare,
     /* [out] */ __RPC__deref_out_opt HANDLE *fileHandle);
 
 /* [entry] */ HRESULT FabricFileOpenEx( 
-    /* [in] */ __RPC__in LPCWSTR path,
+    /* [in] */ __RPC__in LPCSTR path,
     /* [in] */ FABRIC_FILE_MODE fileMode,
     /* [in] */ FABRIC_FILE_ACCESS fileAccess,
     /* [in] */ FABRIC_FILE_SHARE fileShare,
@@ -2551,126 +2551,126 @@ EXTERN_C const IID IID_IFabricStringMapResult;
     /* [out] */ __RPC__deref_out_opt HANDLE *fileHandle);
 
 /* [entry] */ HRESULT FabricFileCopy( 
-    /* [in] */ __RPC__in LPCWSTR src,
-    /* [in] */ __RPC__in LPCWSTR des,
+    /* [in] */ __RPC__in LPCSTR src,
+    /* [in] */ __RPC__in LPCSTR des,
     /* [in] */ BOOLEAN overwrite);
 
 /* [entry] */ HRESULT FabricFileMove( 
-    /* [in] */ __RPC__in LPCWSTR src,
-    /* [in] */ __RPC__in LPCWSTR des);
+    /* [in] */ __RPC__in LPCSTR src,
+    /* [in] */ __RPC__in LPCSTR des);
 
 /* [entry] */ HRESULT FabricFileExists( 
-    /* [in] */ __RPC__in LPCWSTR path,
+    /* [in] */ __RPC__in LPCSTR path,
     /* [out] */ __RPC__out BOOLEAN *isExisted);
 
 /* [entry] */ HRESULT FabricFileDelete( 
-    /* [in] */ __RPC__in LPCWSTR path,
+    /* [in] */ __RPC__in LPCSTR path,
     /* [in] */ BOOLEAN deleteReadonly);
 
 /* [entry] */ HRESULT FabricFileReplace( 
-    /* [in] */ __RPC__in LPCWSTR lpReplacedFileName,
-    /* [in] */ __RPC__in LPCWSTR lpReplacementFileName,
-    /* [in] */ __RPC__in LPCWSTR lpBackupFileName,
+    /* [in] */ __RPC__in LPCSTR lpReplacedFileName,
+    /* [in] */ __RPC__in LPCSTR lpReplacementFileName,
+    /* [in] */ __RPC__in LPCSTR lpBackupFileName,
     /* [in] */ BOOLEAN bIgnoreMergeErrors);
 
 /* [entry] */ HRESULT FabricFileCreateHardLink( 
-    /* [in] */ __RPC__in LPCWSTR lpFileName,
-    /* [in] */ __RPC__in LPCWSTR lpExistingFileName,
+    /* [in] */ __RPC__in LPCSTR lpFileName,
+    /* [in] */ __RPC__in LPCSTR lpExistingFileName,
     /* [out] */ __RPC__out BOOLEAN *succeeded);
 
 /* [entry] */ HRESULT FabricFileGetSize( 
-    /* [in] */ __RPC__in LPCWSTR path,
+    /* [in] */ __RPC__in LPCSTR path,
     /* [out] */ __RPC__out LONGLONG *size);
 
 /* [entry] */ HRESULT FabricFileGetLastWriteTime( 
-    /* [in] */ __RPC__in LPCWSTR path,
+    /* [in] */ __RPC__in LPCSTR path,
     /* [out] */ __RPC__out FILETIME *lastWriteTime);
 
 /* [entry] */ HRESULT FabricFileGetVersionInfo( 
-    /* [in] */ __RPC__in LPCWSTR path,
+    /* [in] */ __RPC__in LPCSTR path,
     /* [out] */ __RPC__deref_out_opt IFabricStringResult **uncPath);
 
 /* [entry] */ HRESULT FabricFileRemoveReadOnlyAttribute( 
-    /* [in] */ __RPC__in LPCWSTR path);
+    /* [in] */ __RPC__in LPCSTR path);
 
 /* [entry] */ HRESULT FabricGetUncPath( 
-    /* [in] */ __RPC__in LPCWSTR path,
+    /* [in] */ __RPC__in LPCSTR path,
     /* [out] */ __RPC__deref_out_opt IFabricStringResult **uncPath);
 
 /* [entry] */ HRESULT FabricGetNodeIdFromNodeName( 
-    /* [in] */ __RPC__in LPCWSTR nodeName,
-    /* [in] */ __RPC__in LPCWSTR rolesForWhichToUseV1generator,
+    /* [in] */ __RPC__in LPCSTR nodeName,
+    /* [in] */ __RPC__in LPCSTR rolesForWhichToUseV1generator,
     /* [in] */ BOOLEAN useV2NodeIdGenerator,
-    /* [in] */ __RPC__in LPCWSTR nodeIdGeneratorVersion,
+    /* [in] */ __RPC__in LPCSTR nodeIdGeneratorVersion,
     /* [out] */ __RPC__out FABRIC_NODE_ID *fabricNodeId);
 
 /* [entry] */ HRESULT CabExtractFiltered( 
-    /* [in] */ __RPC__in LPCWSTR cabPath,
-    /* [in] */ __RPC__in LPCWSTR extractPath,
-    /* [in] */ __RPC__in LPCWSTR filters,
+    /* [in] */ __RPC__in LPCSTR cabPath,
+    /* [in] */ __RPC__in LPCSTR extractPath,
+    /* [in] */ __RPC__in LPCSTR filters,
     /* [in] */ BOOLEAN inclusive);
 
 /* [entry] */ HRESULT IsCabFile( 
-    /* [in] */ __RPC__in LPCWSTR cabPath,
+    /* [in] */ __RPC__in LPCSTR cabPath,
     /* [retval][out] */ __RPC__out BOOLEAN *isCab);
 
 /* [entry] */ HRESULT GenerateSelfSignedCertAndImportToStore( 
-    /* [in] */ __RPC__in LPCWSTR subName,
-    /* [in] */ __RPC__in LPCWSTR storeName,
-    /* [in] */ __RPC__in LPCWSTR profile,
-    /* [in] */ __RPC__in LPCWSTR DNS,
+    /* [in] */ __RPC__in LPCSTR subName,
+    /* [in] */ __RPC__in LPCSTR storeName,
+    /* [in] */ __RPC__in LPCSTR profile,
+    /* [in] */ __RPC__in LPCSTR DNS,
     /* [in] */ FILETIME expireDate);
 
 /* [entry] */ HRESULT GenerateSelfSignedCertAndSaveAsPFX( 
-    /* [in] */ __RPC__in LPCWSTR subName,
-    /* [in] */ __RPC__in LPCWSTR fileName,
-    /* [in] */ __RPC__in LPCWSTR password,
-    /* [in] */ __RPC__in LPCWSTR DNS,
+    /* [in] */ __RPC__in LPCSTR subName,
+    /* [in] */ __RPC__in LPCSTR fileName,
+    /* [in] */ __RPC__in LPCSTR password,
+    /* [in] */ __RPC__in LPCSTR DNS,
     /* [in] */ FILETIME expireDate);
 
 /* [entry] */ HRESULT DeleteCertificateFromStore( 
-    /* [in] */ __RPC__in LPCWSTR certName,
-    /* [in] */ __RPC__in LPCWSTR store,
-    /* [in] */ __RPC__in LPCWSTR profile,
+    /* [in] */ __RPC__in LPCSTR certName,
+    /* [in] */ __RPC__in LPCSTR store,
+    /* [in] */ __RPC__in LPCSTR profile,
     /* [in] */ BOOLEAN isExactMatch);
 
 /* [entry] */ HRESULT WriteManagedTrace( 
-    /* [in] */ __RPC__in LPCWSTR taskName,
-    /* [in] */ __RPC__in LPCWSTR eventName,
-    /* [in] */ __RPC__in LPCWSTR id,
+    /* [in] */ __RPC__in LPCSTR taskName,
+    /* [in] */ __RPC__in LPCSTR eventName,
+    /* [in] */ __RPC__in LPCSTR id,
     /* [in] */ USHORT level,
-    /* [in] */ __RPC__in LPCWSTR text);
+    /* [in] */ __RPC__in LPCSTR text);
 
 /* [entry] */ HRESULT WriteManagedStructuredTrace( 
     /* [in] */ __RPC__in const FABRIC_ETW_TRACE_EVENT_PAYLOAD *eventPayload);
 
 /* [entry] */ HRESULT VerifyFileSignature( 
-    /* [in] */ __RPC__in LPCWSTR filename,
+    /* [in] */ __RPC__in LPCSTR filename,
     /* [out] */ __RPC__out BOOLEAN *isValid);
 
 /* [entry] */ HRESULT FabricSetEnableCircularTraceSession2( 
     /* [in] */ BOOLEAN enableCircularTraceSession,
-    /* [in] */ __RPC__in LPCWSTR machineName);
+    /* [in] */ __RPC__in LPCSTR machineName);
 
 /* [entry] */ HRESULT FabricSetEnableCircularTraceSession( 
     /* [in] */ BOOLEAN enableCircularTraceSession);
 
 /* [entry] */ HRESULT FabricSetEnableUnsupportedPreviewFeatures2( 
     /* [in] */ BOOLEAN enableUnsupportedPreviewFeatures,
-    /* [in] */ __RPC__in LPCWSTR machineName);
+    /* [in] */ __RPC__in LPCSTR machineName);
 
 /* [entry] */ HRESULT FabricSetEnableUnsupportedPreviewFeatures( 
     /* [in] */ BOOLEAN enableUnsupportedPreviewFeatures);
 
 /* [entry] */ HRESULT FabricSetIsSFVolumeDiskServiceEnabled2( 
     /* [in] */ BOOLEAN isSFVolumeDiskServiceEnabled,
-    /* [in] */ __RPC__in LPCWSTR machineName);
+    /* [in] */ __RPC__in LPCSTR machineName);
 
 /* [entry] */ HRESULT FabricSetIsSFVolumeDiskServiceEnabled( 
     /* [in] */ BOOLEAN isSFVolumeDiskServiceEnabled);
 
 /* [entry] */ HRESULT FabricGetEnableCircularTraceSession2( 
-    /* [in] */ __RPC__in LPCWSTR machineName,
+    /* [in] */ __RPC__in LPCSTR machineName,
     /* [retval][out] */ __RPC__out BOOLEAN *enableCircularTraceSession);
 
 /* [entry] */ HRESULT FabricGetEnableCircularTraceSession( 
@@ -2698,7 +2698,7 @@ EXTERN_C const IID IID_IFabricStoreLayoutSpecification2;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetSubPackageArchiveFile( 
-            /* [in] */ LPCWSTR packageFolder,
+            /* [in] */ LPCSTR packageFolder,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
     };
@@ -2724,7 +2724,7 @@ EXTERN_C const IID IID_IFabricStoreLayoutSpecification2;
         
         HRESULT ( STDMETHODCALLTYPE *SetRoot )( 
             IFabricStoreLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR value);
+            /* [in] */ LPCSTR value);
         
         HRESULT ( STDMETHODCALLTYPE *GetRoot )( 
             IFabricStoreLayoutSpecification2 * This,
@@ -2732,102 +2732,102 @@ EXTERN_C const IID IID_IFabricStoreLayoutSpecification2;
         
         HRESULT ( STDMETHODCALLTYPE *GetApplicationManifestFile )( 
             IFabricStoreLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR applicationTypeVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR applicationTypeVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetApplicationInstanceFile )( 
             IFabricStoreLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR aplicationId,
-            /* [in] */ LPCWSTR applicationInstanceVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR aplicationId,
+            /* [in] */ LPCSTR applicationInstanceVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetApplicationPackageFile )( 
             IFabricStoreLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR aplicationId,
-            /* [in] */ LPCWSTR applicationRolloutVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR aplicationId,
+            /* [in] */ LPCSTR applicationRolloutVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetServicePackageFile )( 
             IFabricStoreLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR aplicationId,
-            /* [in] */ LPCWSTR servicePackageName,
-            /* [in] */ LPCWSTR servicePackageRolloutVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR aplicationId,
+            /* [in] */ LPCSTR servicePackageName,
+            /* [in] */ LPCSTR servicePackageRolloutVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetServiceManifestFile )( 
             IFabricStoreLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR serviceManifestVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR serviceManifestVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetServiceManifestChecksumFile )( 
             IFabricStoreLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR serviceManifestVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR serviceManifestVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetCodePackageFolder )( 
             IFabricStoreLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR codePackageName,
-            /* [in] */ LPCWSTR codePackageVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR codePackageName,
+            /* [in] */ LPCSTR codePackageVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetCodePackageChecksumFile )( 
             IFabricStoreLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR codePackageName,
-            /* [in] */ LPCWSTR codePackageVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR codePackageName,
+            /* [in] */ LPCSTR codePackageVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetConfigPackageFolder )( 
             IFabricStoreLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR configPackageName,
-            /* [in] */ LPCWSTR configPackageVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR configPackageName,
+            /* [in] */ LPCSTR configPackageVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetConfigPackageChecksumFile )( 
             IFabricStoreLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR configPackageName,
-            /* [in] */ LPCWSTR configPackageVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR configPackageName,
+            /* [in] */ LPCSTR configPackageVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetDataPackageFolder )( 
             IFabricStoreLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR dataPackageName,
-            /* [in] */ LPCWSTR dataPackageVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR dataPackageName,
+            /* [in] */ LPCSTR dataPackageVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetDataPackageChecksumFile )( 
             IFabricStoreLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR applicationTypeName,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR dataPackageName,
-            /* [in] */ LPCWSTR dataPackageVersion,
+            /* [in] */ LPCSTR applicationTypeName,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR dataPackageName,
+            /* [in] */ LPCSTR dataPackageVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetSettingsFile )( 
             IFabricStoreLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR configPackageFolder,
+            /* [in] */ LPCSTR configPackageFolder,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetSubPackageArchiveFile )( 
             IFabricStoreLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR packageFolder,
+            /* [in] */ LPCSTR packageFolder,
             /* [retval][out] */ IFabricStringResult **result);
         
         END_INTERFACE
@@ -2929,15 +2929,15 @@ EXTERN_C const IID IID_IFabricRunLayoutSpecification2;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetEndpointDescriptionsFile2( 
-            /* [in] */ LPCWSTR applicationId,
-            /* [in] */ LPCWSTR servicePackageName,
-            /* [in] */ LPCWSTR servicePackageActivationId,
+            /* [in] */ LPCSTR applicationId,
+            /* [in] */ LPCSTR servicePackageName,
+            /* [in] */ LPCSTR servicePackageActivationId,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCurrentServicePackageFile2( 
-            /* [in] */ LPCWSTR applicationId,
-            /* [in] */ LPCWSTR servicePackageName,
-            /* [in] */ LPCWSTR servicePackageActivationId,
+            /* [in] */ LPCSTR applicationId,
+            /* [in] */ LPCSTR servicePackageName,
+            /* [in] */ LPCSTR servicePackageActivationId,
             /* [retval][out] */ IFabricStringResult **result) = 0;
         
     };
@@ -2963,7 +2963,7 @@ EXTERN_C const IID IID_IFabricRunLayoutSpecification2;
         
         HRESULT ( STDMETHODCALLTYPE *SetRoot )( 
             IFabricRunLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR value);
+            /* [in] */ LPCSTR value);
         
         HRESULT ( STDMETHODCALLTYPE *GetRoot )( 
             IFabricRunLayoutSpecification2 * This,
@@ -2971,100 +2971,100 @@ EXTERN_C const IID IID_IFabricRunLayoutSpecification2;
         
         HRESULT ( STDMETHODCALLTYPE *GetApplicationFolder )( 
             IFabricRunLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR applicationId,
+            /* [in] */ LPCSTR applicationId,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetApplicationWorkFolder )( 
             IFabricRunLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR applicationId,
+            /* [in] */ LPCSTR applicationId,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetApplicationLogFolder )( 
             IFabricRunLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR applicationId,
+            /* [in] */ LPCSTR applicationId,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetApplicationTempFolder )( 
             IFabricRunLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR applicationId,
+            /* [in] */ LPCSTR applicationId,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetApplicationPackageFile )( 
             IFabricRunLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR aplicationId,
-            /* [in] */ LPCWSTR applicationRolloutVersion,
+            /* [in] */ LPCSTR aplicationId,
+            /* [in] */ LPCSTR applicationRolloutVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetServicePackageFile )( 
             IFabricRunLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR aplicationId,
-            /* [in] */ LPCWSTR servicePackageName,
-            /* [in] */ LPCWSTR servicePackageRolloutVersion,
+            /* [in] */ LPCSTR aplicationId,
+            /* [in] */ LPCSTR servicePackageName,
+            /* [in] */ LPCSTR servicePackageRolloutVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetCurrentServicePackageFile )( 
             IFabricRunLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR aplicationId,
-            /* [in] */ LPCWSTR servicePackageName,
+            /* [in] */ LPCSTR aplicationId,
+            /* [in] */ LPCSTR servicePackageName,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetEndpointDescriptionsFile )( 
             IFabricRunLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR aplicationId,
-            /* [in] */ LPCWSTR servicePackageName,
+            /* [in] */ LPCSTR aplicationId,
+            /* [in] */ LPCSTR servicePackageName,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetServiceManifestFile )( 
             IFabricRunLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR applicationId,
-            /* [in] */ LPCWSTR serviceManifestName,
-            /* [in] */ LPCWSTR serviceManifestVersion,
+            /* [in] */ LPCSTR applicationId,
+            /* [in] */ LPCSTR serviceManifestName,
+            /* [in] */ LPCSTR serviceManifestVersion,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetCodePackageFolder )( 
             IFabricRunLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR applicationId,
-            /* [in] */ LPCWSTR servicePackageName,
-            /* [in] */ LPCWSTR codePackageName,
-            /* [in] */ LPCWSTR codePackageVersion,
+            /* [in] */ LPCSTR applicationId,
+            /* [in] */ LPCSTR servicePackageName,
+            /* [in] */ LPCSTR codePackageName,
+            /* [in] */ LPCSTR codePackageVersion,
             /* [in] */ BOOLEAN isSharedPackage,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetConfigPackageFolder )( 
             IFabricRunLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR applicationId,
-            /* [in] */ LPCWSTR servicePackageName,
-            /* [in] */ LPCWSTR configPackageName,
-            /* [in] */ LPCWSTR configPackageVersion,
+            /* [in] */ LPCSTR applicationId,
+            /* [in] */ LPCSTR servicePackageName,
+            /* [in] */ LPCSTR configPackageName,
+            /* [in] */ LPCSTR configPackageVersion,
             /* [in] */ BOOLEAN isSharedPackage,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetDataPackageFolder )( 
             IFabricRunLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR applicationId,
-            /* [in] */ LPCWSTR servicePackageName,
-            /* [in] */ LPCWSTR dataPackageName,
-            /* [in] */ LPCWSTR dataPackageVersion,
+            /* [in] */ LPCSTR applicationId,
+            /* [in] */ LPCSTR servicePackageName,
+            /* [in] */ LPCSTR dataPackageName,
+            /* [in] */ LPCSTR dataPackageVersion,
             /* [in] */ BOOLEAN isSharedPackage,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetSettingsFile )( 
             IFabricRunLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR configPackageFolder,
+            /* [in] */ LPCSTR configPackageFolder,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetEndpointDescriptionsFile2 )( 
             IFabricRunLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR applicationId,
-            /* [in] */ LPCWSTR servicePackageName,
-            /* [in] */ LPCWSTR servicePackageActivationId,
+            /* [in] */ LPCSTR applicationId,
+            /* [in] */ LPCSTR servicePackageName,
+            /* [in] */ LPCSTR servicePackageActivationId,
             /* [retval][out] */ IFabricStringResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetCurrentServicePackageFile2 )( 
             IFabricRunLayoutSpecification2 * This,
-            /* [in] */ LPCWSTR applicationId,
-            /* [in] */ LPCWSTR servicePackageName,
-            /* [in] */ LPCWSTR servicePackageActivationId,
+            /* [in] */ LPCSTR applicationId,
+            /* [in] */ LPCSTR servicePackageName,
+            /* [in] */ LPCSTR servicePackageActivationId,
             /* [retval][out] */ IFabricStringResult **result);
         
         END_INTERFACE

@@ -10,21 +10,21 @@ namespace Federation
     class NodeIdGenerator
     {
     public:
-        static Common::ErrorCode GenerateFromString(std::wstring const & string, NodeId & nodeId, std::wstring const & rolesForWhichToUseV1generator, bool useV2NodeIdGenerator, std::wstring const & nodeIdGeneratorVersion);
-        static Common::ErrorCode GenerateFromString(std::wstring const & string, NodeId & nodeId);
-        static std::wstring GenerateNodeName(NodeId nodeId);
-        static Common::GlobalWString NodeIdNamePrefix;
-        static Common::GlobalWString PrefixPearson;
-        static Common::GlobalWString SuffixPearson;
+        static Common::ErrorCode GenerateFromString(std::string const & string, NodeId & nodeId, std::string const & rolesForWhichToUseV1generator, bool useV2NodeIdGenerator, std::string const & nodeIdGeneratorVersion);
+        static Common::ErrorCode GenerateFromString(std::string const & string, NodeId & nodeId);
+        static std::string GenerateNodeName(NodeId nodeId);
+        static Common::GlobalString NodeIdNamePrefix;
+        static Common::GlobalString PrefixPearson;
+        static Common::GlobalString SuffixPearson;
 
     private:
-        static Common::ErrorCode GenerateHashedNodeId(std::wstring const & string, NodeId & nodeId, std::wstring const & nodeIdGeneratorVersion);
+        static Common::ErrorCode GenerateHashedNodeId(std::string const & string, NodeId & nodeId, std::string const & nodeIdGeneratorVersion);
 
-        static Common::ErrorCode GenerateHash(std::wstring const & string, BYTE * hash, DWORD dWHashLen, std::wstring const & nodeIdGeneratorVersion);
-        static Common::ErrorCode GenerateMD5Hash(std::wstring const & string, BYTE * hash, DWORD dWHashLen);
-        static Common::ErrorCode GeneratePearsonHash(std::wstring const & string, BYTE * hash, DWORD dWHashLen);
-        static bool UseV1NodeIdGenerator(std::wstring const & roleName, std::wstring const & rolesForWhichToUseV1generator);
+        static Common::ErrorCode GenerateHash(std::string const & string, BYTE * hash, DWORD dWHashLen, std::string const & nodeIdGeneratorVersion);
+        static Common::ErrorCode GenerateMD5Hash(std::string const & string, BYTE * hash, DWORD dWHashLen);
+        static Common::ErrorCode GeneratePearsonHash(std::string const & string, BYTE * hash, DWORD dWHashLen);
+        static bool UseV1NodeIdGenerator(std::string const & roleName, std::string const & rolesForWhichToUseV1generator);
 
-        static Common::ErrorCode GenerateV4NodeId(std::wstring const & string, NodeId & nodeId, size_t index);
+        static Common::ErrorCode GenerateV4NodeId(std::string const & string, NodeId & nodeId, size_t index);
     };
 }

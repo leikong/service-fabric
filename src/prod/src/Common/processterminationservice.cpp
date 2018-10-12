@@ -22,7 +22,7 @@ shared_ptr<ProcessTerminationService> ProcessTerminationService::Create()
     return make_shared<ProcessTerminationService>();
 }
 
-void ProcessTerminationService::ExitProcess(std::wstring const & reason)
+void ProcessTerminationService::ExitProcess(std::string const & reason)
 {
     if (exitProcessOverride_ != nullptr)
     {

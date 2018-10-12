@@ -21,7 +21,7 @@ class CachedFile::ChangeMonitor :
     DENY_COPY(ChangeMonitor);
 
 public:
-    ChangeMonitor::ChangeMonitor(CachedFileSPtr const & owner, wstring const & filePath_)
+    ChangeMonitor::ChangeMonitor(CachedFileSPtr const & owner, string const & filePath_)
         : weak_owner_(owner),
         fileMonitor_(FileChangeMonitor2::Create(filePath_))
     {
@@ -81,7 +81,7 @@ private:
 };
 
 ErrorCode CachedFile::Create(
-    __in wstring const & filePath,
+    __in string const & filePath,
     __in CachedFileReadCallback const & readCallback,
     __out CachedFileSPtr & cachedFileSPtr
     )
@@ -103,7 +103,7 @@ ErrorCode CachedFile::Create(
     return ErrorCodeValue::Success;
 }
 
-CachedFile::CachedFile (wstring const & filePath, CachedFileReadCallback const & readCallback)
+CachedFile::CachedFile (string const & filePath, CachedFileReadCallback const & readCallback)
     : filePath_(filePath),
     readCallback_(readCallback),
     changeMonitor_(),
@@ -118,7 +118,7 @@ CachedFile::~CachedFile ()
     this->changeMonitor_->Close().ReadValue();
 }
 
-ErrorCode CachedFile::ReadFileContent(__out std::wstring & content)
+ErrorCode CachedFile::ReadFileContent(__out std::string & content)
 {
     {
         // Directly read from cache if it is valid

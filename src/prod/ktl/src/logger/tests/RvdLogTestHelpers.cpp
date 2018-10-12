@@ -23,30 +23,30 @@ ULONG RandomGenerator::_Seed = 0;
 
 NTSTATUS
 GetLogDriveRootPath(
-    __in WCHAR const DriveLetter,
+    __in CHAR const DriveLetter,
     __out KWString& RootPath)
 {
 #if ! defined(PLATFORM_UNIX)
     // Make the directory if needed
-    WCHAR       driveLetterWStr[2];
+    CHAR       driveLetterWStr[2];
     driveLetterWStr[0] = DriveLetter;
     driveLetterWStr[1] = 0;
 
-    RootPath = L"\\??\\";
+    RootPath = "\\??\\";
     RootPath += driveLetterWStr;
-    RootPath += L":";
+    RootPath += ":";
 #else
-    RootPath = L"/";
+    RootPath = "/";
 #endif
 
     RootPath += &RvdDiskLogConstants::DirectoryName();
-    KDbgPrintf("GetLogDriveRootPath: Rootpath constructed is : %ws\n", (WCHAR*)RootPath);
+    KDbgPrintf("GetLogDriveRootPath: Rootpath constructed is : %ws\n", (CHAR*)RootPath);
     return RootPath.Status();
 }
 
 NTSTATUS
 GetLogFilesOnLogDrive(
-    __in WCHAR const DriveLetter,
+    __in CHAR const DriveLetter,
     __out KVolumeNamespace::NameArray& LogFiles)
 {
     NTSTATUS status = STATUS_SUCCESS;
@@ -85,7 +85,7 @@ GetLogFilesOnLogDrive(
 
 NTSTATUS
 GetLogDriveGuid(
-    __in WCHAR const LogDriveLetter,
+    __in CHAR const LogDriveLetter,
     __out KGuid& LogDriveGuid)
 {
     KDbgPrintf("GetLogDriveGuid: called for drive %c : %i\n", (UCHAR)LogDriveLetter, __LINE__);
@@ -143,7 +143,7 @@ GetLogDriveGuid(
 NTSTATUS
 GetLogDriveLetter(
     __in KGuid const& LogDriveGuid,
-    __out WCHAR* LogDriveLetter)
+    __out CHAR* LogDriveLetter)
 {
     NTSTATUS status = STATUS_SUCCESS;
 
@@ -184,13 +184,13 @@ GetLogDriveLetter(
     {
         KDbgPrintf(
             "GetLogDriveGuid: KVolumeNamespace::QueryVolumeListEx() did not return volume drive letter for drive %ws : %i\n",
-            (WCHAR*)KWString(KtlSystem::GlobalNonPagedAllocator(), LogDriveGuid), __LINE__);
+            (CHAR*)KWString(KtlSystem::GlobalNonPagedAllocator(), LogDriveGuid), __LINE__);
         return STATUS_UNSUCCESSFUL;
     }
 
-    *LogDriveLetter = (WCHAR)volInfo[i].DriveLetter;
+    *LogDriveLetter = (CHAR)volInfo[i].DriveLetter;
 #else
-    *LogDriveLetter = L'c';
+    *LogDriveLetter = 'c';
 #endif
     return STATUS_SUCCESS;
 }
@@ -202,11 +202,11 @@ CheckIfLogExists(
 {
     NTSTATUS status = STATUS_SUCCESS;
     KWString logFilename(KtlSystem::GlobalNonPagedAllocator());
-    logFilename += L"Log";
+    logFilename += "Log";
     logFilename += LogId;
-    logFilename += L".log";
+    logFilename += ".log";
 
-    WCHAR logDriveLetter;
+    CHAR logDriveLetter;
     status = GetLogDriveLetter(LogDriveId, &logDriveLetter);
     if (!NT_SUCCESS(status))
     {
@@ -233,7 +233,7 @@ CheckIfLogExists(
 
     if(!logFound)
     {
-        KDbgPrintf("CheckIfLogExists: Failed to find log %ws. Line : %i\n", (WCHAR*)logFilename, __LINE__);
+        KDbgPrintf("CheckIfLogExists: Failed to find log %ws. Line : %i\n", (CHAR*)logFilename, __LINE__);
         return STATUS_UNSUCCESSFUL;
     }
 
@@ -258,10 +258,10 @@ CheckLogAttributes(
     {
         KDbgPrintf(
             "CheckLogAttributes: Supplied DiskId %ws and LogId %ws did not match queried DiskId %ws and LogId %ws. Line : %i\n",
-            (WCHAR*)KWString(KtlSystem::GlobalNonPagedAllocator(), DiskId),
-            (WCHAR*)KWString(KtlSystem::GlobalNonPagedAllocator(), LogId),
-            (WCHAR*)KWString(KtlSystem::GlobalNonPagedAllocator(), diskId),
-            (WCHAR*)KWString(KtlSystem::GlobalNonPagedAllocator(), logId.Get()), __LINE__);
+            (CHAR*)KWString(KtlSystem::GlobalNonPagedAllocator(), DiskId),
+            (CHAR*)KWString(KtlSystem::GlobalNonPagedAllocator(), LogId),
+            (CHAR*)KWString(KtlSystem::GlobalNonPagedAllocator(), diskId),
+            (CHAR*)KWString(KtlSystem::GlobalNonPagedAllocator(), logId.Get()), __LINE__);
         return STATUS_UNSUCCESSFUL;
     }
 
@@ -272,7 +272,7 @@ CheckLogAttributes(
     Log->QueryLogType(logType);
     if(logType.CompareTo(LogType) != 0)
     {
-        KDbgPrintf("CheckLogAttributes: Supplied LogType %ws did not match queried LogType %ws. Line : %i\n", (WCHAR*)KWString(LogType), (WCHAR*)KWString(logType), __LINE__);
+        KDbgPrintf("CheckLogAttributes: Supplied LogType %ws did not match queried LogType %ws. Line : %i\n", (CHAR*)KWString(LogType), (CHAR*)KWString(logType), __LINE__);
         return STATUS_UNSUCCESSFUL;
     }
 
@@ -291,7 +291,7 @@ CheckLogAttributes(
 
 NTSTATUS
 GetDriveAndPathOfLogFile(
-    __in WCHAR DriveLetter,
+    __in CHAR DriveLetter,
     __in RvdLogId& LogId,
     __out KGuid& DriveGuid,
     __out KWString& FullyQualifiedDiskFileName)
@@ -351,13 +351,13 @@ ToULonglong(__in KWString& FromStr, __out ULONGLONG& Result)
 {
     Result = 0;
     ULONGLONG       result = 0;
-    WCHAR*          currDigPtr = (WCHAR*)FromStr;
+    CHAR*          currDigPtr = (CHAR*)FromStr;
     ULONG           fromStrLen = FromStr.Length();
     KAssert((fromStrLen & 0x01) == 0);
 
     while (fromStrLen > 0)
     {
-        WCHAR       currDig = *currDigPtr;
+        CHAR       currDig = *currDigPtr;
 
         if ((currDig < '0') || (currDig > '9'))
         {

@@ -154,7 +154,7 @@ FormatMessageW(
     __in_opt LPCVOID lpSource,
     __in     DWORD dwMessageId,
     __in     DWORD dwLanguageId,
-    __out    LPWSTR lpBuffer,
+    __out    LPSTR lpBuffer,
     __in     DWORD nSize,
     __in_opt va_list *Arguments
     );
@@ -176,8 +176,8 @@ __success(return != 0)
 DWORD
 WINAPI
 ExpandEnvironmentStringsW(
-    __in LPCWSTR lpSrc,
-    __out_ecount_part_opt(nSize, return) LPWSTR lpDst,
+    __in LPCSTR lpSrc,
+    __out_ecount_part_opt(nSize, return) LPSTR lpDst,
     __in DWORD nSize
     );
 #ifdef UNICODE
@@ -235,7 +235,7 @@ BOOL
 WINAPI
 GetComputerNameExW (
     __in    COMPUTER_NAME_FORMAT NameType,
-    __out_ecount_part_opt(*nSize, *nSize + 1) LPWSTR lpBuffer,
+    __out_ecount_part_opt(*nSize, *nSize + 1) LPSTR lpBuffer,
     __inout LPDWORD nSize
     );
 #ifdef UNICODE
@@ -255,7 +255,7 @@ WINADVAPI
 BOOL
 WINAPI
 GetUserNameW (
-    __out_ecount_part_opt(*pcbBuffer, *pcbBuffer) LPWSTR lpBuffer,
+    __out_ecount_part_opt(*pcbBuffer, *pcbBuffer) LPSTR lpBuffer,
     __inout LPDWORD pcbBuffer
     );
 #ifdef UNICODE
@@ -352,8 +352,8 @@ CreateSymbolicLinkA (
 BOOLEAN
 APIENTRY
 CreateSymbolicLinkW (
-    __in LPCWSTR lpSymlinkFileName,
-    __in LPCWSTR lpTargetFileName,
+    __in LPCSTR lpSymlinkFileName,
+    __in LPCSTR lpTargetFileName,
     __in DWORD dwFlags
     );
 #ifdef UNICODE

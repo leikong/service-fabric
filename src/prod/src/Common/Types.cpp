@@ -29,10 +29,10 @@ namespace Common
     }
 
     template <typename TBuf>
-    TBuf StringToTBuf(std::wstring const& str)
+    TBuf StringToTBuf(std::string const& str)
     {
-        TBuf buf(str.size() * sizeof(wchar_t));
-        KMemCpySafe(buf.data(), buf.size(), str.data(), str.size() * sizeof(wchar_t));
+        TBuf buf(str.size() * sizeof(char));
+        KMemCpySafe(buf.data(), buf.size(), str.data(), str.size() * sizeof(char));
         return buf;
     }
 
@@ -51,16 +51,16 @@ namespace Common
         return TBufLessThan<ByteBuffer>(b1, b2);
     }
 
-    ByteBuffer StringToByteBuffer(std::wstring const& str)
+    ByteBuffer StringToByteBuffer(std::string const& str)
     {
         return StringToTBuf<ByteBuffer>(str);
     }
 
     static const FormatOptions hexByteFormat(2, true, "x");
 
-    wstring ByteBufferToString(ByteBuffer const & buf)
+    string ByteBufferToString(ByteBuffer const & buf)
     {
-        wstring str;
+        string str;
         StringWriter w(str);
         for (auto b : buf)
         {
@@ -80,7 +80,7 @@ namespace Common
         return TBufLessThan<ByteBuffer2>(b1, b2);
     }
 
-    ByteBuffer2 StringToByteBuffer2(std::wstring const& str)
+    ByteBuffer2 StringToByteBuffer2(std::string const& str)
     {
         return StringToTBuf<ByteBuffer2>(str);
     }

@@ -1178,7 +1178,7 @@ EXTERN_C const IID IID_IFabricRuntime;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE BeginRegisterStatelessServiceFactory( 
-            /* [in] */ LPCWSTR serviceTypeName,
+            /* [in] */ LPCSTR serviceTypeName,
             /* [in] */ IFabricStatelessServiceFactory *factory,
             /* [in] */ DWORD timeoutMilliseconds,
             /* [in] */ IFabricAsyncOperationCallback *callback,
@@ -1188,11 +1188,11 @@ EXTERN_C const IID IID_IFabricRuntime;
             /* [in] */ IFabricAsyncOperationContext *context) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE RegisterStatelessServiceFactory( 
-            /* [in] */ LPCWSTR serviceTypeName,
+            /* [in] */ LPCSTR serviceTypeName,
             /* [in] */ IFabricStatelessServiceFactory *factory) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE BeginRegisterStatefulServiceFactory( 
-            /* [in] */ LPCWSTR serviceTypeName,
+            /* [in] */ LPCSTR serviceTypeName,
             /* [in] */ IFabricStatefulServiceFactory *factory,
             /* [in] */ DWORD timeoutMilliseconds,
             /* [in] */ IFabricAsyncOperationCallback *callback,
@@ -1202,14 +1202,14 @@ EXTERN_C const IID IID_IFabricRuntime;
             /* [in] */ IFabricAsyncOperationContext *context) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE RegisterStatefulServiceFactory( 
-            /* [in] */ LPCWSTR serviceTypeName,
+            /* [in] */ LPCSTR serviceTypeName,
             /* [in] */ IFabricStatefulServiceFactory *factory) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE CreateServiceGroupFactoryBuilder( 
             /* [retval][out] */ IFabricServiceGroupFactoryBuilder **builder) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE BeginRegisterServiceGroupFactory( 
-            /* [in] */ LPCWSTR groupServiceType,
+            /* [in] */ LPCSTR groupServiceType,
             /* [in] */ IFabricServiceGroupFactory *factory,
             /* [in] */ DWORD timeoutMilliseconds,
             /* [in] */ IFabricAsyncOperationCallback *callback,
@@ -1219,7 +1219,7 @@ EXTERN_C const IID IID_IFabricRuntime;
             /* [in] */ IFabricAsyncOperationContext *context) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE RegisterServiceGroupFactory( 
-            /* [in] */ LPCWSTR groupServiceType,
+            /* [in] */ LPCSTR groupServiceType,
             /* [in] */ IFabricServiceGroupFactory *factory) = 0;
         
     };
@@ -1245,7 +1245,7 @@ EXTERN_C const IID IID_IFabricRuntime;
         
         HRESULT ( STDMETHODCALLTYPE *BeginRegisterStatelessServiceFactory )( 
             IFabricRuntime * This,
-            /* [in] */ LPCWSTR serviceTypeName,
+            /* [in] */ LPCSTR serviceTypeName,
             /* [in] */ IFabricStatelessServiceFactory *factory,
             /* [in] */ DWORD timeoutMilliseconds,
             /* [in] */ IFabricAsyncOperationCallback *callback,
@@ -1257,12 +1257,12 @@ EXTERN_C const IID IID_IFabricRuntime;
         
         HRESULT ( STDMETHODCALLTYPE *RegisterStatelessServiceFactory )( 
             IFabricRuntime * This,
-            /* [in] */ LPCWSTR serviceTypeName,
+            /* [in] */ LPCSTR serviceTypeName,
             /* [in] */ IFabricStatelessServiceFactory *factory);
         
         HRESULT ( STDMETHODCALLTYPE *BeginRegisterStatefulServiceFactory )( 
             IFabricRuntime * This,
-            /* [in] */ LPCWSTR serviceTypeName,
+            /* [in] */ LPCSTR serviceTypeName,
             /* [in] */ IFabricStatefulServiceFactory *factory,
             /* [in] */ DWORD timeoutMilliseconds,
             /* [in] */ IFabricAsyncOperationCallback *callback,
@@ -1274,7 +1274,7 @@ EXTERN_C const IID IID_IFabricRuntime;
         
         HRESULT ( STDMETHODCALLTYPE *RegisterStatefulServiceFactory )( 
             IFabricRuntime * This,
-            /* [in] */ LPCWSTR serviceTypeName,
+            /* [in] */ LPCSTR serviceTypeName,
             /* [in] */ IFabricStatefulServiceFactory *factory);
         
         HRESULT ( STDMETHODCALLTYPE *CreateServiceGroupFactoryBuilder )( 
@@ -1283,7 +1283,7 @@ EXTERN_C const IID IID_IFabricRuntime;
         
         HRESULT ( STDMETHODCALLTYPE *BeginRegisterServiceGroupFactory )( 
             IFabricRuntime * This,
-            /* [in] */ LPCWSTR groupServiceType,
+            /* [in] */ LPCSTR groupServiceType,
             /* [in] */ IFabricServiceGroupFactory *factory,
             /* [in] */ DWORD timeoutMilliseconds,
             /* [in] */ IFabricAsyncOperationCallback *callback,
@@ -1295,7 +1295,7 @@ EXTERN_C const IID IID_IFabricRuntime;
         
         HRESULT ( STDMETHODCALLTYPE *RegisterServiceGroupFactory )( 
             IFabricRuntime * This,
-            /* [in] */ LPCWSTR groupServiceType,
+            /* [in] */ LPCSTR groupServiceType,
             /* [in] */ IFabricServiceGroupFactory *factory);
         
         END_INTERFACE
@@ -1456,7 +1456,7 @@ EXTERN_C const IID IID_IFabricStatelessServiceFactory;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE CreateInstance( 
-            /* [in] */ LPCWSTR serviceTypeName,
+            /* [in] */ LPCSTR serviceTypeName,
             /* [in] */ FABRIC_URI serviceName,
             /* [in] */ ULONG initializationDataLength,
             /* [size_is][in] */ const byte *initializationData,
@@ -1487,7 +1487,7 @@ EXTERN_C const IID IID_IFabricStatelessServiceFactory;
         
         HRESULT ( STDMETHODCALLTYPE *CreateInstance )( 
             IFabricStatelessServiceFactory * This,
-            /* [in] */ LPCWSTR serviceTypeName,
+            /* [in] */ LPCSTR serviceTypeName,
             /* [in] */ FABRIC_URI serviceName,
             /* [in] */ ULONG initializationDataLength,
             /* [size_is][in] */ const byte *initializationData,
@@ -2140,7 +2140,7 @@ EXTERN_C const IID IID_IFabricStatefulServiceFactory;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE CreateReplica( 
-            /* [in] */ LPCWSTR serviceTypeName,
+            /* [in] */ LPCSTR serviceTypeName,
             /* [in] */ FABRIC_URI serviceName,
             /* [in] */ ULONG initializationDataLength,
             /* [size_is][in] */ const byte *initializationData,
@@ -2171,7 +2171,7 @@ EXTERN_C const IID IID_IFabricStatefulServiceFactory;
         
         HRESULT ( STDMETHODCALLTYPE *CreateReplica )( 
             IFabricStatefulServiceFactory * This,
-            /* [in] */ LPCWSTR serviceTypeName,
+            /* [in] */ LPCSTR serviceTypeName,
             /* [in] */ FABRIC_URI serviceName,
             /* [in] */ ULONG initializationDataLength,
             /* [size_is][in] */ const byte *initializationData,
@@ -4612,15 +4612,15 @@ EXTERN_C const IID IID_IFabricServiceGroupFactoryBuilder;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE AddStatelessServiceFactory( 
-            /* [in] */ LPCWSTR memberServiceType,
+            /* [in] */ LPCSTR memberServiceType,
             /* [in] */ IFabricStatelessServiceFactory *factory) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE AddStatefulServiceFactory( 
-            /* [in] */ LPCWSTR memberServiceType,
+            /* [in] */ LPCSTR memberServiceType,
             /* [in] */ IFabricStatefulServiceFactory *factory) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE RemoveServiceFactory( 
-            /* [in] */ LPCWSTR memberServiceType) = 0;
+            /* [in] */ LPCSTR memberServiceType) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE ToServiceGroupFactory( 
             /* [retval][out] */ IFabricServiceGroupFactory **factory) = 0;
@@ -4648,17 +4648,17 @@ EXTERN_C const IID IID_IFabricServiceGroupFactoryBuilder;
         
         HRESULT ( STDMETHODCALLTYPE *AddStatelessServiceFactory )( 
             IFabricServiceGroupFactoryBuilder * This,
-            /* [in] */ LPCWSTR memberServiceType,
+            /* [in] */ LPCSTR memberServiceType,
             /* [in] */ IFabricStatelessServiceFactory *factory);
         
         HRESULT ( STDMETHODCALLTYPE *AddStatefulServiceFactory )( 
             IFabricServiceGroupFactoryBuilder * This,
-            /* [in] */ LPCWSTR memberServiceType,
+            /* [in] */ LPCSTR memberServiceType,
             /* [in] */ IFabricStatefulServiceFactory *factory);
         
         HRESULT ( STDMETHODCALLTYPE *RemoveServiceFactory )( 
             IFabricServiceGroupFactoryBuilder * This,
-            /* [in] */ LPCWSTR memberServiceType);
+            /* [in] */ LPCSTR memberServiceType);
         
         HRESULT ( STDMETHODCALLTYPE *ToServiceGroupFactory )( 
             IFabricServiceGroupFactoryBuilder * This,
@@ -4809,17 +4809,17 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext;
     IFabricCodePackageActivationContext : public IUnknown
     {
     public:
-        virtual LPCWSTR STDMETHODCALLTYPE get_ContextId( void) = 0;
+        virtual LPCSTR STDMETHODCALLTYPE get_ContextId( void) = 0;
         
-        virtual LPCWSTR STDMETHODCALLTYPE get_CodePackageName( void) = 0;
+        virtual LPCSTR STDMETHODCALLTYPE get_CodePackageName( void) = 0;
         
-        virtual LPCWSTR STDMETHODCALLTYPE get_CodePackageVersion( void) = 0;
+        virtual LPCSTR STDMETHODCALLTYPE get_CodePackageVersion( void) = 0;
         
-        virtual LPCWSTR STDMETHODCALLTYPE get_WorkDirectory( void) = 0;
+        virtual LPCSTR STDMETHODCALLTYPE get_WorkDirectory( void) = 0;
         
-        virtual LPCWSTR STDMETHODCALLTYPE get_LogDirectory( void) = 0;
+        virtual LPCSTR STDMETHODCALLTYPE get_LogDirectory( void) = 0;
         
-        virtual LPCWSTR STDMETHODCALLTYPE get_TempDirectory( void) = 0;
+        virtual LPCSTR STDMETHODCALLTYPE get_TempDirectory( void) = 0;
         
         virtual const FABRIC_SERVICE_TYPE_DESCRIPTION_LIST *STDMETHODCALLTYPE get_ServiceTypes( void) = 0;
         
@@ -4830,7 +4830,7 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext;
         virtual const FABRIC_ENDPOINT_RESOURCE_DESCRIPTION_LIST *STDMETHODCALLTYPE get_ServiceEndpointResources( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetServiceEndpointResource( 
-            /* [in] */ LPCWSTR serviceEndpointResourceName,
+            /* [in] */ LPCSTR serviceEndpointResourceName,
             /* [retval][out] */ const FABRIC_ENDPOINT_RESOURCE_DESCRIPTION **bufferedValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCodePackageNames( 
@@ -4843,15 +4843,15 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext;
             /* [retval][out] */ IFabricStringListResult **names) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetCodePackage( 
-            /* [in] */ LPCWSTR codePackageName,
+            /* [in] */ LPCSTR codePackageName,
             /* [retval][out] */ IFabricCodePackage **codePackage) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetConfigurationPackage( 
-            /* [in] */ LPCWSTR configPackageName,
+            /* [in] */ LPCSTR configPackageName,
             /* [retval][out] */ IFabricConfigurationPackage **configPackage) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetDataPackage( 
-            /* [in] */ LPCWSTR dataPackageName,
+            /* [in] */ LPCSTR dataPackageName,
             /* [retval][out] */ IFabricDataPackage **dataPackage) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE RegisterCodePackageChangeHandler( 
@@ -4896,22 +4896,22 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext;
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IFabricCodePackageActivationContext * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_ContextId )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_ContextId )( 
             IFabricCodePackageActivationContext * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_CodePackageName )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_CodePackageName )( 
             IFabricCodePackageActivationContext * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_CodePackageVersion )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_CodePackageVersion )( 
             IFabricCodePackageActivationContext * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_WorkDirectory )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_WorkDirectory )( 
             IFabricCodePackageActivationContext * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_LogDirectory )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_LogDirectory )( 
             IFabricCodePackageActivationContext * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_TempDirectory )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_TempDirectory )( 
             IFabricCodePackageActivationContext * This);
         
         const FABRIC_SERVICE_TYPE_DESCRIPTION_LIST *( STDMETHODCALLTYPE *get_ServiceTypes )( 
@@ -4928,7 +4928,7 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext;
         
         HRESULT ( STDMETHODCALLTYPE *GetServiceEndpointResource )( 
             IFabricCodePackageActivationContext * This,
-            /* [in] */ LPCWSTR serviceEndpointResourceName,
+            /* [in] */ LPCSTR serviceEndpointResourceName,
             /* [retval][out] */ const FABRIC_ENDPOINT_RESOURCE_DESCRIPTION **bufferedValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetCodePackageNames )( 
@@ -4945,17 +4945,17 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext;
         
         HRESULT ( STDMETHODCALLTYPE *GetCodePackage )( 
             IFabricCodePackageActivationContext * This,
-            /* [in] */ LPCWSTR codePackageName,
+            /* [in] */ LPCSTR codePackageName,
             /* [retval][out] */ IFabricCodePackage **codePackage);
         
         HRESULT ( STDMETHODCALLTYPE *GetConfigurationPackage )( 
             IFabricCodePackageActivationContext * This,
-            /* [in] */ LPCWSTR configPackageName,
+            /* [in] */ LPCSTR configPackageName,
             /* [retval][out] */ IFabricConfigurationPackage **configPackage);
         
         HRESULT ( STDMETHODCALLTYPE *GetDataPackage )( 
             IFabricCodePackageActivationContext * This,
-            /* [in] */ LPCWSTR dataPackageName,
+            /* [in] */ LPCSTR dataPackageName,
             /* [retval][out] */ IFabricDataPackage **dataPackage);
         
         HRESULT ( STDMETHODCALLTYPE *RegisterCodePackageChangeHandler )( 
@@ -5105,7 +5105,7 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext2;
     public:
         virtual FABRIC_URI STDMETHODCALLTYPE get_ApplicationName( void) = 0;
         
-        virtual LPCWSTR STDMETHODCALLTYPE get_ApplicationTypeName( void) = 0;
+        virtual LPCSTR STDMETHODCALLTYPE get_ApplicationTypeName( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetServiceManifestName( 
             /* [retval][out] */ IFabricStringResult **serviceManifestName) = 0;
@@ -5134,22 +5134,22 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext2;
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IFabricCodePackageActivationContext2 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_ContextId )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_ContextId )( 
             IFabricCodePackageActivationContext2 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_CodePackageName )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_CodePackageName )( 
             IFabricCodePackageActivationContext2 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_CodePackageVersion )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_CodePackageVersion )( 
             IFabricCodePackageActivationContext2 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_WorkDirectory )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_WorkDirectory )( 
             IFabricCodePackageActivationContext2 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_LogDirectory )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_LogDirectory )( 
             IFabricCodePackageActivationContext2 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_TempDirectory )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_TempDirectory )( 
             IFabricCodePackageActivationContext2 * This);
         
         const FABRIC_SERVICE_TYPE_DESCRIPTION_LIST *( STDMETHODCALLTYPE *get_ServiceTypes )( 
@@ -5166,7 +5166,7 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext2;
         
         HRESULT ( STDMETHODCALLTYPE *GetServiceEndpointResource )( 
             IFabricCodePackageActivationContext2 * This,
-            /* [in] */ LPCWSTR serviceEndpointResourceName,
+            /* [in] */ LPCSTR serviceEndpointResourceName,
             /* [retval][out] */ const FABRIC_ENDPOINT_RESOURCE_DESCRIPTION **bufferedValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetCodePackageNames )( 
@@ -5183,17 +5183,17 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext2;
         
         HRESULT ( STDMETHODCALLTYPE *GetCodePackage )( 
             IFabricCodePackageActivationContext2 * This,
-            /* [in] */ LPCWSTR codePackageName,
+            /* [in] */ LPCSTR codePackageName,
             /* [retval][out] */ IFabricCodePackage **codePackage);
         
         HRESULT ( STDMETHODCALLTYPE *GetConfigurationPackage )( 
             IFabricCodePackageActivationContext2 * This,
-            /* [in] */ LPCWSTR configPackageName,
+            /* [in] */ LPCSTR configPackageName,
             /* [retval][out] */ IFabricConfigurationPackage **configPackage);
         
         HRESULT ( STDMETHODCALLTYPE *GetDataPackage )( 
             IFabricCodePackageActivationContext2 * This,
-            /* [in] */ LPCWSTR dataPackageName,
+            /* [in] */ LPCSTR dataPackageName,
             /* [retval][out] */ IFabricDataPackage **dataPackage);
         
         HRESULT ( STDMETHODCALLTYPE *RegisterCodePackageChangeHandler )( 
@@ -5226,7 +5226,7 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext2;
         FABRIC_URI ( STDMETHODCALLTYPE *get_ApplicationName )( 
             IFabricCodePackageActivationContext2 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_ApplicationTypeName )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_ApplicationTypeName )( 
             IFabricCodePackageActivationContext2 * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetServiceManifestName )( 
@@ -5398,22 +5398,22 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext3;
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IFabricCodePackageActivationContext3 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_ContextId )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_ContextId )( 
             IFabricCodePackageActivationContext3 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_CodePackageName )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_CodePackageName )( 
             IFabricCodePackageActivationContext3 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_CodePackageVersion )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_CodePackageVersion )( 
             IFabricCodePackageActivationContext3 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_WorkDirectory )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_WorkDirectory )( 
             IFabricCodePackageActivationContext3 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_LogDirectory )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_LogDirectory )( 
             IFabricCodePackageActivationContext3 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_TempDirectory )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_TempDirectory )( 
             IFabricCodePackageActivationContext3 * This);
         
         const FABRIC_SERVICE_TYPE_DESCRIPTION_LIST *( STDMETHODCALLTYPE *get_ServiceTypes )( 
@@ -5430,7 +5430,7 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext3;
         
         HRESULT ( STDMETHODCALLTYPE *GetServiceEndpointResource )( 
             IFabricCodePackageActivationContext3 * This,
-            /* [in] */ LPCWSTR serviceEndpointResourceName,
+            /* [in] */ LPCSTR serviceEndpointResourceName,
             /* [retval][out] */ const FABRIC_ENDPOINT_RESOURCE_DESCRIPTION **bufferedValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetCodePackageNames )( 
@@ -5447,17 +5447,17 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext3;
         
         HRESULT ( STDMETHODCALLTYPE *GetCodePackage )( 
             IFabricCodePackageActivationContext3 * This,
-            /* [in] */ LPCWSTR codePackageName,
+            /* [in] */ LPCSTR codePackageName,
             /* [retval][out] */ IFabricCodePackage **codePackage);
         
         HRESULT ( STDMETHODCALLTYPE *GetConfigurationPackage )( 
             IFabricCodePackageActivationContext3 * This,
-            /* [in] */ LPCWSTR configPackageName,
+            /* [in] */ LPCSTR configPackageName,
             /* [retval][out] */ IFabricConfigurationPackage **configPackage);
         
         HRESULT ( STDMETHODCALLTYPE *GetDataPackage )( 
             IFabricCodePackageActivationContext3 * This,
-            /* [in] */ LPCWSTR dataPackageName,
+            /* [in] */ LPCSTR dataPackageName,
             /* [retval][out] */ IFabricDataPackage **dataPackage);
         
         HRESULT ( STDMETHODCALLTYPE *RegisterCodePackageChangeHandler )( 
@@ -5490,7 +5490,7 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext3;
         FABRIC_URI ( STDMETHODCALLTYPE *get_ApplicationName )( 
             IFabricCodePackageActivationContext3 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_ApplicationTypeName )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_ApplicationTypeName )( 
             IFabricCodePackageActivationContext3 * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetServiceManifestName )( 
@@ -5687,22 +5687,22 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext4;
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IFabricCodePackageActivationContext4 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_ContextId )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_ContextId )( 
             IFabricCodePackageActivationContext4 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_CodePackageName )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_CodePackageName )( 
             IFabricCodePackageActivationContext4 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_CodePackageVersion )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_CodePackageVersion )( 
             IFabricCodePackageActivationContext4 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_WorkDirectory )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_WorkDirectory )( 
             IFabricCodePackageActivationContext4 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_LogDirectory )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_LogDirectory )( 
             IFabricCodePackageActivationContext4 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_TempDirectory )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_TempDirectory )( 
             IFabricCodePackageActivationContext4 * This);
         
         const FABRIC_SERVICE_TYPE_DESCRIPTION_LIST *( STDMETHODCALLTYPE *get_ServiceTypes )( 
@@ -5719,7 +5719,7 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext4;
         
         HRESULT ( STDMETHODCALLTYPE *GetServiceEndpointResource )( 
             IFabricCodePackageActivationContext4 * This,
-            /* [in] */ LPCWSTR serviceEndpointResourceName,
+            /* [in] */ LPCSTR serviceEndpointResourceName,
             /* [retval][out] */ const FABRIC_ENDPOINT_RESOURCE_DESCRIPTION **bufferedValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetCodePackageNames )( 
@@ -5736,17 +5736,17 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext4;
         
         HRESULT ( STDMETHODCALLTYPE *GetCodePackage )( 
             IFabricCodePackageActivationContext4 * This,
-            /* [in] */ LPCWSTR codePackageName,
+            /* [in] */ LPCSTR codePackageName,
             /* [retval][out] */ IFabricCodePackage **codePackage);
         
         HRESULT ( STDMETHODCALLTYPE *GetConfigurationPackage )( 
             IFabricCodePackageActivationContext4 * This,
-            /* [in] */ LPCWSTR configPackageName,
+            /* [in] */ LPCSTR configPackageName,
             /* [retval][out] */ IFabricConfigurationPackage **configPackage);
         
         HRESULT ( STDMETHODCALLTYPE *GetDataPackage )( 
             IFabricCodePackageActivationContext4 * This,
-            /* [in] */ LPCWSTR dataPackageName,
+            /* [in] */ LPCSTR dataPackageName,
             /* [retval][out] */ IFabricDataPackage **dataPackage);
         
         HRESULT ( STDMETHODCALLTYPE *RegisterCodePackageChangeHandler )( 
@@ -5779,7 +5779,7 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext4;
         FABRIC_URI ( STDMETHODCALLTYPE *get_ApplicationName )( 
             IFabricCodePackageActivationContext4 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_ApplicationTypeName )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_ApplicationTypeName )( 
             IFabricCodePackageActivationContext4 * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetServiceManifestName )( 
@@ -5968,9 +5968,9 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext5;
     IFabricCodePackageActivationContext5 : public IFabricCodePackageActivationContext4
     {
     public:
-        virtual LPCWSTR STDMETHODCALLTYPE get_ServiceListenAddress( void) = 0;
+        virtual LPCSTR STDMETHODCALLTYPE get_ServiceListenAddress( void) = 0;
         
-        virtual LPCWSTR STDMETHODCALLTYPE get_ServicePublishAddress( void) = 0;
+        virtual LPCSTR STDMETHODCALLTYPE get_ServicePublishAddress( void) = 0;
         
     };
     
@@ -5993,22 +5993,22 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext5;
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IFabricCodePackageActivationContext5 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_ContextId )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_ContextId )( 
             IFabricCodePackageActivationContext5 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_CodePackageName )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_CodePackageName )( 
             IFabricCodePackageActivationContext5 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_CodePackageVersion )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_CodePackageVersion )( 
             IFabricCodePackageActivationContext5 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_WorkDirectory )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_WorkDirectory )( 
             IFabricCodePackageActivationContext5 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_LogDirectory )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_LogDirectory )( 
             IFabricCodePackageActivationContext5 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_TempDirectory )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_TempDirectory )( 
             IFabricCodePackageActivationContext5 * This);
         
         const FABRIC_SERVICE_TYPE_DESCRIPTION_LIST *( STDMETHODCALLTYPE *get_ServiceTypes )( 
@@ -6025,7 +6025,7 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext5;
         
         HRESULT ( STDMETHODCALLTYPE *GetServiceEndpointResource )( 
             IFabricCodePackageActivationContext5 * This,
-            /* [in] */ LPCWSTR serviceEndpointResourceName,
+            /* [in] */ LPCSTR serviceEndpointResourceName,
             /* [retval][out] */ const FABRIC_ENDPOINT_RESOURCE_DESCRIPTION **bufferedValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetCodePackageNames )( 
@@ -6042,17 +6042,17 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext5;
         
         HRESULT ( STDMETHODCALLTYPE *GetCodePackage )( 
             IFabricCodePackageActivationContext5 * This,
-            /* [in] */ LPCWSTR codePackageName,
+            /* [in] */ LPCSTR codePackageName,
             /* [retval][out] */ IFabricCodePackage **codePackage);
         
         HRESULT ( STDMETHODCALLTYPE *GetConfigurationPackage )( 
             IFabricCodePackageActivationContext5 * This,
-            /* [in] */ LPCWSTR configPackageName,
+            /* [in] */ LPCSTR configPackageName,
             /* [retval][out] */ IFabricConfigurationPackage **configPackage);
         
         HRESULT ( STDMETHODCALLTYPE *GetDataPackage )( 
             IFabricCodePackageActivationContext5 * This,
-            /* [in] */ LPCWSTR dataPackageName,
+            /* [in] */ LPCSTR dataPackageName,
             /* [retval][out] */ IFabricDataPackage **dataPackage);
         
         HRESULT ( STDMETHODCALLTYPE *RegisterCodePackageChangeHandler )( 
@@ -6085,7 +6085,7 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext5;
         FABRIC_URI ( STDMETHODCALLTYPE *get_ApplicationName )( 
             IFabricCodePackageActivationContext5 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_ApplicationTypeName )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_ApplicationTypeName )( 
             IFabricCodePackageActivationContext5 * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetServiceManifestName )( 
@@ -6123,10 +6123,10 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext5;
             /* [in] */ const FABRIC_HEALTH_INFORMATION *healthInfo,
             /* [in] */ const FABRIC_HEALTH_REPORT_SEND_OPTIONS *sendOptions);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_ServiceListenAddress )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_ServiceListenAddress )( 
             IFabricCodePackageActivationContext5 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_ServicePublishAddress )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_ServicePublishAddress )( 
             IFabricCodePackageActivationContext5 * This);
         
         END_INTERFACE
@@ -6288,7 +6288,7 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext6;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetDirectory( 
-            /* [in] */ LPCWSTR logicalDirectoryName,
+            /* [in] */ LPCSTR logicalDirectoryName,
             /* [retval][out] */ IFabricStringResult **directoryPath) = 0;
         
     };
@@ -6312,22 +6312,22 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext6;
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IFabricCodePackageActivationContext6 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_ContextId )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_ContextId )( 
             IFabricCodePackageActivationContext6 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_CodePackageName )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_CodePackageName )( 
             IFabricCodePackageActivationContext6 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_CodePackageVersion )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_CodePackageVersion )( 
             IFabricCodePackageActivationContext6 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_WorkDirectory )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_WorkDirectory )( 
             IFabricCodePackageActivationContext6 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_LogDirectory )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_LogDirectory )( 
             IFabricCodePackageActivationContext6 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_TempDirectory )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_TempDirectory )( 
             IFabricCodePackageActivationContext6 * This);
         
         const FABRIC_SERVICE_TYPE_DESCRIPTION_LIST *( STDMETHODCALLTYPE *get_ServiceTypes )( 
@@ -6344,7 +6344,7 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext6;
         
         HRESULT ( STDMETHODCALLTYPE *GetServiceEndpointResource )( 
             IFabricCodePackageActivationContext6 * This,
-            /* [in] */ LPCWSTR serviceEndpointResourceName,
+            /* [in] */ LPCSTR serviceEndpointResourceName,
             /* [retval][out] */ const FABRIC_ENDPOINT_RESOURCE_DESCRIPTION **bufferedValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetCodePackageNames )( 
@@ -6361,17 +6361,17 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext6;
         
         HRESULT ( STDMETHODCALLTYPE *GetCodePackage )( 
             IFabricCodePackageActivationContext6 * This,
-            /* [in] */ LPCWSTR codePackageName,
+            /* [in] */ LPCSTR codePackageName,
             /* [retval][out] */ IFabricCodePackage **codePackage);
         
         HRESULT ( STDMETHODCALLTYPE *GetConfigurationPackage )( 
             IFabricCodePackageActivationContext6 * This,
-            /* [in] */ LPCWSTR configPackageName,
+            /* [in] */ LPCSTR configPackageName,
             /* [retval][out] */ IFabricConfigurationPackage **configPackage);
         
         HRESULT ( STDMETHODCALLTYPE *GetDataPackage )( 
             IFabricCodePackageActivationContext6 * This,
-            /* [in] */ LPCWSTR dataPackageName,
+            /* [in] */ LPCSTR dataPackageName,
             /* [retval][out] */ IFabricDataPackage **dataPackage);
         
         HRESULT ( STDMETHODCALLTYPE *RegisterCodePackageChangeHandler )( 
@@ -6404,7 +6404,7 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext6;
         FABRIC_URI ( STDMETHODCALLTYPE *get_ApplicationName )( 
             IFabricCodePackageActivationContext6 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_ApplicationTypeName )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_ApplicationTypeName )( 
             IFabricCodePackageActivationContext6 * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetServiceManifestName )( 
@@ -6442,15 +6442,15 @@ EXTERN_C const IID IID_IFabricCodePackageActivationContext6;
             /* [in] */ const FABRIC_HEALTH_INFORMATION *healthInfo,
             /* [in] */ const FABRIC_HEALTH_REPORT_SEND_OPTIONS *sendOptions);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_ServiceListenAddress )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_ServiceListenAddress )( 
             IFabricCodePackageActivationContext6 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_ServicePublishAddress )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_ServicePublishAddress )( 
             IFabricCodePackageActivationContext6 * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetDirectory )( 
             IFabricCodePackageActivationContext6 * This,
-            /* [in] */ LPCWSTR logicalDirectoryName,
+            /* [in] */ LPCSTR logicalDirectoryName,
             /* [retval][out] */ IFabricStringResult **directoryPath);
         
         END_INTERFACE
@@ -6617,7 +6617,7 @@ EXTERN_C const IID IID_IFabricCodePackage;
     public:
         virtual const FABRIC_CODE_PACKAGE_DESCRIPTION *STDMETHODCALLTYPE get_Description( void) = 0;
         
-        virtual LPCWSTR STDMETHODCALLTYPE get_Path( void) = 0;
+        virtual LPCSTR STDMETHODCALLTYPE get_Path( void) = 0;
         
     };
     
@@ -6643,7 +6643,7 @@ EXTERN_C const IID IID_IFabricCodePackage;
         const FABRIC_CODE_PACKAGE_DESCRIPTION *( STDMETHODCALLTYPE *get_Description )( 
             IFabricCodePackage * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_Path )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_Path )( 
             IFabricCodePackage * This);
         
         END_INTERFACE
@@ -6729,7 +6729,7 @@ EXTERN_C const IID IID_IFabricCodePackage2;
         const FABRIC_CODE_PACKAGE_DESCRIPTION *( STDMETHODCALLTYPE *get_Description )( 
             IFabricCodePackage2 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_Path )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_Path )( 
             IFabricCodePackage2 * This);
         
         const FABRIC_RUNAS_POLICY_DESCRIPTION *( STDMETHODCALLTYPE *get_SetupEntryPointRunAsPolicy )( 
@@ -6802,22 +6802,22 @@ EXTERN_C const IID IID_IFabricConfigurationPackage;
     public:
         virtual const FABRIC_CONFIGURATION_PACKAGE_DESCRIPTION *STDMETHODCALLTYPE get_Description( void) = 0;
         
-        virtual LPCWSTR STDMETHODCALLTYPE get_Path( void) = 0;
+        virtual LPCSTR STDMETHODCALLTYPE get_Path( void) = 0;
         
         virtual const FABRIC_CONFIGURATION_SETTINGS *STDMETHODCALLTYPE get_Settings( void) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetSection( 
-            /* [in] */ LPCWSTR sectionName,
+            /* [in] */ LPCSTR sectionName,
             /* [retval][out] */ const FABRIC_CONFIGURATION_SECTION **bufferedValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetValue( 
-            /* [in] */ LPCWSTR sectionName,
-            /* [in] */ LPCWSTR parameterName,
+            /* [in] */ LPCSTR sectionName,
+            /* [in] */ LPCSTR parameterName,
             /* [out] */ BOOLEAN *isEncrypted,
-            /* [retval][out] */ LPCWSTR *bufferedValue) = 0;
+            /* [retval][out] */ LPCSTR *bufferedValue) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE DecryptValue( 
-            /* [in] */ LPCWSTR encryptedValue,
+            /* [in] */ LPCSTR encryptedValue,
             /* [retval][out] */ IFabricStringResult **decryptedValue) = 0;
         
     };
@@ -6844,7 +6844,7 @@ EXTERN_C const IID IID_IFabricConfigurationPackage;
         const FABRIC_CONFIGURATION_PACKAGE_DESCRIPTION *( STDMETHODCALLTYPE *get_Description )( 
             IFabricConfigurationPackage * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_Path )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_Path )( 
             IFabricConfigurationPackage * This);
         
         const FABRIC_CONFIGURATION_SETTINGS *( STDMETHODCALLTYPE *get_Settings )( 
@@ -6852,19 +6852,19 @@ EXTERN_C const IID IID_IFabricConfigurationPackage;
         
         HRESULT ( STDMETHODCALLTYPE *GetSection )( 
             IFabricConfigurationPackage * This,
-            /* [in] */ LPCWSTR sectionName,
+            /* [in] */ LPCSTR sectionName,
             /* [retval][out] */ const FABRIC_CONFIGURATION_SECTION **bufferedValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetValue )( 
             IFabricConfigurationPackage * This,
-            /* [in] */ LPCWSTR sectionName,
-            /* [in] */ LPCWSTR parameterName,
+            /* [in] */ LPCSTR sectionName,
+            /* [in] */ LPCSTR parameterName,
             /* [out] */ BOOLEAN *isEncrypted,
-            /* [retval][out] */ LPCWSTR *bufferedValue);
+            /* [retval][out] */ LPCSTR *bufferedValue);
         
         HRESULT ( STDMETHODCALLTYPE *DecryptValue )( 
             IFabricConfigurationPackage * This,
-            /* [in] */ LPCWSTR encryptedValue,
+            /* [in] */ LPCSTR encryptedValue,
             /* [retval][out] */ IFabricStringResult **decryptedValue);
         
         END_INTERFACE
@@ -6935,8 +6935,8 @@ EXTERN_C const IID IID_IFabricConfigurationPackage2;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetValues( 
-            /* [in] */ LPCWSTR sectionName,
-            /* [in] */ LPCWSTR parameterPrefix,
+            /* [in] */ LPCSTR sectionName,
+            /* [in] */ LPCSTR parameterPrefix,
             /* [retval][out] */ FABRIC_CONFIGURATION_PARAMETER_LIST **bufferedValue) = 0;
         
     };
@@ -6963,7 +6963,7 @@ EXTERN_C const IID IID_IFabricConfigurationPackage2;
         const FABRIC_CONFIGURATION_PACKAGE_DESCRIPTION *( STDMETHODCALLTYPE *get_Description )( 
             IFabricConfigurationPackage2 * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_Path )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_Path )( 
             IFabricConfigurationPackage2 * This);
         
         const FABRIC_CONFIGURATION_SETTINGS *( STDMETHODCALLTYPE *get_Settings )( 
@@ -6971,25 +6971,25 @@ EXTERN_C const IID IID_IFabricConfigurationPackage2;
         
         HRESULT ( STDMETHODCALLTYPE *GetSection )( 
             IFabricConfigurationPackage2 * This,
-            /* [in] */ LPCWSTR sectionName,
+            /* [in] */ LPCSTR sectionName,
             /* [retval][out] */ const FABRIC_CONFIGURATION_SECTION **bufferedValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetValue )( 
             IFabricConfigurationPackage2 * This,
-            /* [in] */ LPCWSTR sectionName,
-            /* [in] */ LPCWSTR parameterName,
+            /* [in] */ LPCSTR sectionName,
+            /* [in] */ LPCSTR parameterName,
             /* [out] */ BOOLEAN *isEncrypted,
-            /* [retval][out] */ LPCWSTR *bufferedValue);
+            /* [retval][out] */ LPCSTR *bufferedValue);
         
         HRESULT ( STDMETHODCALLTYPE *DecryptValue )( 
             IFabricConfigurationPackage2 * This,
-            /* [in] */ LPCWSTR encryptedValue,
+            /* [in] */ LPCSTR encryptedValue,
             /* [retval][out] */ IFabricStringResult **decryptedValue);
         
         HRESULT ( STDMETHODCALLTYPE *GetValues )( 
             IFabricConfigurationPackage2 * This,
-            /* [in] */ LPCWSTR sectionName,
-            /* [in] */ LPCWSTR parameterPrefix,
+            /* [in] */ LPCSTR sectionName,
+            /* [in] */ LPCSTR parameterPrefix,
             /* [retval][out] */ FABRIC_CONFIGURATION_PARAMETER_LIST **bufferedValue);
         
         END_INTERFACE
@@ -7065,7 +7065,7 @@ EXTERN_C const IID IID_IFabricDataPackage;
     public:
         virtual const FABRIC_DATA_PACKAGE_DESCRIPTION *STDMETHODCALLTYPE get_Description( void) = 0;
         
-        virtual LPCWSTR STDMETHODCALLTYPE get_Path( void) = 0;
+        virtual LPCSTR STDMETHODCALLTYPE get_Path( void) = 0;
         
     };
     
@@ -7091,7 +7091,7 @@ EXTERN_C const IID IID_IFabricDataPackage;
         const FABRIC_DATA_PACKAGE_DESCRIPTION *( STDMETHODCALLTYPE *get_Description )( 
             IFabricDataPackage * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_Path )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_Path )( 
             IFabricDataPackage * This);
         
         END_INTERFACE
@@ -7579,35 +7579,35 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica;
         
         virtual HRESULT STDMETHODCALLTYPE Add( 
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ LONG valueSizeInBytes,
             /* [size_is][in] */ const BYTE *value) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Remove( 
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ FABRIC_SEQUENCE_NUMBER checkSequenceNumber) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Update( 
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ LONG valueSizeInBytes,
             /* [size_is][in] */ const BYTE *value,
             /* [in] */ FABRIC_SEQUENCE_NUMBER checkSequenceNumber) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Get( 
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ IFabricKeyValueStoreItemResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE GetMetadata( 
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ IFabricKeyValueStoreItemMetadataResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Contains( 
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ BOOLEAN *result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Enumerate( 
@@ -7616,7 +7616,7 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica;
         
         virtual HRESULT STDMETHODCALLTYPE EnumerateByKey( 
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemEnumerator **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE EnumerateMetadata( 
@@ -7625,7 +7625,7 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica;
         
         virtual HRESULT STDMETHODCALLTYPE EnumerateMetadataByKey( 
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemMetadataEnumerator **result) = 0;
         
     };
@@ -7699,20 +7699,20 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica;
         HRESULT ( STDMETHODCALLTYPE *Add )( 
             IFabricKeyValueStoreReplica * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ LONG valueSizeInBytes,
             /* [size_is][in] */ const BYTE *value);
         
         HRESULT ( STDMETHODCALLTYPE *Remove )( 
             IFabricKeyValueStoreReplica * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ FABRIC_SEQUENCE_NUMBER checkSequenceNumber);
         
         HRESULT ( STDMETHODCALLTYPE *Update )( 
             IFabricKeyValueStoreReplica * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ LONG valueSizeInBytes,
             /* [size_is][in] */ const BYTE *value,
             /* [in] */ FABRIC_SEQUENCE_NUMBER checkSequenceNumber);
@@ -7720,19 +7720,19 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica;
         HRESULT ( STDMETHODCALLTYPE *Get )( 
             IFabricKeyValueStoreReplica * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ IFabricKeyValueStoreItemResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetMetadata )( 
             IFabricKeyValueStoreReplica * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ IFabricKeyValueStoreItemMetadataResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *Contains )( 
             IFabricKeyValueStoreReplica * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ BOOLEAN *result);
         
         HRESULT ( STDMETHODCALLTYPE *Enumerate )( 
@@ -7743,7 +7743,7 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica;
         HRESULT ( STDMETHODCALLTYPE *EnumerateByKey )( 
             IFabricKeyValueStoreReplica * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemEnumerator **result);
         
         HRESULT ( STDMETHODCALLTYPE *EnumerateMetadata )( 
@@ -7754,7 +7754,7 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica;
         HRESULT ( STDMETHODCALLTYPE *EnumerateMetadataByKey )( 
             IFabricKeyValueStoreReplica * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemMetadataEnumerator **result);
         
         END_INTERFACE
@@ -7868,10 +7868,10 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica2;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE Backup( 
-            /* [in] */ LPCWSTR backupDirectory) = 0;
+            /* [in] */ LPCSTR backupDirectory) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE Restore( 
-            /* [in] */ LPCWSTR backupDirectory) = 0;
+            /* [in] */ LPCSTR backupDirectory) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE CreateTransaction2( 
             /* [in] */ const FABRIC_KEY_VALUE_STORE_TRANSACTION_SETTINGS *settings,
@@ -7948,20 +7948,20 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica2;
         HRESULT ( STDMETHODCALLTYPE *Add )( 
             IFabricKeyValueStoreReplica2 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ LONG valueSizeInBytes,
             /* [size_is][in] */ const BYTE *value);
         
         HRESULT ( STDMETHODCALLTYPE *Remove )( 
             IFabricKeyValueStoreReplica2 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ FABRIC_SEQUENCE_NUMBER checkSequenceNumber);
         
         HRESULT ( STDMETHODCALLTYPE *Update )( 
             IFabricKeyValueStoreReplica2 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ LONG valueSizeInBytes,
             /* [size_is][in] */ const BYTE *value,
             /* [in] */ FABRIC_SEQUENCE_NUMBER checkSequenceNumber);
@@ -7969,19 +7969,19 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica2;
         HRESULT ( STDMETHODCALLTYPE *Get )( 
             IFabricKeyValueStoreReplica2 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ IFabricKeyValueStoreItemResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetMetadata )( 
             IFabricKeyValueStoreReplica2 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ IFabricKeyValueStoreItemMetadataResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *Contains )( 
             IFabricKeyValueStoreReplica2 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ BOOLEAN *result);
         
         HRESULT ( STDMETHODCALLTYPE *Enumerate )( 
@@ -7992,7 +7992,7 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica2;
         HRESULT ( STDMETHODCALLTYPE *EnumerateByKey )( 
             IFabricKeyValueStoreReplica2 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemEnumerator **result);
         
         HRESULT ( STDMETHODCALLTYPE *EnumerateMetadata )( 
@@ -8003,16 +8003,16 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica2;
         HRESULT ( STDMETHODCALLTYPE *EnumerateMetadataByKey )( 
             IFabricKeyValueStoreReplica2 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemMetadataEnumerator **result);
         
         HRESULT ( STDMETHODCALLTYPE *Backup )( 
             IFabricKeyValueStoreReplica2 * This,
-            /* [in] */ LPCWSTR backupDirectory);
+            /* [in] */ LPCSTR backupDirectory);
         
         HRESULT ( STDMETHODCALLTYPE *Restore )( 
             IFabricKeyValueStoreReplica2 * This,
-            /* [in] */ LPCWSTR backupDirectory);
+            /* [in] */ LPCSTR backupDirectory);
         
         HRESULT ( STDMETHODCALLTYPE *CreateTransaction2 )( 
             IFabricKeyValueStoreReplica2 * This,
@@ -8140,7 +8140,7 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica3;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE BeginBackup( 
-            /* [in] */ LPCWSTR backupDirectory,
+            /* [in] */ LPCSTR backupDirectory,
             /* [in] */ FABRIC_STORE_BACKUP_OPTION backupOption,
             /* [in] */ IFabricStorePostBackupHandler *postBackupHandler,
             /* [in] */ IFabricAsyncOperationCallback *callback,
@@ -8220,20 +8220,20 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica3;
         HRESULT ( STDMETHODCALLTYPE *Add )( 
             IFabricKeyValueStoreReplica3 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ LONG valueSizeInBytes,
             /* [size_is][in] */ const BYTE *value);
         
         HRESULT ( STDMETHODCALLTYPE *Remove )( 
             IFabricKeyValueStoreReplica3 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ FABRIC_SEQUENCE_NUMBER checkSequenceNumber);
         
         HRESULT ( STDMETHODCALLTYPE *Update )( 
             IFabricKeyValueStoreReplica3 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ LONG valueSizeInBytes,
             /* [size_is][in] */ const BYTE *value,
             /* [in] */ FABRIC_SEQUENCE_NUMBER checkSequenceNumber);
@@ -8241,19 +8241,19 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica3;
         HRESULT ( STDMETHODCALLTYPE *Get )( 
             IFabricKeyValueStoreReplica3 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ IFabricKeyValueStoreItemResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetMetadata )( 
             IFabricKeyValueStoreReplica3 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ IFabricKeyValueStoreItemMetadataResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *Contains )( 
             IFabricKeyValueStoreReplica3 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ BOOLEAN *result);
         
         HRESULT ( STDMETHODCALLTYPE *Enumerate )( 
@@ -8264,7 +8264,7 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica3;
         HRESULT ( STDMETHODCALLTYPE *EnumerateByKey )( 
             IFabricKeyValueStoreReplica3 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemEnumerator **result);
         
         HRESULT ( STDMETHODCALLTYPE *EnumerateMetadata )( 
@@ -8275,16 +8275,16 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica3;
         HRESULT ( STDMETHODCALLTYPE *EnumerateMetadataByKey )( 
             IFabricKeyValueStoreReplica3 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemMetadataEnumerator **result);
         
         HRESULT ( STDMETHODCALLTYPE *Backup )( 
             IFabricKeyValueStoreReplica3 * This,
-            /* [in] */ LPCWSTR backupDirectory);
+            /* [in] */ LPCSTR backupDirectory);
         
         HRESULT ( STDMETHODCALLTYPE *Restore )( 
             IFabricKeyValueStoreReplica3 * This,
-            /* [in] */ LPCWSTR backupDirectory);
+            /* [in] */ LPCSTR backupDirectory);
         
         HRESULT ( STDMETHODCALLTYPE *CreateTransaction2 )( 
             IFabricKeyValueStoreReplica3 * This,
@@ -8293,7 +8293,7 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica3;
         
         HRESULT ( STDMETHODCALLTYPE *BeginBackup )( 
             IFabricKeyValueStoreReplica3 * This,
-            /* [in] */ LPCWSTR backupDirectory,
+            /* [in] */ LPCSTR backupDirectory,
             /* [in] */ FABRIC_STORE_BACKUP_OPTION backupOption,
             /* [in] */ IFabricStorePostBackupHandler *postBackupHandler,
             /* [in] */ IFabricAsyncOperationCallback *callback,
@@ -9016,7 +9016,7 @@ EXTERN_C const IID IID_IFabricNodeContextResult2;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE GetDirectory( 
-            /* [in] */ LPCWSTR logicalDirectoryName,
+            /* [in] */ LPCSTR logicalDirectoryName,
             /* [retval][out] */ IFabricStringResult **directoryPath) = 0;
         
     };
@@ -9045,7 +9045,7 @@ EXTERN_C const IID IID_IFabricNodeContextResult2;
         
         HRESULT ( STDMETHODCALLTYPE *GetDirectory )( 
             IFabricNodeContextResult2 * This,
-            /* [in] */ LPCWSTR logicalDirectoryName,
+            /* [in] */ LPCSTR logicalDirectoryName,
             /* [retval][out] */ IFabricStringResult **directoryPath);
         
         END_INTERFACE
@@ -9608,7 +9608,7 @@ FabricRuntime;
 
 /* [entry] */ HRESULT FabricCreateKeyValueStoreReplica( 
     /* [in] */ __RPC__in REFIID riid,
-    /* [in] */ __RPC__in LPCWSTR storeName,
+    /* [in] */ __RPC__in LPCSTR storeName,
     /* [in] */ FABRIC_PARTITION_ID partitionId,
     /* [in] */ FABRIC_REPLICA_ID replicaId,
     /* [in] */ __RPC__in const FABRIC_REPLICATOR_SETTINGS *replicatorSettings,
@@ -9619,7 +9619,7 @@ FabricRuntime;
 
 /* [entry] */ HRESULT FabricCreateKeyValueStoreReplica2( 
     /* [in] */ __RPC__in REFIID riid,
-    /* [in] */ __RPC__in LPCWSTR storeName,
+    /* [in] */ __RPC__in LPCSTR storeName,
     /* [in] */ FABRIC_PARTITION_ID partitionId,
     /* [in] */ FABRIC_REPLICA_ID replicaId,
     /* [in] */ __RPC__in const FABRIC_REPLICATOR_SETTINGS *replicatorSettings,
@@ -9632,7 +9632,7 @@ FabricRuntime;
 
 /* [entry] */ HRESULT FabricCreateKeyValueStoreReplica3( 
     /* [in] */ __RPC__in REFIID riid,
-    /* [in] */ __RPC__in LPCWSTR storeName,
+    /* [in] */ __RPC__in LPCSTR storeName,
     /* [in] */ FABRIC_PARTITION_ID partitionId,
     /* [in] */ FABRIC_REPLICA_ID replicaId,
     /* [in] */ __RPC__in const FABRIC_REPLICATOR_SETTINGS *replicatorSettings,
@@ -9645,7 +9645,7 @@ FabricRuntime;
 
 /* [entry] */ HRESULT FabricCreateKeyValueStoreReplica4( 
     /* [in] */ __RPC__in REFIID riid,
-    /* [in] */ __RPC__in LPCWSTR storeName,
+    /* [in] */ __RPC__in LPCSTR storeName,
     /* [in] */ FABRIC_PARTITION_ID partitionId,
     /* [in] */ FABRIC_REPLICA_ID replicaId,
     /* [in] */ __RPC__in FABRIC_URI serviceName,
@@ -9659,7 +9659,7 @@ FabricRuntime;
 
 /* [entry] */ HRESULT FabricCreateKeyValueStoreReplica5( 
     /* [in] */ __RPC__in REFIID riid,
-    /* [in] */ __RPC__in LPCWSTR storeName,
+    /* [in] */ __RPC__in LPCSTR storeName,
     /* [in] */ FABRIC_PARTITION_ID partitionId,
     /* [in] */ FABRIC_REPLICA_ID replicaId,
     /* [in] */ __RPC__in FABRIC_URI serviceName,
@@ -9685,20 +9685,20 @@ FabricRuntime;
 
 /* [entry] */ HRESULT FabricLoadReplicatorSettings( 
     /* [in] */ __RPC__in_opt const IFabricCodePackageActivationContext *codePackageActivationContext,
-    /* [in] */ __RPC__in LPCWSTR configurationPackageName,
-    /* [in] */ __RPC__in LPCWSTR sectionName,
+    /* [in] */ __RPC__in LPCSTR configurationPackageName,
+    /* [in] */ __RPC__in LPCSTR sectionName,
     /* [retval][out] */ __RPC__deref_out_opt IFabricReplicatorSettingsResult **replicatorSettings);
 
 /* [entry] */ HRESULT FabricLoadSecurityCredentials( 
     /* [in] */ __RPC__in_opt const IFabricCodePackageActivationContext *codePackageActivationContext,
-    /* [in] */ __RPC__in LPCWSTR configurationPackageName,
-    /* [in] */ __RPC__in LPCWSTR sectionName,
+    /* [in] */ __RPC__in LPCSTR configurationPackageName,
+    /* [in] */ __RPC__in LPCSTR sectionName,
     /* [retval][out] */ __RPC__deref_out_opt IFabricSecurityCredentialsResult **securityCredentials);
 
 /* [entry] */ HRESULT FabricLoadEseLocalStoreSettings( 
     /* [in] */ __RPC__in_opt const IFabricCodePackageActivationContext *codePackageActivationContext,
-    /* [in] */ __RPC__in LPCWSTR configurationPackageName,
-    /* [in] */ __RPC__in LPCWSTR sectionName,
+    /* [in] */ __RPC__in LPCSTR configurationPackageName,
+    /* [in] */ __RPC__in LPCSTR sectionName,
     /* [retval][out] */ __RPC__deref_out_opt IFabricEseLocalStoreSettingsResult **settings);
 
 /* [entry] */ HRESULT FabricBeginGetCodePackageActivator( 
@@ -9962,7 +9962,7 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica4;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE BeginRestore( 
-            /* [in] */ LPCWSTR backupDirectory,
+            /* [in] */ LPCSTR backupDirectory,
             /* [in] */ IFabricAsyncOperationCallback *callback,
             /* [retval][out] */ IFabricAsyncOperationContext **context) = 0;
         
@@ -10040,20 +10040,20 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica4;
         HRESULT ( STDMETHODCALLTYPE *Add )( 
             IFabricKeyValueStoreReplica4 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ LONG valueSizeInBytes,
             /* [size_is][in] */ const BYTE *value);
         
         HRESULT ( STDMETHODCALLTYPE *Remove )( 
             IFabricKeyValueStoreReplica4 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ FABRIC_SEQUENCE_NUMBER checkSequenceNumber);
         
         HRESULT ( STDMETHODCALLTYPE *Update )( 
             IFabricKeyValueStoreReplica4 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ LONG valueSizeInBytes,
             /* [size_is][in] */ const BYTE *value,
             /* [in] */ FABRIC_SEQUENCE_NUMBER checkSequenceNumber);
@@ -10061,19 +10061,19 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica4;
         HRESULT ( STDMETHODCALLTYPE *Get )( 
             IFabricKeyValueStoreReplica4 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ IFabricKeyValueStoreItemResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetMetadata )( 
             IFabricKeyValueStoreReplica4 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ IFabricKeyValueStoreItemMetadataResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *Contains )( 
             IFabricKeyValueStoreReplica4 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ BOOLEAN *result);
         
         HRESULT ( STDMETHODCALLTYPE *Enumerate )( 
@@ -10084,7 +10084,7 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica4;
         HRESULT ( STDMETHODCALLTYPE *EnumerateByKey )( 
             IFabricKeyValueStoreReplica4 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemEnumerator **result);
         
         HRESULT ( STDMETHODCALLTYPE *EnumerateMetadata )( 
@@ -10095,16 +10095,16 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica4;
         HRESULT ( STDMETHODCALLTYPE *EnumerateMetadataByKey )( 
             IFabricKeyValueStoreReplica4 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemMetadataEnumerator **result);
         
         HRESULT ( STDMETHODCALLTYPE *Backup )( 
             IFabricKeyValueStoreReplica4 * This,
-            /* [in] */ LPCWSTR backupDirectory);
+            /* [in] */ LPCSTR backupDirectory);
         
         HRESULT ( STDMETHODCALLTYPE *Restore )( 
             IFabricKeyValueStoreReplica4 * This,
-            /* [in] */ LPCWSTR backupDirectory);
+            /* [in] */ LPCSTR backupDirectory);
         
         HRESULT ( STDMETHODCALLTYPE *CreateTransaction2 )( 
             IFabricKeyValueStoreReplica4 * This,
@@ -10113,7 +10113,7 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica4;
         
         HRESULT ( STDMETHODCALLTYPE *BeginBackup )( 
             IFabricKeyValueStoreReplica4 * This,
-            /* [in] */ LPCWSTR backupDirectory,
+            /* [in] */ LPCSTR backupDirectory,
             /* [in] */ FABRIC_STORE_BACKUP_OPTION backupOption,
             /* [in] */ IFabricStorePostBackupHandler *postBackupHandler,
             /* [in] */ IFabricAsyncOperationCallback *callback,
@@ -10125,7 +10125,7 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica4;
         
         HRESULT ( STDMETHODCALLTYPE *BeginRestore )( 
             IFabricKeyValueStoreReplica4 * This,
-            /* [in] */ LPCWSTR backupDirectory,
+            /* [in] */ LPCSTR backupDirectory,
             /* [in] */ IFabricAsyncOperationCallback *callback,
             /* [retval][out] */ IFabricAsyncOperationContext **context);
         
@@ -10269,20 +10269,20 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica5;
     public:
         virtual HRESULT STDMETHODCALLTYPE TryAdd( 
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ LONG valueSizeInBytes,
             /* [size_is][in] */ const BYTE *value,
             /* [retval][out] */ BOOLEAN *added) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE TryRemove( 
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ FABRIC_SEQUENCE_NUMBER checkSequenceNumber,
             /* [retval][out] */ BOOLEAN *exists) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE TryUpdate( 
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ LONG valueSizeInBytes,
             /* [size_is][in] */ const BYTE *value,
             /* [in] */ FABRIC_SEQUENCE_NUMBER checkSequenceNumber,
@@ -10290,23 +10290,23 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica5;
         
         virtual HRESULT STDMETHODCALLTYPE TryGet( 
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ IFabricKeyValueStoreItemResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE TryGetMetadata( 
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ IFabricKeyValueStoreItemMetadataResult **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE EnumerateByKey2( 
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [in] */ BOOLEAN strictPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemEnumerator **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE EnumerateMetadataByKey2( 
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [in] */ BOOLEAN strictPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemMetadataEnumerator **result) = 0;
         
@@ -10381,20 +10381,20 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica5;
         HRESULT ( STDMETHODCALLTYPE *Add )( 
             IFabricKeyValueStoreReplica5 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ LONG valueSizeInBytes,
             /* [size_is][in] */ const BYTE *value);
         
         HRESULT ( STDMETHODCALLTYPE *Remove )( 
             IFabricKeyValueStoreReplica5 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ FABRIC_SEQUENCE_NUMBER checkSequenceNumber);
         
         HRESULT ( STDMETHODCALLTYPE *Update )( 
             IFabricKeyValueStoreReplica5 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ LONG valueSizeInBytes,
             /* [size_is][in] */ const BYTE *value,
             /* [in] */ FABRIC_SEQUENCE_NUMBER checkSequenceNumber);
@@ -10402,19 +10402,19 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica5;
         HRESULT ( STDMETHODCALLTYPE *Get )( 
             IFabricKeyValueStoreReplica5 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ IFabricKeyValueStoreItemResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetMetadata )( 
             IFabricKeyValueStoreReplica5 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ IFabricKeyValueStoreItemMetadataResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *Contains )( 
             IFabricKeyValueStoreReplica5 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ BOOLEAN *result);
         
         HRESULT ( STDMETHODCALLTYPE *Enumerate )( 
@@ -10425,7 +10425,7 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica5;
         HRESULT ( STDMETHODCALLTYPE *EnumerateByKey )( 
             IFabricKeyValueStoreReplica5 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemEnumerator **result);
         
         HRESULT ( STDMETHODCALLTYPE *EnumerateMetadata )( 
@@ -10436,16 +10436,16 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica5;
         HRESULT ( STDMETHODCALLTYPE *EnumerateMetadataByKey )( 
             IFabricKeyValueStoreReplica5 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemMetadataEnumerator **result);
         
         HRESULT ( STDMETHODCALLTYPE *Backup )( 
             IFabricKeyValueStoreReplica5 * This,
-            /* [in] */ LPCWSTR backupDirectory);
+            /* [in] */ LPCSTR backupDirectory);
         
         HRESULT ( STDMETHODCALLTYPE *Restore )( 
             IFabricKeyValueStoreReplica5 * This,
-            /* [in] */ LPCWSTR backupDirectory);
+            /* [in] */ LPCSTR backupDirectory);
         
         HRESULT ( STDMETHODCALLTYPE *CreateTransaction2 )( 
             IFabricKeyValueStoreReplica5 * This,
@@ -10454,7 +10454,7 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica5;
         
         HRESULT ( STDMETHODCALLTYPE *BeginBackup )( 
             IFabricKeyValueStoreReplica5 * This,
-            /* [in] */ LPCWSTR backupDirectory,
+            /* [in] */ LPCSTR backupDirectory,
             /* [in] */ FABRIC_STORE_BACKUP_OPTION backupOption,
             /* [in] */ IFabricStorePostBackupHandler *postBackupHandler,
             /* [in] */ IFabricAsyncOperationCallback *callback,
@@ -10466,7 +10466,7 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica5;
         
         HRESULT ( STDMETHODCALLTYPE *BeginRestore )( 
             IFabricKeyValueStoreReplica5 * This,
-            /* [in] */ LPCWSTR backupDirectory,
+            /* [in] */ LPCSTR backupDirectory,
             /* [in] */ IFabricAsyncOperationCallback *callback,
             /* [retval][out] */ IFabricAsyncOperationContext **context);
         
@@ -10477,7 +10477,7 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica5;
         HRESULT ( STDMETHODCALLTYPE *TryAdd )( 
             IFabricKeyValueStoreReplica5 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ LONG valueSizeInBytes,
             /* [size_is][in] */ const BYTE *value,
             /* [retval][out] */ BOOLEAN *added);
@@ -10485,14 +10485,14 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica5;
         HRESULT ( STDMETHODCALLTYPE *TryRemove )( 
             IFabricKeyValueStoreReplica5 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ FABRIC_SEQUENCE_NUMBER checkSequenceNumber,
             /* [retval][out] */ BOOLEAN *exists);
         
         HRESULT ( STDMETHODCALLTYPE *TryUpdate )( 
             IFabricKeyValueStoreReplica5 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ LONG valueSizeInBytes,
             /* [size_is][in] */ const BYTE *value,
             /* [in] */ FABRIC_SEQUENCE_NUMBER checkSequenceNumber,
@@ -10501,26 +10501,26 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica5;
         HRESULT ( STDMETHODCALLTYPE *TryGet )( 
             IFabricKeyValueStoreReplica5 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ IFabricKeyValueStoreItemResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *TryGetMetadata )( 
             IFabricKeyValueStoreReplica5 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ IFabricKeyValueStoreItemMetadataResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *EnumerateByKey2 )( 
             IFabricKeyValueStoreReplica5 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [in] */ BOOLEAN strictPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemEnumerator **result);
         
         HRESULT ( STDMETHODCALLTYPE *EnumerateMetadataByKey2 )( 
             IFabricKeyValueStoreReplica5 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [in] */ BOOLEAN strictPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemMetadataEnumerator **result);
         
@@ -10681,7 +10681,7 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica6;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE BeginRestore2( 
-            /* [in] */ LPCWSTR backupDirectory,
+            /* [in] */ LPCSTR backupDirectory,
             /* [in] */ FABRIC_KEY_VALUE_STORE_RESTORE_SETTINGS *settings,
             /* [in] */ IFabricAsyncOperationCallback *callback,
             /* [retval][out] */ IFabricAsyncOperationContext **context) = 0;
@@ -10757,20 +10757,20 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica6;
         HRESULT ( STDMETHODCALLTYPE *Add )( 
             IFabricKeyValueStoreReplica6 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ LONG valueSizeInBytes,
             /* [size_is][in] */ const BYTE *value);
         
         HRESULT ( STDMETHODCALLTYPE *Remove )( 
             IFabricKeyValueStoreReplica6 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ FABRIC_SEQUENCE_NUMBER checkSequenceNumber);
         
         HRESULT ( STDMETHODCALLTYPE *Update )( 
             IFabricKeyValueStoreReplica6 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ LONG valueSizeInBytes,
             /* [size_is][in] */ const BYTE *value,
             /* [in] */ FABRIC_SEQUENCE_NUMBER checkSequenceNumber);
@@ -10778,19 +10778,19 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica6;
         HRESULT ( STDMETHODCALLTYPE *Get )( 
             IFabricKeyValueStoreReplica6 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ IFabricKeyValueStoreItemResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *GetMetadata )( 
             IFabricKeyValueStoreReplica6 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ IFabricKeyValueStoreItemMetadataResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *Contains )( 
             IFabricKeyValueStoreReplica6 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ BOOLEAN *result);
         
         HRESULT ( STDMETHODCALLTYPE *Enumerate )( 
@@ -10801,7 +10801,7 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica6;
         HRESULT ( STDMETHODCALLTYPE *EnumerateByKey )( 
             IFabricKeyValueStoreReplica6 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemEnumerator **result);
         
         HRESULT ( STDMETHODCALLTYPE *EnumerateMetadata )( 
@@ -10812,16 +10812,16 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica6;
         HRESULT ( STDMETHODCALLTYPE *EnumerateMetadataByKey )( 
             IFabricKeyValueStoreReplica6 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemMetadataEnumerator **result);
         
         HRESULT ( STDMETHODCALLTYPE *Backup )( 
             IFabricKeyValueStoreReplica6 * This,
-            /* [in] */ LPCWSTR backupDirectory);
+            /* [in] */ LPCSTR backupDirectory);
         
         HRESULT ( STDMETHODCALLTYPE *Restore )( 
             IFabricKeyValueStoreReplica6 * This,
-            /* [in] */ LPCWSTR backupDirectory);
+            /* [in] */ LPCSTR backupDirectory);
         
         HRESULT ( STDMETHODCALLTYPE *CreateTransaction2 )( 
             IFabricKeyValueStoreReplica6 * This,
@@ -10830,7 +10830,7 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica6;
         
         HRESULT ( STDMETHODCALLTYPE *BeginBackup )( 
             IFabricKeyValueStoreReplica6 * This,
-            /* [in] */ LPCWSTR backupDirectory,
+            /* [in] */ LPCSTR backupDirectory,
             /* [in] */ FABRIC_STORE_BACKUP_OPTION backupOption,
             /* [in] */ IFabricStorePostBackupHandler *postBackupHandler,
             /* [in] */ IFabricAsyncOperationCallback *callback,
@@ -10842,7 +10842,7 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica6;
         
         HRESULT ( STDMETHODCALLTYPE *BeginRestore )( 
             IFabricKeyValueStoreReplica6 * This,
-            /* [in] */ LPCWSTR backupDirectory,
+            /* [in] */ LPCSTR backupDirectory,
             /* [in] */ IFabricAsyncOperationCallback *callback,
             /* [retval][out] */ IFabricAsyncOperationContext **context);
         
@@ -10853,7 +10853,7 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica6;
         HRESULT ( STDMETHODCALLTYPE *TryAdd )( 
             IFabricKeyValueStoreReplica6 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ LONG valueSizeInBytes,
             /* [size_is][in] */ const BYTE *value,
             /* [retval][out] */ BOOLEAN *added);
@@ -10861,14 +10861,14 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica6;
         HRESULT ( STDMETHODCALLTYPE *TryRemove )( 
             IFabricKeyValueStoreReplica6 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ FABRIC_SEQUENCE_NUMBER checkSequenceNumber,
             /* [retval][out] */ BOOLEAN *exists);
         
         HRESULT ( STDMETHODCALLTYPE *TryUpdate )( 
             IFabricKeyValueStoreReplica6 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [in] */ LONG valueSizeInBytes,
             /* [size_is][in] */ const BYTE *value,
             /* [in] */ FABRIC_SEQUENCE_NUMBER checkSequenceNumber,
@@ -10877,32 +10877,32 @@ EXTERN_C const IID IID_IFabricKeyValueStoreReplica6;
         HRESULT ( STDMETHODCALLTYPE *TryGet )( 
             IFabricKeyValueStoreReplica6 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ IFabricKeyValueStoreItemResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *TryGetMetadata )( 
             IFabricKeyValueStoreReplica6 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR key,
+            /* [in] */ LPCSTR key,
             /* [retval][out] */ IFabricKeyValueStoreItemMetadataResult **result);
         
         HRESULT ( STDMETHODCALLTYPE *EnumerateByKey2 )( 
             IFabricKeyValueStoreReplica6 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [in] */ BOOLEAN strictPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemEnumerator **result);
         
         HRESULT ( STDMETHODCALLTYPE *EnumerateMetadataByKey2 )( 
             IFabricKeyValueStoreReplica6 * This,
             /* [in] */ IFabricTransactionBase *transaction,
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [in] */ BOOLEAN strictPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemMetadataEnumerator **result);
         
         HRESULT ( STDMETHODCALLTYPE *BeginRestore2 )( 
             IFabricKeyValueStoreReplica6 * This,
-            /* [in] */ LPCWSTR backupDirectory,
+            /* [in] */ LPCSTR backupDirectory,
             /* [in] */ FABRIC_KEY_VALUE_STORE_RESTORE_SETTINGS *settings,
             /* [in] */ IFabricAsyncOperationCallback *callback,
             /* [retval][out] */ IFabricAsyncOperationContext **context);
@@ -11068,11 +11068,11 @@ EXTERN_C const IID IID_IFabricKeyValueStoreEnumerator;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE EnumerateByKey( 
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemEnumerator **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE EnumerateMetadataByKey( 
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemMetadataEnumerator **result) = 0;
         
     };
@@ -11098,12 +11098,12 @@ EXTERN_C const IID IID_IFabricKeyValueStoreEnumerator;
         
         HRESULT ( STDMETHODCALLTYPE *EnumerateByKey )( 
             IFabricKeyValueStoreEnumerator * This,
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemEnumerator **result);
         
         HRESULT ( STDMETHODCALLTYPE *EnumerateMetadataByKey )( 
             IFabricKeyValueStoreEnumerator * This,
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemMetadataEnumerator **result);
         
         END_INTERFACE
@@ -11162,12 +11162,12 @@ EXTERN_C const IID IID_IFabricKeyValueStoreEnumerator2;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE EnumerateByKey2( 
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [in] */ BOOLEAN strictPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemEnumerator **result) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE EnumerateMetadataByKey2( 
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [in] */ BOOLEAN strictPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemMetadataEnumerator **result) = 0;
         
@@ -11194,23 +11194,23 @@ EXTERN_C const IID IID_IFabricKeyValueStoreEnumerator2;
         
         HRESULT ( STDMETHODCALLTYPE *EnumerateByKey )( 
             IFabricKeyValueStoreEnumerator2 * This,
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemEnumerator **result);
         
         HRESULT ( STDMETHODCALLTYPE *EnumerateMetadataByKey )( 
             IFabricKeyValueStoreEnumerator2 * This,
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemMetadataEnumerator **result);
         
         HRESULT ( STDMETHODCALLTYPE *EnumerateByKey2 )( 
             IFabricKeyValueStoreEnumerator2 * This,
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [in] */ BOOLEAN strictPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemEnumerator **result);
         
         HRESULT ( STDMETHODCALLTYPE *EnumerateMetadataByKey2 )( 
             IFabricKeyValueStoreEnumerator2 * This,
-            /* [in] */ LPCWSTR keyPrefix,
+            /* [in] */ LPCSTR keyPrefix,
             /* [in] */ BOOLEAN strictPrefix,
             /* [retval][out] */ IFabricKeyValueStoreItemMetadataEnumerator **result);
         

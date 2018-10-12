@@ -78,9 +78,9 @@ public:
 	//
 
 	void Execute(
-		wstring const & moduleName,
-		wstring const & funcName,
-		vector<wstring> const & args)
+		string const & moduleName,
+		string const & funcName,
+		vector<string> const & args)
 	{
         try
         {
@@ -95,14 +95,14 @@ public:
 private:
 
 	void InternalExecute(
-		wstring const & moduleNameW,
-		wstring const & funcNameW,
-		vector<wstring> const & args)
+		string const & moduleNameW,
+		string const & funcNameW,
+		vector<string> const & args)
 	{
         Trace.WriteInfo(TraceComponent, "Execute({0}, {1}, {2})", moduleNameW, funcNameW, args);
 
-        auto moduleName = StringUtility::Utf16ToUtf8(moduleNameW);
-        auto funcName = StringUtility::Utf16ToUtf8(funcNameW);
+        auto moduleName = Utf16ToUtf8NotNeeded(moduleNameW);
+        auto funcName = Utf16ToUtf8NotNeeded(funcNameW);
 
 		// TODO: Avoid blocking threads
 		//
@@ -128,7 +128,7 @@ private:
 
 		for (auto ix=0; ix<args.size(); ++ix)
 		{
-			auto pValue = ScopedPyObject::CreateFromNew(PyUnicode_FromString(StringUtility::Utf16ToUtf8(args[ix]).c_str()));
+			auto pValue = ScopedPyObject::CreateFromNew(PyUnicode_FromString(Utf16ToUtf8NotNeeded(args[ix]).c_str()));
 			if (pValue.Get() == nullptr)
 			{
 				PyUtils::ThrowOnFailure(moduleName, funcName, "PyUnicode_FromString");
@@ -176,8 +176,8 @@ public:
 			return NULL;
 		}
         
-		wchar_t * moduleName;
-		wchar_t * nodeId;
+		char * moduleName;
+		char * nodeId;
 		if (!PyArg_ParseTuple(args, "uu", &moduleName, &nodeId))
 		{
 			return NULL;
@@ -256,9 +256,9 @@ PyObject * InitializeGlobalModule()
 //
 
 void PyInterpreter::Execute(
-    wstring const & moduleName, 
-    wstring const & funcName, 
-    vector<wstring> const & args)
+    string const & moduleName, 
+    string const & funcName, 
+    vector<string> const & args)
 {
 	SingletonImpl::GetInstance().GetImpl()->Execute(moduleName, funcName, args);
 }

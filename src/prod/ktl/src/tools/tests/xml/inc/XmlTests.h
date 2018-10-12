@@ -94,7 +94,7 @@ private:
 
 
 NTSTATUS
-XmlBasicTest(int Argc, WCHAR* Args[]);
+XmlBasicTest(int Argc, CHAR* Args[]);
 
 NTSTATUS
-DomBasicTest(int Argc, WCHAR* Args[]);
+DomBasicTest(int Argc, CHAR* Args[]);

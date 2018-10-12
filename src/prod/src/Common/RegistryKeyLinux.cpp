@@ -14,9 +14,9 @@ using namespace Common;
 
 /*  Helper functions  */
 
-ErrorCode SetEtcConfigValue(const wstring & name, const wstring & value)
+ErrorCode SetEtcConfigValue(const string & name, const string & value)
 {
-	wstring pathToConfigSetting = Path::Combine(FabricConstants::FabricRegistryKeyPath, name);
+	string pathToConfigSetting = Path::Combine(FabricConstants::FabricRegistryKeyPath, name);
 	try
 	{
 		FileWriter fileWriter;
@@ -26,9 +26,7 @@ ErrorCode SetEtcConfigValue(const wstring & name, const wstring & value)
 			return ErrorCodeValue::OperationFailed;
 		}
 
-		std::string result;
-		StringUtility::UnicodeToAnsi(value, result);
-		fileWriter << result;
+		fileWriter << value;
 	}
 	catch (std::exception const& e)
 	{
@@ -38,9 +36,9 @@ ErrorCode SetEtcConfigValue(const wstring & name, const wstring & value)
 	return ErrorCodeValue::Success;
 }
 
-ErrorCode GetEtcConfigValue(const wstring & name, __out wstring & value)
+ErrorCode GetEtcConfigValue(const string & name, __out string & value)
 {
-	wstring pathToConfigSetting = Path::Combine(FabricConstants::FabricRegistryKeyPath, name);
+	string pathToConfigSetting = Path::Combine(FabricConstants::FabricRegistryKeyPath, name);
 	if (!File::Exists(pathToConfigSetting))
 	{
 		return ErrorCodeValue::FileNotFound;
@@ -73,9 +71,9 @@ ErrorCode GetEtcConfigValue(const wstring & name, __out wstring & value)
 	return Environment::Expand(value, value);
 }
 
-ErrorCode DeleteEtcConfigValue(const wstring & name)
+ErrorCode DeleteEtcConfigValue(const string & name)
 {
-	wstring pathToConfigSetting = Path::Combine(FabricConstants::FabricRegistryKeyPath, name);
+	string pathToConfigSetting = Path::Combine(FabricConstants::FabricRegistryKeyPath, name);
 	if (!File::Exists(pathToConfigSetting))
 	{
 		return ErrorCodeValue::FileNotFound;
@@ -102,7 +100,7 @@ ErrorCode DeleteEtcConfigValue(const wstring & name)
 /*     Public functions exposed via RegistryKey.h		*/
 
 
-RegistryKey::RegistryKey(wstring const & name, bool const readOnly, bool const openExisting)
+RegistryKey::RegistryKey(string const & name, bool const readOnly, bool const openExisting)
 {
 	ErrorCode err = ErrorCodeValue::Success;
 	ASSERT_IF(name.compare(FabricConstants::FabricRegistryKeyPath) != 0, "Registry path name did not match expected path.");
@@ -112,20 +110,20 @@ RegistryKey::RegistryKey(wstring const & name, bool const readOnly, bool const o
     existed_ = openExisting == true;
 }
 
-RegistryKey::RegistryKey(wstring const & name, LPCWSTR machineName, bool const readOnly, bool const openExisting)
+RegistryKey::RegistryKey(string const & name, LPCSTR machineName, bool const readOnly, bool const openExisting)
 {
 	Assert::CodingError("Getting registry configuration from remote not supported in linux.");
 }
 
-bool RegistryKey::SetValue(wstring const & name, DWORD value)
+bool RegistryKey::SetValue(string const & name, DWORD value)
 {
-	wstring valuestr = std::to_wstring(static_cast<LONGLONG>(value));
+	string valuestr = std::to_string(static_cast<LONGLONG>(value));
 	ErrorCode err = SetEtcConfigValue(name, valuestr);
 	error_ = static_cast<DWORD>(err.ReadValue());
 	return IsValid;
 }
 
-bool RegistryKey::SetValue(wstring const & name, wstring const & value, bool typeRegSZ)
+bool RegistryKey::SetValue(string const & name, string const & value, bool typeRegSZ)
 {
   // TODO Option for REG_EXPAND_SZ is to be added. Bug 9012047
   UNREFERENCED_PARAMETER(typeRegSZ);
@@ -135,7 +133,7 @@ bool RegistryKey::SetValue(wstring const & name, wstring const & value, bool typ
     return  IsValid;
 }
 
-bool RegistryKey::SetValue(wstring const & name, vector<wstring> const & value)
+bool RegistryKey::SetValue(string const & name, vector<string> const & value)
 {
     size_t size = 0;
     for (auto const & item : value)
@@ -144,54 +142,54 @@ bool RegistryKey::SetValue(wstring const & name, vector<wstring> const & value)
     }
     size++;
 
-    vector<wchar_t> registryValue(size);
+    vector<char> registryValue(size);
     size_t index = 0;
     for (auto const & item : value)
     {
-        KMemCpySafe(&registryValue[index], (registryValue.size() - index) * sizeof(wchar_t), item.c_str(), item.size() * sizeof(wchar_t));
+        KMemCpySafe(&registryValue[index], (registryValue.size() - index) * sizeof(char), item.c_str(), item.size() * sizeof(char));
         index += item.size();
-        registryValue[index++] = L'\0';
+        registryValue[index++] = '\0';
     }
 
-    registryValue[index++] = L'\0';
-	wstring valuestr(registryValue.begin(), registryValue.end());
+    registryValue[index++] = '\0';
+	string valuestr(registryValue.begin(), registryValue.end());
 	ErrorCode err = SetEtcConfigValue(name, valuestr);
 	error_ = static_cast<DWORD>(err.ReadValue());
     return IsValid;
 }
 
-bool RegistryKey::GetValue(wstring const & name, DWORD & value)
+bool RegistryKey::GetValue(string const & name, DWORD & value)
 {
     DWORD size = sizeof(DWORD);
-	wstring valuestr;
+	string valuestr;
 	ErrorCode err = GetEtcConfigValue(name, valuestr);
 	error_ = static_cast<DWORD>(err.ReadValue());
-	wchar_t *end;
-	value = wcstol(valuestr.c_str(), &end, 10);
+	char *end;
+	value = strtol(valuestr.c_str(), &end, 10);
     return  IsValid;
 }
 
-bool RegistryKey::GetValue(wstring const & name, wstring & value)
+bool RegistryKey::GetValue(string const & name, string & value)
 {
 	ErrorCode err = GetEtcConfigValue(name,value);
 	error_ = static_cast<DWORD>(err.ReadValue());
     return IsValid;
 }
 
-bool RegistryKey::GetValue(wstring const & name, wstring & value, bool expandEnvironmentStrings)
+bool RegistryKey::GetValue(string const & name, string & value, bool expandEnvironmentStrings)
 {
 	DWORD size = MAX_VALUE_NAME;
-	wstring val;
-	val.resize(static_cast<size_t>(size) / sizeof(wchar_t)+1);
+	string val;
+	val.resize(static_cast<size_t>(size) / sizeof(char)+1);
 
 	ErrorCode err = GetEtcConfigValue(name, val);
 	error_ = static_cast<DWORD>(err.ReadValue());
 
-	val.resize(size / sizeof(wchar_t)-1);
+	val.resize(size / sizeof(char)-1);
 
 	if (expandEnvironmentStrings)
 	{
-		wstring expandedVal;
+		string expandedVal;
 		if (Environment::ExpandEnvironmentStrings(val, expandedVal))
 		{
 			val = move(expandedVal);
@@ -205,27 +203,27 @@ bool RegistryKey::GetValue(wstring const & name, wstring & value, bool expandEnv
 	return IsValid;
 }
 
-bool RegistryKey::GetValue(wstring const & name, vector<wstring> & value)
+bool RegistryKey::GetValue(string const & name, vector<string> & value)
 {
-	wstring valuestr;
+	string valuestr;
 	ErrorCode err = GetEtcConfigValue(name, valuestr);
 	error_ = static_cast<DWORD>(err.ReadValue());
 
-    vector<wstring> tempValue;
+    vector<string> tempValue;
     size_t index = 0;
-	wstring item = wstring(&valuestr[index]);
+	string item = string(&valuestr[index]);
     while (item.size() > 0)
     {
         tempValue.push_back(item);
         index += item.size() + 1;
-		item = wstring(&valuestr[index]);
+		item = string(&valuestr[index]);
     }
 
     value = move(tempValue);
     return true;
 }
 
-bool RegistryKey::DeleteValue(wstring const & name)
+bool RegistryKey::DeleteValue(string const & name)
 {
 	ErrorCode err = DeleteEtcConfigValue(name);
 	error_ = static_cast<DWORD>(err.ReadValue());

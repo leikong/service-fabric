@@ -16,37 +16,37 @@ namespace Transport
         {
             switch (e)
             {
-                case None: w << L"None"; return;
-                case User: w << L"User"; return;
-                case Admin: w << L"Admin"; return;
-                case All: w << L"All"; return;
+                case None: w << "None"; return;
+                case User: w << "User"; return;
+                case Admin: w << "Admin"; return;
+                case All: w << "All"; return;
                 default:
                     w.Write("{0:x}", (unsigned int)e);
             }
         }
 
-        ErrorCode TryParse(std::wstring const & stringInput, _Out_ Enum & roleMask)
+        ErrorCode TryParse(std::string const & stringInput, _Out_ Enum & roleMask)
         {
             roleMask = None;
 
-            if (StringUtility::AreEqualCaseInsensitive(stringInput, L"None"))
+            if (StringUtility::AreEqualCaseInsensitive(stringInput, "None"))
             {
                 return ErrorCode();
             }
 
-            if (StringUtility::AreEqualCaseInsensitive(stringInput, L"User"))
+            if (StringUtility::AreEqualCaseInsensitive(stringInput, "User"))
             {
                 roleMask = User;
                 return ErrorCode();
             }
 
-            if (StringUtility::AreEqualCaseInsensitive(stringInput, L"Admin"))
+            if (StringUtility::AreEqualCaseInsensitive(stringInput, "Admin"))
             {
                 roleMask = Admin;
                 return ErrorCode();
             }
 
-            if (StringUtility::AreEqualCaseInsensitive(stringInput, L"All"))
+            if (StringUtility::AreEqualCaseInsensitive(stringInput, "All"))
             {
                 roleMask = All;
                 return ErrorCode();
@@ -74,20 +74,20 @@ namespace Transport
             return ErrorCodeValue::InvalidArgument;
         }
 
-        std::wstring EnumToString(Transport::RoleMask::Enum e)
+        std::string EnumToString(Transport::RoleMask::Enum e)
         {
             switch (e)
             {
             case None:
-                return L"None";
+                return "None";
             case User:
-                return L"User";
+                return "User";
             case Admin:
-                return L"Admin";
+                return "Admin";
             case All:
-                return L"All";
+                return "All";
             default:
-                return wformatString("{0:x}", (unsigned int)e);
+                return formatString.L("{0:x}", (unsigned int)e);
             }
         }
     }

@@ -16,7 +16,7 @@ namespace Federation
         DENY_COPY(VoteEntry);
 
     public:
-        VoteEntry(std::wstring const & type, std::wstring const & connectionString, VoteProxySPtr && proxy, SiteNode & siteNode);
+        VoteEntry(std::string const & type, std::string const & connectionString, VoteProxySPtr && proxy, SiteNode & siteNode);
 
         ~VoteEntry();
 
@@ -26,14 +26,14 @@ namespace Federation
             return proxy_->VoteId;
         }
 
-        __declspec (property(get=getType)) std::wstring const & Type;
-        std::wstring const & getType() const
+        __declspec (property(get=getType)) std::string const & Type;
+        std::string const & getType() const
         {
             return type_;
         }
 
-        __declspec (property(get=getConnectionString)) std::wstring const & ConnectionString;
-        std::wstring const & getConnectionString() const
+        __declspec (property(get=getConnectionString)) std::string const & ConnectionString;
+        std::string const & getConnectionString() const
         {
             return connectionString_;
         }
@@ -122,8 +122,8 @@ namespace Federation
 
         void Acquire();
 
-        std::wstring type_;
-        std::wstring connectionString_;
+        std::string type_;
+        std::string connectionString_;
 
         VoteProxySPtr proxy_;
         SiteNode & siteNode_;

@@ -54,7 +54,7 @@ namespace Common
         if (!success)
         {
             string cmdline;
-            cmdline.append(formatString("/bin/ps -f -q {0}", childPid));
+            cmdline.append(formatString.L("/bin/ps -f -q {0}", childPid));
             system(cmdline.c_str());
             BOOST_FAIL("wait failed");
         }

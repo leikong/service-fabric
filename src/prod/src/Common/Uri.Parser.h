@@ -19,7 +19,7 @@ namespace Common
         static const UnicodeRange NonAsciiRange;
 
     public:
-        typedef std::wstring::const_iterator iterator;
+        typedef std::string::const_iterator iterator;
 
         __declspec(property(get=get_UriType)) UriType::Enum UriType;
         __declspec(property(get=get_SchemeStart)) iterator SchemeStart;
@@ -57,10 +57,10 @@ namespace Common
         iterator get_FragmentEnd() { return fragmentEnd_; }
         std::vector<std::pair<iterator,iterator>> & get_PathSegments() { return pathSegments_; }
 
-        bool TryParse(std::wstring const & input);
+        bool TryParse(std::string const & input);
 
     private:
-        bool Fail(iterator position, wchar_t const * tag);
+        bool Fail(iterator position, char const * tag);
 
         // Match methods return true if the string starting at the first paramter matches the
         // specified element.  If they return true, 'end' points at the next character after
@@ -101,16 +101,16 @@ namespace Common
         bool MatchSubDelims(iterator start, __out iterator & end);
         bool MatchWhitespace(iterator start, __out iterator & end);
         bool MatchAlpha(iterator start, __out iterator & end);
-        bool MatchLiteral(iterator cursor, wchar_t const * literal, __out iterator & end);
-        bool MatchChar(iterator start, wchar_t ch, __out iterator & end);
-        bool MatchChar(iterator start, LPCWSTR chars, __out iterator & end);
+        bool MatchLiteral(iterator cursor, char const * literal, __out iterator & end);
+        bool MatchChar(iterator start, char ch, __out iterator & end);
+        bool MatchChar(iterator start, LPCSTR chars, __out iterator & end);
 
-        bool IsSurrogatePair(wchar_t leading, wchar_t trailing);
-        bool IsDiacriticalMark(wchar_t ch);
-        bool IsDiacriticalMarkSupplement(wchar_t ch);
-        bool IsHalfMark(wchar_t ch);
-        bool IsDiacriticalMarkForSymbols(wchar_t ch);
-        bool IsNonAscii(wchar_t ch);
+        bool IsSurrogatePair(char leading, char trailing);
+        bool IsDiacriticalMark(char ch);
+        bool IsDiacriticalMarkSupplement(char ch);
+        bool IsHalfMark(char ch);
+        bool IsDiacriticalMarkForSymbols(char ch);
+        bool IsNonAscii(char ch);
 
         iterator InitializePath(UriType::Enum type, iterator pathStart, iterator pathEnd);
 
@@ -135,7 +135,7 @@ namespace Common
 
         bool traceOnFailure_;
 
-        static LPCWSTR hexDigit_;
-        static LPCWSTR decDigit_;
+        static LPCSTR hexDigit_;
+        static LPCSTR decDigit_;
     };
 }

@@ -9,19 +9,19 @@ using namespace Common;
 using namespace std;
 
 // Environment variables
-GlobalWString FabricEnvironment::FabricDataRootEnvironmentVariable = make_global<wstring>(L"FabricDataRoot");
-GlobalWString FabricEnvironment::FabricRootEnvironmentVariable = make_global<wstring>(L"FabricRoot");
-GlobalWString FabricEnvironment::FabricBinRootEnvironmentVariable = make_global<wstring>(L"FabricBinRoot");
-GlobalWString FabricEnvironment::FabricLogRootEnvironmentVariable = make_global<wstring>(L"FabricLogRoot");
-GlobalWString FabricEnvironment::EnableCircularTraceSessionEnvironmentVariable = make_global<wstring>(L"EnableCircularTraceSession");
-GlobalWString FabricEnvironment::FabricCodePathEnvironmentVariable = make_global<wstring>(L"FabricCodePath");
-GlobalWString FabricEnvironment::HostedServiceNameEnvironmentVariable = make_global<wstring>(L"HostedServiceName");
-GlobalWString FabricEnvironment::FileConfigStoreEnvironmentVariable = make_global<wstring>(L"FabricConfigFileName");
-GlobalWString FabricEnvironment::PackageConfigStoreEnvironmentVariable = make_global<wstring>(L"FabricPackageFileName");
-GlobalWString FabricEnvironment::SettingsConfigStoreEnvironmentVariable = make_global<wstring>(L"FabricSettingsFileName");
-GlobalWString FabricEnvironment::RemoveNodeConfigurationEnvironmentVariable = make_global<wstring>(L"RemoveNodeConfiguration");
-GlobalWString FabricEnvironment::WindowsFabricRemoveNodeConfigurationRegValue = make_global<wstring>(L"RemoveNodeConfiguration");
-GlobalWString FabricEnvironment::FabricDnsServerIPAddressEnvironmentVariable = make_global<wstring>(L"FabricDnsServerIPAddress");
+GlobalString FabricEnvironment::FabricDataRootEnvironmentVariable = make_global<string>("FabricDataRoot");
+GlobalString FabricEnvironment::FabricRootEnvironmentVariable = make_global<string>("FabricRoot");
+GlobalString FabricEnvironment::FabricBinRootEnvironmentVariable = make_global<string>("FabricBinRoot");
+GlobalString FabricEnvironment::FabricLogRootEnvironmentVariable = make_global<string>("FabricLogRoot");
+GlobalString FabricEnvironment::EnableCircularTraceSessionEnvironmentVariable = make_global<string>("EnableCircularTraceSession");
+GlobalString FabricEnvironment::FabricCodePathEnvironmentVariable = make_global<string>("FabricCodePath");
+GlobalString FabricEnvironment::HostedServiceNameEnvironmentVariable = make_global<string>("HostedServiceName");
+GlobalString FabricEnvironment::FileConfigStoreEnvironmentVariable = make_global<string>("FabricConfigFileName");
+GlobalString FabricEnvironment::PackageConfigStoreEnvironmentVariable = make_global<string>("FabricPackageFileName");
+GlobalString FabricEnvironment::SettingsConfigStoreEnvironmentVariable = make_global<string>("FabricSettingsFileName");
+GlobalString FabricEnvironment::RemoveNodeConfigurationEnvironmentVariable = make_global<string>("RemoveNodeConfiguration");
+GlobalString FabricEnvironment::WindowsFabricRemoveNodeConfigurationRegValue = make_global<string>("RemoveNodeConfiguration");
+GlobalString FabricEnvironment::FabricDnsServerIPAddressEnvironmentVariable = make_global<string>("FabricDnsServerIPAddress");
 
 #if defined(PLATFORM_UNIX)
 LinuxPackageManagerType::Enum FabricEnvironment::packageManagerType_ = LinuxPackageManagerType::Enum::Unknown;
@@ -38,7 +38,7 @@ LinuxPackageManagerType::Enum FabricEnvironment::packageManagerType_ = LinuxPack
 ErrorCode FabricEnvironment::GetStoreTypeAndLocation(
     HMODULE dllModule,
     __out ConfigStoreType::Enum & storeType,
-    __out wstring & storeLocation)
+    __out string & storeLocation)
 {
     storeType = ConfigStoreType::Unknown;
     storeLocation.resize(0);
@@ -64,15 +64,15 @@ ErrorCode FabricEnvironment::GetStoreTypeAndLocation(
         return (File::Exists(storeLocation) ? ErrorCode(ErrorCodeValue::Success) : ErrorCode(ErrorCodeValue::NotFound));
     }
 
-    wstring executableFileName;
-    wstring executablePath;
+    string executableFileName;
+    string executablePath;
 
     // option 1: PACKAGE: check if Fabric.Package.Current.xml is present in [exepath]\\..
     Environment::GetExecutablePath(executablePath);
 
     storeLocation.resize(0);
     storeLocation = executablePath;
-    Path::CombineInPlace(storeLocation, L"..");
+    Path::CombineInPlace(storeLocation, "..");
     Path::CombineInPlace(storeLocation, FabricConstants::DefaultPackageConfigStoreLocation);
     if (File::Exists(storeLocation))
     {
@@ -81,8 +81,8 @@ ErrorCode FabricEnvironment::GetStoreTypeAndLocation(
     }
 
     // option 2: PACKAGE: check if Fabric.Package.Current.xml is present in [dllModulePath]\\..
-    wstring dllModulePath;
-    wchar_t moduleFileName[MAX_PATH];
+    string dllModulePath;
+    char moduleFileName[MAX_PATH];
     if (::GetModuleFileName(dllModule, moduleFileName, MAX_PATH) == 0)
     {
         return ErrorCode::FromWin32Error(GetLastError());
@@ -91,7 +91,7 @@ ErrorCode FabricEnvironment::GetStoreTypeAndLocation(
 
     storeLocation.resize(0);
     storeLocation = dllModulePath;
-    Path::CombineInPlace(storeLocation, L"..");
+    Path::CombineInPlace(storeLocation, "..");
     Path::CombineInPlace(storeLocation, FabricConstants::DefaultPackageConfigStoreLocation);
     if (File::Exists(storeLocation))
     {
@@ -104,7 +104,7 @@ ErrorCode FabricEnvironment::GetStoreTypeAndLocation(
 
     storeLocation.resize(0);
     storeLocation = executableFileName;
-    storeLocation.append(L".cfg");
+    storeLocation.append(".cfg");
     if (File::Exists(storeLocation))
     {
         storeType = ConfigStoreType::Cfg;
@@ -132,7 +132,7 @@ ErrorCode FabricEnvironment::GetStoreTypeAndLocation(
     }
 
     // option 6: Settings: check if FabricHostSettings.xml is present in the dataroot
-    wstring fabricDataRoot;
+    string fabricDataRoot;
     auto error = GetFabricDataRoot(fabricDataRoot);
     if (!error.IsSuccess() && !error.IsError(ErrorCodeValue::FabricDataRootNotFound))
     {
@@ -184,15 +184,15 @@ ErrorCode FabricEnvironment::GetStoreTypeAndLocation(
     // all options to locate configuration store information failed, use None (empty) store
     storeType = ConfigStoreType::None;
     storeLocation.resize(0);
-    storeLocation = L"";
+    storeLocation = "";
 
     return ErrorCode(ErrorCodeValue::Success);
 }
 
-ErrorCode FabricEnvironment::GetFabricVersion(__out wstring & fabricVersion)
+ErrorCode FabricEnvironment::GetFabricVersion(__out string & fabricVersion)
 {
 #if defined(PLATFORM_UNIX)
-    wstring versionFile = Path::Combine(Environment::GetExecutablePath(), L"ClusterVersion");
+    string versionFile = Path::Combine(Environment::GetExecutablePath(), "ClusterVersion");
     File fileReader;
     auto error = fileReader.TryOpen(versionFile, Common::FileMode::Open, Common::FileAccess::Read, Common::FileShare::Read);
     if (!error.IsSuccess())
@@ -240,43 +240,43 @@ ErrorCode FabricEnvironment::GetLinuxPackageManagerType(__out LinuxPackageManage
 }
 #endif
 
-ErrorCode FabricEnvironment::GetFabricRoot(__out wstring & fabricRoot)
+ErrorCode FabricEnvironment::GetFabricRoot(__out string & fabricRoot)
 {
     return GetFabricRoot(NULL, fabricRoot);
 }
 
-ErrorCode FabricEnvironment::GetFabricRoot(LPCWSTR machineName, __out wstring & fabricRoot)
+ErrorCode FabricEnvironment::GetFabricRoot(LPCSTR machineName, __out string & fabricRoot)
 {
     return GetRegistryKeyHelper(FabricConstants::FabricRootRegKeyName, FabricRootEnvironmentVariable, ErrorCodeValue::FabricDataRootNotFound, machineName, fabricRoot);
 }
 
-ErrorCode FabricEnvironment::GetFabricBinRoot(__out wstring & fabricBinRoot)
+ErrorCode FabricEnvironment::GetFabricBinRoot(__out string & fabricBinRoot)
 {
     return GetFabricBinRoot(NULL, fabricBinRoot);
 
 }
 
-ErrorCode FabricEnvironment::GetFabricBinRoot(LPCWSTR machineName, __out wstring & fabricBinRoot)
+ErrorCode FabricEnvironment::GetFabricBinRoot(LPCSTR machineName, __out string & fabricBinRoot)
 {
     return GetRegistryKeyHelper(FabricConstants::FabricBinRootRegKeyName, FabricBinRootEnvironmentVariable, ErrorCodeValue::FabricBinRootNotFound, machineName, fabricBinRoot);
 }
 
-ErrorCode FabricEnvironment::GetFabricCodePath(__out wstring & fabricCodePath)
+ErrorCode FabricEnvironment::GetFabricCodePath(__out string & fabricCodePath)
 {
     return GetFabricCodePath(nullptr, NULL, fabricCodePath);
 }
 
-ErrorCode FabricEnvironment::GetFabricCodePath(LPCWSTR machineName, __out wstring & fabricCodePath)
+ErrorCode FabricEnvironment::GetFabricCodePath(LPCSTR machineName, __out string & fabricCodePath)
 {
     return GetFabricCodePath(nullptr, machineName, fabricCodePath);
 }
 
-ErrorCode FabricEnvironment::GetFabricCodePath(HMODULE dllModule, __out wstring & fabricCodePath)
+ErrorCode FabricEnvironment::GetFabricCodePath(HMODULE dllModule, __out string & fabricCodePath)
 {
     return GetFabricCodePath(dllModule, NULL, fabricCodePath);
 }
 
-ErrorCode FabricEnvironment::GetFabricCodePath(HMODULE dllModule, LPCWSTR machineName, __out wstring & fabricCodePath)
+ErrorCode FabricEnvironment::GetFabricCodePath(HMODULE dllModule, LPCSTR machineName, __out string & fabricCodePath)
 {
     if (machineName == NULL || machineName[0] == 0)
     {
@@ -304,7 +304,7 @@ ErrorCode FabricEnvironment::GetFabricCodePath(HMODULE dllModule, LPCWSTR machin
         if (dllModule)
         {
             // incase of xcopy deployment return the path of the DLL (FabricCommon)
-            wchar_t moduleFileName[MAX_PATH];
+            char moduleFileName[MAX_PATH];
             if (::GetModuleFileName(dllModule, moduleFileName, MAX_PATH) == 0)
             {
                 return ErrorCode::FromWin32Error(GetLastError());
@@ -327,22 +327,22 @@ ErrorCode FabricEnvironment::GetFabricCodePath(HMODULE dllModule, LPCWSTR machin
     }
 }
 
-ErrorCode FabricEnvironment::GetFabricDataRoot(__out wstring & fabricDataRoot)
+ErrorCode FabricEnvironment::GetFabricDataRoot(__out string & fabricDataRoot)
 {
     return GetFabricDataRoot(NULL, fabricDataRoot);
 }
 
-ErrorCode FabricEnvironment::GetFabricDataRoot(LPCWSTR machineName, __out wstring & fabricDataRoot)
+ErrorCode FabricEnvironment::GetFabricDataRoot(LPCSTR machineName, __out string & fabricDataRoot)
 {
     return GetRegistryKeyHelper(FabricConstants::FabricDataRootRegKeyName, FabricDataRootEnvironmentVariable, ErrorCodeValue::FabricDataRootNotFound, machineName, fabricDataRoot);
 }
 
-ErrorCode FabricEnvironment::GetFabricLogRoot(__out wstring & fabricLogRoot)
+ErrorCode FabricEnvironment::GetFabricLogRoot(__out string & fabricLogRoot)
 {
     return GetFabricLogRoot(NULL, fabricLogRoot);
 }
 
-ErrorCode FabricEnvironment::GetFabricLogRoot(LPCWSTR machineName, __out wstring & fabricLogRoot)
+ErrorCode FabricEnvironment::GetFabricLogRoot(LPCSTR machineName, __out string & fabricLogRoot)
 {
     return GetRegistryKeyHelper(FabricConstants::FabricLogRootRegKeyName, FabricLogRootEnvironmentVariable, ErrorCodeValue::FabricLogRootNotFound, machineName, fabricLogRoot);
 }
@@ -352,7 +352,7 @@ ErrorCode FabricEnvironment::GetEnableCircularTraceSession(__out BOOLEAN & enabl
     return GetEnableCircularTraceSession(NULL, enableCircularTraceSession);
 }
 
-ErrorCode FabricEnvironment::GetEnableCircularTraceSession(LPCWSTR machineName, __out BOOLEAN & enableCircularTraceSession)
+ErrorCode FabricEnvironment::GetEnableCircularTraceSession(LPCSTR machineName, __out BOOLEAN & enableCircularTraceSession)
 {
     // Default to false and ignore if not present
     DWORD val = 0;
@@ -361,22 +361,22 @@ ErrorCode FabricEnvironment::GetEnableCircularTraceSession(LPCWSTR machineName, 
     return err;
 }
 
-ErrorCode FabricEnvironment::GetRemoveNodeConfigurationValue(__out wstring & removeNodeConfigurationValue)
+ErrorCode FabricEnvironment::GetRemoveNodeConfigurationValue(__out string & removeNodeConfigurationValue)
 {
     return GetRegistryKeyHelper(WindowsFabricRemoveNodeConfigurationRegValue, RemoveNodeConfigurationEnvironmentVariable, ErrorCodeValue::FabricRemoveConfigurationValueNotFound, NULL, removeNodeConfigurationValue);
 }
 
-ErrorCode FabricEnvironment::GetFabricDnsServerIPAddress(__out wstring & dnsServerIPAddress)
+ErrorCode FabricEnvironment::GetFabricDnsServerIPAddress(__out string & dnsServerIPAddress)
 {
     return GetFabricDnsServerIPAddress(NULL, dnsServerIPAddress);
 }
 
-ErrorCode FabricEnvironment::GetFabricDnsServerIPAddress(LPCWSTR machineName, __out wstring & dnsServerIPAddress)
+ErrorCode FabricEnvironment::GetFabricDnsServerIPAddress(LPCSTR machineName, __out string & dnsServerIPAddress)
 {
     return GetRegistryKeyHelper(FabricConstants::FabricDnsServerIPAddressRegKeyName, FabricDnsServerIPAddressEnvironmentVariable, ErrorCodeValue::DnsServerIPAddressNotFound, machineName, dnsServerIPAddress);
 }
 
-ErrorCode FabricEnvironment::GetRegistryKeyHelper(const wstring & name, const wstring & environmentVariable, ErrorCode valueNotFound, LPCWSTR machineName, __out wstring & value)
+ErrorCode FabricEnvironment::GetRegistryKeyHelper(const string & name, const string & environmentVariable, ErrorCode valueNotFound, LPCSTR machineName, __out string & value)
 {
     if (machineName == NULL || machineName[0] == 0)
     {
@@ -405,16 +405,16 @@ ErrorCode FabricEnvironment::GetRegistryKeyHelper(const wstring & name, const ws
     }
 }
 
-ErrorCode FabricEnvironment::GetRegistryKeyHelper(const wstring & name, const wstring & environmentVariable, ErrorCode valueNotFound, LPCWSTR machineName, __out DWORD & value)
+ErrorCode FabricEnvironment::GetRegistryKeyHelper(const string & name, const string & environmentVariable, ErrorCode valueNotFound, LPCSTR machineName, __out DWORD & value)
 {
     if (machineName == NULL || machineName[0] == 0)
     {
 
-        wstring envValue;
+        string envValue;
         bool envVarFound = Environment::GetEnvironmentVariable(environmentVariable, envValue, Common::NOTHROW());
         if (envVarFound)
         {
-            value = envValue.compare(L"0") != 0;
+            value = envValue.compare("0") != 0;
             return ErrorCode::Success();
         }
 
@@ -436,9 +436,9 @@ ErrorCode FabricEnvironment::GetRegistryKeyHelper(const wstring & name, const ws
     }
 }
 
-ErrorCode FabricEnvironment::SetEtcConfigValue(const wstring & name, const wstring & value)
+ErrorCode FabricEnvironment::SetEtcConfigValue(const string & name, const string & value)
 {
-    wstring pathToConfigSetting = Path::Combine(FabricConstants::FabricEtcConfigPath, name);
+    string pathToConfigSetting = Path::Combine(FabricConstants::FabricEtcConfigPath, name);
     try
     {
         FileWriter fileWriter;
@@ -448,9 +448,7 @@ ErrorCode FabricEnvironment::SetEtcConfigValue(const wstring & name, const wstri
             return ErrorCodeValue::OperationFailed;
         }
 
-        std::string result;
-        StringUtility::UnicodeToAnsi(value, result);
-        fileWriter << result;
+        fileWriter << value;
     }
     catch (std::exception const&)
     {
@@ -460,14 +458,14 @@ ErrorCode FabricEnvironment::SetEtcConfigValue(const wstring & name, const wstri
     return ErrorCodeValue::Success;
 }
 
-ErrorCode FabricEnvironment::SetEtcConfigValue(const wstring & name, DWORD value)
+ErrorCode FabricEnvironment::SetEtcConfigValue(const string & name, DWORD value)
 {
-    return SetEtcConfigValue(name, std::to_wstring((unsigned long long)value));
+    return SetEtcConfigValue(name, std::to_string((unsigned long long)value));
 }
 
-ErrorCode FabricEnvironment::GetEtcConfigValue(const wstring & name, ErrorCode valueNotFound, __out wstring & value)
+ErrorCode FabricEnvironment::GetEtcConfigValue(const string & name, ErrorCode valueNotFound, __out string & value)
 {
-    wstring pathToConfigSetting = Path::Combine(FabricConstants::FabricEtcConfigPath, name);
+    string pathToConfigSetting = Path::Combine(FabricConstants::FabricEtcConfigPath, name);
     if (!File::Exists(pathToConfigSetting))
     {
         return valueNotFound;
@@ -500,21 +498,21 @@ ErrorCode FabricEnvironment::GetEtcConfigValue(const wstring & name, ErrorCode v
     return Environment::Expand(value, value);
 }
 
-ErrorCode FabricEnvironment::GetEtcConfigValue(const wstring & name, ErrorCode valueNotFound, __out DWORD & value)
+ErrorCode FabricEnvironment::GetEtcConfigValue(const string & name, ErrorCode valueNotFound, __out DWORD & value)
 {
-    wstring stringValue;
+    string stringValue;
     auto err = GetEtcConfigValue(name, valueNotFound, stringValue);
     if (!err.IsSuccess())
     {
         return err;
     }
 
-    value = std::wcstoul(stringValue.c_str(), NULL, 0);
+    value = std::stoul(stringValue.c_str(), NULL, 0);
 
     return ErrorCode::Success();
 }
 
-ErrorCode FabricEnvironment::GetRegistryKeyHelper(RegistryKey & regKey, const wstring & name, ErrorCode valueNotFound, __out wstring & value)
+ErrorCode FabricEnvironment::GetRegistryKeyHelper(RegistryKey & regKey, const string & name, ErrorCode valueNotFound, __out string & value)
 {
     if (!regKey.IsValid)
     {
@@ -529,7 +527,7 @@ ErrorCode FabricEnvironment::GetRegistryKeyHelper(RegistryKey & regKey, const ws
     return Environment::Expand(value, value);
 }
 
-ErrorCode FabricEnvironment::GetRegistryKeyHelper(RegistryKey & regKey, const wstring & name, ErrorCode valueNotFound, __out DWORD & value)
+ErrorCode FabricEnvironment::GetRegistryKeyHelper(RegistryKey & regKey, const string & name, ErrorCode valueNotFound, __out DWORD & value)
 {
     if (!regKey.IsValid)
     {
@@ -544,62 +542,62 @@ ErrorCode FabricEnvironment::GetRegistryKeyHelper(RegistryKey & regKey, const ws
     return ErrorCodeValue::Success;
 }
 
-ErrorCode FabricEnvironment::SetFabricRoot(const wstring & fabricRoot)
+ErrorCode FabricEnvironment::SetFabricRoot(const string & fabricRoot)
 {
     return SetFabricRoot(fabricRoot, NULL);
 }
 
-ErrorCode FabricEnvironment::SetFabricRoot(const wstring & fabricRoot, LPCWSTR machineName)
+ErrorCode FabricEnvironment::SetFabricRoot(const string & fabricRoot, LPCSTR machineName)
 {
     return SetRegistryKeyHelper(FabricConstants::FabricRootRegKeyName, fabricRoot, machineName);
 }
 
-ErrorCode FabricEnvironment::SetFabricBinRoot(const wstring & fabricBinRoot)
+ErrorCode FabricEnvironment::SetFabricBinRoot(const string & fabricBinRoot)
 {
     return SetFabricBinRoot(fabricBinRoot, NULL);
 }
 
-ErrorCode FabricEnvironment::SetFabricBinRoot(const wstring & fabricBinRoot, LPCWSTR machineName)
+ErrorCode FabricEnvironment::SetFabricBinRoot(const string & fabricBinRoot, LPCSTR machineName)
 {
     return SetRegistryKeyHelper(FabricConstants::FabricBinRootRegKeyName, fabricBinRoot, machineName);
 }
 
-ErrorCode FabricEnvironment::SetFabricCodePath(const wstring & fabricCodePath)
+ErrorCode FabricEnvironment::SetFabricCodePath(const string & fabricCodePath)
 {
     return SetFabricCodePath(fabricCodePath, NULL);
 }
 
-ErrorCode FabricEnvironment::SetFabricCodePath(const wstring & fabricCodePath, LPCWSTR machineName)
+ErrorCode FabricEnvironment::SetFabricCodePath(const string & fabricCodePath, LPCSTR machineName)
 {
     return SetRegistryKeyHelper(FabricConstants::FabricCodePathRegKeyName, fabricCodePath, machineName);
 }
 
-ErrorCode FabricEnvironment::SetFabricDataRoot(const wstring & fabricDataRoot)
+ErrorCode FabricEnvironment::SetFabricDataRoot(const string & fabricDataRoot)
 {
     return SetFabricDataRoot(fabricDataRoot, NULL);
 }
 
-ErrorCode FabricEnvironment::SetFabricDataRoot(const wstring & fabricDataRoot, LPCWSTR machineName)
+ErrorCode FabricEnvironment::SetFabricDataRoot(const string & fabricDataRoot, LPCSTR machineName)
 {
     return SetRegistryKeyHelper(FabricConstants::FabricDataRootRegKeyName, fabricDataRoot, machineName);
 }
 
-ErrorCode FabricEnvironment::SetFabricLogRoot(const wstring & fabricLogRoot)
+ErrorCode FabricEnvironment::SetFabricLogRoot(const string & fabricLogRoot)
 {
     return SetFabricLogRoot(fabricLogRoot, NULL);
 }
 
-ErrorCode FabricEnvironment::SetFabricLogRoot(const wstring & fabricLogRoot, LPCWSTR machineName)
+ErrorCode FabricEnvironment::SetFabricLogRoot(const string & fabricLogRoot, LPCSTR machineName)
 {
     return SetRegistryKeyHelper(FabricConstants::FabricLogRootRegKeyName, fabricLogRoot, machineName);
 }
 
-ErrorCode FabricEnvironment::SetEnableCircularTraceSession(BOOLEAN enableCircularTraceSession, LPCWSTR machineName)
+ErrorCode FabricEnvironment::SetEnableCircularTraceSession(BOOLEAN enableCircularTraceSession, LPCSTR machineName)
 {
     return SetRegistryKeyHelper(FabricConstants::EnableCircularTraceSessionRegKeyName, enableCircularTraceSession, machineName);
 }
 
-ErrorCode FabricEnvironment::SetEnableUnsupportedPreviewFeatures(BOOLEAN enableUnsupportedPreviewFeatures, LPCWSTR machineName)
+ErrorCode FabricEnvironment::SetEnableUnsupportedPreviewFeatures(BOOLEAN enableUnsupportedPreviewFeatures, LPCSTR machineName)
 {
     return SetRegistryKeyHelper(FabricConstants::EnableUnsupportedPreviewFeaturesRegKeyName, enableUnsupportedPreviewFeatures, machineName);
 }
@@ -613,7 +611,7 @@ ErrorCode FabricEnvironment::GetEnableUnsupportedPreviewFeatures(bool & enableUn
     return err;
 }
 
-ErrorCode FabricEnvironment::SetIsSFVolumeDiskServiceEnabled(BOOLEAN isSFVolumeDiskServiceEnabled, LPCWSTR machineName)
+ErrorCode FabricEnvironment::SetIsSFVolumeDiskServiceEnabled(BOOLEAN isSFVolumeDiskServiceEnabled, LPCSTR machineName)
 {
     return SetRegistryKeyHelper(FabricConstants::IsSFVolumeDiskServiceEnabledRegKeyName, isSFVolumeDiskServiceEnabled, machineName);
 }
@@ -627,7 +625,7 @@ ErrorCode FabricEnvironment::GetIsSFVolumeDiskServiceEnabled(bool & isSFVolumeDi
     return err;
 }
 
-ErrorCode FabricEnvironment::SetRegistryKeyHelper(const wstring & name, const wstring & value, LPCWSTR machineName)
+ErrorCode FabricEnvironment::SetRegistryKeyHelper(const string & name, const string & value, LPCSTR machineName)
 {
     if (machineName == NULL || machineName[0] == 0)
     {
@@ -649,7 +647,7 @@ ErrorCode FabricEnvironment::SetRegistryKeyHelper(const wstring & name, const ws
     }
 }
 
-ErrorCode FabricEnvironment::SetRegistryKeyHelper(const wstring & name, DWORD value, LPCWSTR machineName)
+ErrorCode FabricEnvironment::SetRegistryKeyHelper(const string & name, DWORD value, LPCSTR machineName)
 {
     if (machineName == NULL || machineName[0] == 0)
     {
@@ -671,7 +669,7 @@ ErrorCode FabricEnvironment::SetRegistryKeyHelper(const wstring & name, DWORD va
     }
 }
 
-ErrorCode FabricEnvironment::SetRegistryKeyHelper(RegistryKey & regKey, const wstring & name, const wstring & value)
+ErrorCode FabricEnvironment::SetRegistryKeyHelper(RegistryKey & regKey, const string & name, const string & value)
 {
     if (regKey.IsValid)
     {
@@ -684,7 +682,7 @@ ErrorCode FabricEnvironment::SetRegistryKeyHelper(RegistryKey & regKey, const ws
 }
 
 
-ErrorCode FabricEnvironment::SetRegistryKeyHelper(RegistryKey & regKey, const wstring & name, DWORD value)
+ErrorCode FabricEnvironment::SetRegistryKeyHelper(RegistryKey & regKey, const string & name, DWORD value)
 {
     if (regKey.IsValid)
     {
@@ -696,9 +694,9 @@ ErrorCode FabricEnvironment::SetRegistryKeyHelper(RegistryKey & regKey, const ws
     return ErrorCode::FromWin32Error(regKey.Error);
 }
 
-void FabricEnvironment::GetFabricTracesTestKeyword(__out std::wstring & keyword)
+void FabricEnvironment::GetFabricTracesTestKeyword(__out std::string & keyword)
 {
-    bool testKeywordEnvFound = Environment::GetEnvironmentVariable(L"FabricTracesTestKeyword", keyword, Common::NOTHROW());
+    bool testKeywordEnvFound = Environment::GetEnvironmentVariable("FabricTracesTestKeyword", keyword, Common::NOTHROW());
     if (!testKeywordEnvFound)
     {
         keyword.clear();

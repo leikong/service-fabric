@@ -56,9 +56,9 @@ namespace Common
         return TimeSpan(this->ticks_ - rhs.ticks_);
     }
 
-    std::wstring DateTime::ToString(bool utc) const
+    std::string DateTime::ToString(bool utc) const
     {
-        std::wstring result;
+        std::string result;
         if (utc)
         {
             Common::StringWriter(result).Write(*this);
@@ -71,7 +71,7 @@ namespace Common
         return result;
     }
 
-    bool DateTime::TryParse (std::wstring const & str, __out DateTime & result)
+    bool DateTime::TryParse (std::string const & str, __out DateTime & result)
     {
         // assumes string in the forms
         // 2005/07/06-12:30:08.869, 2016-04-20T10:30:30.999Z
@@ -82,7 +82,7 @@ namespace Common
         //2018-02-23T11:22:12.1630849Z
         if (str.size() >= 24)
         {
-            if (str[10] != L'T' || str[str.size() - 1] != L'Z')
+            if (str[10] != 'T' || str[str.size() - 1] != 'Z')
             {
                 return false;
             }
@@ -112,7 +112,7 @@ namespace Common
         return true;
     }
 
-    DateTime DateTime::Parse (std::wstring const & str)
+    DateTime DateTime::Parse (std::string const & str)
     {
         DateTime result;
 
@@ -172,44 +172,44 @@ namespace Common
             st.wHour,st.wMinute,st.wSecond, st.wMilliseconds);
     }
 
-    std::wstring DateTime::ToIsoString()
+    std::string DateTime::ToIsoString()
     {
         if (ticks_ == 0)
         {
             // DateTime - Min value
-            return L"0001-01-01T00:00:00.000Z";
+            return "0001-01-01T00:00:00.000Z";
         }
 
         ::SYSTEMTIME st;
         ::FILETIME ft = this->AsFileTime;
         if (!FileTimeToSystemTime(&ft, &st))
         {
-            return L"0001-01-01T00:00:00.000Z";
+            return "0001-01-01T00:00:00.000Z";
         }
 
-        std::wstringstream ss;
-        ss << std::setfill(L'0');
+        std::stringstream ss;
+        ss << std::setfill('0');
         ss << std::setw(4);
         ss << st.wYear;
-        ss << L"-";
+        ss << "-";
         ss << std::setw(2);
         ss << st.wMonth;
-        ss << L"-";
+        ss << "-";
         ss << std::setw(2);
         ss << st.wDay;
-        ss << L"T";
+        ss << "T";
         ss << std::setw(2);
         ss << st.wHour;
-        ss << L":";
+        ss << ":";
         ss << std::setw(2);
         ss << st.wMinute;
-        ss << L":";
+        ss << ":";
         ss << std::setw(2);
         ss << st.wSecond;
-        ss << L".";
+        ss << ".";
         ss << std::setw(3);
         ss << st.wMilliseconds;
-        ss << L"Z";
+        ss << "Z";
         
         return ss.str();
     }

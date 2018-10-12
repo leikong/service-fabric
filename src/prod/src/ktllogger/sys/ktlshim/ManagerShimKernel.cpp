@@ -35,7 +35,7 @@ KtlLogManagerKernel::KtlLogManagerKernel(
     //
     // Use hardcoded log container type
     //
-    _LogContainerType = L"Winfab Logical Log";
+    _LogContainerType = "Winfab Logical Log";
     status = _LogContainerType.Status();
     if (! NT_SUCCESS(status))
     {
@@ -143,7 +143,7 @@ KtlLogManagerKernel::KtlLogManagerKernel() :
     //
     // Use hardcoded log container type
     //
-    _LogContainerType = L"Winfab Logical Log";
+    _LogContainerType = "Winfab Logical Log";
     status = _LogContainerType.Status();
     if (! NT_SUCCESS(status))
     {

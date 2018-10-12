@@ -12,10 +12,10 @@ namespace Common
     INITIALIZE_COUNTER_SET(JobQueuePerfCounters)
 
     shared_ptr<JobQueuePerfCounters> JobQueuePerfCounters::CreateInstance(
-        wstring const &jobQueueName,
-        wstring const &uniqueId)
+        string const &jobQueueName,
+        string const &uniqueId)
     {
-        std::wstring id;
+        std::string id;
         Common::StringWriter writer(id);
         writer.Write("{0}:{1}:{2}", jobQueueName, uniqueId, SequenceNumber::GetNext());
         return JobQueuePerfCounters::CreateInstance(id);

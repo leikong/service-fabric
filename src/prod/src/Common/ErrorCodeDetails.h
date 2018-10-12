@@ -21,6 +21,6 @@ namespace Common
 
     private:
         ErrorCodeValue::Enum value_;
-        std::wstring message_;
+        std::string message_;
     };
 }

@@ -54,19 +54,19 @@ DWORD Sid::GetSubAuthority(DWORD subAuthority) const
     return ((PLSID)pSid_)->SubAuthority[subAuthority];
 }
 
-ErrorCode Sid::ToString(__out wstring & stringSid) const
+ErrorCode Sid::ToString(__out string & stringSid) const
 {
     return ToString(pSid_, stringSid);
 }
 
-ErrorCode Sid::GetAllowDacl(__out wstring & allowDacl) const
+ErrorCode Sid::GetAllowDacl(__out string & allowDacl) const
 {
-    wstring stringSid;
+    string stringSid;
     auto error = ToString(stringSid);
     if (!error.IsSuccess()) { return error; }
 
-    wstringstream sddlstream;
-    sddlstream << L"D:(A;;GX;;;" << stringSid << L")";
+    stringstream sddlstream;
+    sddlstream << "D:(A;;GX;;;" << stringSid << ")";
     allowDacl = sddlstream.str();
 
     return ErrorCode(ErrorCodeValue::Success);
@@ -80,7 +80,7 @@ bool Sid::IsValid(PSID pSid)
     return (plSID->Revision == SID_REVISION);
 }
 
-ErrorCode Sid::LookupAccount(PSID pSid, __out std::wstring & domainName, __out std::wstring & userName)
+ErrorCode Sid::LookupAccount(PSID pSid, __out std::string & domainName, __out std::string & userName)
 {
     ErrorCode err = ErrorCodeValue::InvalidArgument;
 
@@ -91,17 +91,17 @@ ErrorCode Sid::LookupAccount(PSID pSid, __out std::wstring & domainName, __out s
     if(pw)
     {
         string domainNameA = ".", userNameA = pw->pw_name;
-        StringUtility::Utf8ToUtf16(domainNameA, domainName);
-        StringUtility::Utf8ToUtf16(userNameA, userName);
+        Utf8ToUtf16NotNeeded2(domainNameA, domainName);
+        Utf8ToUtf16NotNeeded2(userNameA, userName);
         err = ErrorCodeValue::Success;
     }
     return err;
 }
 
-ErrorCode Sid::ToString(PSID pSid, __out wstring & stringSid)
+ErrorCode Sid::ToString(PSID pSid, __out string & stringSid)
 {
     PLSID plSid = (PLSID)pSid;
-    stringSid = wformatString("S-{0}-{1}-{2}-{3}",
+    stringSid = formatString.L("S-{0}-{1}-{2}-{3}",
                         plSid->Revision,
                         plSid->IdentifierAuthority.Value[5],
                         plSid->SubAuthority[SID_SUBAUTH_ARRAY_DOMAIN],
@@ -140,14 +140,14 @@ ErrorCode BufferedSid::CreateSPtr(__in PSID pSid, __out SidSPtr & sid)
     return ErrorCode(ErrorCodeValue::Success);
 }
 
-ErrorCode BufferedSid::CreateGroupSPtr(std::wstring const & accountName, __out SidSPtr & sid)
+ErrorCode BufferedSid::CreateGroupSPtr(std::string const & accountName, __out SidSPtr & sid)
 {
     ByteBuffer sidbuf;
     sidbuf.resize(SECURITY_MAX_SID_SIZE, 0);
     PLSID plSid = (PLSID)GetPSID(sidbuf);
 
     string accountNameA;
-    StringUtility::Utf16ToUtf8(accountName, accountNameA);
+    Utf16ToUtf8NotNeeded2(accountName, accountNameA);
     long buflen = 16384; // large enough
     unique_ptr<char[]> buf(new char[buflen]);
     struct group grbuf, *grbufp;
@@ -171,13 +171,13 @@ ErrorCode BufferedSid::CreateGroupSPtr(std::wstring const & accountName, __out S
     return ErrorCodeValue::NotFound;
 }
 
-ErrorCode BufferedSid::CreateUPtrFromStringSid(wstring const & stringSid, __out SidUPtr & sid)
+ErrorCode BufferedSid::CreateUPtrFromStringSid(string const & stringSid, __out SidUPtr & sid)
 {
     PSID pSid = NULL;
     try
     {
-        vector<wstring> tokens;
-        StringUtility::Split<wstring>(stringSid, tokens, L"-");
+        vector<string> tokens;
+        StringUtility::Split<string>(stringSid, tokens, "-");
         int uid;
         if(StringUtility::TryFromWString<int>(tokens.back(), uid))
         {
@@ -203,13 +203,13 @@ ErrorCode BufferedSid::CreateUPtrFromStringSid(wstring const & stringSid, __out 
     }
 }
 
-ErrorCode BufferedSid::CreateSPtrFromStringSid(wstring const & stringSid, __out SidSPtr & sid)
+ErrorCode BufferedSid::CreateSPtrFromStringSid(string const & stringSid, __out SidSPtr & sid)
 {
     PSID pSid = NULL;
     try
     {
-        vector<wstring> tokens;
-        StringUtility::Split<wstring>(stringSid, tokens, L"-");
+        vector<string> tokens;
+        StringUtility::Split<string>(stringSid, tokens, "-");
         int utype, uid;
         if(StringUtility::TryFromWString<int>(tokens[tokens.size()-2], utype)
            && StringUtility::TryFromWString<int>(tokens[tokens.size()-1], uid))
@@ -236,7 +236,7 @@ ErrorCode BufferedSid::CreateSPtrFromStringSid(wstring const & stringSid, __out 
     }
 }
 
-ErrorCode BufferedSid::CreateUPtr(wstring const & accountName, __out SidUPtr & sid)
+ErrorCode BufferedSid::CreateUPtr(string const & accountName, __out SidUPtr & sid)
 {
     ByteBuffer buffer;
     auto error = Create(accountName, buffer);
@@ -246,7 +246,7 @@ ErrorCode BufferedSid::CreateUPtr(wstring const & accountName, __out SidUPtr & s
     return ErrorCode(ErrorCodeValue::Success);
 }
 
-ErrorCode BufferedSid::CreateSPtr(wstring const & accountName, __out SidSPtr & sid)
+ErrorCode BufferedSid::CreateSPtr(string const & accountName, __out SidSPtr & sid)
 {
     ByteBuffer buffer;
     auto error = Create(accountName, buffer);
@@ -309,7 +309,7 @@ ErrorCode BufferedSid::Create(__in PSID pSid, __inout ByteBuffer & buffer)
     return ErrorCode(ErrorCodeValue::Success);
 }
 
-ErrorCode BufferedSid::Create(wstring const & accountName,  __inout ByteBuffer & buffer)
+ErrorCode BufferedSid::Create(string const & accountName,  __inout ByteBuffer & buffer)
 {
     ASSERT_IF(accountName.empty(), "Account name cannot be empty"); 
 
@@ -319,7 +319,7 @@ ErrorCode BufferedSid::Create(wstring const & accountName,  __inout ByteBuffer &
     PLSID plSid = (PLSID)GetPSID(buffer);
 
     string accountNameA;
-    StringUtility::Utf16ToUtf8(accountName, accountNameA);
+    Utf16ToUtf8NotNeeded2(accountName, accountNameA);
 
     long buflen = max(sysconf(_SC_GETPW_R_SIZE_MAX), sysconf(_SC_GETGR_R_SIZE_MAX));
 

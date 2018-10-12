@@ -16,34 +16,34 @@ namespace Common
     using namespace std;
 
     int Zip::TryZipDirectory(
-        wchar_t const * srcDirectoryPath,
-        wchar_t const * destZipFileName,
-        wchar_t * errorMessageBuffer,
+        char const * srcDirectoryPath,
+        char const * destZipFileName,
+        char * errorMessageBuffer,
         int errorMessageBufferSize)
     {
-        zipFile zipFile = zipOpen64(StringUtility::Utf16ToUtf8(destZipFileName).c_str(), APPEND_STATUS_CREATE);
+        zipFile zipFile = zipOpen64(Utf16ToUtf8NotNeeded(destZipFileName).c_str(), APPEND_STATUS_CREATE);
         if (zipFile == nullptr)
         {
-            Zip::CopyFromString(wformatString(StringResource::Get(IDS_COMMON_UNIX_Zip_Failure), "zipOpen64", ""), errorMessageBuffer, errorMessageBufferSize);
+            Zip::CopyFromString(formatString(StringResource::Get(IDS_COMMON_UNIX_Zip_Failure), "zipOpen64", ""), errorMessageBuffer, errorMessageBufferSize);
             return ErrorCodeValue::OperationFailed;
         }
 
-        wstring const currentPath = Directory::GetCurrentDirectory();
+        string const currentPath = Directory::GetCurrentDirectory();
         Directory::SetCurrentDirectory(srcDirectoryPath);
-        vector<wstring> allDirectories = Directory::GetSubDirectories(L".", L"*", true /* fullpath */, false);
-        vector<wstring> allFiles = Directory::GetFiles(L".", L"*", true /* fullpath */, false);
+        vector<string> allDirectories = Directory::GetSubDirectories(".", "*", true /* fullpath */, false);
+        vector<string> allFiles = Directory::GetFiles(".", "*", true /* fullpath */, false);
         Directory::SetCurrentDirectory(currentPath);
 
         int err = ZIP_OK;
 
         for (auto directoryW : allDirectories)
         {
-            if (directoryW.length() > 2 && directoryW.substr(0,2) == L"./")
+            if (directoryW.length() > 2 && directoryW.substr(0,2) == "./")
             {
                 directoryW = directoryW.substr(2, directoryW.length()-2);
             }
-            string directoryName = StringUtility::Utf16ToUtf8(directoryW);
-            string directoryNameFullPath = Path::Combine(StringUtility::Utf16ToUtf8(srcDirectoryPath), directoryName);
+            string directoryName = Utf16ToUtf8NotNeeded(directoryW);
+            string directoryNameFullPath = Path::Combine(Utf16ToUtf8NotNeeded(srcDirectoryPath), directoryName);
 
             // ensure directory ends with '/'
             if (directoryName[directoryName.length() -1] != '/')
@@ -60,12 +60,12 @@ namespace Common
 
         for (auto filenameW : allFiles)
         {
-            if (filenameW.length() > 2 && filenameW.substr(0,2) == L"./")
+            if (filenameW.length() > 2 && filenameW.substr(0,2) == "./")
             {
                 filenameW = filenameW.substr(2, filenameW.length() -2);
             }
-            string filename = StringUtility::Utf16ToUtf8(filenameW);
-            string filenameFullPath = Path::Combine(StringUtility::Utf16ToUtf8(srcDirectoryPath), filename);
+            string filename = Utf16ToUtf8NotNeeded(filenameW);
+            string filenameFullPath = Path::Combine(Utf16ToUtf8NotNeeded(srcDirectoryPath), filename);
 
             err = Zip::ArchiveEntry(zipFile, filename, filenameFullPath, errorMessageBuffer, errorMessageBufferSize);
             if (err != ZIP_OK)
@@ -83,7 +83,7 @@ namespace Common
         zipFile const & zipFile,
         string const & filename,
         string const & filenameFullPath,
-        wchar_t * errorMessageBuffer,
+        char * errorMessageBuffer,
         int const errorMessageBufferSize)
     {
         ifstream input(filenameFullPath.c_str(), ios::binary);
@@ -111,7 +111,7 @@ namespace Common
 
         if (err != ZIP_OK)
         {
-            Zip::CopyFromString(wformatString(StringResource::Get(IDS_COMMON_UNIX_Zip_Failure), "zipOpenNewFileInZip64", err), errorMessageBuffer, errorMessageBufferSize);
+            Zip::CopyFromString(formatString(StringResource::Get(IDS_COMMON_UNIX_Zip_Failure), "zipOpenNewFileInZip64", err), errorMessageBuffer, errorMessageBufferSize);
             return err;
         }
 
@@ -141,13 +141,13 @@ namespace Common
         }
         else
         {
-            Zip::CopyFromString(wformatString(StringResource::Get(IDS_COMMON_UNIX_Zip_Failure), "zipWriteInFileInZip", err), errorMessageBuffer, errorMessageBufferSize);
+            Zip::CopyFromString(formatString(StringResource::Get(IDS_COMMON_UNIX_Zip_Failure), "zipWriteInFileInZip", err), errorMessageBuffer, errorMessageBufferSize);
             return err;
         }
 
         if (err != ZIP_OK)
         {
-            Zip::CopyFromString(wformatString(StringResource::Get(IDS_COMMON_UNIX_Zip_Failure), "zipCloseFileInZip", err), errorMessageBuffer, errorMessageBufferSize);
+            Zip::CopyFromString(formatString(StringResource::Get(IDS_COMMON_UNIX_Zip_Failure), "zipCloseFileInZip", err), errorMessageBuffer, errorMessageBufferSize);
             return err;
         }
 
@@ -163,7 +163,7 @@ namespace Common
         time_t tm_t=0;
 
         DateTime lastWriteTime;
-        File::GetLastWriteTime(StringUtility::Utf8ToUtf16(filename), lastWriteTime);
+        File::GetLastWriteTime(Utf8ToUtf16NotNeeded(filename), lastWriteTime);
 
         ::SYSTEMTIME st;
         ::FILETIME ft = lastWriteTime.AsFileTime;
@@ -188,12 +188,12 @@ namespace Common
     }
 
     int Zip::TryUnzipDirectory(
-        wchar_t const * srcFileName,
-        wchar_t const * destDirectoryPath,
-        wchar_t * errorMessageBuffer,
+        char const * srcFileName,
+        char const * destDirectoryPath,
+        char * errorMessageBuffer,
         int errorMessageBufferSize)
     {
-        unzFile zipFile = unzOpen64(StringUtility::Utf16ToUtf8(srcFileName).c_str());
+        unzFile zipFile = unzOpen64(Utf16ToUtf8NotNeeded(srcFileName).c_str());
         if (zipFile == nullptr)
         {
             Zip::CopyFromString(StringResource::Get(IDS_ERROR_MESSAGE_FABRIC_E_FILE_NOT_FOUND), errorMessageBuffer, errorMessageBufferSize);
@@ -203,14 +203,14 @@ namespace Common
         int err = unzGoToFirstFile(zipFile);
         if (err != UNZ_OK)
         {
-            Zip::CopyFromString(wformatString(StringResource::Get(IDS_COMMON_UNIX_Unzip_Failure), "unzGoToFirstFile", err), errorMessageBuffer, errorMessageBufferSize);
+            Zip::CopyFromString(formatString(StringResource::Get(IDS_COMMON_UNIX_Unzip_Failure), "unzGoToFirstFile", err), errorMessageBuffer, errorMessageBufferSize);
             return err;
         }
 
         err = Directory::Create2(destDirectoryPath).ReadValue();
         if (err != ErrorCodeValue::Success)
         {
-            Zip::CopyFromString(wformatString(StringResource::Get(IDS_COMMON_UNIX_Unzip_Failure), wformatString("Directory::Create2 {0}", destDirectoryPath), err), errorMessageBuffer, errorMessageBufferSize);
+            Zip::CopyFromString(formatString(StringResource::Get(IDS_COMMON_UNIX_Unzip_Failure), formatString.L("Directory::Create2 {0}", destDirectoryPath), err), errorMessageBuffer, errorMessageBufferSize);
             return err;
         }
 
@@ -234,7 +234,7 @@ namespace Common
         return err;
     }
 
-    int Zip::ExtractCurrentEntry(unzFile const & zipFile, wchar_t const * destDirectoryPath, wchar_t * errorMessageBuffer, int const errorMessageBufferSize)
+    int Zip::ExtractCurrentEntry(unzFile const & zipFile, char const * destDirectoryPath, char * errorMessageBuffer, int const errorMessageBufferSize)
     {
         // Linux has a maximum filename length of 255 characters for most filesystems (including EXT4)
         char filename_inzip[256];
@@ -242,11 +242,11 @@ namespace Common
         int err = unzGetCurrentFileInfo64(zipFile, &file_info, filename_inzip, 256, NULL, 0, NULL, 0);
         if (err != UNZ_OK)
         {
-            Zip::CopyFromString(wformatString(StringResource::Get(IDS_COMMON_UNIX_Unzip_Failure), "unzGetCurrentFileInfo64", err), errorMessageBuffer, errorMessageBufferSize);
+            Zip::CopyFromString(formatString(StringResource::Get(IDS_COMMON_UNIX_Unzip_Failure), "unzGetCurrentFileInfo64", err), errorMessageBuffer, errorMessageBufferSize);
             return err;
         }
 
-        string filenameStr = Path::Combine(StringUtility::Utf16ToUtf8(destDirectoryPath), filename_inzip);
+        string filenameStr = Path::Combine(Utf16ToUtf8NotNeeded(destDirectoryPath), filename_inzip);
         char filename[filenameStr.length() + 1];
         strncpy(filename, filenameStr.c_str(), filenameStr.length()+1);
         // Is a directory
@@ -265,7 +265,7 @@ namespace Common
                 err =  Directory::Create2(filename).ReadValue();
                 if (err != ErrorCodeValue::Success)
                 {
-                    Zip::CopyFromString(wformatString(StringResource::Get(IDS_COMMON_UNIX_Unzip_Failure), wformatString("Directory::Create2 {0}", filename), err), errorMessageBuffer, errorMessageBufferSize);
+                    Zip::CopyFromString(formatString(StringResource::Get(IDS_COMMON_UNIX_Unzip_Failure), formatString.L("Directory::Create2 {0}", filename), err), errorMessageBuffer, errorMessageBufferSize);
                     return err;
                 }
                 *(directoryEnding + 1) = temp;
@@ -274,7 +274,7 @@ namespace Common
             err = unzOpenCurrentFile(zipFile);
             if (err != UNZ_OK)
             {
-                Zip::CopyFromString(wformatString(StringResource::Get(IDS_COMMON_UNIX_Unzip_Failure), "unzOpenCurrentFile", err), errorMessageBuffer, errorMessageBufferSize);
+                Zip::CopyFromString(formatString(StringResource::Get(IDS_COMMON_UNIX_Unzip_Failure), "unzOpenCurrentFile", err), errorMessageBuffer, errorMessageBufferSize);
                 return err;
 
             }
@@ -282,7 +282,7 @@ namespace Common
             ofstream outputFile(filename, ofstream::binary);
             if (!outputFile.good())
             {
-                Zip::CopyFromString(wformatString(StringResource::Get(IDS_COMMON_UNIX_Unzip_Failure), wformatString("open file: {0}", filename), ""), errorMessageBuffer, errorMessageBufferSize);
+                Zip::CopyFromString(formatString(StringResource::Get(IDS_COMMON_UNIX_Unzip_Failure), formatString.L("open file: {0}", filename), ""), errorMessageBuffer, errorMessageBufferSize);
                 return err;
             }
 
@@ -298,7 +298,7 @@ namespace Common
                     outputFile.write(buffer.data(), err);
                     if (!outputFile.good())
                     {
-                        Zip::CopyFromString(wformatString(StringResource::Get(IDS_COMMON_UNIX_Unzip_Failure), "Write to file", ""), errorMessageBuffer, errorMessageBufferSize);
+                        Zip::CopyFromString(formatString(StringResource::Get(IDS_COMMON_UNIX_Unzip_Failure), "Write to file", ""), errorMessageBuffer, errorMessageBufferSize);
                         return err;
                     }
                 }
@@ -314,12 +314,12 @@ namespace Common
     }
 
     void Zip::CopyFromString(
-        wstring const & str,
-        wchar_t * out,
+        string const & str,
+        char * out,
         int outSize)
     {
         auto temp = str.c_str();
-        wcsncpy(out, temp, min(wcslen(temp) + 1, static_cast<size_t>(outSize)));
+        strncpy(out, temp, min(strlen(temp) + 1, static_cast<size_t>(outSize)));
     }
 
     void Zip::ChangeFileDate(char const * filename, tm_unz tmuDate)

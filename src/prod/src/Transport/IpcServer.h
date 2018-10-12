@@ -14,18 +14,18 @@ namespace Transport
     public:
         IpcServer(
             Common::ComponentRoot const & root,
-            std::wstring const & transportListenAddress,
-            std::wstring const & transportListenAddressTls,
-            std::wstring const & serverId,
+            std::string const & transportListenAddress,
+            std::string const & transportListenAddressTls,
+            std::string const & serverId,
             bool useUnreliableTransport,
-            std::wstring const & owner);
+            std::string const & owner);
 
         IpcServer(
             Common::ComponentRoot const & root,
-            std::wstring const & transportListenAddress,
-            std::wstring const & serverId,
+            std::string const & transportListenAddress,
+            std::string const & serverId,
             bool useUnreliableTransport,
-            std::wstring const & owner);
+            std::string const & owner);
 
         ~IpcServer(); // disable clang generated destructor, which somehow requires ClientTable declaration 
 
@@ -35,7 +35,7 @@ namespace Transport
 
         Common::AsyncOperationSPtr BeginRequest(
             Transport::MessageUPtr && request,
-            std::wstring const & client,
+            std::string const & client,
             Common::TimeSpan timeout,
             Common::AsyncCallback const & callback,
             Common::AsyncOperationSPtr const & parent = Common::AsyncOperationSPtr());
@@ -43,21 +43,21 @@ namespace Transport
         Common::ErrorCode EndRequest(Common::AsyncOperationSPtr const & operation, Transport::MessageUPtr & reply);
 
         Common::ErrorCode SendOneWay(
-            std::wstring const & client, Transport::MessageUPtr && message,
+            std::string const & client, Transport::MessageUPtr && message,
             Common::TimeSpan expiration = Common::TimeSpan::MaxValue);
 
-        void RemoveClient(std::wstring const & client);
+        void RemoveClient(std::string const & client);
 
         // Read Properties
-        __declspec(property(get=get_transportListenAddress)) std::wstring const & TransportListenAddress;
-        inline std::wstring const & get_transportListenAddress() const { return localUnit_.listenAddress_; };
+        __declspec(property(get=get_transportListenAddress)) std::string const & TransportListenAddress;
+        inline std::string const & get_transportListenAddress() const { return localUnit_.listenAddress_; };
         __declspec(property(get=get_SecuritySettings)) Transport::SecuritySettings const & SecuritySettings;
         Transport::SecuritySettings const & get_SecuritySettings() const;
         Common::ErrorCode SetSecurity(Transport::SecuritySettings const & value); 
 
         bool IsTlsListenerEnabled() const { return tlsUnit_ != nullptr;}
-        __declspec(property(get = get_transportListenAddressTls)) std::wstring const & TransportListenAddressTls;
-        inline std::wstring const & get_transportListenAddressTls() const
+        __declspec(property(get = get_transportListenAddressTls)) std::string const & TransportListenAddressTls;
+        inline std::string const & get_transportListenAddressTls() const
         {
             Invariant(tlsUnit_);
             return tlsUnit_->listenAddress_;
@@ -88,25 +88,25 @@ namespace Transport
         void Cleanup();
         void OnTlsSecuritySettingsUpdated();
 
-        const std::wstring serverId_;
-        const std::wstring traceId_;
+        const std::string serverId_;
+        const std::string traceId_;
 
         struct TransportUnit
         {
             TransportUnit(
                 IpcServer* ipcServer,
                 Common::ComponentRoot const & root,
-                std::wstring const & listenAddress,
-                std::wstring const & serverId,
-                std::wstring const & owner,
-                std::wstring const & traceId,
+                std::string const & listenAddress,
+                std::string const & serverId,
+                std::string const & owner,
+                std::string const & traceId,
                 bool useUnreliableTransport);
 
             Common::ErrorCode Open();
             void Close();
 
             IpcServer* const ipcServer_;
-            std::wstring listenAddress_;
+            std::string listenAddress_;
             IDatagramTransportSPtr transport_;
             IpcDemuxer demuxer_;
             RequestReply requestReply_;

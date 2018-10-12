@@ -168,34 +168,12 @@ namespace Common
         };
 
         template <>
-        struct WriteTraits<std::wstring>
+        struct WriteTraits<LPCSTR>
         {
-            static void Write(TraceEventContext & context, std::wstring const & t)
+            static void Write(TraceEventContext & context, LPCSTR t)
             {
-                context.SetEventData(t.c_str(), (t.length() + 1) << 1);
-            }
-        };
-
-        template <>
-        struct WriteTraits<LPCWSTR>
-        {
-            static void Write(TraceEventContext & context, LPCWSTR t)
-            {
-                size_t cb = 0;
-                HRESULT hr = ::StringCbLength(t, STRSAFE_MAX_CCH * sizeof(WCHAR), &cb);
-                if (SUCCEEDED(hr)) // can't assert since assert itself writes
-                {
-                    context.SetEventData(t, cb + sizeof(WCHAR));
-                }
-            }
-        };
-
-        template <>
-        struct WriteTraits<WStringLiteral>
-        {
-            static void Write(TraceEventContext & context, WStringLiteral const & t)
-            {
-                context.SetEventData(t.begin(), (t.size() + 1) << 1);
+                size_t cb = strnlen(t, STRSAFE_MAX_CCH);
+                context.SetEventData(t, cb + sizeof(char));
             }
         };
 
@@ -244,20 +222,6 @@ namespace Common
             SetEventData(buffer, size);
         }
 
-        template <>
-        void WriteCopy<std::wstring>(std::wstring const & t)
-        {
-            size_t length = t.length();
-            if (length > MaxUnicodeStringSize)
-            {
-                length = MaxUnicodeStringSize;
-            }
-            size_t size = (length + 1) << 1;
-            wchar_t* buffer = static_cast<wchar_t*>(GetBuffer(size));
-            memcpy_s(buffer, size, t.c_str(), size - 2);
-            buffer[length] = 0;
-            SetEventData(buffer, size);
-        }
 #pragma endregion
 
     private:

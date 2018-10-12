@@ -29,7 +29,7 @@ namespace
         // create a dedicated EventLoopPool for isolation, also, dispatch socket events
         // synchronously to avoid potential delay in thread pool, assuming the number
         // of socket events for lease transport is small and their processing is fast
-        eventLoopPool = new EventLoopPool(L"lease");
+        eventLoopPool = new EventLoopPool("lease");
         return TRUE;
     }
 
@@ -57,7 +57,7 @@ NTSTATUS TransportCreate(
     Invariant(!securitySettings || securitySettings->IsRemotePeer());
 
     auto listenAddress = TcpTransportUtility::ConstructAddressString(pAddress->Address, pAddress->Port);
-    transport = DatagramTransportFactory::CreateTcp(listenAddress, listenAddress, L"lease");
+    transport = DatagramTransportFactory::CreateTcp(listenAddress, listenAddress, "lease");
     transport->SetEventLoopPool(GetEventLoopPool());
     transport->SetEventLoopReadDispatch(false);
     transport->SetEventLoopWriteDispatch(false);
@@ -175,12 +175,12 @@ NTSTATUS TransportBlockConnection(__in PTRANSPORT_SENDTARGET const & Target, __i
 
 
 
-std::wstring const & TransportListenEndpoint(__in PTRANSPORT_SENDTARGET Target)
+std::string const & TransportListenEndpoint(__in PTRANSPORT_SENDTARGET Target)
 {
     return Target->LocalAddress();//jc return &(Transport->InputListenEndpoint());
 }
 
-std::wstring const & TransportTargetEndpoint(__in PTRANSPORT_SENDTARGET Target)
+std::string const & TransportTargetEndpoint(__in PTRANSPORT_SENDTARGET Target)
 {
     return Target->Address();//jc return &(Target->GetAddress());
 }
@@ -190,28 +190,28 @@ unsigned short TransportTargetSenderListenPort(__in PTRANSPORT_SENDTARGET Target
     return 0;//jc return Target->GetSenderListenPort();
 }
 
-PWCHAR TransportIdentifier(__in PLEASE_TRANSPORT const & Transport)
+PCHAR TransportIdentifier(__in PLEASE_TRANSPORT const & Transport)
 {
-    return (PWCHAR)Transport->IdString.c_str();
+    return (PCHAR)Transport->IdString.c_str();
 }
 
-PWCHAR TransportIdentifier(__in PTRANSPORT_LISTEN_ENDPOINT endpoint)
+PCHAR TransportIdentifier(__in PTRANSPORT_LISTEN_ENDPOINT endpoint)
 {
-    return (PWCHAR) TcpTransportUtility::ConstructAddressString(endpoint->Address, endpoint->Port).c_str();
+    return (PCHAR) TcpTransportUtility::ConstructAddressString(endpoint->Address, endpoint->Port).c_str();
 }
 
-PWCHAR TransportTargetIdentifier(__in PTRANSPORT_SENDTARGET const & Target)
+PCHAR TransportTargetIdentifier(__in PTRANSPORT_SENDTARGET const & Target)
 {
-    return (PWCHAR)Target->Id().c_str();
+    return (PCHAR)Target->Id().c_str();
 }
 
 NTSTATUS ListenEndpointToWString(
     TRANSPORT_LISTEN_ENDPOINT const * endpoint,
-    __out_bcount(sizeInBytes) PWCHAR string,
+    __out_bcount(sizeInBytes) PCHAR string,
     USHORT sizeInBytes)
 {
     auto listenAddress = TcpTransportUtility::ConstructAddressString(endpoint->Address, endpoint->Port);
-    auto toCopy = (listenAddress.size() + 1) * sizeof(WCHAR);
+    auto toCopy = (listenAddress.size() + 1) * sizeof(CHAR);
     if (sizeInBytes < toCopy) return STATUS_INVALID_PARAMETER;
 
     memcpy(string, listenAddress.c_str(), toCopy);

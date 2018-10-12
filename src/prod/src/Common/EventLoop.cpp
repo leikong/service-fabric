@@ -21,7 +21,7 @@ namespace
 
     BOOL CALLBACK InitDefaultPool(PINIT_ONCE, PVOID, PVOID*)
     {
-        defaultPool = new EventLoopPool(L"Default");
+        defaultPool = new EventLoopPool("Default");
         return TRUE;
     }
 }
@@ -39,8 +39,8 @@ EventLoopPool* EventLoopPool::GetDefault()
     return defaultPool; 
 }
 
-EventLoopPool::EventLoopPool(wstring const & tag, uint concurrency)
-    : id_(tag.empty()? wformatString("{0}", TextTraceThis) : wformatString("{0}.{1}", tag, TextTraceThis))
+EventLoopPool::EventLoopPool(string const & tag, uint concurrency)
+    : id_(tag.empty()? formatString.L("{0}", TextTraceThis) : formatString.L("{0}.{1}", tag, TextTraceThis))
     , assignmentIndex_(0)
 {
     if (concurrency == 0)
@@ -134,7 +134,7 @@ private:
     ManualResetEvent closedEvent_;
 };
 
-EventLoop::EventLoop() : id_(wformatString("{0}", TextTraceThis)), fdMapSize_(0)
+EventLoop::EventLoop() : id_(formatString.L("{0}", TextTraceThis)), fdMapSize_(0)
 {
     Setup();
 }

@@ -8,7 +8,7 @@
 using namespace std;
 using namespace Common;
 
-GlobalWString FabricVersionInstance::Delimiter = make_global<wstring>(L":");
+GlobalString FabricVersionInstance::Delimiter = make_global<string>(":");
 
 FabricVersionInstance::FabricVersionInstance()
     : version_()
@@ -104,15 +104,15 @@ void FabricVersionInstance::WriteTo(Common::TextWriter& w, Common::FormatOptions
     w.Write(ToString());
 }
 
-wstring FabricVersionInstance::ToString() const
+string FabricVersionInstance::ToString() const
 {
-    return wformatString("{0}{1}{2}", version_.ToString(), Delimiter, instanceId_); 
+    return formatString.L("{0}{1}{2}", version_.ToString(), Delimiter, instanceId_); 
 }
 
-ErrorCode FabricVersionInstance::FromString(wstring const & fabricVersionInstanceString, __out FabricVersionInstance & fabricVersionInstance)
+ErrorCode FabricVersionInstance::FromString(string const & fabricVersionInstanceString, __out FabricVersionInstance & fabricVersionInstance)
 {
-    vector<wstring> tokens;  
-    StringUtility::Split<wstring>(fabricVersionInstanceString, tokens, Delimiter);
+    vector<string> tokens;  
+    StringUtility::Split<string>(fabricVersionInstanceString, tokens, Delimiter);
     
     uint64 instanceId;
     if((tokens.size() != 3) || 

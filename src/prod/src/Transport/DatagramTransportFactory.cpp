@@ -10,9 +10,9 @@ using namespace Common;
 using namespace std;
 
 IDatagramTransportSPtr DatagramTransportFactory::CreateTcp(
-    wstring const & address,
-    wstring const & id,
-    wstring const & owner)
+    string const & address,
+    string const & id,
+    string const & owner)
 {
     if (TransportConfig::GetConfig().InMemoryTransportEnabled)
     {
@@ -22,22 +22,22 @@ IDatagramTransportSPtr DatagramTransportFactory::CreateTcp(
     return TcpDatagramTransport::Create(address, id, owner);
 }
 
-IDatagramTransportSPtr DatagramTransportFactory::CreateTcpClient(wstring const & id, wstring const & owner)
+IDatagramTransportSPtr DatagramTransportFactory::CreateTcpClient(string const & id, string const & owner)
 {
     if (TransportConfig::GetConfig().InMemoryTransportEnabled)
     {
-        return CreateMem(L"", id);
+        return CreateMem("", id);
     }
 
     return TcpDatagramTransport::CreateClient(id, owner);
 }
 
-IDatagramTransportSPtr DatagramTransportFactory::CreateMem(wstring const & name, wstring const & id)
+IDatagramTransportSPtr DatagramTransportFactory::CreateMem(string const & name, string const & id)
 {
-    wstring address;
-    if (StringUtility::StartsWith(name, L"localhost"))
+    string address;
+    if (StringUtility::StartsWith(name, "localhost"))
     {
-        address = L"127.0.0.1" + name.substr(9);
+        address = "127.0.0.1" + name.substr(9);
     }
     else
     {

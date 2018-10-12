@@ -182,7 +182,7 @@ typedef struct _LEASE_LAYER_EVENT_INPUT_OUTPUT_BUFFER {
     //
     // Output.
     //
-    WCHAR RemoteLeasingApplicationIdentifier[MAX_PATH + 1];
+    CHAR RemoteLeasingApplicationIdentifier[MAX_PATH + 1];
     //
     // Output.
     //
@@ -337,7 +337,7 @@ typedef struct _CREATE_LEASING_APPLICATION_INPUT_BUFFER_DEVICE_IOCTL {
     //
     // Unique identifier of the application.
     //
-    WCHAR LeasingApplicationIdentifier[MAX_PATH + 1];
+    CHAR LeasingApplicationIdentifier[MAX_PATH + 1];
     //
     // Specifies if the application can participate in arbitration.
     //
@@ -363,7 +363,7 @@ typedef struct _DELETE_LEASING_APPLICATION_INPUT_BUFFER_DEVICE_IOCTL {
     //
     // Unique identifier of the application.
     //
-    WCHAR LeasingApplicationIdentifier[MAX_PATH + 1];
+    CHAR LeasingApplicationIdentifier[MAX_PATH + 1];
 
 } DELETE_LEASING_APPLICATION_INPUT_BUFFER_DEVICE_IOCTL, *PDELETE_LEASING_APPLICATION_INPUT_BUFFER_DEVICE_IOCTL;
 
@@ -394,7 +394,7 @@ typedef struct _TERMINATE_LEASE_BUFFER_DEVICE_IOCTL {
     //
     // Remote leasing application name.
     //
-    WCHAR RemoteLeasingApplicationIdentifier[MAX_PATH + 1];
+    CHAR RemoteLeasingApplicationIdentifier[MAX_PATH + 1];
 
 } TERMINATE_LEASE_BUFFER_DEVICE_IOCTL, *PTERMINATE_LEASE_BUFFER_DEVICE_IOCTL;
 
@@ -442,7 +442,7 @@ typedef struct _ESTABLISH_LEASE_INPUT_BUFFER_DEVICE_IOCTL {
     //
     // Remote leasing application name.
     //
-    WCHAR RemoteLeasingApplicationIdentifier[MAX_PATH + 1];
+    CHAR RemoteLeasingApplicationIdentifier[MAX_PATH + 1];
     //
     // Remote listening address of a lease agent.
     //
@@ -654,7 +654,7 @@ typedef struct _REMOTE_LEASE_EXPIRATION_RESULT_INPUT_BUFFER {
     //
     // Remote leasing application name.
     //
-    _Inout_updates_z_(MAX_PATH + 1) WCHAR RemoteLeasingApplicationIdentifier[MAX_PATH + 1];
+    _Inout_updates_z_(MAX_PATH + 1) CHAR RemoteLeasingApplicationIdentifier[MAX_PATH + 1];
 } REMOTE_LEASE_EXPIRATION_RESULT_INPUT_BUFFER, *PREMOTE_LEASE_EXPIRATION_RESULT_INPUT_BUFFER;
 
 //

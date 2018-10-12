@@ -27,5 +27,5 @@ Abstract:
 
 NTSTATUS
 KThreadPoolTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     );

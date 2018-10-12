@@ -205,7 +205,7 @@ HANDLE CreateEventW(
         IN LPSECURITY_ATTRIBUTES lpEventAttributes,
         IN BOOL bManualReset,
         IN BOOL bInitialState,
-        IN LPCWSTR lpName);
+        IN LPCSTR lpName);
 BOOL
 PALAPI
 SetEvent(
@@ -376,24 +376,24 @@ BOOL EventEnabled(
         _In_ PCEVENT_DESCRIPTOR EventDescriptor
 );
 WINBASEAPI HRESULT StringCchLengthW(
-        _In_  LPCWSTR psz,
+        _In_  LPCSTR psz,
         _In_  size_t  cchMax,
         _Out_ size_t  *pcch
 );
 STRSAFEAPI
 StringCchCopyW(
-        _Out_writes_(cchDest) _Always_(_Post_z_) STRSAFE_LPWSTR pszDest,
+        _Out_writes_(cchDest) _Always_(_Post_z_) STRSAFE_LPSTR pszDest,
         _In_ size_t cchDest,
-        _In_ STRSAFE_LPCWSTR pszSrc);
+        _In_ STRSAFE_LPCSTR pszSrc);
 STRSAFEAPI
-StringCbPrintfW(WCHAR* pszDest, size_t cbDest, const WCHAR* pszFormat, ...);
+StringCbPrintfW(CHAR* pszDest, size_t cbDest, const CHAR* pszFormat, ...);
 errno_t memcpy_s(void *dest, size_t destsz, const void *src, size_t count);
 PALIMPORT
 DWORD
 PALAPI
 GetModuleFileNameW(
         IN HMODULE hModule,
-        OUT LPWSTR lpFileName,
+        OUT LPSTR lpFileName,
         IN DWORD nSize);
 PALIMPORT
 HANDLE
@@ -570,14 +570,14 @@ StringCbLengthA(
         _Out_opt_ _Deref_out_range_(<, cbMax) size_t* pcbLength);
 STRSAFEAPI
 StringCbLengthW(
-        _In_reads_or_z_(cbMax / sizeof(wchar_t)) STRSAFE_PCNZWCH psz,
-        _In_ _In_range_(1, STRSAFE_MAX_CCH * sizeof(wchar_t)) size_t cbMax,
+        _In_reads_or_z_(cbMax / sizeof(char)) STRSAFE_PCNZWCH psz,
+        _In_ _In_range_(1, STRSAFE_MAX_CCH * sizeof(char)) size_t cbMax,
         _Out_opt_ _Deref_out_range_(<, cbMax - 1) size_t* pcbLength);
 STRSAFEAPI
         StringCchVPrintfW(
-        __out_ecount(cchDest) STRSAFE_LPWSTR pszDest,
+        __out_ecount(cchDest) STRSAFE_LPSTR pszDest,
         __in size_t cchDest,
-        __in __format_string STRSAFE_LPCWSTR pszFormat,
+        __in __format_string STRSAFE_LPCSTR pszFormat,
         __in va_list argList);
 NTSTATUS RtlMultiByteToUnicodeSize(
         _Out_       PULONG BytesInUnicodeString,
@@ -631,7 +631,7 @@ BOOL WINAPI QueryPerformanceCounter(
 PPERF_COUNTERSET_INSTANCE PerfCreateInstance(
         _In_ HANDLE  hProvider,
         _In_ LPCGUID CounterSetGuid,
-        _In_ LPCWSTR szInstanceName,
+        _In_ LPCSTR szInstanceName,
         _In_ ULONG   dwInstance
 );
 ULONG PerfSetCounterRefValue(
@@ -727,7 +727,7 @@ LSTATUS
 APIENTRY
 RegOpenKeyExW(
         HKEY hKey,
-        LPCWSTR lpSubKey,
+        LPCSTR lpSubKey,
         DWORD ulOptions,
         REGSAM samDesired,
         PHKEY phkResult
@@ -743,7 +743,7 @@ LSTATUS
 APIENTRY
 RegQueryValueExW(
         _In_ HKEY hKey,
-        _In_opt_ LPCWSTR lpValueName,
+        _In_opt_ LPCSTR lpValueName,
         _Reserved_ LPDWORD lpReserved,
         _Out_opt_ LPDWORD lpType,
         LPBYTE lpData,
@@ -754,7 +754,7 @@ LSTATUS
 APIENTRY
 RegSetValueExW(
         HKEY hKey,
-        LPCWSTR lpValueName,
+        LPCSTR lpValueName,
         DWORD Reserved,
         DWORD dwType,
         const BYTE *lpData,
@@ -765,7 +765,7 @@ LSTATUS
 APIENTRY
 RegDeleteValueW(
         _In_ HKEY hKey,
-        _In_opt_ LPCWSTR lpValueName
+        _In_opt_ LPCSTR lpValueName
 );
 WINBASEAPI
 VOID
@@ -799,9 +799,9 @@ WaitForThreadpoolTimerCallbacks(
 );
 NTSTATUS
 RtlStringCchCatW(
-        __out_ecount(cchDest) STRSAFE_LPWSTR pszDest,
+        __out_ecount(cchDest) STRSAFE_LPSTR pszDest,
         __in size_t cchDest,
-        __in STRSAFE_LPCWSTR pszSrc);
+        __in STRSAFE_LPCSTR pszSrc);
 NTSTATUS
 RtlStringCchLengthW(
         _In_      STRSAFE_PCNZWCH psz,
@@ -813,7 +813,7 @@ NTSTATUS
         _In_ size_t cchDest,
         _In_ NTSTRSAFE_PCWSTR pszSrc);
 DWORD GetEnvironmentVariableA(LPCSTR lpName, LPSTR lpBuffer, DWORD nSize);
-DWORD GetEnvironmentVariableW(LPCWSTR lpName, LPWSTR lpBuffer, DWORD nSize);
+DWORD GetEnvironmentVariableW(LPCSTR lpName, LPSTR lpBuffer, DWORD nSize);
 WINBASEAPI
 DWORD
 WINAPI
@@ -825,8 +825,8 @@ WINBASEAPI
 DWORD
 WINAPI
 ExpandEnvironmentStringsW(
-        _In_ LPCWSTR lpSrc,
-        LPWSTR lpDst,
+        _In_ LPCSTR lpSrc,
+        LPSTR lpDst,
         _In_ DWORD nSize);
 
 ULONG RtlRandomEx(

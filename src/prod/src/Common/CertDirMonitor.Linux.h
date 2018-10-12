@@ -13,7 +13,7 @@ namespace Common
 
     public:
         static const char     *CertFileExtsA[];
-        static const wchar_t  *CertFileExtsW[];
+        static const char  *CertFileExtsW[];
         static const int NrCertFileExts;
 
     public:
@@ -24,8 +24,8 @@ namespace Common
         ErrorCode StopWatch();
 
     private:
-        wstring srcPath_;
-        wstring destPath_;
+        string srcPath_;
+        string destPath_;
         int wd_;
 
     private:

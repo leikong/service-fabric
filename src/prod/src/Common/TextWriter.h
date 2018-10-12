@@ -25,8 +25,6 @@ namespace Common
         {}
 
         void WriteBuffer(__in_ecount(ccLen) char const * buf, size_t ccLen) { WriteAsciiBuffer(buf, ccLen); }
-        void WriteBuffer(__in_ecount(ccLen) wchar_t const * buf, size_t ccLen) { WriteUnicodeBuffer(buf, ccLen); }
-        void WriteChar(wchar_t ch) { WriteBuffer(&ch, 1); }
         void WriteChar(char ch) { WriteBuffer(&ch, 1); }
         virtual void Flush() = 0;
 
@@ -64,7 +62,7 @@ namespace Common
     protected:
         virtual ~TextWriter() {}
         virtual void WriteAsciiBuffer(char const * buf, size_t ccLen) = 0;
-        virtual void WriteUnicodeBuffer(wchar_t const * buf, size_t ccLen) = 0;
+        virtual void WriteUnicodeBuffer(char const * buf, size_t ccLen) = 0;
 
     private:
         void InternalWrite(StringLiteral format, int argCount, VariableArgument const ** args);
@@ -75,13 +73,13 @@ namespace Common
         DENY_COPY(StringWriter);
 
     public:
-        StringWriter(std::wstring& buffer, size_t size = 256);
+        StringWriter(std::string& buffer, size_t size = 256);
         virtual void WriteAsciiBuffer(__in_ecount(ccLen) char const * buf, size_t ccLen);
-        virtual void WriteUnicodeBuffer(__in_ecount(ccLen) wchar_t const * buf, size_t ccLen);
+        virtual void WriteUnicodeBuffer(__in_ecount(ccLen) char const * buf, size_t ccLen);
         virtual void Flush() {}
 
     private:
-        std::wstring& buffer_;
+        std::string& buffer_;
     };
 
     class StringWriterA : public TextWriter
@@ -90,7 +88,7 @@ namespace Common
 
     public:
         StringWriterA(std::string& buffer, size_t size = 256);
-        virtual void WriteUnicodeBuffer(__in_ecount(ccLen) wchar_t const * buf, size_t ccLen);
+        virtual void WriteUnicodeBuffer(__in_ecount(ccLen) char const * buf, size_t ccLen);
         virtual void WriteAsciiBuffer(__in_ecount(ccLen) char const * buf, size_t ccLen);
         virtual void Flush() {}
 

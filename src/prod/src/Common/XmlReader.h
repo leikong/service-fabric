@@ -22,8 +22,8 @@ namespace Common
         DENY_COPY(XmlReader)
 
     public:
-        static ErrorCode Create(std::wstring const & fileName, __out XmlReaderUPtr & reader);
-        static Common::ErrorCode ReadXmlFile(std::wstring const & fileName, std::wstring const & rootElementName,  std::wstring const & namespaceUri, __out std::wstring & xmlContent);
+        static ErrorCode Create(std::string const & fileName, __out XmlReaderUPtr & reader);
+        static Common::ErrorCode ReadXmlFile(std::string const & fileName, std::string const & rootElementName,  std::string const & namespaceUri, __out std::string & xmlContent);
 
         XmlReader(ComProxyXmlLiteReaderUPtr & xmlLiteReader);
         ~XmlReader();
@@ -31,12 +31,12 @@ namespace Common
         // skips non-content nodes. checks if the first content node is an element with the specified name and namespace
         // use this method to parse optional elements
         // positions the reader on the start element tag that allows reading through the attributes
-        bool IsStartElement(std::wstring const & localName, std::wstring const & namespaceUri, bool readAttrs = true);
+        bool IsStartElement(std::string const & localName, std::string const & namespaceUri, bool readAttrs = true);
 
         // skips non-content nodes and ensures that the first content node is an element with the specified name and namespace
         // use this method to ensure required elements are present in the XML
         // positions the reader on the start element tag that allows reading through the attributes
-        void StartElement(std::wstring const & localName, std::wstring const & namespaceUri, bool readAttrs = true);
+        void StartElement(std::string const & localName, std::string const & namespaceUri, bool readAttrs = true);
 
         // reads the start element tag including all of the attributes and positions the reader on the next node
         // the reader must be positioned on the start element. This method will skip all of the attributes. To read
@@ -61,33 +61,33 @@ namespace Common
         // name and namespace (if not optional). reads through the entire XML under that element and the end element tag. 
         // positions the reader on the next node after the end element tag
         // use this method to skip through the elements that you do not care in the de-serialization
-        void SkipElement(std::wstring const & localName, std::wstring const & namespaceUri, bool isOptional = false);
+        void SkipElement(std::string const & localName, std::string const & namespaceUri, bool isOptional = false);
         
         // returns true if the reader is positioned on the start element and the element is empty (no end tag)
         bool IsEmptyElement();
 
         // return true if the reader has specified attribute
         // call this method after positioning the reader on the start element using StartElement or successful IsStartElement method
-        bool HasAttribute(std::wstring const & attrName, std::wstring const & namespaceUri = L"");
+        bool HasAttribute(std::string const & attrName, std::string const & namespaceUri = "");
 
         // returns the value of the specified attribute, throws an error if the attribute is not found
         // call this method after positioning the reader on the start element using StartElement or successful IsStartElement method
-        std::wstring ReadAttributeValue(std::wstring const & attrName, std::wstring const & namespaceUri = L"", bool trim = false);
+        std::string ReadAttributeValue(std::string const & attrName, std::string const & namespaceUri = "", bool trim = false);
 
         // reads the content of the element in a string
         // reads through the content of the element and advances reader to the end element tag or next element tag
-        std::wstring ReadElementValue(bool trim = false);
+        std::string ReadElementValue(bool trim = false);
 
         // reads the content, including markup, representing this node and all its children.
-        std::wstring ReadOuterXml();
+        std::string ReadOuterXml();
 
         // returns the value of the specified attribute as the T, throws an error if the attribute is not found
         // call this method after positioning the reader on the start element using StartElement or successful IsStartElement method
         template <typename T>
-        T ReadAttributeValueAs(std::wstring const & attrName, std::wstring const & namespaceUri = L"")
+        T ReadAttributeValueAs(std::string const & attrName, std::string const & namespaceUri = "")
         {
             T parsed;
-            std::wstring attrValue = ReadAttributeValue(attrName, namespaceUri);
+            std::string attrValue = ReadAttributeValue(attrName, namespaceUri);
             if (!StringUtility::TryFromWString(attrValue, parsed))
             {
                 ThrowInvalidContent(
@@ -122,22 +122,22 @@ namespace Common
             Assume that the value is represented as 
                 struct MyMapItem
                 {
-                    wstring Name;
+                    string Name;
                     int Value;
                 };
 
-            This function can be used to return a map<wstring, MyMapItem>.
+            This function can be used to return a map<string, MyMapItem>.
 
             The parameters would be:
                 - childNodeName: "Item"
-                - factory: a function that can start at "Item" and return an instance of pair<wstring, MyMapItem> given the reader pointing at item                    
+                - factory: a function that can start at "Item" and return an instance of pair<string, MyMapItem> given the reader pointing at item                    
 
             The reader must have consumed MyMap.
         */
         template <typename TMap>
         TMap ReadMap(
-            std::wstring const & childNodeName,
-            std::wstring const & namespaceUri,
+            std::string const & childNodeName,
+            std::string const & namespaceUri,
             std::function<typename TMap::value_type(Common::XmlReader & reader)> const & factory) 
         {
             TMap rv;
@@ -158,7 +158,7 @@ namespace Common
 
                     if (!insertResult.second)
                     {
-                        auto msg = Common::wformatString(
+                        auto msg = Common::formatString(
                             "Duplicate element {0} detected at Input={1}, Line={2}, Position={3}",
                             insertResult.first->first,
                             FileName,
@@ -180,8 +180,8 @@ namespace Common
         */
         template <typename TMap>
         TMap ReadMapWithInlineName(
-            std::wstring const & childNodeName,
-            std::wstring const & namespaceUri,
+            std::string const & childNodeName,
+            std::string const & namespaceUri,
             std::function<typename TMap::mapped_type(Common::XmlReader & reader)> const & factory) 
         {
             return ReadMap<TMap>(
@@ -201,8 +201,8 @@ namespace Common
         UINT GetLineNumber();
         UINT GetLinePosition();
 
-        __declspec (property(get=get_FileName)) std::wstring const & FileName;
-        std::wstring const & get_FileName() const { return this->liteReader_->InputName; }
+        __declspec (property(get=get_FileName)) std::string const & FileName;
+        std::string const & get_FileName() const { return this->liteReader_->InputName; }
 
         __declspec (property(get=get_LiteReader)) ComProxyXmlLiteReaderUPtr const& LiteReader;
         ComProxyXmlLiteReaderUPtr const& get_LiteReader() const { return this->liteReader_; }
@@ -216,18 +216,18 @@ namespace Common
 #endif
         void ReadContent(::XmlNodeType contentType);
         void ReadAttributes();
-        std::wstring GetFullyQualifiedName();
-        static std::wstring GetFullyQualifiedName(std::wstring const & namespaceUri, std::wstring const & localName);
+        std::string GetFullyQualifiedName();
+        static std::string GetFullyQualifiedName(std::string const & namespaceUri, std::string const & localName);
 
         // wrappers for XmlLite Readers that throws
         UINT GetAttributeCount();
         UINT GetDepth();
-        std::wstring GetLocalName();
-        std::wstring GetNamespaceUri();
+        std::string GetLocalName();
+        std::string GetNamespaceUri();
         ::XmlNodeType GetNodeType();
-        std::wstring GetPrefix();
-        std::wstring GetQualifiedName();
-        std::wstring GetValue();
+        std::string GetPrefix();
+        std::string GetQualifiedName();
+        std::string GetValue();
         void MoveToElement();
         bool MoveToFirstAttribute();
         bool MoveToNextAttribute();
@@ -235,14 +235,14 @@ namespace Common
         bool Read(__out ::XmlNodeType & nodeType);
 
         // throw utility methods
-        void ThrowUnexpectedEOF(std::wstring const & operationName);
+        void ThrowUnexpectedEOF(std::string const & operationName);
         void ThrowInvalidContent(XmlNodeType expectedContentType, XmlNodeType actualContentType);
-        void ThrowInvalidContent(std::wstring const & expectedContent, std::wstring const & actualContent);
+        void ThrowInvalidContent(std::string const & expectedContent, std::string const & actualContent);
         void ThrowIfNotSuccess(ErrorCode const & error);
-        void ThrowIfNotSuccess(ErrorCode const & error, std::wstring const& operationNAme);
-        void ThrowIfNotSuccess(HRESULT hr, std::wstring const& operationNAme);
+        void ThrowIfNotSuccess(ErrorCode const & error, std::string const& operationNAme);
+        void ThrowIfNotSuccess(HRESULT hr, std::string const& operationNAme);
     private:
         ComProxyXmlLiteReaderUPtr liteReader_;
-        std::map<std::wstring, std::wstring> attrValues_;
+        std::map<std::string, std::string> attrValues_;
     };
 }

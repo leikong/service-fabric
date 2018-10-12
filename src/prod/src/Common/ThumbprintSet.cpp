@@ -9,7 +9,7 @@
 using namespace Common;
 using namespace std;
 
-ErrorCode ThumbprintSet::Add(wstring const & thumbprintString)
+ErrorCode ThumbprintSet::Add(string const & thumbprintString)
 {
     Thumbprint thumbprint;
     auto error = thumbprint.Initialize(thumbprintString);
@@ -22,9 +22,9 @@ ErrorCode ThumbprintSet::Add(wstring const & thumbprintString)
     return error;
 }
 
-ErrorCode ThumbprintSet::Add(LPCWSTR thumbprintptr)
+ErrorCode ThumbprintSet::Add(LPCSTR thumbprintptr)
 {
-    wstring thumbprintString;
+    string thumbprintString;
     auto hr = StringUtility::LpcwstrToWstring(thumbprintptr, false, thumbprintString);
     if (FAILED(hr)) 
     {
@@ -45,7 +45,7 @@ void ThumbprintSet::Add(ThumbprintSet const & other)
     value_.insert(other.value_.cbegin(), other.value_.cend());
 }
 
-ErrorCode ThumbprintSet::Set(wstring const & thumbprints)
+ErrorCode ThumbprintSet::Set(string const & thumbprints)
 {
     value_.clear();
 
@@ -56,8 +56,8 @@ ErrorCode ThumbprintSet::Set(wstring const & thumbprints)
         return ErrorCode();
     }
 
-    vector<wstring> thumbprintList;
-    StringUtility::Split<wstring>(thumbprintsCopy, thumbprintList, L",", true);
+    vector<string> thumbprintList;
+    StringUtility::Split<string>(thumbprintsCopy, thumbprintList, ",", true);
     if (thumbprintList.empty())
     {
         return ErrorCodeValue::InvalidArgument;
@@ -126,9 +126,9 @@ void ThumbprintSet::WriteTo(TextWriter & w, FormatOptions const &) const
     }
 }
 
-wstring ThumbprintSet::ToString() const
+string ThumbprintSet::ToString() const
 {
-    wstring result;
+    string result;
     StringWriter(result).Write(*this);
     return result;
 }

@@ -18,8 +18,8 @@ namespace Transport
         void WriteToTextWriter(Common::TextWriter & w, Enum const & e);
         void WriteMaskToTextWriter(Common::TextWriter & w, byte e);
 
-        wchar_t * GetSspiProviderName(Enum e);
-        Common::ErrorCode FromCredentialType(std::wstring const & credentialTypeString, Enum & result);
+        char * GetSspiProviderName(Enum e);
+        Common::ErrorCode FromCredentialType(std::string const & credentialTypeString, Enum & result);
         Common::ErrorCode FromPublic(::FABRIC_SECURITY_CREDENTIAL_KIND publicEnum, Enum & internalEnum);
         ::FABRIC_SECURITY_CREDENTIAL_KIND ToPublic(Enum internalEnum, ::FABRIC_SECURITY_CREDENTIAL_KIND convertedFrom);
 

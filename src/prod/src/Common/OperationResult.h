@@ -9,13 +9,13 @@ namespace Common
 {
     struct OperationResult
     {
-        OperationResult(std::wstring const& value, bool isError)
-            : Type(isError ? L"Error" : L"Literal"), Literal(value)
+        OperationResult(std::string const& value, bool isError)
+            : Type(isError ? "Error" : "Literal"), Literal(value)
         {
         }
 
         OperationResult(bool value)
-            : Type(L"NonLiteral"), NonLiteral(value)
+            : Type("NonLiteral"), NonLiteral(value)
         {
         }
 
@@ -25,13 +25,13 @@ namespace Common
         }
 
         
-        bool IsError() { return Type.compare(L"Error") == 0; }
-        bool IsNonLiteral() { return Type.compare(L"NonLiteral") == 0; }
+        bool IsError() { return Type.compare("Error") == 0; }
+        bool IsNonLiteral() { return Type.compare("NonLiteral") == 0; }
 
         bool NonLiteral;
-        std::wstring Literal;
+        std::string Literal;
 
     private:
-        std::wstring Type;
+        std::string Type;
     };
 }

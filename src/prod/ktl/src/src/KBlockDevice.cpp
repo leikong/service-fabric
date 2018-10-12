@@ -677,7 +677,7 @@ Arguments:
         but may have degraded write performance.
 
     FullyQualifiedDiskFileName - Supplies the fully qualified name of the file that provides storage for this device.
-        For example, L"\\Device\\HarddiskVolume1\\myfile.dat" and L"\\??\\C:\\myfile.dat" are both fully qualified file names.
+        For example, "\\Device\\HarddiskVolume1\\myfile.dat" and "\\??\\C:\\myfile.dat" are both fully qualified file names.
         See NtCreateFile() for more information of fully qualified file names.
 
     AllocationTag - Supplies the default tag for internal allocations.
@@ -2108,7 +2108,7 @@ Arguments:
     CreateNew - Indicates if we want to create a new device, or open an existing one.
 
     FullyQualifiedDiskFileName - Supplies the fully qualified name of the file that provides storage for this device.
-        For example, L"\\Device\\HarddiskVolume1\\myfile.dat" and L"\\??\\C:\\myfile.dat" are both fully qualified file names.
+        For example, "\\Device\\HarddiskVolume1\\myfile.dat" and "\\??\\C:\\myfile.dat" are both fully qualified file names.
         See NtCreateFile() for more information of fully qualified file names.
 
     DeviceObject - Returns the created object on success.

@@ -8,13 +8,13 @@
 using namespace Common;
 using namespace std;
 
-CommonName::CommonName(wstring const & name) : name_(name)
+CommonName::CommonName(string const & name) : name_(name)
 {
     Initialize();
 }
 
 _Use_decl_annotations_
-ErrorCode CommonName::Create(std::wstring const & name, SPtr & result)
+ErrorCode CommonName::Create(std::string const & name, SPtr & result)
 {
     result = make_shared<CommonName>(name);
     return ErrorCode::Success();
@@ -24,7 +24,7 @@ void CommonName::Initialize()
 {
     certRdnAttr_.pszObjId = szOID_COMMON_NAME;
     certRdnAttr_.dwValueType = CERT_RDN_ANY_TYPE;
-    certRdnAttr_.Value.cbData = (DWORD)name_.size() * sizeof(WCHAR);
+    certRdnAttr_.Value.cbData = (DWORD)name_.size() * sizeof(CHAR);
     certRdnAttr_.Value.pbData = (BYTE*)name_.c_str();
 
     certRdn_.cRDNAttr = 1;

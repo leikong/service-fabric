@@ -36,7 +36,7 @@ void SendMessageAction::Execute(SiteNode & siteNode)
     }
 }
 
-std::wstring SendMessageAction::ToString()
+std::string SendMessageAction::ToString()
 {
-    return wformatString("{0}:{1}", message_->Action, targetId_);
+    return formatString.L("{0}:{1}", message_->Action, targetId_);
 }

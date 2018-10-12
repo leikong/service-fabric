@@ -109,11 +109,11 @@ public:
 
 public:
     XmlAttribute(
-        WCHAR* AttrNs,
+        CHAR* AttrNs,
         ULONG  AttrNsLength,
-        WCHAR* AttrName,
+        CHAR* AttrName,
         ULONG  AttrNameLength,
-        WCHAR* AttrValue,
+        CHAR* AttrValue,
         ULONG  AttrValueLength);
 
     static void
@@ -124,21 +124,21 @@ public:
             if (Attrs[i]->_Namespace.Length() > 0)
             {
 #if !defined(PLATFORM_UNIX)
-                KTestPrintf(" %S:%S=\"%S\"", (WCHAR*)(Attrs[i]->_Namespace), (WCHAR*)(Attrs[i]->_Name), (WCHAR*)(Attrs[i]->_Value));
-                KFPrintf(gs_GenXmlStr, " %S:%S=\"%S\"", (WCHAR*)(Attrs[i]->_Namespace), (WCHAR*)(Attrs[i]->_Name), (WCHAR*)(Attrs[i]->_Value));
+                KTestPrintf(" %S:%S=\"%S\"", (CHAR*)(Attrs[i]->_Namespace), (CHAR*)(Attrs[i]->_Name), (CHAR*)(Attrs[i]->_Value));
+                KFPrintf(gs_GenXmlStr, " %S:%S=\"%S\"", (CHAR*)(Attrs[i]->_Namespace), (CHAR*)(Attrs[i]->_Name), (CHAR*)(Attrs[i]->_Value));
 #else
-                KTestPrintf(" %s:%s=\"%s\"", Utf16To8((WCHAR*)(Attrs[i]->_Namespace)).c_str(), Utf16To8((WCHAR*)(Attrs[i]->_Name)).c_str(), Utf16To8((WCHAR*)(Attrs[i]->_Value)).c_str());
-                KFPrintf(gs_GenXmlStr, " %s:%s=\"%s\"", Utf16To8((WCHAR*)(Attrs[i]->_Namespace)).c_str(), Utf16To8((WCHAR*)(Attrs[i]->_Name)).c_str(), Utf16To8((WCHAR*)(Attrs[i]->_Value)).c_str());
+                KTestPrintf(" %s:%s=\"%s\"", Utf16To8((CHAR*)(Attrs[i]->_Namespace)).c_str(), Utf16To8((CHAR*)(Attrs[i]->_Name)).c_str(), Utf16To8((CHAR*)(Attrs[i]->_Value)).c_str());
+                KFPrintf(gs_GenXmlStr, " %s:%s=\"%s\"", Utf16To8((CHAR*)(Attrs[i]->_Namespace)).c_str(), Utf16To8((CHAR*)(Attrs[i]->_Name)).c_str(), Utf16To8((CHAR*)(Attrs[i]->_Value)).c_str());
 #endif
             }
             else
             {
 #if !defined(PLATFORM_UNIX)
-                KTestPrintf(" %S=\"%S\"", (WCHAR*)(Attrs[i]->_Name), (WCHAR*)(Attrs[i]->_Value));
-                KFPrintf(gs_GenXmlStr, " %S=\"%S\"", (WCHAR*)(Attrs[i]->_Name), (WCHAR*)(Attrs[i]->_Value));
+                KTestPrintf(" %S=\"%S\"", (CHAR*)(Attrs[i]->_Name), (CHAR*)(Attrs[i]->_Value));
+                KFPrintf(gs_GenXmlStr, " %S=\"%S\"", (CHAR*)(Attrs[i]->_Name), (CHAR*)(Attrs[i]->_Value));
 #else
-                KTestPrintf(" %s=\"%s\"", Utf16To8((WCHAR*)(Attrs[i]->_Name)).c_str(), Utf16To8((WCHAR*)(Attrs[i]->_Value)).c_str());
-                KFPrintf(gs_GenXmlStr, " %s=\"%s\"", Utf16To8((WCHAR*)(Attrs[i]->_Name)).c_str(), Utf16To8((WCHAR*)(Attrs[i]->_Value)).c_str());
+                KTestPrintf(" %s=\"%s\"", Utf16To8((CHAR*)(Attrs[i]->_Name)).c_str(), Utf16To8((CHAR*)(Attrs[i]->_Value)).c_str());
+                KFPrintf(gs_GenXmlStr, " %s=\"%s\"", Utf16To8((CHAR*)(Attrs[i]->_Name)).c_str(), Utf16To8((CHAR*)(Attrs[i]->_Value)).c_str());
 #endif
             }
         }
@@ -146,11 +146,11 @@ public:
 };
 
 XmlAttribute::XmlAttribute(
-    WCHAR* AttrNs,
+    CHAR* AttrNs,
     ULONG  AttrNsLength,
-    WCHAR* AttrName,
+    CHAR* AttrName,
     ULONG  AttrNameLength,
-    WCHAR* AttrValue,
+    CHAR* AttrValue,
     ULONG  AttrValueLength)
     :   _Namespace(GetThisAllocator()),
         _Name(GetThisAllocator()),
@@ -159,18 +159,18 @@ XmlAttribute::XmlAttribute(
     UNICODE_STRING     us;
 
     us.Buffer = AttrNs;
-    KFatal(AttrNsLength <= (MAXUSHORT / sizeof(WCHAR)));
-    us.MaximumLength = (us.Length = (USHORT)AttrNsLength * sizeof(WCHAR));
+    KFatal(AttrNsLength <= (MAXUSHORT / sizeof(CHAR)));
+    us.MaximumLength = (us.Length = (USHORT)AttrNsLength * sizeof(CHAR));
     _Namespace = us;
 
     us.Buffer = AttrName;
-    KFatal(AttrNameLength <= (MAXUSHORT / sizeof(WCHAR)));
-    us.MaximumLength = (us.Length = (USHORT)AttrNameLength * sizeof(WCHAR));
+    KFatal(AttrNameLength <= (MAXUSHORT / sizeof(CHAR)));
+    us.MaximumLength = (us.Length = (USHORT)AttrNameLength * sizeof(CHAR));
     _Name = us;
 
     us.Buffer = AttrValue;
-    KFatal(AttrValueLength <= (MAXUSHORT / sizeof(WCHAR)));
-    us.MaximumLength = (us.Length = (USHORT)AttrValueLength * sizeof(WCHAR));
+    KFatal(AttrValueLength <= (MAXUSHORT / sizeof(CHAR)));
+    us.MaximumLength = (us.Length = (USHORT)AttrValueLength * sizeof(CHAR));
     _Value = us;
 }
 
@@ -191,16 +191,16 @@ public:
 
     KArray<XmlAttribute::SPtr>  _Attributes;
     KArray<XmlElement::SPtr>    _Children;
-    WCHAR*                      _StartElementSection;
+    CHAR*                      _StartElementSection;
     ULONG                       _ElementSectionLength;
 
 public:
     XmlElement(
-        WCHAR* ElementNs,
+        CHAR* ElementNs,
         ULONG  ElementNsLength,
-        WCHAR* ElementName,
+        CHAR* ElementName,
         ULONG  ElementNameLength,
-        WCHAR* StartElementSection);
+        CHAR* StartElementSection);
 
     void DisplayTabs(ULONG Tabs)
     {
@@ -217,19 +217,19 @@ public:
         if (_Namespace.Length() > 0)
         {
 #if !defined(PLATFORM_UNIX)
-            KTestPrintf("%S:", (WCHAR*)_Namespace);
-            KFPrintf(gs_GenXmlStr, "%S:", (WCHAR*)_Namespace);
+            KTestPrintf("%S:", (CHAR*)_Namespace);
+            KFPrintf(gs_GenXmlStr, "%S:", (CHAR*)_Namespace);
 #else
-            KTestPrintf("%s:", Utf16To8((WCHAR*)_Namespace).c_str());
-            KFPrintf(gs_GenXmlStr, "%s:", Utf16To8((WCHAR*)_Namespace).c_str());
+            KTestPrintf("%s:", Utf16To8((CHAR*)_Namespace).c_str());
+            KFPrintf(gs_GenXmlStr, "%s:", Utf16To8((CHAR*)_Namespace).c_str());
 #endif
         }
 #if !defined(PLATFORM_UNIX)
-        KTestPrintf("%S", (WCHAR*)_Name);
-        KFPrintf(gs_GenXmlStr, "%S", (WCHAR*)_Name);
+        KTestPrintf("%S", (CHAR*)_Name);
+        KFPrintf(gs_GenXmlStr, "%S", (CHAR*)_Name);
 #else
-        KTestPrintf("%s", Utf16To8((WCHAR*)_Name).c_str());
-        KFPrintf(gs_GenXmlStr, "%s", Utf16To8((WCHAR*)_Name).c_str());
+        KTestPrintf("%s", Utf16To8((CHAR*)_Name).c_str());
+        KFPrintf(gs_GenXmlStr, "%s", Utf16To8((CHAR*)_Name).c_str());
 #endif
     }
 
@@ -250,11 +250,11 @@ public:
         if ((_Children.Count() == 0) && (_Value.Length() > 0))
         {
 #if !defined(PLATFORM_UNIX)
-            KTestPrintf("%S</", (WCHAR*)_Value);
-            KFPrintf(gs_GenXmlStr, "%S</", (WCHAR*)_Value);
+            KTestPrintf("%S</", (CHAR*)_Value);
+            KFPrintf(gs_GenXmlStr, "%S</", (CHAR*)_Value);
 #else
-            KTestPrintf("%s</", Utf16To8((WCHAR*)_Value).c_str());
-            KFPrintf(gs_GenXmlStr, "%s</", Utf16To8((WCHAR*)_Value).c_str());
+            KTestPrintf("%s</", Utf16To8((CHAR*)_Value).c_str());
+            KFPrintf(gs_GenXmlStr, "%s</", Utf16To8((CHAR*)_Value).c_str());
 #endif
             DisplayFQName();
             KTestPrintf(">");
@@ -265,11 +265,11 @@ public:
         if (_Value.Length() > 0)
         {
 #if !defined(PLATFORM_UNIX)
-            KTestPrintf("%S", (WCHAR*)_Value);
-            KFPrintf(gs_GenXmlStr, "%S", (WCHAR*)_Value);
+            KTestPrintf("%S", (CHAR*)_Value);
+            KFPrintf(gs_GenXmlStr, "%S", (CHAR*)_Value);
 #else
-            KTestPrintf("%s", Utf16To8((WCHAR*)_Value).c_str());
-            KFPrintf(gs_GenXmlStr, "%s", Utf16To8((WCHAR*)_Value).c_str());
+            KTestPrintf("%s", Utf16To8((CHAR*)_Value).c_str());
+            KFPrintf(gs_GenXmlStr, "%s", Utf16To8((CHAR*)_Value).c_str());
 #endif
         }
 
@@ -296,11 +296,11 @@ public:
 };
 
 XmlElement::XmlElement(
-    WCHAR* ElementNs,
+    CHAR* ElementNs,
     ULONG  ElementNsLength,
-    WCHAR* ElementName,
+    CHAR* ElementName,
     ULONG  ElementNameLength,
-    WCHAR* StartElementSection)
+    CHAR* StartElementSection)
     :   _Namespace(GetThisAllocator()),
         _Name(GetThisAllocator()),
         _Value(GetThisAllocator()),
@@ -312,13 +312,13 @@ XmlElement::XmlElement(
     UNICODE_STRING     us;
 
     us.Buffer = ElementNs;
-    KFatal(ElementNsLength <= (MAXUSHORT / sizeof(WCHAR)));
-    us.MaximumLength = (us.Length = (USHORT)ElementNsLength * sizeof(WCHAR));
+    KFatal(ElementNsLength <= (MAXUSHORT / sizeof(CHAR)));
+    us.MaximumLength = (us.Length = (USHORT)ElementNsLength * sizeof(CHAR));
     _Namespace = us;
 
     us.Buffer = ElementName;
-    KFatal(ElementNameLength <= (MAXUSHORT / sizeof(WCHAR)));
-    us.MaximumLength = (us.Length = (USHORT)ElementNameLength * sizeof(WCHAR));
+    KFatal(ElementNameLength <= (MAXUSHORT / sizeof(CHAR)));
+    us.MaximumLength = (us.Length = (USHORT)ElementNameLength * sizeof(CHAR));
     _Name = us;
 
     _StartElementSection = StartElementSection;
@@ -371,18 +371,18 @@ private:
 
 private:    // IHook implementation
     NTSTATUS OpenElement(
-        WCHAR* ElementNs,
+        CHAR* ElementNs,
         ULONG  ElementNsLength,
-        WCHAR* ElementName,
+        CHAR* ElementName,
         ULONG  ElementNameLength,
-        const WCHAR* StartElementSection)
+        const CHAR* StartElementSection)
     {
         XmlElement::SPtr    newEle = _new(KTL_TAG_TEST, KtlSystem::GlobalNonPagedAllocator()) XmlElement(
             ElementNs,
             ElementNsLength,
             ElementName,
             ElementNameLength,
-            (WCHAR*)StartElementSection);
+            (CHAR*)StartElementSection);
 
         KFatal(newEle != nullptr);
 
@@ -398,11 +398,11 @@ private:    // IHook implementation
 
     NTSTATUS AddAttribute(
         BOOLEAN HeaderAttributes,    // Set to true if these are the <?xml header attributes
-        WCHAR* AttributeNs,
+        CHAR* AttributeNs,
         ULONG  AttributeNsLength,
-        WCHAR* AttributeName,
+        CHAR* AttributeName,
         ULONG  AttributeNameLength,
-        WCHAR* Value,
+        CHAR* Value,
         ULONG  ValueLength)
     {
         XmlAttribute::SPtr  attr = _new(KTL_TAG_TEST, KtlSystem::GlobalNonPagedAllocator()) XmlAttribute(
@@ -436,7 +436,7 @@ private:    // IHook implementation
     NTSTATUS AddContent(
         ULONG  ContentIndex,
         ULONG  ContentType,
-        WCHAR* ContentText,
+        CHAR* ContentText,
         ULONG  ContentLength)
     {
         UNREFERENCED_PARAMETER(ContentIndex);
@@ -445,8 +445,8 @@ private:    // IHook implementation
         UNICODE_STRING     us;
 
         us.Buffer = ContentText;
-        KFatal(ContentLength <= (MAXUSHORT / sizeof(WCHAR)));
-        us.MaximumLength = (us.Length = (USHORT)ContentLength * sizeof(WCHAR));
+        KFatal(ContentLength <= (MAXUSHORT / sizeof(CHAR)));
+        us.MaximumLength = (us.Length = (USHORT)ContentLength * sizeof(CHAR));
 
         KFatal(!_Dom.IsEmpty());
         _Dom.Peek()->_Value = us;
@@ -497,7 +497,7 @@ private:    // IHook implementation
     will cause failure of the test.
 */
 NTSTATUS
-XmlBasicTest(int Argc, WCHAR* Args[])
+XmlBasicTest(int Argc, CHAR* Args[])
 {
     // BUG: richhas; xxxxx; add tests for CDATA
 #if !defined(PLATFORM_UNIX)
@@ -522,15 +522,15 @@ XmlBasicTest(int Argc, WCHAR* Args[])
         KBuffer::SPtr   xmlDocBuffer;
 
 #if !defined(PLATFORM_UNIX)
-        WCHAR           driveStr[]  = L"\\??\\x:";
+        CHAR           driveStr[]  = "\\??\\x:";
                         driveStr[4] = *Args[0];
         KWString        fileName(allocator, driveStr);
-                        fileName += L"\\temp\\Ktl\\XmlTest\\testfile0.xml";
+                        fileName += "\\temp\\Ktl\\XmlTest\\testfile0.xml";
 #else
-        KWString        fileName(allocator, L"/tmp/TestFile0.xml");
+        KWString        fileName(allocator, "/tmp/TestFile0.xml");
 #endif
         KWString        genFileName(fileName);
-                        genFileName += L".XmlBasicTest.xml";
+                        genFileName += ".XmlBasicTest.xml";
 
         //* Read in the reference XML file; converting if needed to unicode; then extract the entire
         //  file into xmlDocBuffer.
@@ -565,7 +565,7 @@ XmlBasicTest(int Argc, WCHAR* Args[])
                 return status;
             }
 
-            status = iut->Parse((WCHAR*)xmlDocBuffer->GetBuffer(), xmlDocBuffer->QuerySize() / sizeof(WCHAR), testHook);
+            status = iut->Parse((CHAR*)xmlDocBuffer->GetBuffer(), xmlDocBuffer->QuerySize() / sizeof(CHAR), testHook);
             if (!NT_SUCCESS(status))
             {
                 KTestPrintf("XmlBasicTest: Parse failed @%u with 0x%08X\n", __LINE__, status);
@@ -636,15 +636,15 @@ XmlBasicTest(int Argc, WCHAR* Args[])
             #if CONSOLE_TEST
                 // Pass the reference and post parse generated xml files to WinDiff to validate they are eqv
                 KWString        xmlDiffFilePath(allocator);
-                xmlDiffFilePath += L".\\xmldiff.exe";
+                xmlDiffFilePath += ".\\xmldiff.exe";
 
             #if !defined(PLATFORM_UNIX)
                 intptr_t spawnStatus = _wspawnl(
                     _P_WAIT,
                     xmlDiffFilePath,
                     xmlDiffFilePath,
-                    ((WCHAR*)fileName) + 4,                 // Don't pass FQN prefixes to CLR
-                    ((WCHAR*)genFileName) + 4,
+                    ((CHAR*)fileName) + 4,                 // Don't pass FQN prefixes to CLR
+                    ((CHAR*)genFileName) + 4,
                     NULL);
             #else
                     intptr_t spawnStatus = 0;
@@ -672,12 +672,12 @@ XmlBasicTest(int Argc, WCHAR* Args[])
 #if CONSOLE_TEST
 #if !defined(PLATFORM_UNIX)
 int __cdecl
-wmain(__in int argc, __in_ecount(argc) WCHAR* args[])
+wmain(__in int argc, __in_ecount(argc) CHAR* args[])
 {
     NTSTATUS    status = STATUS_INVALID_PARAMETER_MIX;
     if (argc == 0)
     {
-        WCHAR*          a[] = {L"C:"};
+        CHAR*          a[] = {L"C:"};
         status = XmlBasicTest(1, a);
     }
     else
@@ -685,7 +685,7 @@ wmain(__in int argc, __in_ecount(argc) WCHAR* args[])
         argc--;
         args++;
 
-        if (_wcsicmp(args[0], L"XmlBasicTest") == 0)
+        if (strcasecmp(args[0], "XmlBasicTest") == 0)
         {
             argc--;
             args++;
@@ -696,7 +696,7 @@ wmain(__in int argc, __in_ecount(argc) WCHAR* args[])
             }
         }
 
-        else if (_wcsicmp(args[0], L"DomBasicTest") == 0)
+        else if (strcasecmp(args[0], "DomBasicTest") == 0)
         {
             status = DomBasicTest(argc, args);
         }

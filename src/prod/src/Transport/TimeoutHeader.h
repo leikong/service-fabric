@@ -25,7 +25,7 @@ namespace Transport
 
         void WriteTo(Common::TextWriter& w, Common::FormatOptions const& f) const;
 
-        std::wstring ToString() const;
+        std::string ToString() const;
 
         FABRIC_FIELDS_01(timeout_);
 

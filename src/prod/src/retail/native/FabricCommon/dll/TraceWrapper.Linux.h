@@ -11,7 +11,7 @@ void TraceWrapper(
 	const char * eventName,
 	int level,
 	const char * id,
-	const wchar_t * data);
+	const char * data);
 #ifdef __cplusplus
 }
 #endif

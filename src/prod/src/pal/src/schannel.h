@@ -12,7 +12,7 @@ extern "C" {
 #endif
 
 #define UNISP_NAME_A    "Microsoft Unified Security Protocol Provider"
-#define UNISP_NAME_W    L"Microsoft Unified Security Protocol Provider"
+#define UNISP_NAME_W    "Microsoft Unified Security Protocol Provider"
 
 #ifdef UNICODE
 

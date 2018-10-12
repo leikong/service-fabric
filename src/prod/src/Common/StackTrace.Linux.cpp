@@ -29,9 +29,9 @@ void StackTrace::WriteTo( TextWriter& w, const Common::FormatOptions& ) const
     w << bt;
 }
 
-std::wstring StackTrace::ToString() const
+std::string StackTrace::ToString() const
 {
-    std::wstring result;
+    std::string result;
     Common::StringWriter(result).Write(*this);
     return result;
 }

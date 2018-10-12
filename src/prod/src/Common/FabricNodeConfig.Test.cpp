@@ -21,7 +21,7 @@ namespace Common
         FabricNodeConfigTest() { BOOST_REQUIRE(Setup()); }
         TEST_CLASS_SETUP(Setup);
 
-        void CreateConfigSettings(wstring const & nodeVersion, __out ConfigSettings & configSettings);
+        void CreateConfigSettings(string const & nodeVersion, __out ConfigSettings & configSettings);
     };
 
     BOOST_FIXTURE_TEST_SUITE(NodeConfigTests,FabricNodeConfigTest)
@@ -31,7 +31,7 @@ namespace Common
         ENTER;
       
         ConfigSettings configSettings;
-        wstring nodeVersionV1 = L"1.0.960.0:V1:0";
+        string nodeVersionV1 = "1.0.960.0:V1:0";
 
         this->CreateConfigSettings(nodeVersionV1, configSettings);
 
@@ -60,7 +60,7 @@ namespace Common
           FabricNodeConfigSPtr nodeConfig;
 
         {
-            wstring nodeVersionString = L"1.0.960.0:V1.100:100";
+            string nodeVersionString = "1.0.960.0:V1.100:100";
             ConfigSettings configSettings;
             this->CreateConfigSettings(nodeVersionString, configSettings);
         
@@ -85,7 +85,7 @@ namespace Common
             waiter->Reset();
 
             // change config and instance
-            wstring updatedNodeVersionString = L"1.0.960.0:V2.200:200";
+            string updatedNodeVersionString = "1.0.960.0:V2.200:200";
             ConfigSettings updatedConfigSettings;
             this->CreateConfigSettings(updatedNodeVersionString, updatedConfigSettings);
 
@@ -100,7 +100,7 @@ namespace Common
             waiter->Reset();
 
             // change instance only
-            wstring updatedNodeVersionString = L"1.0.960.0:V2.201:201";
+            string updatedNodeVersionString = "1.0.960.0:V2.201:201";
             ConfigSettings updatedConfigSettings;
             this->CreateConfigSettings(updatedNodeVersionString, updatedConfigSettings);
 
@@ -115,7 +115,7 @@ namespace Common
             waiter->Reset();
 
             // change code 
-            wstring updatedNodeVersionString = L"1.0.961.0:V2.202:202";
+            string updatedNodeVersionString = "1.0.961.0:V2.202:202";
             ConfigSettings updatedConfigSettings;
             this->CreateConfigSettings(updatedNodeVersionString, updatedConfigSettings);
 
@@ -130,7 +130,7 @@ namespace Common
             waiter->Reset();
 
             // change code 
-            wstring updatedNodeVersionString = L"2.0.961.0:V2.204:204";
+            string updatedNodeVersionString = "2.0.961.0:V2.204:204";
             ConfigSettings updatedConfigSettings;
             this->CreateConfigSettings(updatedNodeVersionString, updatedConfigSettings);
 
@@ -146,14 +146,14 @@ namespace Common
 
     BOOST_AUTO_TEST_SUITE_END()
 
-    void FabricNodeConfigTest::CreateConfigSettings(wstring const & nodeVersion, __out ConfigSettings & configSettings)
+    void FabricNodeConfigTest::CreateConfigSettings(string const & nodeVersion, __out ConfigSettings & configSettings)
     {
          // create configuration settings store
         ConfigSection fabricNodeConfigSection;
-        fabricNodeConfigSection.Name = L"FabricNode";
+        fabricNodeConfigSection.Name = "FabricNode";
         
         ConfigParameter nodeVersionParam;
-        nodeVersionParam.Name = L"NodeVersion";
+        nodeVersionParam.Name = "NodeVersion";
         nodeVersionParam.Value = nodeVersion;
         fabricNodeConfigSection.Parameters[nodeVersionParam.Name] = nodeVersionParam;
         

@@ -37,7 +37,7 @@ KXmlParser::~KXmlParser()
 }
 
 NTSTATUS 
-KXmlParser::Parse(__in_ecount(Size) WCHAR* Src, __in ULONG Size, __in IHook& HookToUse)
+KXmlParser::Parse(__in_ecount(Size) CHAR* Src, __in ULONG Size, __in IHook& HookToUse)
 {
     Reset();
     _Hook = &HookToUse;
@@ -85,10 +85,10 @@ KXmlParser::GetFailedCharaterPosition()
 }
 
 NTSTATUS 
-KXmlParser::RecognizeIdent2(_Outref_result_buffer_(IdentLen) WCHAR*& Ident, _Out_ ULONG& IdentLen, _Outref_result_buffer_maybenull_(NsPrefixLen) WCHAR*& NsPrefix, _Out_ ULONG& NsPrefixLen)
+KXmlParser::RecognizeIdent2(_Outref_result_buffer_(IdentLen) CHAR*& Ident, _Out_ ULONG& IdentLen, _Outref_result_buffer_maybenull_(NsPrefixLen) CHAR*& NsPrefix, _Out_ ULONG& NsPrefixLen)
 {
     NTSTATUS    status = STATUS_SUCCESS;
-    WCHAR       c;
+    CHAR       c;
     BOOLEAN     nsfound = FALSE;
 
     Ident = 0;
@@ -112,7 +112,7 @@ KXmlParser::RecognizeIdent2(_Outref_result_buffer_(IdentLen) WCHAR*& Ident, _Out
         return K_STATUS_XML_INVALID_NAME;
     }
 
-    Ident = (WCHAR*)_CurrentPos;
+    Ident = (CHAR*)_CurrentPos;
     IdentLen++;
 
     status = Next();
@@ -133,7 +133,7 @@ KXmlParser::RecognizeIdent2(_Outref_result_buffer_(IdentLen) WCHAR*& Ident, _Out
             return status;
         }
 
-        if (c == L':')
+        if (c == ':')
         {
             if (nsfound)
             {
@@ -154,7 +154,7 @@ KXmlParser::RecognizeIdent2(_Outref_result_buffer_(IdentLen) WCHAR*& Ident, _Out
                 return status;
             }
 
-            Ident = (WCHAR*) _CurrentPos;
+            Ident = (CHAR*) _CurrentPos;
             continue;
         }
 
@@ -179,10 +179,10 @@ KXmlParser::RecognizeIdent2(_Outref_result_buffer_(IdentLen) WCHAR*& Ident, _Out
 
 NTSTATUS 
                 
-KXmlParser::RecognizeQString(_Outref_result_buffer_(Len) WCHAR*& Target, _Out_ ULONG& Len)
+KXmlParser::RecognizeQString(_Outref_result_buffer_(Len) CHAR*& Target, _Out_ ULONG& Len)
 {
     NTSTATUS    status = STATUS_SUCCESS;
-    WCHAR       chStart;
+    CHAR       chStart;
 
     Target = 0;
     Len = 0;
@@ -193,7 +193,7 @@ KXmlParser::RecognizeQString(_Outref_result_buffer_(Len) WCHAR*& Target, _Out_ U
         return status;
     }
 
-    if ((chStart != L'"') && (chStart != L'\''))
+    if ((chStart != '"') && (chStart != '\''))
     {
         return K_STATUS_XML_INVALID_ATTRIBUTE;
     }
@@ -204,12 +204,12 @@ KXmlParser::RecognizeQString(_Outref_result_buffer_(Len) WCHAR*& Target, _Out_ U
         return status;
     }
 
-    Target = (WCHAR*)_CurrentPos;
+    Target = (CHAR*)_CurrentPos;
     
     #pragma warning(disable:4127)   // C4127: conditional expression is constant
     while (TRUE)
     {
-        WCHAR       c;
+        CHAR       c;
 
         status = Peek(c);       // Next char
         if (!NT_SUCCESS(status))
@@ -243,13 +243,13 @@ KXmlParser::RecognizeAttributes(__in BOOLEAN HeaderAttributes)
 {
     NTSTATUS        status = STATUS_SUCCESS;
 
-    WCHAR*          name = 0;
-    WCHAR*          nsPrefix = 0;
-    WCHAR*          textValue = 0;
+    CHAR*          name = 0;
+    CHAR*          nsPrefix = 0;
+    CHAR*          textValue = 0;
     ULONG           nameLength;
     ULONG           nsPrefixLength;
     ULONG           textValueLength;
-    WCHAR           c;
+    CHAR           c;
 
     status = StripWs();
     if (!NT_SUCCESS(status))
@@ -257,7 +257,7 @@ KXmlParser::RecognizeAttributes(__in BOOLEAN HeaderAttributes)
         return status;
     }
 
-    while (NT_SUCCESS(status = Peek(c)) && (c != L'>') && (c != L'?') && (c != L'/'))
+    while (NT_SUCCESS(status = Peek(c)) && (c != '>') && (c != '?') && (c != '/'))
     {
         status = RecognizeIdent2(name, nameLength, nsPrefix, nsPrefixLength);
         if (!NT_SUCCESS(status))
@@ -271,14 +271,14 @@ KXmlParser::RecognizeAttributes(__in BOOLEAN HeaderAttributes)
             return status;
         }
 
-        WCHAR c1;
+        CHAR c1;
         status = Peek(c1);
         if (!NT_SUCCESS(status))
         {
             return status;
         }
 
-        if (c1 != L'=')
+        if (c1 != '=')
         {
             return K_STATUS_XML_INVALID_ATTRIBUTE;
         }
@@ -339,10 +339,10 @@ KXmlParser::RecognizeElement()
     {
     public:
         NTSTATUS        status;
-        WCHAR*          eltok;
-        WCHAR*          elnstok;
-        WCHAR*          endeltok;
-        WCHAR*          endelnstok;
+        CHAR*          eltok;
+        CHAR*          elnstok;
+        CHAR*          endeltok;
+        CHAR*          endelnstok;
 
         ULONG           eltokLength;
         ULONG           elnstokLength;
@@ -350,13 +350,13 @@ KXmlParser::RecognizeElement()
         ULONG           endelnstokLength;
         BOOLEAN         namespaceSeen;
 
-        WCHAR const*    startElement;
-        WCHAR const*    endElement;
-        WCHAR           c;
-        WCHAR           c1;
+        CHAR const*    startElement;
+        CHAR const*    endElement;
+        CHAR           c;
+        CHAR           c1;
 
     public:
-        StackFrame(WCHAR const* StartElement)
+        StackFrame(CHAR const* StartElement)
         {
             status = STATUS_SUCCESS;
             namespaceSeen = FALSE;
@@ -429,7 +429,7 @@ PushStack:
             $return(status);
         }
 
-        if (c != L'<')
+        if (c != '<')
         {
             $return(K_STATUS_XML_SYNTAX_ERROR);
         }
@@ -461,7 +461,7 @@ PushStack:
         //
         // Check for wimpy element with no content.
         //
-        if (PeekMultiple(status, L"/>", 2) && NT_SUCCESS(status))
+        if (PeekMultiple(status, "/>", 2) && NT_SUCCESS(status))
         {
             status = SkipNext(2);       // strip "/>"
             if (!NT_SUCCESS(status))
@@ -500,7 +500,7 @@ PushStack:
         {
             $return(status);
         }
-        if (c != L'>')
+        if (c != '>')
         {
             $return(K_STATUS_XML_SYNTAX_ERROR);
         }
@@ -527,7 +527,7 @@ PushStack:
                 $return(status);
             }
 
-            if (c == L'<' && LegalIdent_FirstChar(c1))
+            if (c == '<' && LegalIdent_FirstChar(c1))
             {
                 // Hmm. We are now at the '<' symbol. Any comments in the content will have
                 // been removed, so we are either about to close the element, or recurse into
@@ -540,7 +540,7 @@ PushStack:
                     $return(status);
                 }
             }
-            else if (PeekMultiple(status, L"</", 2) && NT_SUCCESS(status))
+            else if (PeekMultiple(status, "</", 2) && NT_SUCCESS(status))
             {
                 //we are at the end of this element
                 break;
@@ -582,7 +582,7 @@ PushStack:
         }
 
         status = Peek(c);
-        if (c != L'>')
+        if (c != '>')
         {
             $return(K_STATUS_XML_SYNTAX_ERROR);
         }
@@ -679,12 +679,12 @@ NTSTATUS
 KXmlParser::RecognizeXmlHeader()
 {
     NTSTATUS        status = STATUS_SUCCESS;
-    WCHAR           c;
+    CHAR           c;
 
     StripWs();
 
     // Assume < is the current position
-    if (!NT_SUCCESS((status = Peek(c, 1))) || (c != L'?'))
+    if (!NT_SUCCESS((status = Peek(c, 1))) || (c != '?'))
     {
         return status;
     }
@@ -695,9 +695,9 @@ KXmlParser::RecognizeXmlHeader()
         return status;
     }
 
-    WCHAR*      xmlIdent = NULL;
+    CHAR*      xmlIdent = NULL;
     ULONG       xmlIdentLen = 0;
-    WCHAR*      ns = NULL;
+    CHAR*      ns = NULL;
     ULONG       nsLen = 0;
 
     status = RecognizeIdent2(xmlIdent, xmlIdentLen, ns, nsLen);
@@ -706,7 +706,7 @@ KXmlParser::RecognizeXmlHeader()
         return status;
     }
 
-    if ((xmlIdentLen != 3) || (StrNCmp(xmlIdent, L"xml", 3) != 0))
+    if ((xmlIdentLen != 3) || (StrNCmp(xmlIdent, "xml", 3) != 0))
     {
         return K_STATUS_XML_HEADER_ERROR;
     }
@@ -722,7 +722,7 @@ KXmlParser::RecognizeXmlHeader()
     {
         return status;
     }
-    if (c != L'?')
+    if (c != '?')
     {
         return K_STATUS_XML_HEADER_ERROR;
     }
@@ -738,7 +738,7 @@ KXmlParser::RecognizeXmlHeader()
     {
         return status;
     }
-    if (c != L'>')
+    if (c != '>')
     {
         return K_STATUS_XML_HEADER_ERROR;
     }
@@ -768,8 +768,8 @@ KXmlParser::RecognizeXmlHeader()
     return status;
 }
 
-const WCHAR* KXmlParser::CDATA_BEGIN_TAG = L"<![CDATA[";
-const WCHAR* KXmlParser::CDATA_END_TAG = L"]]>";
+const CHAR* KXmlParser::CDATA_BEGIN_TAG = "<![CDATA[";
+const CHAR* KXmlParser::CDATA_END_TAG = "]]>";
 
 NTSTATUS 
 KXmlParser::RecognizeCDATA(__out BOOLEAN& Result)
@@ -781,15 +781,15 @@ KXmlParser::RecognizeCDATA(__out BOOLEAN& Result)
         return STATUS_SUCCESS;
     }
 
-    if (_CurrentPos[0] == L'<' &&
-        _CurrentPos[1] == L'!' &&
-        _CurrentPos[2] == L'[' &&
-        _CurrentPos[3] == L'C' &&
-        _CurrentPos[4] == L'D' &&
-        _CurrentPos[5] == L'A' &&
-        _CurrentPos[6] == L'T' &&
-        _CurrentPos[7] == L'A' &&
-        _CurrentPos[8] == L'[')
+    if (_CurrentPos[0] == '<' &&
+        _CurrentPos[1] == '!' &&
+        _CurrentPos[2] == '[' &&
+        _CurrentPos[3] == 'C' &&
+        _CurrentPos[4] == 'D' &&
+        _CurrentPos[5] == 'A' &&
+        _CurrentPos[6] == 'T' &&
+        _CurrentPos[7] == 'A' &&
+        _CurrentPos[8] == '[')
     {
         //now we are in valid CDATA section skip <!CDATA[
         if (_CurrentPos + 9 >= _LastValid)
@@ -807,11 +807,11 @@ KXmlParser::RecognizeCDATA(__out BOOLEAN& Result)
             {
                 return K_STATUS_XML_END_OF_INPUT;
             }
-            if (( _CurrentPos[2] == L']')||( _CurrentPos[2] == L'>'))
+            if (( _CurrentPos[2] == ']')||( _CurrentPos[2] == '>'))
             {
-                if ( (_CurrentPos[0] == L']') &&
-                     (_CurrentPos[1] == L']') &&
-                     (_CurrentPos[2] == L'>'))
+                if ( (_CurrentPos[0] == ']') &&
+                     (_CurrentPos[1] == ']') &&
+                     (_CurrentPos[2] == '>'))
                 {
                     _CurrentPos += 3;
                     _CharPos += 3;
@@ -838,9 +838,9 @@ NTSTATUS
 KXmlParser::RecognizeContent()
 {
     NTSTATUS    status = STATUS_SUCCESS;
-    WCHAR       c;
+    CHAR       c;
     ULONGLONG   len = 0;
-    WCHAR*      beginPos = (WCHAR*)_CurrentPos;
+    CHAR*      beginPos = (CHAR*)_CurrentPos;
     BOOLEAN     preserveWhitespace = _Hook->ElementWhitespacePreserved();
 
     #pragma warning(disable:4127)   // C4127: conditional expression is constant
@@ -852,7 +852,7 @@ KXmlParser::RecognizeContent()
             return status;
         }
 
-        if (c == L'<')
+        if (c == '<')
         {
              //recognize content from pBeginPos to m_pCurrentPos
             len = _CurrentPos - beginPos;
@@ -893,7 +893,7 @@ KXmlParser::RecognizeContent()
                     }
                 }
             }
-            beginPos = (WCHAR*)_CurrentPos;
+            beginPos = (CHAR*)_CurrentPos;
 
             BOOLEAN         haveCDATA;
             if (NT_SUCCESS(status = RecognizeCDATA(haveCDATA)) && haveCDATA)
@@ -910,7 +910,7 @@ KXmlParser::RecognizeContent()
                     return status;
                 }
 
-                beginPos = (WCHAR*)_CurrentPos;
+                beginPos = (CHAR*)_CurrentPos;
                 continue;
             }
             if (!NT_SUCCESS(status))
@@ -924,7 +924,7 @@ KXmlParser::RecognizeContent()
                 //
                 // Add comment as part of the content
                 //
-                beginPos = (WCHAR*)_CurrentPos;
+                beginPos = (CHAR*)_CurrentPos;
                 continue;
             }
             if (!NT_SUCCESS(status))
@@ -932,7 +932,7 @@ KXmlParser::RecognizeContent()
                 return status;
             }
 
-            WCHAR       c1;
+            CHAR       c1;
             status = Peek(c);
             if (!NT_SUCCESS(status))
             {
@@ -944,12 +944,12 @@ KXmlParser::RecognizeContent()
                 return status;
             }
 
-            if (c == L'<' && LegalIdent_FirstChar(c1))
+            if (c == '<' && LegalIdent_FirstChar(c1))
             {
                 //valid start of the child element break
                break;
             }
-            else if ((c == L'<' && c1 == L'/'))
+            else if ((c == '<' && c1 == '/'))
             {
                 //valid end of the current element break
                 break;

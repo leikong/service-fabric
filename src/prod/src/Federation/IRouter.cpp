@@ -19,7 +19,7 @@ namespace Federation
         AsyncCallback const & callback,
         AsyncOperationSPtr const & parent)
     {
-        return OnBeginRoute(move(message), nodeId, instance, L"", useExactRouting, FederationConfig::GetConfig().RoutingRetryTimeout, timeout, callback, parent);
+        return OnBeginRoute(move(message), nodeId, instance, "", useExactRouting, FederationConfig::GetConfig().RoutingRetryTimeout, timeout, callback, parent);
     }
 
     AsyncOperationSPtr IRouter::BeginRoute(
@@ -32,14 +32,14 @@ namespace Federation
         AsyncCallback const & callback,
         AsyncOperationSPtr const & parent)
     {
-        return OnBeginRoute(move(message), nodeId, instance, L"", useExactRouting, retryTimeout, timeout, callback, parent);
+        return OnBeginRoute(move(message), nodeId, instance, "", useExactRouting, retryTimeout, timeout, callback, parent);
     }
 
     AsyncOperationSPtr IRouter::BeginRoute(
         Transport::MessageUPtr && message,
         NodeId nodeId,
         uint64 instance,
-        std::wstring const & toRing,
+        std::string const & toRing,
         bool useExactRouting,
         TimeSpan retryTimeout,
         TimeSpan timeout,
@@ -58,7 +58,7 @@ namespace Federation
         AsyncCallback const & callback,
         AsyncOperationSPtr const & parent)
     {
-        return OnBeginRouteRequest(move(request), nodeId, instance, L"", useExactRouting, FederationConfig::GetConfig().RoutingRetryTimeout, timeout, callback, parent);
+        return OnBeginRouteRequest(move(request), nodeId, instance, "", useExactRouting, FederationConfig::GetConfig().RoutingRetryTimeout, timeout, callback, parent);
     }
 
     AsyncOperationSPtr IRouter::BeginRouteRequest(
@@ -71,13 +71,13 @@ namespace Federation
         AsyncCallback const & callback,
         AsyncOperationSPtr const & parent)
     {
-        return OnBeginRouteRequest(move(request), nodeId, instance, L"", useExactRouting, retryTimeout, timeout, callback, parent);
+        return OnBeginRouteRequest(move(request), nodeId, instance, "", useExactRouting, retryTimeout, timeout, callback, parent);
     }
     AsyncOperationSPtr IRouter::BeginRouteRequest(
         Transport::MessageUPtr && request,
         NodeId nodeId,
         uint64 instance,
-        std::wstring const & toRing,
+        std::string const & toRing,
         bool useExactRouting,
         TimeSpan retryTimeout,
         TimeSpan timeout,

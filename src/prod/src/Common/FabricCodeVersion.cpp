@@ -8,7 +8,7 @@
 using namespace std;
 using namespace Common;
 
-GlobalWString FabricCodeVersion::Delimiter = make_global<wstring>(L".");
+GlobalString FabricCodeVersion::Delimiter = make_global<string>(".");
 
 FabricCodeVersion::FabricCodeVersion()
     : majorVersion_(0),
@@ -158,15 +158,15 @@ void FabricCodeVersion::WriteTo(__in Common::TextWriter& w, Common::FormatOption
     w.Write(ToString());
 }    
 
-wstring FabricCodeVersion::ToString() const
+string FabricCodeVersion::ToString() const
 {
-    return wformatString("{0}.{1}.{2}.{3}", majorVersion_, minorVersion_, buildVersion_, hotfixVersion_);
+    return formatString.L("{0}.{1}.{2}.{3}", majorVersion_, minorVersion_, buildVersion_, hotfixVersion_);
 }
 
-ErrorCode FabricCodeVersion::FromString(wstring const & fabricCodeVersionString, __out FabricCodeVersion & fabricCodeVersion)
+ErrorCode FabricCodeVersion::FromString(string const & fabricCodeVersionString, __out FabricCodeVersion & fabricCodeVersion)
 {
-    std::vector<wstring> tokens;
-    StringUtility::Split<wstring>(fabricCodeVersionString, tokens, Delimiter);
+    std::vector<string> tokens;
+    StringUtility::Split<string>(fabricCodeVersionString, tokens, Delimiter);
 
     uint major, minor, build, privateVer;
     if ((tokens.size() == 4) &&
@@ -184,7 +184,7 @@ ErrorCode FabricCodeVersion::FromString(wstring const & fabricCodeVersionString,
     }
 }
 
-bool FabricCodeVersion::TryParse(std::wstring const & input, __out FabricCodeVersion & result)
+bool FabricCodeVersion::TryParse(std::string const & input, __out FabricCodeVersion & result)
 {
     auto error = FabricCodeVersion::FromString(input, result);
     return error.IsSuccess();

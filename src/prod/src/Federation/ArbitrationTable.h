@@ -105,8 +105,8 @@ namespace Federation
         public:
             NodeHistory(LeaseWrapper::LeaseAgentInstance const & leaseAgentInstance);
 
-            __declspec(property(get = get_Id)) std::wstring const & Id;
-            std::wstring const & get_Id() const { return id_; }
+            __declspec(property(get = get_Id)) std::string const & Id;
+            std::string const & get_Id() const { return id_; }
 
             __declspec(property(get = get_Instance)) int64 Instance;
             int64 get_Instance() const { return instance_; }
@@ -152,7 +152,7 @@ namespace Federation
             void WriteTo(Common::TextWriter& w, Common::FormatOptions const&) const;
 
         private:
-            std::wstring id_;
+            std::string id_;
             int64 instance_;
             Common::StopwatchTime lastReceived_;
             ArbitrationRecord* head_;
@@ -210,7 +210,7 @@ namespace Federation
         RWLOCK(Federation.ArbitrationTable, lock_);
         Common::StopwatchTime historyStartTime_;
         Common::StopwatchTime lastCompactTime_;
-        std::map<std::wstring, NodeHistoryUPtr> nodes_;
+        std::map<std::string, NodeHistoryUPtr> nodes_;
         std::vector<ArbitrationRecord*> delayed_;
     };
 

@@ -16,12 +16,12 @@ bool TcpDatagramTransport::Test_ReceiveMissingDetected = false;
 
 namespace
 {
-    wstring CreateTraceId(TcpDatagramTransport const* ptr, wstring const & id)
+    string CreateTraceId(TcpDatagramTransport const* ptr, string const & id)
     {
         return
             id.empty()?
-            wformatString("{0}", TextTracePtrAs(ptr, IDatagramTransport)) :
-            wformatString("{0}-{1}", TextTracePtrAs(ptr, IDatagramTransport), id);
+            formatString.L("{0}", TextTracePtrAs(ptr, IDatagramTransport)) :
+            formatString.L("{0}-{1}", TextTracePtrAs(ptr, IDatagramTransport), id);
     }
 
     auto InitOnceMessageHeaderCompactThreshold()
@@ -31,7 +31,7 @@ namespace
     }
 }
 
-TcpDatagramTransport::TcpDatagramTransport(std::wstring const & id, std::wstring const & owner)
+TcpDatagramTransport::TcpDatagramTransport(std::string const & id, std::string const & owner)
     : id_(id)
     , traceId_(CreateTraceId(this, id))
     , owner_(owner)
@@ -50,7 +50,7 @@ TcpDatagramTransport::TcpDatagramTransport(std::wstring const & id, std::wstring
     Initialize();
 }
 
-TcpDatagramTransport::TcpDatagramTransport(std::wstring const & listenAddress, std::wstring const & id, std::wstring const & owner)
+TcpDatagramTransport::TcpDatagramTransport(std::string const & listenAddress, std::string const & id, std::string const & owner)
     : listenAddress_(listenAddress)
     , id_(id)
     , traceId_(CreateTraceId(this, id))
@@ -83,7 +83,7 @@ void TcpDatagramTransport::Initialize()
     trace.ConnectionIdleTimeoutSet(traceId_, connectionIdleTimeout_.TotalSeconds());
     WriteInfo(Constants::TcpTrace, traceId_, "setting compact threshold to {0}", InitOnceMessageHeaderCompactThreshold());
 
-    auto pci = wformatString("{0}-{1}-{2}-{3}", ::GetCurrentProcessId(), owner_, traceId_, Guid::NewGuid());
+    auto pci = formatString.L("{0}-{1}-{2}-{3}", ::GetCurrentProcessId(), owner_, traceId_, Guid::NewGuid());
     WriteNoise(Constants::TcpTrace, traceId_, "perf counter: {0}", pci); 
     perfCounters_ = PerfCounters::CreateInstance(pci);
 
@@ -501,8 +501,8 @@ void TcpDatagramTransport::OnListenInstanceMessage(
         // move connection to a named ISendTarget since we've got its FromAddress now
         TcpSendTargetSPtr namedSendTarget = InnerResolveTarget(
             remoteListenInstance.Address(),
-            L"",
-            L"",
+            "",
+            "",
             false,
             remoteListenInstance.Instance());
 
@@ -521,13 +521,13 @@ void TcpDatagramTransport::OnListenInstanceMessage(
 }
 
 std::shared_ptr<TcpSendTarget> TcpDatagramTransport::InnerResolveTarget(
-    wstring const & address,
-    wstring const & targetId,
-    wstring const & sspiTarget,
+    string const & address,
+    string const & targetId,
+    string const & sspiTarget,
     bool ensureSspiTarget,
     uint64 instance)
 {
-    std::wstring key = TargetAddressToTransportAddress(address);
+    std::string key = TargetAddressToTransportAddress(address);
     TcpSendTargetSPtr target;
     bool foundExistingTarget = false;
     {
@@ -538,8 +538,8 @@ std::shared_ptr<TcpSendTarget> TcpDatagramTransport::InnerResolveTarget(
             return nullptr;
         }
 
-        wstring const * sspiTargetPtr = &sspiTarget;
-        wstring derivedSspiTarget;
+        string const * sspiTargetPtr = &sspiTarget;
+        string derivedSspiTarget;
         if (ensureSspiTarget && sspiTarget.empty())
         {
             derivedSspiTarget = clientOnly_ ? security_->GetServerIdentity(address) : security_->GetPeerIdentity(address);
@@ -615,9 +615,9 @@ void TcpDatagramTransport::RemoveSendTargetEntry(TcpSendTarget const & target)
 }
 
 ISendTarget::SPtr TcpDatagramTransport::Resolve(
-    wstring const & address,
-    wstring const & targetId,
-    wstring const & sspiTarget,
+    string const & address,
+    string const & targetId,
+    string const & sspiTarget,
     uint64 instance)
 {
     if (!(starting_ || started_))
@@ -763,10 +763,10 @@ ErrorCode TcpDatagramTransport::SetDynamicListenPortForHostName(std::vector<ILis
 
 void TcpDatagramTransport::UpdateListenAddress(Endpoint const & endpoint)
 {
-    wstring host, inputPort;
+    string host, inputPort;
     auto error = TcpTransportUtility::TryParseHostPortString(listenAddress_, host, inputPort);
     Invariant(error.IsSuccess());
-    listenAddress_ = listenOnHostname_ ? wformatString("{0}:{1}", host, endpoint.Port) : endpoint.ToString();
+    listenAddress_ = listenOnHostname_ ? formatString.L("{0}:{1}", host, endpoint.Port) : endpoint.ToString();
 }
 
 ErrorCode TcpDatagramTransport::CheckConfig()
@@ -856,8 +856,8 @@ ErrorCode TcpDatagramTransport::Start(bool completeStart)
 
             listenOnHostname_ = true;
 
-            vector<wstring> parts;
-            wstring delimiter = L":";
+            vector<string> parts;
+            string delimiter = ":";
             StringUtility::Split(listenAddress_, parts, delimiter);
             if ((parts.size() != 2) || parts[1].empty())
             {
@@ -869,7 +869,7 @@ ErrorCode TcpDatagramTransport::Start(bool completeStart)
                 return ErrorCodeValue::InvalidAddress;
             }
 
-            if (StringUtility::AreEqualCaseInsensitive(parts[0], L"localhost"))
+            if (StringUtility::AreEqualCaseInsensitive(parts[0], "localhost"))
             {
                 for (auto iter = listenEndpoints_.cbegin(); iter != listenEndpoints_.cend(); ++ iter)
                 {
@@ -900,7 +900,7 @@ ErrorCode TcpDatagramTransport::Start(bool completeStart)
 
                 listenEndpoints_.clear();
 
-                wstringstream stringStream(parts[1]);
+                stringstream stringStream(parts[1]);
                 unsigned short port;
                 if((stringStream >> port).fail())
                 {
@@ -1138,12 +1138,12 @@ bool TcpDatagramTransport::IsClientOnly() const
     return clientOnly_;
 }
 
-wstring const & TcpDatagramTransport::ListenAddress() const
+string const & TcpDatagramTransport::ListenAddress() const
 {
     return listenAddress_;
 }
 
-wstring const & TcpDatagramTransport::get_IdString() const
+string const & TcpDatagramTransport::get_IdString() const
 {
     return this->id_;
 }
@@ -1322,19 +1322,19 @@ void TcpDatagramTransport::Stop(TimeSpan timeout)
     TRACE_AND_TESTASSERT(WriteError, Constants::TcpTrace, traceId_, "Stop did not complete within {0}", timeout);
 }
 
-TcpDatagramTransportSPtr TcpDatagramTransport::CreateClient(std::wstring const & id, wstring const & owner)
+TcpDatagramTransportSPtr TcpDatagramTransport::CreateClient(std::string const & id, string const & owner)
 {
     return make_shared<TcpDatagramTransport>(id, owner);
 }
 
-std::shared_ptr<TcpDatagramTransport> TcpDatagramTransport::Create(std::wstring const & address, std::wstring const & id, wstring const & owner)
+std::shared_ptr<TcpDatagramTransport> TcpDatagramTransport::Create(std::string const & address, std::string const & id, string const & owner)
 {
     auto result = make_shared<TcpDatagramTransport>(address, id, owner);
     AcceptThrottle::GetThrottle()->AddListener(result);
     return result;
 }
 
-wstring const & TcpDatagramTransport::Owner() const
+string const & TcpDatagramTransport::Owner() const
 {
     return owner_;
 }
@@ -1366,8 +1366,8 @@ TcpConnectionSPtr TcpDatagramTransport::OnConnectionAccepted(Socket & socket, En
                 *this,
                 handler_,
                 remoteEndpoint.ToString(),
-                L"",
-                L"",
+                "",
+                "",
                 0,
                 true,
                 security_);
@@ -1828,7 +1828,7 @@ void TcpDatagramTransport::SetConnectionOpenTimeout(TimeSpan timeout)
     connectionOpenTimeout_ = timeout;
 }
 
-wstring const & TcpDatagramTransport::TraceId() const
+string const & TcpDatagramTransport::TraceId() const
 {
     return traceId_;
 }

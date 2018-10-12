@@ -13,15 +13,15 @@ namespace Common
             switch (val)
             {
             case Enum::Unknown:
-                w << L"Unknown"; return;
+                w << "Unknown"; return;
             case Enum::ClientReportFaultEvent:
-                w << L"ClientReportFaultEvent"; return;
+                w << "ClientReportFaultEvent"; return;
             case Enum::ServiceReportFaultEvent:
-                w << L"ServiceReportFaultEvent"; return;
+                w << "ServiceReportFaultEvent"; return;
             case Enum::ServicePackageEvent:
-                w << L"ServicePackageEvent"; return;
+                w << "ServicePackageEvent"; return;
             case Enum::ReplicaEvent:
-                w << L"ReplicaEvent"; return;
+                w << "ReplicaEvent"; return;
             default: 
                 Common::Assert::CodingError("Unknown activity type.");
             };

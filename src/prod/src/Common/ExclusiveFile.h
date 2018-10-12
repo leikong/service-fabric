@@ -18,15 +18,15 @@ namespace Common
         DENY_COPY(ExclusiveFile);
 
     public:
-        ExclusiveFile(std::wstring const & path);
+        ExclusiveFile(std::string const & path);
         ~ExclusiveFile();
 
         ErrorCode Acquire(TimeSpan timeout);
         bool Release();
 
     private:
-        std::wstring const id_;
-        std::wstring path_;
+        std::string const id_;
+        std::string path_;
         std::unique_ptr<File> file_;
     };
 

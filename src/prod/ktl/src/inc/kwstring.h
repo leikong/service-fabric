@@ -3,7 +3,7 @@
 
     (c) 2010 by Microsoft Corp. All Rights Reserved.
 
-    kwstring
+    kstring
 
     Description:
       Kernel Tempate Library (KTL): KWString
@@ -48,7 +48,7 @@ class KWString : public KObject<KWString> {
         FAILABLE
         KWString(
             __in KAllocator& Allocator,
-            __in_z const WCHAR* Source
+            __in_z const CHAR* Source
             );
 
         FAILABLE
@@ -96,7 +96,7 @@ class KWString : public KObject<KWString> {
         FAILABLE
         KWString&
         operator=(
-            __in_z const WCHAR* Source
+            __in_z const CHAR* Source
             );
 
 
@@ -126,13 +126,13 @@ class KWString : public KObject<KWString> {
         FAILABLE
         KWString&
         operator +=(
-            __in WCHAR c
+            __in CHAR c
             );
 
         FAILABLE
         KWString&
         operator+=(
-            __in_z const WCHAR* Addend
+            __in_z const CHAR* Addend
             );
 
         FAILABLE
@@ -147,7 +147,7 @@ class KWString : public KObject<KWString> {
         operator UNICODE_STRING&(
             );
 
-        operator WCHAR*(
+        operator CHAR*(
             ) const;
 
         LONG
@@ -164,7 +164,7 @@ class KWString : public KObject<KWString> {
 
         LONG
         CompareTo(
-            __in_z const WCHAR* Comparand,
+            __in_z const CHAR* Comparand,
             __in BOOLEAN CaseInsensitive = FALSE
             ) const;
 
@@ -283,7 +283,7 @@ class KWString : public KObject<KWString> {
         }
 
         // Reserves a buffer of arbitrary size.
-        // Only operator+= with WCHAR works properly with this
+        // Only operator+= with CHAR works properly with this
         // at this point.
         //
         // Used for building strings without reallocation.

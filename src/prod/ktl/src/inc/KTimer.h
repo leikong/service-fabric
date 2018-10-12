@@ -297,7 +297,7 @@ public:
         VOID
         ModifyParameters(
             __in ULONG Count,
-            __in_ecount(Count) LPCWSTR ModifyStrings[]
+            __in_ecount(Count) LPCSTR ModifyStrings[]
             );
     };
 

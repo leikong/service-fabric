@@ -16,12 +16,12 @@ typedef IUnknown IXmlReaderInput;
 typedef IUnknown IXmlWriterOutput;
 
 STDAPI CreateXmlReader(_In_ REFIID riid,
-    _In_ LPCWSTR ppwszFileName,
+    _In_ LPCSTR ppwszFileName,
     _Outptr_ void ** ppvObject,
     _In_opt_ IMalloc * pMalloc);
 
 STDAPI CreateXmlWriter(_In_ REFIID riid,
-    _In_ LPCWSTR ppwszFileName,
+    _In_ LPCSTR ppwszFileName,
     _Out_ void ** ppvObject,
     _In_opt_ IMalloc * pMalloc);
 
@@ -36,7 +36,7 @@ STDAPI CreateMemoryXmlWriter(
 STDAPI CreateXmlWriterOutputWithEncodingName(
     __in IUnknown *pOutputStream,
     __in_opt IMalloc *pMalloc,
-    __in LPCWSTR pwszEncodingName,
+    __in LPCSTR pwszEncodingName,
     __out IXmlWriterOutput **ppOutput);
 
 typedef 
@@ -110,45 +110,45 @@ public:
     
     virtual HRESULT STDMETHODCALLTYPE MoveToAttributeByName( 
         /*  */ 
-        __in  LPCWSTR pwszLocalName,
+        __in  LPCSTR pwszLocalName,
         /*  */ 
-        __in_opt  LPCWSTR pwszNamespaceUri) = 0;
+        __in_opt  LPCSTR pwszNamespaceUri) = 0;
     
     virtual HRESULT STDMETHODCALLTYPE MoveToElement( void) = 0;
     
     virtual HRESULT STDMETHODCALLTYPE GetQualifiedName( 
         /*  */ 
-        __out  LPCWSTR *ppwszQualifiedName,
+        __out  LPCSTR *ppwszQualifiedName,
         /*  */ 
         __out_opt  UINT *pcwchQualifiedName) = 0;
     
     virtual HRESULT STDMETHODCALLTYPE GetNamespaceUri( 
         /*  */ 
-        __out  LPCWSTR *ppwszNamespaceUri,
+        __out  LPCSTR *ppwszNamespaceUri,
         /*  */ 
         __out_opt  UINT *pcwchNamespaceUri) = 0;
     
     virtual HRESULT STDMETHODCALLTYPE GetLocalName( 
         /*  */ 
-        __out  LPCWSTR *ppwszLocalName,
+        __out  LPCSTR *ppwszLocalName,
         /*  */ 
         __out_opt  UINT *pcwchLocalName) = 0;
     
     virtual HRESULT STDMETHODCALLTYPE GetPrefix( 
         /*  */ 
-        __out  LPCWSTR *ppwszPrefix,
+        __out  LPCSTR *ppwszPrefix,
         /*  */ 
         __out_opt  UINT *pcwchPrefix) = 0;
     
     virtual HRESULT STDMETHODCALLTYPE GetValue( 
         /*  */ 
-        __out  LPCWSTR *ppwszValue,
+        __out  LPCSTR *ppwszValue,
         /*  */ 
         __out_opt  UINT *pcwchValue) = 0;
     
     virtual HRESULT STDMETHODCALLTYPE ReadValueChunk( 
         /*  */ 
-        __out_ecount_part(cwchChunkSize, *pcwchRead)  WCHAR *pwchBuffer,
+        __out_ecount_part(cwchChunkSize, *pcwchRead)  CHAR *pwchBuffer,
         /*  */ 
         __in  UINT cwchChunkSize,
         /*  */ 
@@ -156,7 +156,7 @@ public:
     
     virtual HRESULT STDMETHODCALLTYPE GetBaseUri( 
         /*  */ 
-        __out  LPCWSTR *ppwszBaseUri,
+        __out  LPCSTR *ppwszBaseUri,
         /*  */ 
         __out_opt  UINT *pcwchBaseUri) = 0;
     
@@ -214,51 +214,51 @@ public:
     
     virtual HRESULT STDMETHODCALLTYPE WriteAttributeString( 
         /*  */ 
-        __in  LPCWSTR pwszPrefix,
+        __in  LPCSTR pwszPrefix,
         /*  */ 
-        __in  LPCWSTR pwszLocalName,
+        __in  LPCSTR pwszLocalName,
         /*  */ 
-        __in  LPCWSTR pwszNamespaceUri,
+        __in  LPCSTR pwszNamespaceUri,
         /*  */ 
-        __in  LPCWSTR pwszValue) = 0;
+        __in  LPCSTR pwszValue) = 0;
     
     virtual HRESULT STDMETHODCALLTYPE WriteCData( 
         /*  */ 
-        __in  LPCWSTR pwszText) = 0;
+        __in  LPCSTR pwszText) = 0;
     
     virtual HRESULT STDMETHODCALLTYPE WriteCharEntity( 
         /*  */ 
-        __in  WCHAR wch) = 0;
+        __in  CHAR wch) = 0;
     
     virtual HRESULT STDMETHODCALLTYPE WriteChars( 
         /*  */ 
-        __in_ecount(cwch)  const WCHAR *pwch,
+        __in_ecount(cwch)  const CHAR *pwch,
         /*  */ 
         __in  UINT cwch) = 0;
     
     virtual HRESULT STDMETHODCALLTYPE WriteComment( 
         /*  */ 
-        __in  LPCWSTR pwszComment) = 0;
+        __in  LPCSTR pwszComment) = 0;
     
     virtual HRESULT STDMETHODCALLTYPE WriteDocType( 
         /*  */ 
-        __in  LPCWSTR pwszName,
+        __in  LPCSTR pwszName,
         /*  */ 
-        __in  LPCWSTR pwszPublicId,
+        __in  LPCSTR pwszPublicId,
         /*  */ 
-        __in  LPCWSTR pwszSystemId,
+        __in  LPCSTR pwszSystemId,
         /*  */ 
-        __in  LPCWSTR pwszSubset) = 0;
+        __in  LPCSTR pwszSubset) = 0;
     
     virtual HRESULT STDMETHODCALLTYPE WriteElementString( 
         /*  */ 
-        __in  LPCWSTR pwszPrefix,
+        __in  LPCSTR pwszPrefix,
         /*  */ 
-        __in  LPCWSTR pwszLocalName,
+        __in  LPCSTR pwszLocalName,
         /*  */ 
-        __in  LPCWSTR pwszNamespaceUri,
+        __in  LPCSTR pwszNamespaceUri,
         /*  */ 
-        __in  LPCWSTR pwszValue) = 0;
+        __in  LPCSTR pwszValue) = 0;
     
     virtual HRESULT STDMETHODCALLTYPE WriteEndDocument( void) = 0;
     
@@ -266,17 +266,17 @@ public:
     
     virtual HRESULT STDMETHODCALLTYPE WriteEntityRef( 
         /*  */ 
-        __in  LPCWSTR pwszName) = 0;
+        __in  LPCSTR pwszName) = 0;
     
     virtual HRESULT STDMETHODCALLTYPE WriteFullEndElement( void) = 0;
     
     virtual HRESULT STDMETHODCALLTYPE WriteName( 
         /*  */ 
-        __in  LPCWSTR pwszName) = 0;
+        __in  LPCSTR pwszName) = 0;
     
     virtual HRESULT STDMETHODCALLTYPE WriteNmToken( 
         /*  */ 
-        __in  LPCWSTR pwszNmToken) = 0;
+        __in  LPCSTR pwszNmToken) = 0;
     
     virtual HRESULT STDMETHODCALLTYPE WriteNode( 
         /*  */ 
@@ -292,23 +292,23 @@ public:
     
     virtual HRESULT STDMETHODCALLTYPE WriteProcessingInstruction( 
         /*  */ 
-        __in  LPCWSTR pwszName,
+        __in  LPCSTR pwszName,
         /*  */ 
-        __in  LPCWSTR pwszText) = 0;
+        __in  LPCSTR pwszText) = 0;
     
     virtual HRESULT STDMETHODCALLTYPE WriteQualifiedName( 
         /*  */ 
-        __in  LPCWSTR pwszLocalName,
+        __in  LPCSTR pwszLocalName,
         /*  */ 
-        __in  LPCWSTR pwszNamespaceUri) = 0;
+        __in  LPCSTR pwszNamespaceUri) = 0;
     
     virtual HRESULT STDMETHODCALLTYPE WriteRaw( 
         /*  */ 
-        __in  LPCWSTR pwszData) = 0;
+        __in  LPCSTR pwszData) = 0;
     
     virtual HRESULT STDMETHODCALLTYPE WriteRawChars( 
         /*  */ 
-        __in_ecount(cwch)  const WCHAR *pwch,
+        __in_ecount(cwch)  const CHAR *pwch,
         /*  */ 
         __in  UINT cwch) = 0;
     
@@ -318,25 +318,25 @@ public:
     
     virtual HRESULT STDMETHODCALLTYPE WriteStartElement( 
         /*  */ 
-        __in  LPCWSTR pwszPrefix,
+        __in  LPCSTR pwszPrefix,
         /*  */ 
-        __in  LPCWSTR pwszLocalName,
+        __in  LPCSTR pwszLocalName,
         /*  */ 
-        __in  LPCWSTR pwszNamespaceUri) = 0;
+        __in  LPCSTR pwszNamespaceUri) = 0;
     
     virtual HRESULT STDMETHODCALLTYPE WriteString( 
         /*  */ 
-        __in  LPCWSTR pwszText) = 0;
+        __in  LPCSTR pwszText) = 0;
     
     virtual HRESULT STDMETHODCALLTYPE WriteSurrogateCharEntity( 
         /*  */ 
-        __in  WCHAR wchLow,
+        __in  CHAR wchLow,
         /*  */ 
-        __in  WCHAR wchHigh) = 0;
+        __in  CHAR wchHigh) = 0;
     
     virtual HRESULT STDMETHODCALLTYPE WriteWhitespace( 
         /*  */ 
-        __in  LPCWSTR pwszWhitespace) = 0;
+        __in  LPCSTR pwszWhitespace) = 0;
     
     virtual HRESULT STDMETHODCALLTYPE Flush( void) = 0;
     

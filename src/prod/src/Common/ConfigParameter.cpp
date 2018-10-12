@@ -13,16 +13,16 @@ ConfigParameter::ConfigParameter()
     Value(),
     MustOverride(false),
     IsEncrypted(false),
-    Type(L"")
+    Type("")
 {
 }
 
 ConfigParameter::ConfigParameter(
-    std::wstring && name,
-    std::wstring && value,
+    std::string && name,
+    std::string && value,
     bool mustOverride,
     bool isEncrypted,
-    std::wstring && type) :
+    std::string && type) :
     Name(move(name)),
     Value(move(value)),
     MustOverride(mustOverride),

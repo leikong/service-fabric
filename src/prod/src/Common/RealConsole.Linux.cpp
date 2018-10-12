@@ -64,7 +64,7 @@ int RealConsole::Read() const
     return count == 0 ? -1 : ch;
 }
 
-bool RealConsole::ReadLine(wstring& buffer) const
+bool RealConsole::ReadLine(string& buffer) const
 {
     string ansiBuffer;
     while (true)
@@ -81,7 +81,7 @@ bool RealConsole::ReadLine(wstring& buffer) const
         ansiBuffer += ch;                
     }
     
-    StringUtility::Utf8ToUtf16(ansiBuffer, buffer);
+    Utf8ToUtf16NotNeeded2(ansiBuffer, buffer);
     return buffer.size() > 0;
 }
 
@@ -94,11 +94,10 @@ void RealConsole::WriteAsciiBuffer(__in_ecount(ccLen) char const * buf, size_t c
 }
 #pragma prefast(pop) // end disable Warning 38020 - ANSI API ('WriteConsoleA') should not be called from Unicode modules
 
-void RealConsole::WriteUnicodeBuffer(__in_ecount(ccLen) wchar_t const * buf, size_t ccLen)
+void RealConsole::WriteUnicodeBuffer(__in_ecount(ccLen) char const * buf, size_t ccLen)
 {
     DWORD unused = 0;
-    string ansiVersion;
-    StringUtility::UnicodeToAnsi(buf, ansiVersion);
+    string ansiVersion(buf);
     WriteFile(outHandle_, ansiVersion.c_str(), static_cast<DWORD>(ansiVersion.length()), &unused, nullptr);
 }
 

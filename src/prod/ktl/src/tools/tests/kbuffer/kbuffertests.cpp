@@ -35,7 +35,7 @@ Abstract:
 
 NTSTATUS
 KBufferTestX(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     UNREFERENCED_PARAMETER(argc);
@@ -261,7 +261,7 @@ Finish:
 
 NTSTATUS
 KBufferTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     KTestPrintf("KBufferTest: STARTED\n");

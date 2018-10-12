@@ -25,10 +25,10 @@
 //
 inline BOOLEAN
 IsAlpha(
-    __in WCHAR c
+    __in CHAR c
     )
 {
-    if ((c >= L'a' && c <= L'z') || (c >= L'A' && c <= L'Z') )
+    if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') )
     {
         return TRUE;
     }
@@ -41,10 +41,10 @@ IsAlpha(
 //
 inline BOOLEAN
 IsDigit(
-    __in WCHAR c
+    __in CHAR c
     )
 {
-    if (c >= L'0' && c <= L'9')
+    if (c >= '0' && c <= '9')
     {
         return TRUE;
     }
@@ -93,15 +93,15 @@ KDomPath::Parse(
             case eStart:
             {
                 CurrentPToken.Clear();
-                Token.SetAddress(LPWSTR(Tracer));
-                WCHAR c = Tracer.PeekFirst();
+                Token.SetAddress(LPSTR(Tracer));
+                CHAR c = Tracer.PeekFirst();
 
                 if (c == '@')
                 {
                     eState = eStartAttr;
                     Token.Clear();
 					Tracer.ConsumeChar();
-                    Token.SetAddress(LPWSTR(Tracer));
+                    Token.SetAddress(LPSTR(Tracer));
                     continue;
                 }
 
@@ -111,7 +111,7 @@ KDomPath::Parse(
 
             case eStartEl:
             {
-                WCHAR c = Tracer.PeekFirst();
+                CHAR c = Tracer.PeekFirst();
                 if (IsAlpha(c) || c == '_')
                 {
                     Token.IncLen();;
@@ -125,9 +125,9 @@ KDomPath::Parse(
 
             case eContinueEl:
             {
-                WCHAR c = Tracer.PeekFirst();
+                CHAR c = Tracer.PeekFirst();
 
-                if (IsAlpha(c) || IsDigit(c) || c == L'_' || c == L'.')
+                if (IsAlpha(c) || IsDigit(c) || c == '_' || c == '.')
                 {
                     Token.IncLen();
                     Tracer.ConsumeChar();
@@ -135,7 +135,7 @@ KDomPath::Parse(
                     continue;
                 }
 
-                if (c == L':' && !CurrentPToken._NsPrefix)
+                if (c == ':' && !CurrentPToken._NsPrefix)
                 {
                    // We have hit a namespace prefix.
                    //
@@ -146,12 +146,12 @@ KDomPath::Parse(
                    }
                    Token.Clear();
                    Tracer.ConsumeChar();
-                   Token.SetAddress(LPWSTR(Tracer));
+                   Token.SetAddress(LPSTR(Tracer));
                    eState =  eStartEl;
                    continue;
                 }
 
-                if (c == L'[')
+                if (c == '[')
                 {
                    CurrentPToken._Ident = KString::Create(Token, Alloc);
                    if (!CurrentPToken._Ident)
@@ -161,12 +161,12 @@ KDomPath::Parse(
 				   CurrentPToken._IdentType = KDomPath::eArrayElement;
                    Token.Clear();
                    Tracer.ConsumeChar();
-				   Token.SetAddress(LPWSTR(Tracer));
+				   Token.SetAddress(LPSTR(Tracer));
                    eState = eStartArray;
 				   continue;
                 }
 
-                if (c == L'/')
+                if (c == '/')
                 {
                    // If here, we are done with the current token.
 
@@ -191,7 +191,7 @@ KDomPath::Parse(
 
             case eStartArray:
             {
-                WCHAR c = Tracer.PeekFirst();
+                CHAR c = Tracer.PeekFirst();
                 if (c == ']')
                 {
                     if (Token.Length() > 0)
@@ -224,7 +224,7 @@ KDomPath::Parse(
 
             case eEndArray :
             {
-                WCHAR c = Tracer.PeekFirst();
+                CHAR c = Tracer.PeekFirst();
                 if (c == '/')
                 {
                     Tracer.ConsumeChar();
@@ -238,7 +238,7 @@ KDomPath::Parse(
 
             case eStartAttr:
             {
-                WCHAR c = Tracer.PeekFirst();
+                CHAR c = Tracer.PeekFirst();
                 if (IsAlpha(c) || c == '_')
                 {
                     Token.IncLen();
@@ -251,9 +251,9 @@ KDomPath::Parse(
 
             case eContinueAttr:
             {
-                 WCHAR c = Tracer.PeekFirst();
+                 CHAR c = Tracer.PeekFirst();
 
-                 if (IsAlpha(c) || IsDigit(c) || c == L'_' || c == L'.')
+                 if (IsAlpha(c) || IsDigit(c) || c == '_' || c == '.')
                  {
                      Token.IncLen();
                      Tracer.ConsumeChar();
@@ -261,7 +261,7 @@ KDomPath::Parse(
                      continue;
                  }
 
-                 if (c == L':' && !CurrentPToken._NsPrefix)
+                 if (c == ':' && !CurrentPToken._NsPrefix)
                  {
                     // We have hit a namespace prefix.
                     //
@@ -272,7 +272,7 @@ KDomPath::Parse(
                     }
                     Token.Clear();
                     Tracer.ConsumeChar();
-                    Token.SetAddress(LPWSTR(Tracer));
+                    Token.SetAddress(LPSTR(Tracer));
                     eState =  eStartAttr;
                     continue;
                  }

@@ -13,8 +13,8 @@ namespace Common
 
     public:
         // FabricNode open timeout
-        INTERNAL_CONFIG_ENTRY(Common::TimeSpan, L"NodeGlobal", OpenTimeout, Common::TimeSpan::FromSeconds(300), ConfigEntryUpgradePolicy::Static);
+        INTERNAL_CONFIG_ENTRY(Common::TimeSpan, "NodeGlobal", OpenTimeout, Common::TimeSpan::FromSeconds(300), ConfigEntryUpgradePolicy::Static);
         // FabricNode close timeout
-        INTERNAL_CONFIG_ENTRY(Common::TimeSpan, L"NodeGlobal", CloseTimeout, Common::TimeSpan::FromSeconds(300), ConfigEntryUpgradePolicy::Static);
+        INTERNAL_CONFIG_ENTRY(Common::TimeSpan, "NodeGlobal", CloseTimeout, Common::TimeSpan::FromSeconds(300), ConfigEntryUpgradePolicy::Static);
     };
 }

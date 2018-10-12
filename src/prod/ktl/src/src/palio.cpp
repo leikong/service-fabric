@@ -709,7 +709,7 @@ NtFileHandle::NtFileHandle(ACCESS_MASK        DesiredAccess,
 : NtHandle()
 , _FileDescriptor(-1)
 , _DeleteOnClose(false)
-, _PathToFile(Utf16To8(ObjectAttributes->ObjectName->Buffer))
+, _PathToFile(ObjectAttributes->ObjectName->Buffer)
 , _KXMDescriptor(INVALID_HANDLE_VALUE)
 , _KXMFileDescriptor(INVALID_HANDLE_VALUE)
 {
@@ -2115,9 +2115,9 @@ NtDirHandle::QueryDirectoryFile(HANDLE                 Event,
     }
 
     // TODO: Remove STL usage
-    std::wstring fileName = Utf8To16(entry->d_name);
-    dirInfo->FileNameLength = fileName.length() * sizeof(wchar_t);
-    memcpy(dirInfo->FileName, fileName.c_str(), fileName.length() * sizeof(wchar_t));
+    std::string fileName(entry->d_name);
+    dirInfo->FileNameLength = fileName.length() * sizeof(char);
+    memcpy(dirInfo->FileName, fileName.c_str(), fileName.length() * sizeof(char));
 
     return STATUS_SUCCESS;
 }
@@ -2137,7 +2137,7 @@ NtDirHandle::Initialize(ACCESS_MASK        DesiredAccess,
     KInvariant(ObjectAttributes->Length >= sizeof(OBJECT_ATTRIBUTES));
     KInvariant(ObjectAttributes->ObjectName);
     // TODO: Remove STL usage
-    std::string pathname = Utf16To8(ObjectAttributes->ObjectName->Buffer);
+    std::string pathname(ObjectAttributes->ObjectName->Buffer);
 
     DIR *dir = nullptr;
     mode_t mode = S_IFDIR | S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH;
@@ -2294,7 +2294,7 @@ NtDeleteFile(POBJECT_ATTRIBUTES ObjectAttributes)
     KInvariant(ObjectAttributes->Length >= sizeof(OBJECT_ATTRIBUTES));
     KInvariant(ObjectAttributes->ObjectName);
     // TODO: Remove STL usage
-    std::string pathname = Utf16To8(ObjectAttributes->ObjectName->Buffer);
+    std::string pathname(ObjectAttributes->ObjectName->Buffer);
 
     return remove(pathname.c_str()) == 0 ? STATUS_SUCCESS : LinuxError::LinuxErrorToNTStatus(errno);
 }
@@ -2351,7 +2351,7 @@ NtQueryFullAttributesFile(POBJECT_ATTRIBUTES             ObjectAttributes,
     KInvariant(ObjectAttributes->Length >= sizeof(OBJECT_ATTRIBUTES));
     KInvariant(ObjectAttributes->ObjectName);
     // TODO: Remove STL usage
-    std::string pathname = Utf16To8(ObjectAttributes->ObjectName->Buffer);
+    std::string pathname(ObjectAttributes->ObjectName->Buffer);
 
     struct stat buf;
     int ret = stat(pathname.c_str(), &buf);
@@ -2845,8 +2845,8 @@ Finish:
 
 
 NTSTATUS HLPalFunctions::RenameFile(
-    __in PWCHAR FromPathName,
-    __in PWCHAR ToPathName,
+    __in char* FromPathName,
+    __in char* ToPathName,
     __in ULONG ToPathNameLength,
     __in BOOLEAN OverwriteIfExists,
     __in KAllocator& Allocator                                  
@@ -2854,8 +2854,8 @@ NTSTATUS HLPalFunctions::RenameFile(
 {
     NTSTATUS status;
     int result;
-    std::string fromPathname = Utf16To8(FromPathName);
-    std::string toPathname = Utf16To8(ToPathName);
+    std::string fromPathname(FromPathName);
+    std::string toPathname(ToPathName);
 
     result = syscall(SYS_renameat2,
                          0,

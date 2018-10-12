@@ -7,86 +7,86 @@
 
 namespace Common
 {
-    typedef std::map<std::wstring, std::wstring, Common::IsLessCaseInsensitiveComparer<std::wstring>> EnvironmentMap;
+    typedef std::map<std::string, std::string, Common::IsLessCaseInsensitiveComparer<std::string>> EnvironmentMap;
 
     class Environment :
         Common::TextTraceComponent<Common::TraceTaskCodes::Common>
     {
     public:
 
-        static std::wstring const NewLine;
+        static std::string const NewLine;
 
         //
         // Get the environment variable
         //
-        static void GetEnvironmentVariable( std::wstring const & name,
-                                            std::wstring& outValue,
+        static void GetEnvironmentVariable( std::string const & name,
+                                            std::string& outValue,
                                             NOCLEAR );
-        static bool GetEnvironmentVariable( std::wstring const & name,
-                                            std::wstring& outValue,
+        static bool GetEnvironmentVariable( std::string const & name,
+                                            std::string& outValue,
                                             NOTHROW );
-        static void GetEnvironmentVariable( std::wstring const & name,
-                                            std::wstring& outValue );
+        static void GetEnvironmentVariable( std::string const & name,
+                                            std::string& outValue );
 
-        static void GetEnvironmentVariable( std::wstring const & name,
-                                            std::wstring& outValue,
-                                            std::wstring const & defaultValue );
+        static void GetEnvironmentVariable( std::string const & name,
+                                            std::string& outValue,
+                                            std::string const & defaultValue );
 
         //
         // A GetEnvironmentVariable that conforms to the newer cxl way of doing things
         //
-        static std::wstring GetEnvironmentVariable ( std::wstring const & name );
+        static std::string GetEnvironmentVariable ( std::string const & name );
 
 
-        static bool SetEnvironmentVariable(std::wstring const & name, std::wstring const& value);
+        static bool SetEnvironmentVariable(std::string const & name, std::string const& value);
 
-        static std::wstring GetMachineName() { std::wstring result; GetMachineName(result); return result; }
-        static void GetMachineName( std::wstring& buffer);
-        static void GetMachineFQDN( std::wstring& buffer);
+        static std::string GetMachineName() { std::string result; GetMachineName(result); return result; }
+        static void GetMachineName( std::string& buffer);
+        static void GetMachineFQDN( std::string& buffer);
 
-        static void GetUserName(std::wstring & buffer);
-        static void GetExecutablePath(std::wstring & buffer);
-        static void GetExecutableFileName(std::wstring & buffer);
-        static std::wstring GetExecutableFileName();
-        static std::wstring GetExecutablePath();
-        static void GetCurrentModuleFileName(std::wstring & buffer);
-        static std::wstring GetCurrentModuleFileName() {std::wstring result; GetCurrentModuleFileName(result); return result;}
-        static void GetModuleFileName(HMODULE module, std::wstring & buffer);
+        static void GetUserName(std::string & buffer);
+        static void GetExecutablePath(std::string & buffer);
+        static void GetExecutableFileName(std::string & buffer);
+        static std::string GetExecutableFileName();
+        static std::string GetExecutablePath();
+        static void GetCurrentModuleFileName(std::string & buffer);
+        static std::string GetCurrentModuleFileName() {std::string result; GetCurrentModuleFileName(result); return result;}
+        static void GetModuleFileName(HMODULE module, std::string & buffer);
         static DWORD GetNumberOfProcessors();
         static Common::ErrorCode Environment::GetAvailableMemoryInBytes(__out DWORDLONG& memoryInMB);
 
-        static Common::ErrorCode GetCurrentModuleFileName2(__out std::wstring & moduleFileName);
-        static Common::ErrorCode GetModuleFileName2(HMODULE module, __out std::wstring & moduleFileName);
+        static Common::ErrorCode GetCurrentModuleFileName2(__out std::string & moduleFileName);
+        static Common::ErrorCode GetModuleFileName2(HMODULE module, __out std::string & moduleFileName);
         static Common::DateTime GetLastRebootTime();
 
-        static bool ExpandEnvironmentStrings(std::wstring const & str, __out std::wstring & expandedStr);
-        static Common::ErrorCode Expand(std::wstring const & str, __out std::wstring & expandedStr);
-        static std::wstring Expand(std::wstring const & str);
+        static bool ExpandEnvironmentStrings(std::string const & str, __out std::string & expandedStr);
+        static Common::ErrorCode Expand(std::string const & str, __out std::string & expandedStr);
+        static std::string Expand(std::string const & str);
         static bool GetEnvironmentMap(__out EnvironmentMap & envMap);
 
 #if !defined(PLATFORM_UNIX)
         static DWORD_PTR GetActiveProcessorsMask();
-        static std::wstring GetCurrentModuleFileVersion() { std::wstring result; GetCurrentModuleFileVersion2(result); return result; }
-        static Common::ErrorCode GetFileVersion2(__in std::wstring const & fileName, __out std::wstring & fileVersion);
-        static Common::ErrorCode GetCurrentModuleFileVersion2(__out std::wstring & fileVersion);
+        static std::string GetCurrentModuleFileVersion() { std::string result; GetCurrentModuleFileVersion2(result); return result; }
+        static Common::ErrorCode GetFileVersion2(__in std::string const & fileName, __out std::string & fileVersion);
+        static Common::ErrorCode GetCurrentModuleFileVersion2(__out std::string & fileVersion);
         static Common::ErrorCode GetEnvironmentMap(HANDLE userTokenHandle, bool inherit, __out EnvironmentMap & envMap);
 #endif
-        static void ToEnvironmentBlock(EnvironmentMap const & envMap, __out std::vector<wchar_t> & envBlock);
+        static void ToEnvironmentBlock(EnvironmentMap const & envMap, __out std::vector<char> & envBlock);
         static void FromEnvironmentBlock(LPVOID envBlock, __out EnvironmentMap & envMap);
-        static std::wstring ToString(EnvironmentMap const & envMap);
+        static std::string ToString(EnvironmentMap const & envMap);
 
         static std::string GetHomeFolder();
-        static std::wstring GetHomeFolderW();
+        static std::string GetHomeFolderW();
 
-        static std::wstring GetObjectFolder();
+        static std::string GetObjectFolder();
     };
 
     class EnvironmentVariable
     {
     public:
         EnvironmentVariable(
-            const std::wstring &   name,
-            const std::wstring &   defaultValue = L"" )
+            const std::string &   name,
+            const std::string &   defaultValue = "" )
         {
             ASSERT_IF( name.empty(), "environment variable empty");
             
@@ -100,17 +100,17 @@ namespace Common
             }
         } // ctor
         
-        std::wstring const& ToString() const
+        std::string const& ToString() const
         {
             return currentValue;
         }
 
-        bool Equals( const std::wstring & rhs ) const
+        bool Equals( const std::string & rhs ) const
         {
             return rhs == currentValue;
         }
 
-        EnvironmentVariable & operator = (const std::wstring & newValue);
+        EnvironmentVariable & operator = (const std::string & newValue);
 
         __declspec( property( get=size )) int Count;
         int size()    { return (int)currentValue.size(); }
@@ -119,8 +119,8 @@ namespace Common
         bool empty() { return currentValue.empty(); }
 
     protected:
-        std::wstring           name;
-        std::wstring           currentValue;
+        std::string           name;
+        std::string           currentValue;
     }; // EnvironmentVariable
 
 };

@@ -7,6 +7,7 @@
 
 #include <cwctype>
 #include <string>
+#include <strings.h>
 #include <objbase.h>
 #include <limits>
 
@@ -28,21 +29,21 @@ namespace Common
 #define TRY_COM_PARSE_PUBLIC_STRING2( InputPtr ) TRY_COM_PARSE_PUBLIC_STRING_OUT2( InputPtr, parsed_##InputPtr, false )
 
 #define TRY_COM_PARSE_PUBLIC_STRING_OUT( InputPtr, OutputVar, AllowNull ) \
-    std::wstring OutputVar; \
+    std::string OutputVar; \
     { \
         auto parseHResult = StringUtility::LpcwstrToWstring( InputPtr, AllowNull, OutputVar ); \
         ON_PUBLIC_COM_PARSE_RESULT( InputPtr, OutputVar, parseHResult ) \
     } \
 
 #define TRY_COM_PARSE_PUBLIC_STRING_OUT2( InputPtr, OutputVar, AllowNull ) \
-    std::wstring OutputVar; \
+    std::string OutputVar; \
     { \
         auto parseError = StringUtility::LpcwstrToWstring2( InputPtr, AllowNull, OutputVar ); \
         ON_PUBLIC_COM_PARSE_RESULT2( InputPtr, OutputVar, parseError ) \
     } \
 
 #define TRY_COM_PARSE_PUBLIC_LONG_STRING( InputPtr ) \
-    std::wstring parsed_##InputPtr; \
+    std::string parsed_##InputPtr; \
     { \
         auto parseHResult = StringUtility::LpcwstrToWstring( InputPtr, false, Common::ParameterValidator::MinStringSize, CommonConfig::GetConfig().MaxLongStringSize, parsed_##InputPtr ); \
         ON_PUBLIC_COM_PARSE_RESULT( InputPtr, parsed_##InputPtr, parseHResult ) \
@@ -51,7 +52,7 @@ namespace Common
 #define TRY_COM_PARSE_PUBLIC_FILEPATH( InputPtr ) TRY_COM_PARSE_PUBLIC_FILEPATH_OUT( InputPtr, parsed_##InputPtr )
 
 #define TRY_COM_PARSE_PUBLIC_FILEPATH_OUT( InputPtr, OutputVar ) \
-    std::wstring OutputVar; \
+    std::string OutputVar; \
     { \
         auto parseHResult = StringUtility::LpcwstrToFilePath( InputPtr, OutputVar ); \
         ON_PUBLIC_COM_PARSE_RESULT( InputPtr, OutputVar, parseHResult ) \
@@ -65,13 +66,13 @@ namespace Common
 #define TRY_PARSE_PUBLIC_STRING_ALLOW_NULL( InputPtr, OutputVar ) TRY_PARSE_PUBLIC_STRING_OUT( InputPtr, OutputVar, true )
 
 #define TRY_PARSE_PUBLIC_STRING_ALLOW_NULL2( InputPtr, OutputVar ) \
-    wstring OutputVar; \
+    string OutputVar; \
     TRY_PARSE_PUBLIC_STRING_OUT( InputPtr, OutputVar, true ) \
 
 #define TRY_PARSE_PUBLIC_STRING( InputPtr, OutputVar ) TRY_PARSE_PUBLIC_STRING_OUT( InputPtr, OutputVar, false )
 
 #define TRY_PARSE_PUBLIC_STRING2( InputPtr, OutputVar ) \
-    wstring OutputVar; \
+    string OutputVar; \
     TRY_PARSE_PUBLIC_STRING_OUT( InputPtr, OutputVar, false ) \
 
 #define TRY_PARSE_PUBLIC_STRING_OUT( InputPtr, OutputVar, AllowNull ) \
@@ -110,12 +111,12 @@ namespace Common
 #define ON_PUBLIC_PARSE_RESULT( InputPtr, OutputVar, Error ) \
     if (!Error.IsSuccess()) \
     { \
-        TRACE_PARSE_FAILURE( InputPtr, OutputVar, wformatString("{0} details='{1}'", Error, Error.Message) ) \
+        TRACE_PARSE_FAILURE( InputPtr, OutputVar, formatString.L("{0} details='{1}'", Error, Error.Message) ) \
         return Error; \
     } \
 
 #define TRACE_PARSE_FAILURE( InputPtr, OutputVar, Error ) \
-    Trace.WriteWarning("StringUtility", "Function '{0}': Parse({1}, __out {2}) failed: {3}", __FUNCTION__, #InputPtr, #OutputVar, Error); \
+    Trace.WriteWarning("StringUtility", StringLiteral("Function '{0}': Parse({1}, __out {2}) failed: {3}"), __FUNCTION__, #InputPtr, #OutputVar, Error); \
 
     struct StringUtility
     {
@@ -123,24 +124,14 @@ namespace Common
         // -----------------------------------------------------
         // Case insensitive string comparison
         // -----------------------------------------------------
-        inline static bool AreEqualCaseInsensitive(std::wstring const & a, std::wstring const & b)
-        {
-            return _wcsicmp(a.c_str(), b.c_str()) == 0;
-        }
-
-        inline static bool AreEqualCaseInsensitive(const wchar_t * const a, const wchar_t * const b)
-        {
-            return _wcsicmp(a, b) == 0;
-        }
-
         inline static bool AreEqualCaseInsensitive(std::string const & a, std::string const & b)
         {
-            return _stricmp(a.c_str(), b.c_str()) == 0;
+            return strcasecmp(a.c_str(), b.c_str()) == 0;
         }
 
         inline static bool AreEqualCaseInsensitive(const char * const a, const char * const b)
         {
-            return _stricmp(a, b) == 0;
+            return strcasecmp(a, b) == 0;
         }
 
         // -----------------------------------------------------
@@ -158,24 +149,14 @@ namespace Common
             return AreEqualCaseInsensitive(prefix1, prefix2) && suffix1 == suffix2;
         }
 
-        inline static int CompareCaseInsensitive(std::wstring const & a, std::wstring const & b)
-        {
-            return _wcsicmp(a.c_str(), b.c_str());
-        }
-
         inline static int CompareCaseInsensitive(std::string const & a, std::string const & b)
         {
-            return _stricmp(a.c_str(), b.c_str());
+            return strcasecmp(a.c_str(), b.c_str());
         }
 
-        inline static int CompareCaseInsensitive(const wchar_t * const a, const wchar_t * const b)
+        inline static int CompareCaseInsensitive(const char * const a, const char * const b)
         {
-            return _wcsicmp(a, b);
-        }
-
-        inline static int Compare(std::wstring const & a, std::wstring const & b)
-        {
-            return wcscmp(a.c_str(), b.c_str());
+            return strcasecmp(a, b);
         }
 
         inline static int Compare(std::string const & a, std::string const & b)
@@ -183,12 +164,7 @@ namespace Common
             return strcmp(a.c_str(), b.c_str());
         }
 
-        inline static int Compare(const wchar_t * const a, const wchar_t * const b)
-        {
-            return wcscmp(a, b);
-        }
-
-        inline static int CompareDigitsAsNumbers(const wchar_t * a, const wchar_t * b)
+        inline static int CompareDigitsAsNumbers(const char * a, const char * b)
         {
             if (!a || !b)
             {
@@ -206,8 +182,8 @@ namespace Common
                 {
                     if (std::iswdigit(*a) && std::iswdigit(*b))
                     {
-                        const wchar_t * a1 = a;
-                        const wchar_t * b1 = b;
+                        const char * a1 = a;
+                        const char * b1 = b;
                         for (; *a && std::iswdigit(*a); a1 = ((*a == '0' && a == a1) ? a1 + 1 : a1), a++);
                         for (; *b && std::iswdigit(*b); b1 = ((*b == '0' && b == b1) ? b1 + 1 : b1), b++);
                         if (a - a1 != b - b1)
@@ -243,19 +219,9 @@ namespace Common
             return a.find("\r", 0) != std::string::npos || a.find("\n", 0) != std::string::npos;
         }
 
-        inline static bool ContainsNewline(std::wstring const & a)
+        inline static bool IsLessCaseSensitive(std::string const & a, std::string const & b)
         {
-            return a.find(L"\r", 0) != std::string::npos || a.find(L"\n", 0) != std::string::npos;
-        }
-
-        inline static bool IsLessCaseInsensitive(std::wstring const & a, std::wstring const & b)
-        {
-            return _wcsicmp(a.c_str(), b.c_str()) < 0;
-        }
-
-        inline static bool IsLessCaseSensitive(std::wstring const & a, std::wstring const & b)
-        {
-            return wcscmp(a.c_str(), b.c_str()) < 0;
+            return strcmp(a.c_str(), b.c_str()) < 0;
         }
 
         inline static bool IsLessCaseInsensitive(std::string const & a, std::string const & b)
@@ -271,9 +237,9 @@ namespace Common
             return static_cast<char>(toupper(c));
         }
 
-        inline static wchar_t ToUpperCharW(wchar_t c)
+        inline static char ToUpperCharW(char c)
         {
-            return static_cast<wchar_t>(towupper(c));
+            return static_cast<char>(towupper(c));
         }
 
         inline static char ToLowerChar(char c)
@@ -281,22 +247,18 @@ namespace Common
             return static_cast<char>(tolower(c));
         }
 
-        inline static wchar_t ToLowerCharW(wchar_t c)
+        inline static char ToLowerCharW(char c)
         {
-            return static_cast<wchar_t>(towlower(c));
+            return static_cast<char>(towlower(c));
         }
 
         static void ToUpper(std::string & str);
 
-        static void ToUpper(std::wstring & str);
-
         static void ToLower(std::string & str);
 
-        static void ToLower(std::wstring & str);
+        static void GenerateRandomString(int length, std::string & randomString);
 
-        static void GenerateRandomString(int length, std::wstring & randomString);
-
-        static size_t GetHash(std::wstring const & str);
+        static size_t GetHash(std::string const & str);
 
         // -----------------------------------------------------
         // Contains (case sensitive and insensitive)
@@ -326,7 +288,7 @@ namespace Common
             return (bigStr.substr(0,smallStr.size()).compare(smallStr) == 0);
         }
 
-        static bool StartsWith(std::wstring const & bigStr, WStringLiteral const & smallStr);
+        static bool StartsWith(std::string const & bigStr, StringLiteral const & smallStr);
 
         template <typename StringType>
         static bool StartsWithCaseInsensitive(StringType const & bigStr, StringType const & smallStr)
@@ -387,21 +349,15 @@ namespace Common
         }
 
         // Eliminates spaces from the beginning and end of the string
-        static void TrimSpaces(std::wstring & str);
-
         static void TrimSpaces(std::string & str);
 
         // Eliminates all white spaces from the beginning and end of the string
-        static void TrimWhitespaces(std::wstring & str);
-
         static void TrimWhitespaces(std::string & str);
-
         // Converts a wstring to a string
         static void Utf16ToUtf8(std::wstring const & utf16String, std::string & utf8String);
         static void Utf8ToUtf16(std::string const & utf8String, std::wstring & utf16String);
         static std::string Utf16ToUtf8(std::wstring const & utf16String);
         static std::wstring Utf8ToUtf16(std::string const & utf8String);
-        static void UnicodeToAnsi(std::wstring const &uniString, std::string &dst);
 
         // -----------------------------------------------------
         // Split string into two tokens based on the delimiter.
@@ -501,36 +457,36 @@ namespace Common
         }
 
         // -----------------------------------------------------
-        // Convert basic types to wstring
+        // Convert basic types to string
         // -----------------------------------------------------
         template <typename T>
-        static std::wstring ToWString(T item)
+        static std::string ToWString(T item)
         {
-            std::wstring result;
+            std::string result;
             StringWriter(result).Write(item);
             return result;
         }
 
-        static HRESULT LpcwstrToWstring(LPCWSTR ptr, bool acceptNull, __inout std::wstring & output);
-        static HRESULT LpcwstrToWstring(LPCWSTR ptr, bool acceptNull, size_t minSize, size_t maxSize, __inout std::wstring & output);
-        static ErrorCode LpcwstrToWstring2(LPCWSTR ptr, bool acceptNull, __inout std::wstring & output);
-        static ErrorCode LpcwstrToWstring2(LPCWSTR ptr, bool acceptNull, size_t minSize, size_t maxSize, __inout std::wstring & output);
-        static HRESULT LpcwstrToFilePath(LPCWSTR ptr, __out std::wstring & path);
-        static ErrorCode LpcwstrToTruncatedWstring(LPCWSTR ptr, bool acceptNull, size_t minSize, size_t maxSize, __inout std::wstring & output);
+        static HRESULT LpcwstrToWstring(LPCSTR ptr, bool acceptNull, __inout std::string & output);
+        static HRESULT LpcwstrToWstring(LPCSTR ptr, bool acceptNull, size_t minSize, size_t maxSize, __inout std::string & output);
+        static ErrorCode LpcwstrToWstring2(LPCSTR ptr, bool acceptNull, __inout std::string & output);
+        static ErrorCode LpcwstrToWstring2(LPCSTR ptr, bool acceptNull, size_t minSize, size_t maxSize, __inout std::string & output);
+        static HRESULT LpcwstrToFilePath(LPCSTR ptr, __out std::string & path);
+        static ErrorCode LpcwstrToTruncatedWstring(LPCSTR ptr, bool acceptNull, size_t minSize, size_t maxSize, __inout std::string & output);
 
-        static bool TruncateIfNeeded(__in std::wstring & s, size_t maxSize);
-        static void ReplaceEndWithTruncateMarker(__in std::wstring & s);
-        static std::wstring LimitNumberOfCharacters(__in const std::wstring & s, wchar_t token, size_t maxSize);
-        static bool TruncateStartIfNeeded(__in std::wstring & s, size_t maxSize);
-        static void ReplaceStartWithTruncateMarker(__in std::wstring & s);
+        static bool TruncateIfNeeded(__in std::string & s, size_t maxSize);
+        static void ReplaceEndWithTruncateMarker(__in std::string & s);
+        static std::string LimitNumberOfCharacters(__in const std::string & s, char token, size_t maxSize);
+        static bool TruncateStartIfNeeded(__in std::string & s, size_t maxSize);
+        static void ReplaceStartWithTruncateMarker(__in std::string & s);
 
         // -----------------------------------------------------
-        // Convert from wstring to basic types
+        // Convert from string to basic types
         // -----------------------------------------------------
 
         template <typename T>
         static bool TryFromWString(
-            std::wstring const & string,
+            std::string const & string,
             __out T & parsed)
         {
             return TryFromWString(string, parsed, 0);
@@ -538,22 +494,22 @@ namespace Common
 
         template <>
         bool TryFromWString<bool>(
-            std::wstring const & string,
+            std::string const & string,
             __out bool & parsed)
         {
-            if (StringUtility::AreEqualCaseInsensitive(string, L"true"))
+            if (StringUtility::AreEqualCaseInsensitive(string, "true"))
             {
                 parsed = true;
                 return true;
             }
-            else if (StringUtility::AreEqualCaseInsensitive(string, L"false"))
+            else if (StringUtility::AreEqualCaseInsensitive(string, "false"))
             {
                 parsed = false;
                 return true;
             }
             else
             {
-                std::wstringstream inputStream(string);
+                std::stringstream inputStream(string);
                 return TraceParseReturn(
                     !(inputStream >> parsed).fail(),
                     __FUNCTION__,
@@ -564,7 +520,7 @@ namespace Common
 
         template <>
         bool TryFromWString<double>(
-            std::wstring const & string,
+            std::string const & string,
             __out double & parsed)
         {
             return TraceParseReturn(
@@ -588,7 +544,7 @@ namespace Common
 
         template <typename T>
         static bool TryFromWString(
-            std::wstring const & string,
+            std::string const & string,
             __out T & parsed,
             uint base)
         {
@@ -605,7 +561,7 @@ namespace Common
         struct ParseIntegralString
         {
             static bool Try(
-                std::wstring const & string,
+                std::string const & string,
                 __out TInt & parsed,
                 uint base);
         };
@@ -614,7 +570,7 @@ namespace Common
         struct ParseIntegralString<TInt, false>
         {
             static bool Try(
-                std::wstring const & string,
+                std::string const & string,
                 __out TInt & parsed,
                 uint base)
             {
@@ -629,7 +585,7 @@ namespace Common
         struct ParseIntegralString<TInt, true>
         {
             static bool Try(
-                std::wstring const & string,
+                std::string const & string,
                 __out TInt & parsed,
                 uint base)
             {
@@ -643,15 +599,15 @@ namespace Common
         struct ParseBool
         {
             static bool Try(
-                std::wstring const & string,
+                std::string const & string,
                 __out bool & parsed)
             {
-                if (AreEqualCaseInsensitive(string, L"true"))
+                if (AreEqualCaseInsensitive(string, "true"))
                 {
                     parsed = true;
                     return true;
                 }
-                else if (AreEqualCaseInsensitive(string, L"false"))
+                else if (AreEqualCaseInsensitive(string, "false"))
                 {
                     parsed = false;
                     return true;
@@ -664,19 +620,19 @@ namespace Common
         // -----------------------------------------------------
         // Convert from NATIVE type
         // -----------------------------------------------------
-        static HRESULT FromLPCWSTRArray(ULONG count, LPCWSTR * items, __out std::vector<std::wstring> & output);
+        static HRESULT FromLPCSTRArray(ULONG count, LPCSTR * items, __out std::vector<std::string> & output);
 
-        static ULONG GetDataLength(LPCWSTR data)
+        static ULONG GetDataLength(LPCSTR data)
         {
             // +1 to include trailing null character.
             // http://msdn.microsoft.com/en-us/library/78zh94ax.aspx
-            return (data == NULL) ? 0 : static_cast<ULONG>((wcslen(data) + 1) * sizeof(wchar_t));
+            return (data == NULL) ? 0 : static_cast<ULONG>((strlen(data) + 1) * sizeof(char));
         }
 
         // -----------------------------------------------------
         // Case insensitive string collection comparison
         // -----------------------------------------------------
-        static bool AreStringCollectionsEqualCaseInsensitive(std::vector<std::wstring> const & v1, std::vector<std::wstring> const & v2);
+        static bool AreStringCollectionsEqualCaseInsensitive(std::vector<std::string> const & v1, std::vector<std::string> const & v2);
 
     private:
 
@@ -717,12 +673,12 @@ namespace Common
     bool operator!=(StringLiteral const & lhs, std::string const & rhs);
     bool operator!=(std::string const & lhs, StringLiteral const & rhs);
 
-    bool operator==(WStringLiteral const & lhs, WStringLiteral const & rhs);
-    bool operator!=(WStringLiteral const & lhs, WStringLiteral const & rhs);
-    bool operator==(WStringLiteral const & lhs, std::wstring const & rhs);
-    bool operator==(std::wstring const & lhs, WStringLiteral const & rhs);
-    bool operator!=(WStringLiteral const & lhs, std::wstring const & rhs);
-    bool operator!=(std::wstring const & lhs, WStringLiteral const & rhs);
+    bool operator==(StringLiteral const & lhs, StringLiteral const & rhs);
+    bool operator!=(StringLiteral const & lhs, StringLiteral const & rhs);
+    bool operator==(StringLiteral const & lhs, std::string const & rhs);
+    bool operator==(std::string const & lhs, StringLiteral const & rhs);
+    bool operator!=(StringLiteral const & lhs, std::string const & rhs);
+    bool operator!=(std::string const & lhs, StringLiteral const & rhs);
 
     bool operator==(GlobalString const & lhs, GlobalString const & rhs);
     bool operator!=(GlobalString const & lhs, GlobalString const & rhs);
@@ -731,10 +687,10 @@ namespace Common
     bool operator!=(GlobalString const & lhs, std::string const & rhs);
     bool operator!=(std::string const & lhs, GlobalString const & rhs);
 
-    bool operator==(GlobalWString const & lhs, GlobalWString const & rhs);
-    bool operator!=(GlobalWString const & lhs, GlobalWString const & rhs);
-    bool operator==(GlobalWString const & lhs, std::wstring const & rhs);
-    bool operator==(std::wstring const & lhs, GlobalWString const & rhs);
-    bool operator!=(GlobalWString const & lhs, std::wstring const & rhs);
-    bool operator!=(std::wstring const & lhs, GlobalWString const & rhs);
+    bool operator==(GlobalString const & lhs, GlobalString const & rhs);
+    bool operator!=(GlobalString const & lhs, GlobalString const & rhs);
+    bool operator==(GlobalString const & lhs, std::string const & rhs);
+    bool operator==(std::string const & lhs, GlobalString const & rhs);
+    bool operator!=(GlobalString const & lhs, std::string const & rhs);
+    bool operator!=(std::string const & lhs, GlobalString const & rhs);
 } // end namespace

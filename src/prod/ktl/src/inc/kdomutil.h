@@ -40,22 +40,22 @@ class KDomPath
 {
 public:
     KDomPath(
-        __in LPCWSTR Src
+        __in LPCSTR Src
         );
 
     KDomPath(
-        __in LPCWSTR Src,
+        __in LPCSTR Src,
         __in ULONG Ix1
         );
 
     KDomPath(
-        __in LPCWSTR Src,
+        __in LPCSTR Src,
         __in ULONG Ix1,
         __in ULONG Ix2
         );
 
     KDomPath(
-        __in LPCWSTR Src,
+        __in LPCSTR Src,
         __in ULONG Ix1,
         __in ULONG Ix2,
         __in ULONG Ix3

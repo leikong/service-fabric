@@ -58,13 +58,13 @@ int CopyCount = 0;
     BOOST_AUTO_TEST_CASE(SmokeTest)
     {
         unsigned char b = 137;
-        std::wstring result = wformatString("{0:04x}", b);
-        BOOST_REQUIRE(result == L"0089");
-        result = wformatString("{0}", b);
-        BOOST_REQUIRE(result == L"137");
+        std::string result = formatString.L("{0:04x}", b);
+        BOOST_REQUIRE(result == "0089");
+        result = formatString.L("{0}", b);
+        BOOST_REQUIRE(result == "137");
         Foo f(123);
-        result = wformatString("{0} {1}", f);
-        BOOST_REQUIRE(result == L"Foo: 123 >> 1 ** insert index too big <<");
+        result = formatString.L("{0} {1}", f);
+        BOOST_REQUIRE(result == "Foo: 123 >> 1 ** insert index too big <<");
         BOOST_REQUIRE(CopyCount == 0);
     }
 

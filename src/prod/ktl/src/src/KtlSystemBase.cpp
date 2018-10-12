@@ -412,7 +412,7 @@ KtlSystemBase::DefaultSystemThreadPool()
 
 NTSTATUS
 KtlSystemBase::RegisterGlobalObject(
-    __in_z const WCHAR* ObjectName,
+    __in_z const CHAR* ObjectName,
     __inout KSharedBase& Object
     )
 {
@@ -456,7 +456,7 @@ KtlSystemBase::RegisterGlobalObject(
 
 VOID
 KtlSystemBase::UnregisterGlobalObject(
-    __in_z const WCHAR* ObjectName
+    __in_z const CHAR* ObjectName
     )
 {
     ObjectEntry* p = NULL;
@@ -482,7 +482,7 @@ KtlSystemBase::UnregisterGlobalObject(
 
 KSharedBase::SPtr
 KtlSystemBase::GetGlobalObjectSharedBase(
-    __in_z const WCHAR* ObjectName
+    __in_z const CHAR* ObjectName
     )
 {
     ObjectEntry* p = NULL;
@@ -751,7 +751,7 @@ KtlSystemBase::ObjectEntryKey::Compare(
     __in ObjectEntryKey& Second
     )
 {
-    return wcscmp(First.String, Second.String);
+    return strcmp(First.String, Second.String);
 }
 
 //* KtlSystem imp

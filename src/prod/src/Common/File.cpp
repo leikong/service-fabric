@@ -21,6 +21,7 @@
 #include <sys/fsuid.h>
 
 Common::StringLiteral const FileApiTraceSource("FileApi");
+Common::StringLiteral const SCPTrace("SCPCopy");
 
 Common::Global<std::map<int, unsigned int>> ErrnoToWindowsError(new std::map<int, unsigned int> {
         {0, ERROR_SUCCESS},
@@ -86,7 +87,7 @@ DWORD DirGetLastErrorFromErrno()
         return FileGetLastErrorFromErrno();
 }
 
-static string FileNormalizePath(LPCWSTR pathW)
+static string FileNormalizePath(LPCSTR pathW)
 {
     string pathA;
     if (!pathW)
@@ -95,7 +96,7 @@ static string FileNormalizePath(LPCWSTR pathW)
         return pathA;
     }
 
-    pathA = Common::StringUtility::Utf16ToUtf8(pathW);
+    pathA = string(pathW);
     std::replace(pathA.begin(), pathA.end(), '\\', '/');
     while (pathA.back() == '/')
     {
@@ -143,7 +144,7 @@ static int mkdir_r(string const & path)
     return 0;
 }
 
-DWORD GetFileAttributesW(LPCWSTR lpFileName)
+DWORD GetFileAttributesW(LPCSTR lpFileName)
 {
     DWORD attr = 0;
     if (lpFileName == NULL)
@@ -188,7 +189,7 @@ DWORD GetFileAttributesW(LPCWSTR lpFileName)
     return attr;
 }
 
-BOOL SetFileAttributesW(LPCWSTR lpFileName, IN DWORD dwFileAttributes)
+BOOL SetFileAttributesW(LPCSTR lpFileName, IN DWORD dwFileAttributes)
 {
     if (lpFileName == NULL)
     {
@@ -231,7 +232,7 @@ BOOL SetFileAttributesW(LPCWSTR lpFileName, IN DWORD dwFileAttributes)
     return TRUE;
 }
 
-BOOL CopyFileW(LPCWSTR lpExistingFileName, LPCWSTR lpNewFileName, BOOL bFailIfExists)
+BOOL CopyFileW(LPCSTR lpExistingFileName, LPCSTR lpNewFileName, BOOL bFailIfExists)
 {
     string srcA = FileNormalizePath(lpExistingFileName);
     string destA = FileNormalizePath(lpNewFileName);
@@ -298,13 +299,13 @@ BOOL CopyFileW(LPCWSTR lpExistingFileName, LPCWSTR lpNewFileName, BOOL bFailIfEx
     // ignore if chmod fails
     if (0 != chmod(destA.c_str(), src_stat.st_mode & permissions)) 
     {
-        Trace.WriteInfo(FileApiTraceSource, L"File.CopyFileW","Failed to chmod {0}. errno {1}", destA, errno);
+        Trace.WriteInfo(FileApiTraceSource, Common::StringLiteral("File.CopyFileW"),"Failed to chmod {0}. errno {1}", destA, errno);
     }
 
     return TRUE;
 }
 
-BOOL MoveFileExW(LPCWSTR lpExistingFileName, LPCWSTR lpNewFileName, DWORD dwFlags)
+BOOL MoveFileExW(LPCSTR lpExistingFileName, LPCSTR lpNewFileName, DWORD dwFlags)
 {
     string srcA = FileNormalizePath(lpExistingFileName);
     string destA = FileNormalizePath(lpNewFileName);
@@ -346,7 +347,7 @@ BOOL MoveFileExW(LPCWSTR lpExistingFileName, LPCWSTR lpNewFileName, DWORD dwFlag
     return TRUE;
 }
 
-BOOL DeleteFileW(LPCWSTR lpFileName)
+BOOL DeleteFileW(LPCSTR lpFileName)
 {
     string fileA = FileNormalizePath(lpFileName);
     int result = unlink(fileA.c_str());
@@ -357,7 +358,7 @@ BOOL DeleteFileW(LPCWSTR lpFileName)
     return (result == 0);
 }
 
-BOOL GetFileAttributesExW(LPCWSTR lpFileName, GET_FILEEX_INFO_LEVELS fInfoLevelId, LPVOID lpFileInformation)
+BOOL GetFileAttributesExW(LPCSTR lpFileName, GET_FILEEX_INFO_LEVELS fInfoLevelId, LPVOID lpFileInformation)
 {
     if (lpFileName == NULL)
     {
@@ -385,7 +386,7 @@ BOOL GetFileAttributesExW(LPCWSTR lpFileName, GET_FILEEX_INFO_LEVELS fInfoLevelI
     return TRUE;
 }
 
-HANDLE CreateFileW(LPCWSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode,
+HANDLE CreateFile(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode,
                           LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition,
                           IN DWORD dwFlagsAndAttributes, HANDLE hTemplateFile)
 {
@@ -707,11 +708,11 @@ namespace Common
 
     public:
 
-        FileFind(std::wstring const & pattern)
+        FileFind(std::string const & pattern)
             : pattern_(pattern), handle_(INVALID_HANDLE_VALUE)
         { }
 
-        FileFind(std::wstring && pattern)
+        FileFind(std::string && pattern)
             : pattern_(pattern), handle_(INVALID_HANDLE_VALUE)
         { }
 
@@ -745,10 +746,10 @@ namespace Common
 
         WIN32_FIND_DATA const & GetCurrent() override { return data_; }
         DWORD GetCurrentAttributes() override { return data_.dwFileAttributes; }
-        std::wstring GetCurrentPath() override { return std::wstring(data_.cFileName); }
+        std::string GetCurrentPath() override { return std::string(data_.cFileName); }
 
     private:
-        std::wstring pattern_;
+        std::string pattern_;
         HANDLE handle_;
         WIN32_FIND_DATA data_;
     };
@@ -761,11 +762,11 @@ namespace Common
 
     public:
 
-        FileFind(std::wstring const & pattern)
+        FileFind(std::string const & pattern)
                 : pattern_(pattern), inited_(false), index_(0)
         { }
 
-        FileFind(std::wstring && pattern)
+        FileFind(std::string && pattern)
                 : pattern_(pattern), inited_(false), index_(0)
         { }
 
@@ -801,12 +802,9 @@ namespace Common
                     string currentPath = string(dir) + "/" + currentName;
                     if (GlobMatch(currentName.c_str(), pat))
                     {
-                        wstring currentNameW;
-                        StringUtility::Utf8ToUtf16(currentName, currentNameW);
-
                         WIN32_FIND_DATA findData;
                         memset(&findData, 0, sizeof(findData));
-                        memcpy(findData.cFileName, currentNameW.c_str(), (currentNameW.length() + 1) * sizeof(wchar_t));
+                        memcpy(findData.cFileName, currentName.c_str(), (currentName.length() + 1) * sizeof(char));
                         struct stat stat_data;
                         if (stat(currentPath.c_str(), &stat_data) == 0) {
                             findData.dwFileAttributes = S_ISDIR(stat_data.st_mode) ? FILE_ATTRIBUTE_DIRECTORY : FILE_ATTRIBUTE_NORMAL;
@@ -846,10 +844,10 @@ namespace Common
 
         WIN32_FIND_DATA const & GetCurrent() override { return data_; }
         DWORD GetCurrentAttributes() override { return data_.dwFileAttributes; }
-        std::wstring GetCurrentPath() override { return std::wstring(data_.cFileName); }
+        std::string GetCurrentPath() override { return std::string(data_.cFileName); }
 
     private:
-        std::wstring pattern_;
+        std::string pattern_;
         WIN32_FIND_DATA data_;
 
         bool inited_;
@@ -903,12 +901,12 @@ namespace Common
     }
 
 
-    ErrorCode File::Open(std::wstring const & fname, FABRIC_FILE_MODE fileMode, FABRIC_FILE_ACCESS fileAccess, FABRIC_FILE_SHARE fileShare, ::HANDLE * fileHandle)
+    ErrorCode File::Open(std::string const & fname, FABRIC_FILE_MODE fileMode, FABRIC_FILE_ACCESS fileAccess, FABRIC_FILE_SHARE fileShare, ::HANDLE * fileHandle)
     {
         return Open(fname, fileMode, fileAccess, fileShare, FABRIC_FILE_ATTRIBUTES_NORMAL, fileHandle);
     }
 
-    ErrorCode File::Open(std::wstring const & fname, FABRIC_FILE_MODE fileMode, FABRIC_FILE_ACCESS fileAccess, FABRIC_FILE_SHARE fileShare, FABRIC_FILE_ATTRIBUTES fileAttributes, ::HANDLE * fileHandle)
+    ErrorCode File::Open(std::string const & fname, FABRIC_FILE_MODE fileMode, FABRIC_FILE_ACCESS fileAccess, FABRIC_FILE_SHARE fileShare, FABRIC_FILE_ATTRIBUTES fileAttributes, ::HANDLE * fileHandle)
     {
         auto error = TryOpen(fname, FileMode::Enum(fileMode), FileAccess::Enum(fileAccess), FileShare::Enum(fileShare), FileAttributes::Enum(fileAttributes));
         if (!error.IsSuccess())
@@ -935,11 +933,11 @@ namespace Common
     // !!! Don't do tracing in TryOpen, because the file may be a trace file, and it may lead to deadlock.
     // !!! [Windows 8 Bugs:207669] Microsoft.Fabric.Test hangs if text file tracing is enabled
     //
-    ErrorCode File::TryOpen(std::wstring const & fname, FileMode::Enum mode, FileAccess::Enum access, FileShare::Enum share, FileAttributes::Enum attributes )
+    ErrorCode File::TryOpen(std::string const & fname, FileMode::Enum mode, FileAccess::Enum access, FileShare::Enum share, FileAttributes::Enum attributes )
     {
         Close();
         fileName_ = fname;
-        handle_ = ::CreateFileW(Path::ConvertToNtPath(fname).c_str(), access, share, nullptr, mode, attributes, nullptr);
+        handle_ = ::CreateFile(Path::ConvertToNtPath(fname).c_str(), access, share, nullptr, mode, attributes, nullptr);
         isHandleOwned_ = true;
 
         DWORD win32Error = ERROR_SUCCESS;
@@ -993,14 +991,14 @@ namespace Common
         return;
     }
 
-    ErrorCode File::GetLastWriteTime(std::wstring const & path, __out DateTime & lastWriteTime)
+    ErrorCode File::GetLastWriteTime(std::string const & path, __out DateTime & lastWriteTime)
     {
         WIN32_FILE_ATTRIBUTE_DATA fileAttributes;
         if (!::GetFileAttributesEx(Path::ConvertToNtPath(path).c_str(), GET_FILEEX_INFO_LEVELS::GetFileExInfoStandard, &fileAttributes))
         {
             Trace.WriteError(
                 TraceSource,
-                L"File.GetLastWriteTime",
+                StringLiteral("File.GetLastWriteTime"),
                 "GetFileAttributesEx failed with the following error {0}",
                 ::GetLastError());
             return ErrorCode::FromWin32Error(::GetLastError());
@@ -1008,7 +1006,7 @@ namespace Common
         lastWriteTime = DateTime(fileAttributes.ftLastWriteTime);
         Trace.WriteInfo(
             TraceSource,
-            L"File.GetLastWriteTime",
+            StringLiteral("File.GetLastWriteTime"),
             "GetFileAttributesEx got file time {0} and set last writetime to {1}",
             fileAttributes.ftLastWriteTime.dwLowDateTime,
             lastWriteTime);
@@ -1063,7 +1061,7 @@ namespace Common
         return ErrorCodeValue::Success;
     }
 
-    ErrorCode File::GetAttributes(const std::wstring& path, FileAttributes::Enum & attribute)
+    ErrorCode File::GetAttributes(const std::string& path, FileAttributes::Enum & attribute)
     {
         ErrorCode error;
         ::DWORD result = ::GetFileAttributesW(Path::ConvertToNtPath(path).c_str());
@@ -1072,7 +1070,7 @@ namespace Common
             error = ErrorCode::FromWin32Error(::GetLastError());
             Trace.WriteWarning(
                 TraceSource,
-                L"File.GetAttributes",
+                StringLiteral("File.GetAttributes"),
                 "GetAttributes failed with the following error {0} for the path:{1}",
                 error,
                 path);
@@ -1082,7 +1080,7 @@ namespace Common
         return error;
     }
 
-    ErrorCode File::SetAttributes(const std::wstring& path, FileAttributes::Enum fileAttributes)
+    ErrorCode File::SetAttributes(const std::string& path, FileAttributes::Enum fileAttributes)
     {
         ErrorCode error;
         if(!::SetFileAttributesW(Path::ConvertToNtPath(path).c_str(), fileAttributes))
@@ -1093,7 +1091,7 @@ namespace Common
         return error;
     }
 
-    ErrorCode File::RemoveReadOnlyAttribute(const std::wstring& path)
+    ErrorCode File::RemoveReadOnlyAttribute(const std::string& path)
     {
         FileAttributes::Enum attributes;
         ErrorCode attribError = File::GetAttributes(path, attributes);
@@ -1117,7 +1115,7 @@ namespace Common
     }
 
     void File::Delete(
-        const std::wstring& path,
+        const std::string& path,
         bool throwIfNotFound)
     {
         bool success = File::Delete(path, NOTHROW());
@@ -1135,7 +1133,7 @@ namespace Common
         }
     }
 
-    bool File::Delete(std::wstring const & path, NOTHROW, bool const deleteReadonly)
+    bool File::Delete(std::string const & path, NOTHROW, bool const deleteReadonly)
     {
         if (deleteReadonly)
         {
@@ -1150,7 +1148,7 @@ namespace Common
                 {
                     Trace.WriteError(
                         TraceSource,
-                        L"File.Delete",
+                        StringLiteral("File.Delete"),
                         "SetFileAttributes failed with the following error {0}",
                         attribError);
                 }
@@ -1160,7 +1158,7 @@ namespace Common
         return (::DeleteFileW(Path::ConvertToNtPath(path).c_str()) != 0);
     }
 
-    ErrorCode File::Delete2( std::wstring const & path, bool const deleteReadonly)
+    ErrorCode File::Delete2( std::string const & path, bool const deleteReadonly)
     {
         bool success = File::Delete(path, NOTHROW(), deleteReadonly);
         if (!success)
@@ -1171,18 +1169,18 @@ namespace Common
         return ErrorCode::Success();
     }
 
-    ErrorCode File::Replace(std::wstring const & replacedFileName, std::wstring const & replacementFileName, std::wstring const & backupFileName, bool ignoreMergeErrors)
+    ErrorCode File::Replace(std::string const & replacedFileName, std::string const & replacementFileName, std::string const & backupFileName, bool ignoreMergeErrors)
     {
 #ifdef PLATFORM_UNIX
         ignoreMergeErrors;
 
-        wstring backupFileToUse = backupFileName.empty()? GetTempFileName() : backupFileName;
+        string backupFileToUse = backupFileName.empty()? GetTempFileName() : backupFileName;
         auto err = Move(replacedFileName, backupFileToUse, false);
         if (!err.IsSuccess())
         {
             Trace.WriteError(
                 TraceSource,
-                "{0}: failed to move orignal file {1} to {2}",
+                StringLiteral("{0}: failed to move orignal file {1} to {2}"),
                 __func__,
                 replacedFileName,
                 backupFileToUse,
@@ -1196,7 +1194,7 @@ namespace Common
         {
             Trace.WriteError(
                 TraceSource,
-                "{0}: failed to rename replacement file {1} to replaced file {2}", 
+                StringLiteral("{0}: failed to rename replacement file {1} to replaced file {2}"),
                 __func__,
                 replacementFileName,
                 replacedFileName,
@@ -1212,7 +1210,7 @@ namespace Common
             {
                 Trace.WriteWarning(
                     TraceSource,
-                    "{0}: failed to delete temporary backup file {1}", 
+                    StringLiteral("{0}: failed to delete temporary backup file {1}"),
                     __func__,
                     backupFileToUse,
                     err);
@@ -1236,23 +1234,19 @@ namespace Common
         return ErrorCode::Success();
     }
 
-    bool File::CreateHardLink(std::wstring const & fileName, std::wstring const & existingFileName)
+    bool File::CreateHardLink(std::string const & fileName, std::string const & existingFileName)
     {
 #ifdef PLATFORM_UNIX
-        string fileNameUtf8;
-        StringUtility::Utf16ToUtf8(fileName, fileNameUtf8);
-        string existingFileNameUtf8;
-        StringUtility::Utf16ToUtf8(existingFileName, existingFileNameUtf8);
-        auto retval = link(existingFileNameUtf8.c_str(), fileNameUtf8.c_str());
+        auto retval = link(existingFileName.c_str(), fileName.c_str());
         if (retval < 0)
         {
             auto err = errno;
             Trace.WriteWarning(
                 TraceSource,
-                "{0}: link({1}, {2}) failed: {3}",
+                StringLiteral("{0}: link({1}, {2}) failed: {3}"),
                 __func__,
-                existingFileNameUtf8,
-                fileNameUtf8,
+                existingFileName,
+                fileName,
                 err);
         }
 
@@ -1267,7 +1261,7 @@ namespace Common
 #endif
     }
 
-    shared_ptr<File::IFileEnumerator> File::Search(wstring && pattern)
+    shared_ptr<File::IFileEnumerator> File::Search(string && pattern)
     {
         return make_shared<FileFind>(move(pattern));
     }
@@ -1291,7 +1285,7 @@ namespace Common
         return ErrorCode();
     }
 
-    ErrorCode File::GetSize(wstring const & fname, _Out_ int64 & size)
+    ErrorCode File::GetSize(string const & fname, _Out_ int64 & size)
     {
         if (!File::Exists(fname))
         {
@@ -1379,7 +1373,7 @@ namespace Common
     }
 
 #if !defined(PLATFORM_UNIX)
-    ErrorCode File::FlushVolume(const WCHAR driveLetter)
+    ErrorCode File::FlushVolume(const char driveLetter)
     {
         if (driveLetter == NULL)
         {
@@ -1387,9 +1381,9 @@ namespace Common
         }
 
         ErrorCode error(ErrorCodeValue::Success);
-        wstring volumePath = L"\\\\.\\";
+        string volumePath = "\\\\.\\";
         volumePath.push_back(driveLetter);
-        volumePath.push_back(L':');
+        volumePath.push_back(':');
         ::HANDLE volumeHandle = ::CreateFile(volumePath.c_str(), FILE_GENERIC_WRITE, Common::FileShare::ReadWrite, nullptr, Common::FileMode::Open, FILE_FLAG_OVERLAPPED, nullptr);
 
         if (volumeHandle == INVALID_HANDLE_VALUE)
@@ -1448,7 +1442,7 @@ namespace Common
 #endif // !defined(PLATFORM_UNIX)
 
 
-    ErrorCode File::Touch(wstring const & fileName)
+    ErrorCode File::Touch(string const & fileName)
     {
         File file;
         auto error = file.TryOpen(
@@ -1482,11 +1476,9 @@ namespace Common
         return error;
     }
 
-    bool File::Exists(const std::wstring& path)
+    bool File::Exists(const std::string& path)
     {
-        auto ntPath = Path::ConvertToNtPath(path);
-
-        ::DWORD result = ::GetFileAttributesW(ntPath.c_str());
+        ::DWORD result = ::GetFileAttributesW(Path::ConvertToNtPath(path).c_str());
 
         if (result != INVALID_FILE_ATTRIBUTES) {
             return (result & FILE_ATTRIBUTE_DIRECTORY) == 0; // not a directory
@@ -1500,7 +1492,7 @@ namespace Common
         return false;
     }
 
-    ErrorCode File::Move( const std::wstring& SourceFile, const std::wstring& DestFile, bool throwIfFail)
+    ErrorCode File::Move( const std::string& SourceFile, const std::string& DestFile, bool throwIfFail)
     {
         //Log.Info.WriteLine("[FILE] Moving from <{0}> to <{1}>", SourceFile, DestFile);
 #if defined(PLATFORM_UNIX)
@@ -1524,7 +1516,7 @@ namespace Common
         return err;
     }
 
-    temporary_file::temporary_file(std::wstring const & fileName)
+    temporary_file::temporary_file(std::string const & fileName)
         : file_handle_(INVALID_HANDLE_VALUE),
         file_name_(fileName)
     {
@@ -1681,7 +1673,7 @@ namespace Common
 
             static void ScpWorkerThreadCleanup(ScpWorker* worker, LIBSSH2_SESSION *session, LIBSSH2_SFTP *sftp_session)
             {
-                Trace.WriteInfo(TraceSource, L"SCPCopy", "ScpCopy worker to {0} is cleaning up with errno {1}.", worker->peerAddr_, worker->errno_);
+                Trace.WriteInfo(TraceSource, SCPTrace, "ScpCopy worker to {0} is cleaning up with errno {1}.", worker->peerAddr_, worker->errno_);
 
                 if (sftp_session)
                 {
@@ -1714,7 +1706,7 @@ namespace Common
 
                 ScpWorker* worker = (ScpWorker*)param;
 
-                Trace.WriteInfo(TraceSource, L"SCPCopy", "ScpCopy worker to {0} Created.", worker->peerAddr_);
+                Trace.WriteInfo(TraceSource, SCPTrace, "ScpCopy worker to {0} Created.", worker->peerAddr_);
 
                 struct addrinfo hints;
                 struct addrinfo *peer, *peeriter;
@@ -1726,7 +1718,7 @@ namespace Common
                 {
                     worker->errno_ = errno;
                     ScpWorkerThreadCleanup(worker, 0, 0);
-                    Trace.WriteInfo(TraceSource, L"SCPCopy", "ScpCopy worker to {0}: getaddrinfo failed with error: {1}.", worker->peerAddr_, gai_strerror(ret));
+                    Trace.WriteInfo(TraceSource, SCPTrace, "ScpCopy worker to {0}: getaddrinfo failed with error: {1}.", worker->peerAddr_, gai_strerror(ret));
                     return 0;
                 }
                 int sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -1734,7 +1726,7 @@ namespace Common
                 {
                     worker->errno_ = errno;
                     ScpWorkerThreadCleanup(worker, 0, 0);
-                    Trace.WriteInfo(TraceSource, L"SCPCopy", "ScpCopy worker to {0}: socket failed with errno {1}.", worker->peerAddr_, errno);
+                    Trace.WriteInfo(TraceSource, SCPTrace, "ScpCopy worker to {0}: socket failed with errno {1}.", worker->peerAddr_, errno);
                     return 0;
                 }
 
@@ -1754,7 +1746,7 @@ namespace Common
 
                 if (!connected)
                 {
-                    Trace.WriteInfo(TraceSource, L"SCPCopy", "ScpCopy worker to {0}: connect failed with errno {1}.", worker->peerAddr_, errno);
+                    Trace.WriteInfo(TraceSource, SCPTrace, "ScpCopy worker to {0}: connect failed with errno {1}.", worker->peerAddr_, errno);
                     freeaddrinfo(peer);
                     worker->errno_ = errno;
                     ScpWorkerThreadCleanup(worker, 0, 0);
@@ -1766,7 +1758,7 @@ namespace Common
 
                 if (!session)
                 {
-                    Trace.WriteInfo(TraceSource, L"SCPCopy", "ssh session initialization failed.");
+                    Trace.WriteInfo(TraceSource, SCPTrace, "ssh session initialization failed.");
                     worker->errno_ = ENOMEM;
                     ScpWorkerThreadCleanup(worker, 0, 0);
                     return 0;
@@ -1775,14 +1767,14 @@ namespace Common
                 int rc = libssh2_session_handshake(session, sock);
 
                 if (rc) {
-                    Trace.WriteInfo(TraceSource, L"SCPCopy", "ScpCopy worker to {0}: ssh session handshake failed with {1}.", worker->peerAddr_, rc);
+                    Trace.WriteInfo(TraceSource, SCPTrace, "ScpCopy worker to {0}: ssh session handshake failed with {1}.", worker->peerAddr_, rc);
                     ScpWorkerThreadCleanup(worker, session, 0);
                     return 0;
                 }
 
                 if (libssh2_userauth_password(session, worker->account_.c_str(), worker->password_.c_str()))
                 {
-                    Trace.WriteInfo(TraceSource, L"SCPCopy", "ScpCopy worker to {0}: ssh authentication failed.", worker->peerAddr_);
+                    Trace.WriteInfo(TraceSource, SCPTrace, "ScpCopy worker to {0}: ssh authentication failed.", worker->peerAddr_);
                     ScpWorkerThreadCleanup(worker, session, 0);
                     return 0;
                 }
@@ -1790,7 +1782,7 @@ namespace Common
                 LIBSSH2_SFTP *sftp_session = libssh2_sftp_init(session);
                 if (!sftp_session)
                 {
-                    Trace.WriteInfo(TraceSource, L"SCPCopy", "ScpCopy worker to {0}: sftp session initialization failed.", worker->peerAddr_);
+                    Trace.WriteInfo(TraceSource, SCPTrace, "ScpCopy worker to {0}: sftp session initialization failed.", worker->peerAddr_);
                     ScpWorkerThreadCleanup(worker, session, sftp_session);
                     return 0;
                 }
@@ -1831,7 +1823,7 @@ namespace Common
 
                     if (pRequest)
                     {
-                        Trace.WriteInfo(TraceSource, L"SCPCopy", "ScpCopy worker to {0} is processing request: Src: {1}, Dest: {2}, Op: {3}",
+                        Trace.WriteInfo(TraceSource, SCPTrace, "ScpCopy worker to {0} is processing request: Src: {1}, Dest: {2}, Op: {3}",
                                         pRequest->peer_, pRequest->src_, pRequest->dest_,
                                         pRequest->write_ ? "Upload" : "Download");
                         if (pRequest->write_)
@@ -1839,7 +1831,7 @@ namespace Common
                             struct stat srcinfo;
                             if (stat(pRequest->src_.c_str(), &srcinfo) != 0)
                             {
-                                Trace.WriteInfo(TraceSource, L"SCPCopy", "Failed to stat source file {0}", pRequest->src_);
+                                Trace.WriteInfo(TraceSource, SCPTrace, "Failed to stat source file {0}", pRequest->src_);
                                 pRequest->error_.Overwrite(ErrorCodeValue::FileNotFound);
                                 pRequest->SetCompleted();
                                 continue;
@@ -1849,7 +1841,7 @@ namespace Common
 
                             int srcfile = open(pRequest->src_.c_str(), O_RDONLY | O_CLOEXEC);
                             if (srcfile < 0) {
-                                Trace.WriteInfo(TraceSource, L"SCPCopy", "Failed to open source file {0}", pRequest->src_);
+                                Trace.WriteInfo(TraceSource, SCPTrace, "Failed to open source file {0}", pRequest->src_);
                                 pRequest->error_.Overwrite(ErrorCodeValue::FileNotFound);
                                 pRequest->SetCompleted();
                                 continue;
@@ -1860,7 +1852,7 @@ namespace Common
                             if (!channel)
                             {
                                 close(srcfile);
-                                Trace.WriteInfo(TraceSource, L"SCPCopy", "Failed to open scp channel for {0}. {1}", tmpdest, libssh2_session_last_errno(session));
+                                Trace.WriteInfo(TraceSource, SCPTrace, "Failed to open scp channel for {0}. {1}", tmpdest, libssh2_session_last_errno(session));
                                 pRequest->error_.Overwrite(static_cast<ErrorCodeValue::Enum>(HRESULT_FROM_WIN32(ERROR_PATH_NOT_FOUND)));
                                 pRequest->SetCompleted();
                                 continue;
@@ -1882,7 +1874,7 @@ namespace Common
                                     rc = libssh2_channel_write(channel, ptr, nread);
                                     if (rc < 0)
                                     {
-                                        Trace.WriteInfo(TraceSource, L"SCPCopy", "Failed to write scp channel. {0}", libssh2_session_last_errno(session));
+                                        Trace.WriteInfo(TraceSource, SCPTrace, "Failed to write scp channel. {0}", libssh2_session_last_errno(session));
                                         pRequest->error_.Overwrite(ErrorCodeValue::SendFailed);
                                         internal_failure = true;
                                         break;
@@ -1921,7 +1913,7 @@ namespace Common
                             string tmpdest = pRequest->dest_ + ScpTmpFileSuffix;
                             int destfile = open(tmpdest.c_str(), O_CREAT | O_WRONLY | O_TRUNC | O_CLOEXEC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
                             if (destfile < 0) {
-                                Trace.WriteInfo(TraceSource, L"SCPCopy", "Failed to create tmp target file {0}. {1}", tmpdest, errno);
+                                Trace.WriteInfo(TraceSource, SCPTrace, "Failed to create tmp target file {0}. {1}", tmpdest, errno);
                                 pRequest->error_.Overwrite(ErrorCode::FromErrno(errno));
                                 pRequest->SetCompleted();
                                 continue;
@@ -1933,7 +1925,7 @@ namespace Common
                             if (!channel)
                             {
                                 close(destfile);
-                                Trace.WriteInfo(TraceSource, L"SCPCopy", "Failed to open scp channel for {0}. {1}", pRequest->src_, libssh2_session_last_errno(session));
+                                Trace.WriteInfo(TraceSource, SCPTrace, "Failed to open scp channel for {0}. {1}", pRequest->src_, libssh2_session_last_errno(session));
                                 pRequest->error_.Overwrite(static_cast<ErrorCodeValue::Enum>(HRESULT_FROM_WIN32(ERROR_PATH_NOT_FOUND)));
                                 pRequest->SetCompleted();
                                 continue;
@@ -1963,7 +1955,7 @@ namespace Common
                                         if (nwrite < 0)
                                         {
                                             if (errno == EINTR) continue;
-                                            Trace.WriteInfo(TraceSource, L"SCPCopy", "Failed to write file content");
+                                            Trace.WriteInfo(TraceSource, SCPTrace, "Failed to write file content");
                                             pRequest->error_.Overwrite(ErrorCode::FromErrno(errno));
                                             break;
                                         }
@@ -1977,7 +1969,7 @@ namespace Common
                                 }
                                 else if(rc < 0)
                                 {
-                                    Trace.WriteInfo(TraceSource, L"SCPCopy", "Failed to read from scp channel {0}", libssh2_session_last_errno(session));
+                                    Trace.WriteInfo(TraceSource, SCPTrace, "Failed to read from scp channel {0}", libssh2_session_last_errno(session));
                                     pRequest->error_.Overwrite(ErrorCode::FromErrno(errno));
                                     break;
                                 }
@@ -2003,7 +1995,7 @@ namespace Common
                 ScpWorkerThreadCleanup(worker, session, sftp_session);
                 close(sock);
 
-                Trace.WriteInfo(TraceSource, L"SCPCopy", "ScpCopy worker to {0} Exited.", worker->peerAddr_);
+                Trace.WriteInfo(TraceSource, SCPTrace, "ScpCopy worker to {0} Exited.", worker->peerAddr_);
 
                 return 0;
             }
@@ -2068,19 +2060,14 @@ namespace Common
         map<string, ScpWorker*> workers_;
     };
 
-    ErrorCode File::Copy(const std::wstring& src, const std::wstring& dest, const std::wstring& acct, const std::wstring& pwd, bool overwrite)
+    ErrorCode File::Copy(const std::string& src, const std::string& dest, const std::string& acct, const std::string& pwd, bool overwrite)
     {
         bool isWrite = false;
-        string peerA, acctA, pwdA;
-        StringUtility::Utf16ToUtf8(acct, acctA);
-        StringUtility::Utf16ToUtf8(pwd, pwdA);
 
         // for scp copy
-        if(src.find(L":/")!=wstring::npos || dest.find(L":/")!=wstring::npos)
+        if(src.find(":/")!=string::npos || dest.find(":/")!=string::npos)
         {
-            string srcA, destA;
-            StringUtility::Utf16ToUtf8(src, srcA);
-            StringUtility::Utf16ToUtf8(dest, destA);
+            string peerA, srcA(src), destA(dest);
             std::replace(srcA.begin(), srcA.end(), '\\', '/');
             std::replace(destA.begin(), destA.end(), '\\', '/');
 
@@ -2108,11 +2095,11 @@ namespace Common
 
             ScpSessionManagerSingleton *pScpSessionManager = ScpSessionManagerSingleton::GetSingleton();
 
-            ScpSessionManagerSingleton::ScpRequest * pRequest = pScpSessionManager->QueueWork(peerA, acctA, pwdA, srcA, destA, isWrite);
+            ScpSessionManagerSingleton::ScpRequest * pRequest = pScpSessionManager->QueueWork(peerA, acct, pwd, srcA, destA, isWrite);
             pRequest->WaitForCompletion();
             ErrorCode err = pRequest->GetError();
 
-            Trace.WriteInfo(TraceSource, L"SCPCopy", "Finish ScpCopy: src: {0}, dest: {1}, account: {2}, Ret: {3}, SrcSize: {4}, CopiedSize: {5}, Session Id: {6}. ",
+            Trace.WriteInfo(TraceSource, SCPTrace, "Finish ScpCopy: src: {0}, dest: {1}, account: {2}, Ret: {3}, SrcSize: {4}, CopiedSize: {5}, Session Id: {6}. ",
                             src, dest, acct, pRequest->GetError(), pRequest->GetSrcSize(), pRequest->GetCopiedSize(), (int) syscall(__NR_gettid));
 
             delete pRequest;
@@ -2126,7 +2113,7 @@ namespace Common
     }
 #endif
 
-    ErrorCode File::Copy(const std::wstring & src, const std::wstring & dest, bool overwrite)
+    ErrorCode File::Copy(const std::string & src, const std::string & dest, bool overwrite)
     {
         BOOL result = ::CopyFileW(Path::ConvertToNtPath(src).c_str(), Path::ConvertToNtPath(dest).c_str(), !overwrite);
         if (result)
@@ -2139,7 +2126,7 @@ namespace Common
         }
     }
 
-    ErrorCode File::MoveTransacted(const std::wstring& source, const std::wstring& destination, bool owerwrite)
+    ErrorCode File::MoveTransacted(const std::string& source, const std::string& destination, bool owerwrite)
     {
         bool isReadOnly = false;
 #if defined(PLATFORM_UNIX)
@@ -2148,8 +2135,8 @@ namespace Common
         DWORD flag = MOVEFILE_WRITE_THROUGH;
 #endif
         DWORD fileAttributes = INVALID_FILE_ATTRIBUTES;
-        std::wstring srcUncPath = Path::ConvertToNtPath(source);
-        std::wstring destUncPath = Path::ConvertToNtPath(destination);
+        std::string srcUncPath = Path::ConvertToNtPath(source);
+        std::string destUncPath = Path::ConvertToNtPath(destination);
         if (owerwrite)
         {
             if (File::Exists(destination))
@@ -2192,9 +2179,9 @@ namespace Common
     }
 
 
-    std::wstring File::GetTempFileName(std::wstring const& path)
+    std::string File::GetTempFileName(std::string const& path)
     {
-        std::wstring tempFileName;
+        std::string tempFileName;
         StringWriter writer(tempFileName);
         writer.Write(rand());
         writer.Write("-");
@@ -2204,13 +2191,13 @@ namespace Common
     }
 
     ErrorCode File::SafeCopy(
-        const std::wstring & src,
-        const std::wstring & dest,
+        const std::string & src,
+        const std::string & dest,
         bool overwrite,
         bool shouldAcquireLock,
         Common::TimeSpan const timeout)
     {
-        std::wstring path = Path::GetDirectoryName(dest);
+        std::string path = Path::GetDirectoryName(dest);
         path = path.empty() ? Directory::GetCurrentDirectory() : path;
         if (!path.empty())
         {
@@ -2219,7 +2206,7 @@ namespace Common
             {
                 Trace.WriteWarning(
                     TraceSource,
-                    L"SafeCopy",
+                    StringLiteral("SafeCopy"),
                     "Failed to create directory. Path:{0}, Error:{1}",
                     path,
                     err);
@@ -2228,18 +2215,18 @@ namespace Common
         }
         else
         {
-            path = L".";
+            path = ".";
         }
 
-        std::wstring tempFilePath = GetTempFileName(path);
+        std::string tempFilePath = GetTempFileName(path);
 
         Trace.WriteNoise(
             TraceSource,
-            L"SafeCopy",
+            StringLiteral("SafeCopy"),
             "Doing Safecopy from {0} to temp file {1} {2} overwrite. shouldAcquireLock: {3}",
             src,
             tempFilePath,
-            overwrite ? L"with" : L"without",
+            overwrite ? "with" : "without",
             shouldAcquireLock);
 
         FileReaderLock srcLock(src);
@@ -2274,11 +2261,11 @@ namespace Common
         return error;
     }
 
-    ErrorCode File::Echo(const std::wstring & src, const std::wstring & dest, Common::TimeSpan const timeout)
+    ErrorCode File::Echo(const std::string & src, const std::string & dest, Common::TimeSpan const timeout)
     {
         if (!File::Exists(dest))
         {
-            Trace.WriteInfo(TraceSource, L"Echo", "Destination not found SafeCopy Started file {0} to {1}", src, dest);
+            Trace.WriteInfo(TraceSource, StringLiteral("Echo"), "Destination not found SafeCopy Started file {0} to {1}", src, dest);
             return File::SafeCopy(src, dest, true, true, timeout);
         }
         return ErrorCodeValue::Success;
@@ -2340,7 +2327,7 @@ namespace Common
         }
 
         vector<string> facl;
-        if (ProcessUtility::GetStatusOutput(formatString("getfacl {0}", path), facl).IsSuccess() && !facl.empty())
+        if (ProcessUtility::GetStatusOutput(formatString.L("getfacl {0}", path), facl).IsSuccess() && !facl.empty())
         {
             sw.Write(",facl={{{0}", facl[0]);
             for (int i = 1; i < facl.size(); ++i)

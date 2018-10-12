@@ -281,7 +281,7 @@ TestSequence()
 
 NTSTATUS
 KDeferredCallTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     UNREFERENCED_PARAMETER(argc);
@@ -330,7 +330,7 @@ KDeferredCallTest(
 #if CONSOLE_TEST
 int
 #if !defined(PLATFORM_UNIX)
-wmain(int argc, WCHAR* args[])
+wmain(int argc, CHAR* args[])
 {
 #else
 main(int argc, char* cargs[])

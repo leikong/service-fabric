@@ -46,7 +46,7 @@ NTSTATUS
 TestSequence()
 {
     KNetworkEndpoint::SPtr Nep;
-    KUriView Uri(L"http://bing.com");
+    KUriView Uri("http://bing.com");
     NTSTATUS Res = KHttpNetworkEndpoint::Create(Uri, *g_Allocator, Nep);
     if (!NT_SUCCESS(Res))
     {
@@ -83,7 +83,7 @@ TestSequence()
 
 NTSTATUS
 KNetworkEndpointTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     UNREFERENCED_PARAMETER(argc);
@@ -137,7 +137,7 @@ KNetworkEndpointTest(
 #if CONSOLE_TEST
 int
 #if !defined(PLATFORM_UNIX)
-wmain(int argc, WCHAR* args[])
+wmain(int argc, CHAR* args[])
 {
 #else
 main(int argc, char* cargs[])

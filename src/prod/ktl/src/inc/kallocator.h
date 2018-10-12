@@ -416,13 +416,13 @@ _newArray<ULONGLONG>(__in ULONG Tag, __in KAllocator& Allocator, __in ULONG Dim0
 }
 
 template<> __inline
-WCHAR*
-_newArray<WCHAR>(__in ULONG Tag, __in KAllocator& Allocator, __in ULONG Dim0Limit)
+CHAR*
+_newArray<CHAR>(__in ULONG Tag, __in KAllocator& Allocator, __in ULONG Dim0Limit)
 {
-    WCHAR* ret = _new(Tag, Allocator) WCHAR[Dim0Limit];
+    CHAR* ret = _new(Tag, Allocator) CHAR[Dim0Limit];
     if (ret != nullptr)
     {
-        RtlZeroMemory(static_cast<PVOID>(ret), Dim0Limit * sizeof(WCHAR));
+        RtlZeroMemory(static_cast<PVOID>(ret), Dim0Limit * sizeof(CHAR));
     }
     return ret;
 }
@@ -450,7 +450,7 @@ _deleteArray<ULONGLONG>(ULONGLONG* Array)
 
 template<> __inline
 VOID
-_deleteArray<WCHAR>(WCHAR* CharArray)
+_deleteArray<CHAR>(CHAR* CharArray)
 {
     _delete(CharArray);
 }

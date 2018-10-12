@@ -540,7 +540,7 @@ Return Value:
             // Use suspend duration as a TTL upper bound
             EventWriteLeaseDriverTextTraceError(
                 NULL,
-                L"Delay failed lease agent get invalid TTL ",
+                "Delay failed lease agent get invalid TTL ",
                 LeasingApplicationTTL);
 
             LeasingApplicationTTL = LeaseAgentContext->LeaseSuspendDuration;
@@ -558,7 +558,7 @@ Return Value:
         {
             EventWriteDelayTimer(
                 NULL,
-                L" was enqueued ",
+                " was enqueued ",
                 TransportIdentifier(LeaseAgentContext->Transport),
                 LeaseAgentContext->Instance.QuadPart
                 );
@@ -810,7 +810,7 @@ Return Value:
     PVOID IterLeasingApplication = NULL;
     PLEASING_APPLICATION_CONTEXT LeasingApplicationContext = NULL;
     PLEASE_RELATIONSHIP_IDENTIFIER RemoteRelationshipIdentifier = NULL;
-    LPWSTR RemoteLeasingApplicationIdentifier = NULL;
+    LPSTR RemoteLeasingApplicationIdentifier = NULL;
 
     //
     // Take the system time.
@@ -2166,8 +2166,8 @@ Return Value:
 
 PLEASE_RELATIONSHIP_IDENTIFIER 
 LeaseRelationshipIdentifierConstructor(
-    __in LPCWSTR LeasingApplicationIdentifier,
-    __in LPCWSTR RemoteLeasingApplicationIdentifier
+    __in LPCSTR LeasingApplicationIdentifier,
+    __in LPCSTR RemoteLeasingApplicationIdentifier
     )
 
 /*++
@@ -2214,7 +2214,7 @@ Return Value:
 
     if (!NT_SUCCESS(Status))
     {
-        EventWriteLeaseDriverTextTraceError(NULL, L"Str length check failed with ", Status);
+        EventWriteLeaseDriverTextTraceError(NULL, "Str length check failed with ", Status);
         goto Error;
     }
 
@@ -2227,7 +2227,7 @@ Return Value:
     {
         EventWriteLeaseDriverTextTraceError(
             NULL,
-            L"AppIdSize RtlULongLongAdd failed in LeaseRelationshipIdentifierConstructor",
+            "AppIdSize RtlULongLongAdd failed in LeaseRelationshipIdentifierConstructor",
             Status);
 
         goto Error;
@@ -2235,20 +2235,20 @@ Return Value:
 
     Status = RtlULongLongMult(
         AppIdLength,
-        sizeof(WCHAR),
+        sizeof(CHAR),
         &AppIdSize);
 
     if (!NT_SUCCESS(Status))
     {
         EventWriteLeaseDriverTextTraceError(
             NULL,
-            L"AppIdSize RtlULongLongMult failed in LeaseRelationshipIdentifierConstructor",
+            "AppIdSize RtlULongLongMult failed in LeaseRelationshipIdentifierConstructor",
             Status);
 
         goto Error;
     }
 
-    LeaseRelationshipIdentifier->RemoteLeasingApplicationIdentifier = (LPWSTR)ExAllocatePoolWithTag(
+    LeaseRelationshipIdentifier->RemoteLeasingApplicationIdentifier = (LPSTR)ExAllocatePoolWithTag(
         NonPagedPool,
         AppIdSize,
         LEASE_RELATHIONSHIP_ID_TAG
@@ -2270,7 +2270,7 @@ Return Value:
 
     if (!NT_SUCCESS(Status))
     {
-        EventWriteLeaseDriverTextTraceError(NULL, L"Str copy failed with ", Status);
+        EventWriteLeaseDriverTextTraceError(NULL, "Str copy failed with ", Status);
         goto Error;
     }
 
@@ -2278,7 +2278,7 @@ Return Value:
     // Used for serialization.
     //
     LeaseRelationshipIdentifier->RemoteLeasingApplicationIdentifierByteCount = 
-        (ULONG)(WcharLength + 1) * sizeof(WCHAR);
+        (ULONG)(WcharLength + 1) * sizeof(CHAR);
 
     //
     // Populate lease relationship leasing application.
@@ -2384,7 +2384,7 @@ Return Value:
 --*/
 
 {
-    LPWSTR LeasingApplicationIdentifier = NULL;
+    LPSTR LeasingApplicationIdentifier = NULL;
     
     LeasingApplicationIdentifier = LeaseRelationshipIdentifier->LeasingApplicationContext->LeasingApplicationIdentifier;
     LeaseRelationshipIdentifier->LeasingApplicationContext->LeasingApplicationIdentifier = LeaseRelationshipIdentifier->RemoteLeasingApplicationIdentifier;
@@ -2394,7 +2394,7 @@ Return Value:
 PLEASE_RELATIONSHIP_IDENTIFIER 
 AddToLeaseRelationshipIdentifierList(
     __in PLEASING_APPLICATION_CONTEXT LeasingApplicationContext,
-    __in LPCWSTR RemoteLeasingApplicationIdentifier,
+    __in LPCSTR RemoteLeasingApplicationIdentifier,
     __in LEASE_RELATIONSHIP_IDENTIFIER_SET & HashTable
     )
 
@@ -3094,7 +3094,7 @@ Return Value:
     {
         EventWriteLeaseDriverTextTraceError(
             NULL,
-            L"SerializeLeaseMessage failed in RtlULongAdd ",
+            "SerializeLeaseMessage failed in RtlULongAdd ",
             Status);
 
         return Status;
@@ -3458,7 +3458,7 @@ Return Value:
     {
         EventWriteInvalidMessageHeader(
             NULL,
-            L"buffer size"
+            "buffer size"
             );
 
         return STATUS_INVALID_PARAMETER;
@@ -3476,7 +3476,7 @@ Return Value:
     {
         EventWriteInvalidMessageHeader(
             NULL,
-            L"message type"
+            "message type"
             );
 
         return STATUS_INVALID_PARAMETER;
@@ -3488,7 +3488,7 @@ Return Value:
     {
         EventWriteInvalidMessageHeader(
             NULL,
-            L"duration"
+            "duration"
             );
 
         return STATUS_INVALID_PARAMETER;
@@ -3500,7 +3500,7 @@ Return Value:
     {
         EventWriteInvalidMessageHeader(
             NULL,
-            L"lease instance"
+            "lease instance"
             );
 
         return STATUS_INVALID_PARAMETER;
@@ -3514,7 +3514,7 @@ Return Value:
     {
         EventWriteInvalidMessageHeader(
             NULL,
-            L"SubjectPendingList"
+            "SubjectPendingList"
             );
 
         return Status;
@@ -3525,7 +3525,7 @@ Return Value:
     {
         EventWriteInvalidMessageHeader(
             NULL,
-            L"SubjectFailedPendingList"
+            "SubjectFailedPendingList"
             );
 
         return Status;
@@ -3536,7 +3536,7 @@ Return Value:
     {
         EventWriteInvalidMessageHeader(
             NULL,
-            L"MonitorFailedPendingList"
+            "MonitorFailedPendingList"
             );
 
         return Status;
@@ -3547,7 +3547,7 @@ Return Value:
     {
         EventWriteInvalidMessageHeader(
             NULL,
-            L"SubjectPendingAcceptedList"
+            "SubjectPendingAcceptedList"
             );
 
         return Status;
@@ -3558,7 +3558,7 @@ Return Value:
     {
         EventWriteInvalidMessageHeader(
             NULL,
-            L"SubjectFailedAcceptedList"
+            "SubjectFailedAcceptedList"
             );
 
         return Status;
@@ -3569,7 +3569,7 @@ Return Value:
     {
         EventWriteInvalidMessageHeader(
             NULL,
-            L"MonitorFailedAcceptedList"
+            "MonitorFailedAcceptedList"
             );
 
         return Status;
@@ -3580,7 +3580,7 @@ Return Value:
     {
         EventWriteInvalidMessageHeader(
             NULL,
-            L"SubjectPendingRejectedList"
+            "SubjectPendingRejectedList"
             );
 
         return Status;
@@ -3591,7 +3591,7 @@ Return Value:
     {
         EventWriteInvalidMessageHeader(
             NULL,
-            L"SubjectTerminatedAcceptedList"
+            "SubjectTerminatedAcceptedList"
             );
 
         return Status;
@@ -3602,7 +3602,7 @@ Return Value:
     {
         EventWriteInvalidMessageHeader(
             NULL,
-            L"SubjectTerminatePendingList"
+            "SubjectTerminatePendingList"
             );
 
         return Status;
@@ -3715,8 +3715,8 @@ n/a
     PBYTE Source = NULL;
     PLEASE_RELATIONSHIP_IDENTIFIER LeaseRelationshipIdentifier = NULL;
     PLEASE_RELATIONSHIP_IDENTIFIER LeaseRelationshipIdentifierExistent = NULL;
-    LPCWSTR LeasingApplicationIdentifier = NULL;
-    LPCWSTR RemoteLeasingApplicationIdentifier = NULL;
+    LPCSTR LeasingApplicationIdentifier = NULL;
+    LPCSTR RemoteLeasingApplicationIdentifier = NULL;
 
     if (Size < sizeof(ULONG))
     {
@@ -3811,7 +3811,7 @@ n/a
         //
         if (0 == ByteCount || 
             0 != ByteCount % 2 ||
-            sizeof(WCHAR) * (MAX_PATH + 1) < ByteCount) {
+            sizeof(CHAR) * (MAX_PATH + 1) < ByteCount) {
 
             return STATUS_INVALID_PARAMETER;
         }
@@ -3830,7 +3830,7 @@ n/a
         //
         // Check incoming string.
         //
-        if (!IsValidString((PWCHAR)Source, ByteCount / sizeof(WCHAR))) {
+        if (!IsValidString((PCHAR)Source, ByteCount / sizeof(CHAR))) {
 
             return STATUS_INVALID_PARAMETER;
         }
@@ -3838,7 +3838,7 @@ n/a
         //
         // Remember leasing application identifier offset.
         //
-        LeasingApplicationIdentifier = (LPCWSTR)Source;
+        LeasingApplicationIdentifier = (LPCSTR)Source;
     
         //
         // Move source.
@@ -3869,7 +3869,7 @@ n/a
         //
         if (0 == ByteCount || 
             0 != ByteCount % 2 ||
-            sizeof(WCHAR) * (MAX_PATH + 1) < ByteCount) {
+            sizeof(CHAR) * (MAX_PATH + 1) < ByteCount) {
 
             return STATUS_INVALID_PARAMETER;
         }
@@ -3888,7 +3888,7 @@ n/a
         //
         // Check incoming string.
         //
-        if (!IsValidString((PWCHAR)Source, ByteCount / sizeof(WCHAR))) {
+        if (!IsValidString((PCHAR)Source, ByteCount / sizeof(CHAR))) {
 
             return STATUS_INVALID_PARAMETER;
         }
@@ -3896,7 +3896,7 @@ n/a
         //
         // Remember leasing application identifier offset.
         //
-        RemoteLeasingApplicationIdentifier = (LPCWSTR)Source;
+        RemoteLeasingApplicationIdentifier = (LPCSTR)Source;
 
         //
         // Construct lease relationship identifier.
@@ -3980,26 +3980,26 @@ DeserializeMessageListenEndPoint(
     // Check incoming string.
     //
     ListenEndPointAddressSize = Size - sizeof(ADDRESS_FAMILY) - sizeof(USHORT);
-    if (ListenEndPointAddressSize > ENDPOINT_ADDR_CCH_MAX * sizeof(WCHAR))
+    if (ListenEndPointAddressSize > ENDPOINT_ADDR_CCH_MAX * sizeof(CHAR))
     {
-        EventWriteLeaseDriverTextTraceError(NULL, L"Deserialize end point fail with invalid address size", Size);
+        EventWriteLeaseDriverTextTraceError(NULL, "Deserialize end point fail with invalid address size", Size);
         return STATUS_INVALID_PARAMETER;
     }
 
-    if (!IsValidString((PWCHAR)Source, ListenEndPointAddressSize / sizeof(WCHAR)))
+    if (!IsValidString((PCHAR)Source, ListenEndPointAddressSize / sizeof(CHAR)))
     {
-        EventWriteLeaseDriverTextTraceError(NULL, L"Deserialize end point fail with invalid address string", ListenEndPointAddressSize);
+        EventWriteLeaseDriverTextTraceError(NULL, "Deserialize end point fail with invalid address string", ListenEndPointAddressSize);
         return STATUS_INVALID_PARAMETER;
     }
 
     Status = RtlStringCchCopyW(
         RemoteSocketAddress->Address,
-        ListenEndPointAddressSize / sizeof(WCHAR),
-        (PWCHAR)Source);
+        ListenEndPointAddressSize / sizeof(CHAR),
+        (PCHAR)Source);
 
     if (!NT_SUCCESS(Status))
     {
-        EventWriteLeaseDriverTextTraceError(NULL, L"Str copy failed with ", Status);
+        EventWriteLeaseDriverTextTraceError(NULL, "Str copy failed with ", Status);
         return Status;
     }
     Source = Source + ListenEndPointAddressSize;
@@ -4027,7 +4027,7 @@ DeserializeMessageExtension(
     ULONG MsgExtInstanceSize = sizeof(LARGE_INTEGER);
     if (Size < MsgExtInstanceSize)
     {
-        EventWriteLeaseDriverTextTraceError(NULL, L"Deserialize message extension failed with invalid buffer size ", Size);
+        EventWriteLeaseDriverTextTraceError(NULL, "Deserialize message extension failed with invalid buffer size ", Size);
         return STATUS_INVALID_PARAMETER;
     }
 
@@ -4336,7 +4336,7 @@ Return Value:
 
         if (!NT_SUCCESS(Status))
         {
-            EventWriteLeaseDriverTextTraceError(NULL, L"Deserialize Lease EndPoint failed with ", Status);
+            EventWriteLeaseDriverTextTraceError(NULL, "Deserialize Lease EndPoint failed with ", Status);
             goto Error;
         }
     }
@@ -4379,7 +4379,7 @@ Error:
     return Status;
 }
 
-const LPWSTR GetTimer(
+const LPSTR GetTimer(
     __in PREMOTE_LEASE_AGENT_CONTEXT RemoteLeaseAgentContext,
     __in PKTIMER Timer
     )
@@ -4403,37 +4403,37 @@ Return Value:
 --*/
 
 {
-    LPWSTR TimerString = L"";
+    LPSTR TimerString = "";
 
     if (Timer == &RemoteLeaseAgentContext->LeaseRelationshipContext->RenewOrArbitrateTimer) {
 
-        TimerString = L"Renew/Arbitrate";
+        TimerString = "Renew/Arbitrate";
         
     } else if (Timer == &RemoteLeaseAgentContext->LeaseRelationshipContext->SubjectTimer) {
 
-        TimerString = L"Subject Expired";
+        TimerString = "Subject Expired";
 
     } else if (Timer == &RemoteLeaseAgentContext->LeaseRelationshipContext->MonitorTimer) {
 
-        TimerString = L"Monitor Expired";
+        TimerString = "Monitor Expired";
 
     } else if (Timer == &RemoteLeaseAgentContext->LeaseRelationshipContext->PreArbitrationSubjectTimer) {
 
-        TimerString = L"Pre Arbitration Subject Timer";
+        TimerString = "Pre Arbitration Subject Timer";
 
     } else if (Timer == &RemoteLeaseAgentContext->LeaseRelationshipContext->PreArbitrationMonitorTimer) {
 
-        TimerString = L"Pre Arbitration Monitor Timer";
+        TimerString = "Pre Arbitration Monitor Timer";
 
     }
     else if (Timer == &RemoteLeaseAgentContext->LeaseRelationshipContext->PostArbitrationTimer) {
 
-        TimerString = L"Post Arbitration";
+        TimerString = "Post Arbitration";
         
     }
     else if (Timer == &RemoteLeaseAgentContext->LeaseRelationshipContext->PingRetryTimer) {
 
-        TimerString = L"Ping Retry";
+        TimerString = "Ping Retry";
 
     }
     else {
@@ -4828,7 +4828,7 @@ Dequeues delay lease failure timer.
 
     EventWriteDelayTimer(
         NULL,
-        L" cancelled ",
+        " cancelled ",
         TransportIdentifier(LeaseAgentContext->Transport),
         LeaseAgentContext->Instance.QuadPart
         );
@@ -6205,7 +6205,7 @@ Return Value:
             //
             // Match the lease identifier with the provided remote leasing application.
             //
-            if (0 == wcscmp(
+            if (0 == strcmp(
                 LeasingApplicationContext->LeasingApplicationIdentifier,
                 LeaseRelationshipIdentifier->RemoteLeasingApplicationIdentifier)
                 ) {
@@ -6257,7 +6257,7 @@ Return Value:
         //
         // Match the lease identifier with the provided leasing application.
         //
-        if (0 == wcscmp(
+        if (0 == strcmp(
             LeasingApplicationContext->LeasingApplicationIdentifier,
             LeaseRelationshipIdentifier->LeasingApplicationContext->LeasingApplicationIdentifier)
             ) {
@@ -6734,7 +6734,7 @@ GetListenEndPointSize(
     if (NULL == ListenEndPoint)
     {
         Status = STATUS_INVALID_PARAMETER;
-        EventWriteLeaseDriverTextTraceError(NULL, L"Input Endpoint is NULL", Status);
+        EventWriteLeaseDriverTextTraceError(NULL, "Input Endpoint is NULL", Status);
         return Status;
     }
     //
@@ -6750,12 +6750,12 @@ GetListenEndPointSize(
     if (!NT_SUCCESS(Status))
     {
         // Lease message has not been allocated yet, just return the error status
-        EventWriteLeaseDriverTextTraceError(NULL, L"Address lengh checked failed", Status);
+        EventWriteLeaseDriverTextTraceError(NULL, "Address lengh checked failed", Status);
         return Status;
     }
 
     *ListenEndpointAddressSize += 1;
-    *ListenEndpointAddressSize *= sizeof(WCHAR);
+    *ListenEndpointAddressSize *= sizeof(CHAR);
 
     *ListenEndpointSize = (ULONG)(*ListenEndpointAddressSize)
         + sizeof(ADDRESS_FAMILY) // size of ResolveType

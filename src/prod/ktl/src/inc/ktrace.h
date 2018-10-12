@@ -47,7 +47,7 @@ extern volatile BOOLEAN KDbgMirrorToDebugger;
 // Function prototype for the trace callback into the trace provider
 //
 typedef VOID (*KtlTraceCallback)(
-    __in LPCWSTR TypeText,
+    __in LPCSTR TypeText,
     __in USHORT Level,
     __in LPCSTR Text
    );
@@ -65,7 +65,7 @@ inline BOOLEAN IsKtlTraceCallbackEnabled()
 }
 
 inline VOID InvokeKtlTraceCallback(
-    __in LPCWSTR TypeText,
+    __in LPCSTR TypeText,
     __in USHORT Level,
     __in LPCSTR Text
     )
@@ -75,15 +75,15 @@ inline VOID InvokeKtlTraceCallback(
 
 
 // Types
-#define typeCALLED L"CALLED"
-#define typeWDATA L"WDATA"
-#define typeWSTATUS L"WSTATUS"
-#define typePRINTF L".PRINTF"
-#define typeCHECKPOINT L".CHECKPOINT"
-#define typeINFORMATIONAL L"INFORMATIONAL"
-#define typeREQUEST L"REQUEST"
-#define typeERROR L"ERROR"
-#define typeCONFIG L"CONFIG"
+#define typeCALLED "CALLED"
+#define typeWDATA "WDATA"
+#define typeWSTATUS "WSTATUS"
+#define typePRINTF ".PRINTF"
+#define typeCHECKPOINT ".CHECKPOINT"
+#define typeINFORMATIONAL "INFORMATIONAL"
+#define typeREQUEST "REQUEST"
+#define typeERROR "ERROR"
+#define typeCONFIG "CONFIG"
 
 // Levels - Copied from f:\gitroot\WindowsFabric\src\prod\src\Common\LogLevel.h
 #define levelSilent   0

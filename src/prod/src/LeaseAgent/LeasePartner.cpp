@@ -104,10 +104,10 @@ BOOL LeasePartner::TerminateLease()
 LeasePartner::LeasePartner(
     LeaseAgent & agent,
     HANDLE appHandle,
-    std::wstring const & localId,
-    std::wstring const & remoteId,
-    std::wstring const & remoteFaultDomain,
-    std::wstring const & remoteLeaseAgentAddress,
+    std::string const & localId,
+    std::string const & remoteId,
+    std::string const & remoteFaultDomain,
+    std::string const & remoteLeaseAgentAddress,
     int64 remoteLeaseAgentInstanceId
     ):
 agent_(agent),

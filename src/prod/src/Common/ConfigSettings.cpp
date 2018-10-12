@@ -155,7 +155,7 @@ void ConfigSettings::Merge(ConfigSettings const & other)
     }
 }
 
-void ConfigSettings::Set(wstring const & sectionName, ConfigParameter && parameter)
+void ConfigSettings::Set(string const & sectionName, ConfigParameter && parameter)
 {
     auto it = this->Sections.find(sectionName);
     if (it == this->Sections.end())
@@ -170,7 +170,7 @@ void ConfigSettings::Set(wstring const & sectionName, ConfigParameter && paramet
     }
 }
 
-void ConfigSettings::Remove(wstring const & sectionName)
+void ConfigSettings::Remove(string const & sectionName)
 {
     auto it = this->Sections.find(sectionName);
     if (it != this->Sections.end())

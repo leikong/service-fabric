@@ -14,7 +14,7 @@ Global<FabricCodeVersion> FabricCodeVersion::Baseline  = make_global<FabricCodeV
 Global<FabricCodeVersion> FabricCodeVersion::MinCompatible  = make_global<FabricCodeVersion>(1,0,960,0);
 
 Global<FabricConfigVersion> FabricConfigVersion::Invalid = make_global<FabricConfigVersion>();
-Global<FabricConfigVersion> FabricConfigVersion::Default = make_global<FabricConfigVersion>(L"__default__");
+Global<FabricConfigVersion> FabricConfigVersion::Default = make_global<FabricConfigVersion>("__default__");
 
 Global<FabricVersion> FabricVersion::Invalid  = make_global<FabricVersion>(FabricCodeVersion::Invalid, FabricConfigVersion::Invalid);
 Global<FabricVersion> FabricVersion::Baseline = make_global<FabricVersion>(FabricCodeVersion::Baseline, FabricConfigVersion::Invalid);

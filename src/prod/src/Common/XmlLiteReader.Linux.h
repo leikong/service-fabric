@@ -51,38 +51,38 @@ namespace Common
         virtual HRESULT STDMETHODCALLTYPE MoveToNextAttribute( void);
         
         virtual HRESULT STDMETHODCALLTYPE MoveToAttributeByName( 
-            _In_  LPCWSTR pwszLocalName,
-            _In_opt_  LPCWSTR pwszNamespaceUri);
+            _In_  LPCSTR pwszLocalName,
+            _In_opt_  LPCSTR pwszNamespaceUri);
         
         virtual HRESULT STDMETHODCALLTYPE MoveToElement( void);
         
         virtual HRESULT STDMETHODCALLTYPE GetQualifiedName( 
-            _Outptr_result_buffer_maybenull_(*pcwchQualifiedName+1)  LPCWSTR *ppwszQualifiedName,
+            _Outptr_result_buffer_maybenull_(*pcwchQualifiedName+1)  LPCSTR *ppwszQualifiedName,
             _Out_opt_  UINT *pcwchQualifiedName);
         
         virtual HRESULT STDMETHODCALLTYPE GetNamespaceUri( 
-            _Outptr_result_buffer_maybenull_(*pcwchNamespaceUri+1)  LPCWSTR *ppwszNamespaceUri,
+            _Outptr_result_buffer_maybenull_(*pcwchNamespaceUri+1)  LPCSTR *ppwszNamespaceUri,
             _Out_opt_  UINT *pcwchNamespaceUri);
         
         virtual HRESULT STDMETHODCALLTYPE GetLocalName( 
-            _Outptr_result_buffer_maybenull_(*pcwchLocalName+1)  LPCWSTR *ppwszLocalName,
+            _Outptr_result_buffer_maybenull_(*pcwchLocalName+1)  LPCSTR *ppwszLocalName,
             _Out_opt_  UINT *pcwchLocalName);
         
         virtual HRESULT STDMETHODCALLTYPE GetPrefix( 
-            _Outptr_result_buffer_maybenull_(*pcwchPrefix+1)  LPCWSTR *ppwszPrefix,
+            _Outptr_result_buffer_maybenull_(*pcwchPrefix+1)  LPCSTR *ppwszPrefix,
             _Out_opt_  UINT *pcwchPrefix);
         
         virtual HRESULT STDMETHODCALLTYPE GetValue( 
-            _Outptr_result_buffer_maybenull_(*pcwchValue+1)  LPCWSTR *ppwszValue,
+            _Outptr_result_buffer_maybenull_(*pcwchValue+1)  LPCSTR *ppwszValue,
             _Out_opt_  UINT *pcwchValue);
         
         virtual HRESULT STDMETHODCALLTYPE ReadValueChunk( 
-            _Out_writes_to_(cwchChunkSize, *pcwchRead)  WCHAR *pwchBuffer,
+            _Out_writes_to_(cwchChunkSize, *pcwchRead)  CHAR *pwchBuffer,
             _In_  UINT cwchChunkSize,
             _Inout_  UINT *pcwchRead);
         
         virtual HRESULT STDMETHODCALLTYPE GetBaseUri( 
-            _Outptr_result_buffer_maybenull_(*pcwchBaseUri+1)  LPCWSTR *ppwszBaseUri,
+            _Outptr_result_buffer_maybenull_(*pcwchBaseUri+1)  LPCSTR *ppwszBaseUri,
             _Out_opt_  UINT *pcwchBaseUri);
         
         virtual BOOL STDMETHODCALLTYPE IsDefault( void);
@@ -109,7 +109,7 @@ namespace Common
 
     private:
         xmlTextReaderPtr reader_;
-        vector<wstring> wstrbuf_;
+        vector<string> wstrbuf_;
         LONG refCount_;
     };
 }

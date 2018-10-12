@@ -17,7 +17,7 @@ namespace Transport
         ListenSocket(
             Common::Endpoint const & endpoint,
             AcceptCompleteCallback && acceptCompleteCallback,
-            std::wstring const & traceId);
+            std::string const & traceId);
 
         ~ListenSocket() { Abort(); }
 

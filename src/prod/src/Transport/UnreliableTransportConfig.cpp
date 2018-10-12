@@ -11,7 +11,7 @@ using namespace Transport;
 using namespace std;
 using namespace Common;
 
-GlobalWString UnreliableTransportConfig::SettingsFileName = make_global<std::wstring>(L"UnreliableTransportSettings.ini");
+GlobalString UnreliableTransportConfig::SettingsFileName = make_global<std::string>("UnreliableTransportSettings.ini");
 static const StringLiteral TraceType("Config");
 
 void UnreliableTransportConfig::Initialize()
@@ -20,7 +20,7 @@ void UnreliableTransportConfig::Initialize()
     LoadConfiguration(config_);
 }
 
-TimeSpan UnreliableTransportConfig::GetDelay(std::wstring const & source, std::wstring const & destination, std::wstring const & action)
+TimeSpan UnreliableTransportConfig::GetDelay(std::string const & source, std::string const & destination, std::string const & action)
 {
     AcquireReadLock lock(specsTableLock_);
 
@@ -39,7 +39,7 @@ TimeSpan UnreliableTransportConfig::GetDelay(std::wstring const & source, std::w
     return delay > MaxAllowedDelayInSeconds ? TimeSpan::MaxValue : delay;
 }
 
-TimeSpan UnreliableTransportConfig::GetDelay(std::wstring const & source, std::wstring const & destination, Transport::Message const & message)
+TimeSpan UnreliableTransportConfig::GetDelay(std::string const & source, std::string const & destination, Transport::Message const & message)
 {
     AcquireReadLock lock(specsTableLock_);
 
@@ -58,9 +58,9 @@ TimeSpan UnreliableTransportConfig::GetDelay(std::wstring const & source, std::w
     return delay > MaxAllowedDelayInSeconds ? TimeSpan::MaxValue : delay;
 }
 
-TimeSpan ParseTimeSpan(wstring const & data)
+TimeSpan ParseTimeSpan(string const & data)
 {
-    if (StringUtility::AreEqualCaseInsensitive(data, L"Max"))
+    if (StringUtility::AreEqualCaseInsensitive(data, "Max"))
     {
         return TimeSpan::MaxValue;
     }
@@ -68,15 +68,15 @@ TimeSpan ParseTimeSpan(wstring const & data)
     return TimeSpan::FromSeconds(Common::Double_Parse(data));
 }
 
-ErrorCode UnreliableTransportConfig::StartMonitoring(wstring const & workFolder, wstring const & nodeId)
+ErrorCode UnreliableTransportConfig::StartMonitoring(string const & workFolder, string const & nodeId)
 {
     AcquireExclusiveLock lock(fileChangeMonitorDictionaryLock_);
 
     // checking if a file monitor does not exist for this nodeid in the dictionary
-    if (nodeIdFileChangeMonitor.count(nodeId) == 0 && workFolder != L"")
+    if (nodeIdFileChangeMonitor.count(nodeId) == 0 && workFolder != "")
     {
         // constructing path to file to be monitored        
-        wstring fileName = Path::Combine(workFolder, UnreliableTransportConfig::SettingsFileName);
+        string fileName = Path::Combine(workFolder, UnreliableTransportConfig::SettingsFileName);
         Path::MakeAbsolute(fileName);
         UnreliableTransport::WriteInfo(TraceType, "Creating File Monitor at {0} for nodeid: {1}", fileName, nodeId);
 
@@ -122,7 +122,7 @@ ErrorCode UnreliableTransportConfig::StartMonitoring(wstring const & workFolder,
 
 // this method is called only in tests where multiple nodes are hosted in the same process and share the same UnreliableTransportConfig object
 // allows cleaning up file monitors monitoring files that you be deleted.
-ErrorCode UnreliableTransportConfig::Test_StopMonitoring(wstring const & nodeId)
+ErrorCode UnreliableTransportConfig::Test_StopMonitoring(string const & nodeId)
 {
     AcquireExclusiveLock lock(fileChangeMonitorDictionaryLock_);
 
@@ -138,7 +138,7 @@ ErrorCode UnreliableTransportConfig::Test_StopMonitoring(wstring const & nodeId)
     return ErrorCode(ErrorCodeValue::Success);
 }
 
-ErrorCode UnreliableTransportConfig::ReadFromINI(std::wstring const & fileName, vector<wstring> & parameters, bool shouldLockFile)
+ErrorCode UnreliableTransportConfig::ReadFromINI(std::string const & fileName, vector<string> & parameters, bool shouldLockFile)
 {
     string configText;
     ErrorCode retReadFile;
@@ -172,14 +172,14 @@ ErrorCode UnreliableTransportConfig::ReadFromINI(std::wstring const & fileName, 
     string line;
     // reads line by line of UnreliableTransportSettings.ini formated file
     while (std::getline(configStream, line)){
-        wstring wname(line.begin(), line.end());
+        string wname(line.begin(), line.end());
         parameters.push_back(wname);
     }
 
     return ErrorCodeValue::Success;
 }
 
-ErrorCode UnreliableTransportConfig::ReadFromINI(std::wstring const & fileName, vector<pair<wstring, wstring> > & parameters, bool shouldLockFile)
+ErrorCode UnreliableTransportConfig::ReadFromINI(std::string const & fileName, vector<pair<string, string> > & parameters, bool shouldLockFile)
 {
     string configText;
     ErrorCode retReadFile;
@@ -221,13 +221,13 @@ ErrorCode UnreliableTransportConfig::ReadFromINI(std::wstring const & fileName, 
         std::getline(lineStream, name, '=');
         std::getline(lineStream, value);
 
-        wstring wname(name.begin(), name.end());
-        wstring wvalue(value.begin(), value.end());
+        string wname(name.begin(), name.end());
+        string wvalue(value.begin(), value.end());
 
         // removing \r from end of string
-        if (wvalue.size() && wvalue.at(wvalue.size() - 1) == L'\r')
+        if (wvalue.size() && wvalue.at(wvalue.size() - 1) == '\r')
         {
-            wvalue = wstring(wvalue.begin(), --wvalue.end());
+            wvalue = string(wvalue.begin(), --wvalue.end());
         }
 
         parameters.push_back(make_pair(wname, wvalue));
@@ -236,7 +236,7 @@ ErrorCode UnreliableTransportConfig::ReadFromINI(std::wstring const & fileName, 
     return ErrorCodeValue::Success;
 }
 
-ErrorCode UnreliableTransportConfig::WriteToINI(std::wstring const & fileName, vector<pair<wstring, wstring> > const & parameters, bool shouldLockFile)
+ErrorCode UnreliableTransportConfig::WriteToINI(std::string const & fileName, vector<pair<string, string> > const & parameters, bool shouldLockFile)
 {
     ErrorCode retWriteFile;
 
@@ -265,7 +265,7 @@ ErrorCode UnreliableTransportConfig::WriteToINI(std::wstring const & fileName, v
     return retWriteFile;
 }
 
-ErrorCode UnreliableTransportConfig::ReadTextFile(wstring const & fileName, string & text)
+ErrorCode UnreliableTransportConfig::ReadTextFile(string const & fileName, string & text)
 {
     File fileReader;
 
@@ -296,7 +296,7 @@ ErrorCode UnreliableTransportConfig::ReadTextFile(wstring const & fileName, stri
     return ErrorCode(ErrorCodeValue::Success);
 }
 
-ErrorCode UnreliableTransportConfig::WriteTextFile(wstring const & fileName, std::vector<pair<wstring, wstring> > const & parameters)
+ErrorCode UnreliableTransportConfig::WriteTextFile(string const & fileName, std::vector<pair<string, string> > const & parameters)
 {
     File file;
     auto error = file.TryOpen(
@@ -341,7 +341,7 @@ ErrorCode UnreliableTransportConfig::WriteTextFile(wstring const & fileName, std
     return ErrorCode(ErrorCodeValue::Success);
 }
 
-void UnreliableTransportConfig::ClearNodeIdSpecifications(wstring const & nodeId)
+void UnreliableTransportConfig::ClearNodeIdSpecifications(string const & nodeId)
 {
     AcquireExclusiveLock lock(specsTableLock_);
 
@@ -352,9 +352,9 @@ void UnreliableTransportConfig::ClearNodeIdSpecifications(wstring const & nodeId
         [nodeId](UnreliableTransportSpecificationUPtr const & spec)
     {
         // first we need to get only the nodeId from specification (everything before first _ character)
-        wstring specNodeId;
+        string specNodeId;
         wistringstream specName(spec->GetName());
-        getline(specName, specNodeId, L'_');
+        getline(specName, specNodeId, '_');
 
         return specNodeId == nodeId;
     });
@@ -366,7 +366,7 @@ bool UnreliableTransportConfig::IsDisabled()
     return isDisabledUnreliableTransport_;
 }
 
-void UnreliableTransportConfig::LoadConfigurationFromINI(wstring const & fileName, wstring const & nodeId, bool shouldLockFile)
+void UnreliableTransportConfig::LoadConfigurationFromINI(string const & fileName, string const & nodeId, bool shouldLockFile)
 {
     UnreliableTransport::WriteInfo(
         TraceType, 
@@ -391,7 +391,7 @@ void UnreliableTransportConfig::LoadConfigurationFromINI(wstring const & fileNam
     }
 
     // reading specifications from file
-    vector<pair<wstring, wstring> > parameters;
+    vector<pair<string, string> > parameters;
 
     auto errorCode = ReadFromINI(fileName, parameters, false /* it is already locked */);
     if (!errorCode.IsSuccess())
@@ -467,50 +467,50 @@ bool UnreliableTransportConfig::AddSpecification(UnreliableTransportSpecificatio
     return true;
 }
 
-bool UnreliableTransportConfig::AddSpecificationNoSourceNode(wstring const & nodeId, wstring const & name, wstring const & data)
+bool UnreliableTransportConfig::AddSpecificationNoSourceNode(string const & nodeId, string const & name, string const & data)
 {
     // creates a specification with nodeId prepended to name
-    wstring nodeIdAppendedName = wformatString("{0}_{1}", nodeId, name);
+    string nodeIdAppendedName = formatString.L("{0}_{1}", nodeId, name);
 
     return AddSpecification(nodeIdAppendedName, data);
 }
 
-bool UnreliableTransportConfig::AddSpecification(std::wstring const & name, std::wstring const & data)
+bool UnreliableTransportConfig::AddSpecification(std::string const & name, std::string const & data)
 {
     // Data in ini file is stored as:
     // BehaviorName=SourceNodeId DestinationNodeID ActionName Probability Delay DelaySpan Priority ApplyCount PartitionID:IDGuid,ReplicaId:IDGuid
     StringCollection params;
-    StringUtility::Split<wstring>(data, params, L" ");
+    StringUtility::Split<string>(data, params, " ");
 
-    wstring source = (params.size() > 0 ? params[0] : wstring());
-    wstring destination = (params.size() > 1 ? params[1] : wstring());
-    wstring action = (params.size() > 2 ? params[2] : wstring());
+    string source = (params.size() > 0 ? params[0] : string());
+    string destination = (params.size() > 1 ? params[1] : string());
+    string action = (params.size() > 2 ? params[2] : string());
     double probability = (params.size() > 3 ? Common::Double_Parse(params[3]) : 1.0);
     TimeSpan delay = (params.size() > 4 ? ParseTimeSpan(params[4]) : TimeSpan::MaxValue);
     TimeSpan delaySpan = (params.size() > 5 ? ParseTimeSpan(params[5]) : TimeSpan::Zero);
     int priority = (params.size() > 6 ? Common::Int32_Parse(params[6]) : 0);
     int applyCount = (params.size() > 7 ? Common::Int32_Parse(params[7]) : -1);
-    wstring filterInfo = (params.size() > 8 ? params[8] : wstring());
+    string filterInfo = (params.size() > 8 ? params[8] : string());
 
     // construct the map for filters
     StringCollection filterList;
-    StringUtility::Split<wstring>(filterInfo, filterList, L",");
+    StringUtility::Split<string>(filterInfo, filterList, ",");
     StringMap filters;
 
     for (auto iter = filterList.begin(); iter != filterList.end(); ++iter)
     {
         StringCollection filter;
-        StringUtility::Split<wstring>(iter->data(), filter, L":");
+        StringUtility::Split<string>(iter->data(), filter, ":");
         if (filter.size() == 2)
         {
-            filters.insert(std::pair<wstring, wstring>(filter[0], filter[1]));
+            filters.insert(std::pair<string, string>(filter[0], filter[1]));
         }
     }
 
     return AddSpecification(make_unique<UnreliableTransportSpecification>(name, source, destination, action, probability, delay, delaySpan, priority, applyCount, filters));
 }
 
-bool UnreliableTransportConfig::RemoveSpecification(std::wstring const & name)
+bool UnreliableTransportConfig::RemoveSpecification(std::string const & name)
 {
     AcquireExclusiveLock lock(specsTableLock_);
     auto it = remove_if(specifications_.begin(), specifications_.end(),
@@ -531,14 +531,14 @@ bool UnreliableTransportConfig::RemoveSpecification(std::wstring const & name)
 
 void UnreliableTransportConfig::LoadConfiguration(Config & config)
 {
-    wstring section(L"UnreliableTransport");
+    string section("UnreliableTransport");
     StringCollection specKeys;
     config.GetKeys(section, specKeys);
 
-    for(wstring const & key : specKeys)
+    for(string const & key : specKeys)
     {
         bool isEncrypted = false;
-        wstring value = config.ReadString(section, key, isEncrypted);
+        string value = config.ReadString(section, key, isEncrypted);
 
         ASSERT_IF(
             isEncrypted,

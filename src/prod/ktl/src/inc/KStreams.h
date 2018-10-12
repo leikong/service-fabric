@@ -23,7 +23,7 @@ class KIOutputStream
 {
 public:
     virtual
-    NTSTATUS Put(__in WCHAR Value) = 0;
+    NTSTATUS Put(__in CHAR Value) = 0;
 
     virtual
     NTSTATUS Put(__in LONG Value) = 0;
@@ -41,7 +41,7 @@ public:
     NTSTATUS Put(__in GUID& Value) = 0;
 
     virtual
-    NTSTATUS Put(__in_z WCHAR const * Value) = 0;
+    NTSTATUS Put(__in_z CHAR const * Value) = 0;
 
     virtual
     NTSTATUS Put(__in KUri::SPtr Value) = 0;

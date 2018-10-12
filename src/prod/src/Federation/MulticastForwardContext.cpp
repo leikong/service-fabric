@@ -221,7 +221,7 @@ void MulticastForwardContext::WriteTo(TextWriter& w, FormatOptions const &) cons
 
     if (pending_.size() > 0)
     {
-        w.Write(L" Pending:");
+        w.Write(" Pending:");
     
         for (auto it = pending_.begin(); it != pending_.end(); ++it)
         {

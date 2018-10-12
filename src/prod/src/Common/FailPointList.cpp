@@ -9,13 +9,13 @@ using namespace std;
 
 namespace Common
 {
-    void FailPointList::Set(FailPointCriteriaSPtr const & criteria, FailPointActionSPtr const & action, int priority, std::wstring name)
+    void FailPointList::Set(FailPointCriteriaSPtr const & criteria, FailPointActionSPtr const & action, int priority, std::string name)
     {
         AcquireExclusiveLock lock(FailPointList::thisLock);
         failpoints_.push_back(make_unique<FailPoint>(criteria,action,priority,name));
     }
 
-    void FailPointList::Remove(wstring name)
+    void FailPointList::Remove(string name)
     {
         AcquireExclusiveLock lock(thisLock);
         vector<unique_ptr<FailPoint>>::iterator it;
@@ -29,7 +29,7 @@ namespace Common
         }
     }
 
-    void FailPointList::Remove(FailPointCriteriaSPtr const & criteria, wstring name)
+    void FailPointList::Remove(FailPointCriteriaSPtr const & criteria, string name)
     {
         AcquireExclusiveLock lock(thisLock);
         vector<unique_ptr<FailPoint>>::iterator it;
@@ -49,7 +49,7 @@ namespace Common
         }
     }
 
-    bool FailPointList::Check(FailPointContext context, bool invokeAction,wstring name)
+    bool FailPointList::Check(FailPointContext context, bool invokeAction,string name)
     {
         vector<unique_ptr<FailPoint>>::iterator it;
         {

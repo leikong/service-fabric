@@ -5,7 +5,7 @@
     kstringview.h
 
     Description:
-      Kernel Tempate Library (KTL): KStringView prototype definition - both CHAR (Ansi) and WCHAR supported
+      Kernel Tempate Library (KTL): KStringView prototype definition - both CHAR (Ansi) and char supported
 
       String manipulation & conversion utilities
 
@@ -62,12 +62,12 @@
 #define K$KString KString
 #define K$KBufferString KBufferString
 #define K$KSharedBufferString KSharedBufferString
-#define K$CHAR WCHAR
-#define K$CHARSIZE 2
-#define K$LPCSTR LPCWSTR
-#define K$PCHAR PWCHAR
-#define K$STRING(s) L##s
-#define K$StringCompare wcsncmp
+#define K$CHAR char
+#define K$CHARSIZE 1
+#define K$LPCSTR LPCSTR
+#define K$PCHAR PCHAR
+#define K$STRING(s) s
+#define K$StringCompare strncmp
 #endif
 
 
@@ -102,7 +102,7 @@ public:
     // is not required and it is legal to exclude or include it in the length.
     //
     // Parameters:
-    //      Buffer               Points to the WCHAR array. This may be null.
+    //      Buffer               Points to the char array. This may be null.
     //      BufLenInChars        The size of the character array in characters (not bytes).
     //      StringLengthInChars  Number of characters in the string.
     //
@@ -134,7 +134,7 @@ public:
     //  null terminator.
     //
     //  Typical use
-    //              KStringView Sample(L"Quoted String");
+    //              KStringView Sample("Quoted String");
     //
     //  Note that this will set the buffer length to one larger than the string length.
     //
@@ -367,7 +367,7 @@ public:
         _LenInChars = CharsToCopy;
         while (CharsToCopy--)
         {
-            _Buffer[Ix] = WCHAR(Source[Ix]);
+            _Buffer[Ix] = char(Source[Ix]);
             Ix++;
         }
 
@@ -493,10 +493,11 @@ public:
         {
             return FALSE;
         }
-        if (_Buffer[0] == 0xFEFF)
-        {
-            ConsumeChar();
-        }
+//todo.utf8, there is no need for BOM in UTF8, should this be removed?
+//        if (_Buffer[0] == 0xFEFF)
+//        {
+//            ConsumeChar();
+//        }
         return TRUE;
     }
 
@@ -511,10 +512,11 @@ public:
         {
             return FALSE;
         }
-        if (_Buffer[0] == 0xFEFF)
-        {
-            return TRUE;
-        }
+//todo.utf8, there is no need for BOM in UTF8, should this be removed?
+//        if (_Buffer[0] == 0xFEFF)
+//        {
+//            return TRUE;
+//        }
         return FALSE;
     }
 
@@ -544,7 +546,7 @@ public:
             return FALSE;
         }
 
-        return PrependChar(WCHAR(0xFEFF));
+        return TRUE; 
     }
 #endif
 
@@ -771,7 +773,7 @@ public:
     // Parser helper accessor.
     //
     // Parameters:
-    //      Offset          Offset into the string for which to return the WCHAR.
+    //      Offset          Offset into the string for which to return the char.
     //
     // Returns 0 if out of range.  This is used to normalize loop-based testing
     // for at-end-of-string conditions.
@@ -978,7 +980,7 @@ public:
     //
     //  Sample:
     //          KStringView x = ...;
-    //          x.Concat(KStringView(L"Suffix"));
+    //          x.Concat(KStringView("Suffix"));
     //
     BOOLEAN
     Concat(
@@ -1068,7 +1070,7 @@ public:
             {
                 return FALSE;
             }
-            if (! AppendChar((WCHAR) *Tracer))
+            if (! AppendChar((char) *Tracer))
             {
                 return FALSE;
             }
@@ -2372,7 +2374,7 @@ protected:
 //  as a member in another object, template, or on the stack.
 //
 //  Typical use:
-//      KLocalString<128> Str;      // Similar to WCHAR Str[128];
+//      KLocalString<128> Str;      // Similar to char Str[128];
 //      KLocalStringA<128> Str;     // Similar to CHAR Str[128];
 //
 template <ULONG BufSizeChars>

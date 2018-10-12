@@ -58,7 +58,7 @@ namespace Common
             guid.Data4[7] = data4_7; 
         }
 
-        Guid(std::wstring const & value);
+        Guid(std::string const & value);
 
         explicit Guid(std::vector<byte> const & value);
 
@@ -74,8 +74,8 @@ namespace Common
 
         static Guid const & Empty();
 
-        static bool TryParse(std::wstring const & value, Common::Guid & guid);
-        static bool TryParse(std::wstring const & value, std::wstring const & traceId, Common::Guid & guid);
+        static bool TryParse(std::string const & value, Common::Guid & guid);
+        static bool TryParse(std::string const & value, std::string const & traceId, Common::Guid & guid);
 
         void assign(const Guid& rhs) {
             KMemCpySafe(&guid, sizeof(guid), &rhs.guid, sizeof(guid));
@@ -108,7 +108,7 @@ namespace Common
 
         void WriteTo(TextWriter&, FormatOptions const &) const;
 
-        std::wstring ToString() const;
+        std::string ToString() const;
 
         // Returns a string representation of the value of this Guid instance, according to the provided format specifier.
         // 
@@ -116,7 +116,7 @@ namespace Common
         // The format parameter can be 'N', 'D'.
         // 'N': 32 digits: 00000000000000000000000000000000
         // 'D': 32 digits separated by hyphens: 00000000-0000-0000-0000-000000000000
-        std::wstring ToString(char format) const;
+        std::string ToString(char format) const;
 
         std::string ToStringA() const;
 
@@ -131,7 +131,7 @@ namespace Common
 
         int Guid::GetHashCode() const;
 
-        static Common::Guid Test_FromStringHashCode(std::wstring const &);
+        static Common::Guid Test_FromStringHashCode(std::string const &);
 
         static StringLiteral TraceCategory;
 
@@ -140,7 +140,7 @@ namespace Common
 
         static Guid empty_;
         
-        static void Parse(std::wstring const & value, Guid & guid);
+        static void Parse(std::string const & value, Guid & guid);
     };
     static_assert(sizeof(Common::Guid) == sizeof(KGuid), "KGuid and Common::Guid sizes mismatch");
 
@@ -149,14 +149,14 @@ namespace Common
 #if 0
     template <> struct SerializerTrait<Guid>
     {
-        static void ReadFrom(SerializeReader & r, Guid& value, std::wstring const & name) 
+        static void ReadFrom(SerializeReader & r, Guid& value, std::string const & name) 
         {
-            std::wstring stringData;
+            std::string stringData;
             r.Read(stringData, name);
             value.assign(Guid(stringData));
         }
 
-        static void WriteTo(SerializeWriter & w, Guid const & value, std::wstring const & name) 
+        static void WriteTo(SerializeWriter & w, Guid const & value, std::string const & name) 
         {
             w.Write(value.ToString(), name);
         }

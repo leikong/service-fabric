@@ -85,7 +85,7 @@ namespace Federation
     protected:
         VoteProxy(NodeId voteId, NodeId proxyId, bool isSharable);
 
-        virtual std::wstring const& GetRingName() const = 0;
+        virtual std::string const& GetRingName() const = 0;
 
         virtual Common::ErrorCode OnAcquire(__inout NodeConfig & ownerConfig,
             Common::TimeSpan ttl,

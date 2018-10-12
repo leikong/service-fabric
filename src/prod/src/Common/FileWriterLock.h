@@ -12,13 +12,13 @@ namespace Common
     class FileWriterLock : public FileLock<false>
     {
     public:
-        FileWriterLock(std::wstring const & path);
+        FileWriterLock(std::string const & path);
         ~FileWriterLock() override;
 
         ErrorCode Acquire(TimeSpan timeout = TimeSpan::Zero) override;
         bool Release() override;
 
-        static std::wstring Test_GetWriteInProgressMarkerPath(std::wstring const & path);
+        static std::string Test_GetWriteInProgressMarkerPath(std::string const & path);
 
     private:
         ErrorCode DeleteMarkerIfNeeded();

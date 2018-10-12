@@ -17,7 +17,7 @@
 using namespace std;
 using namespace Pal;
 
-bool GetEnvironmentVariable(wstring const & name, wstring& outValue)
+bool GetEnvironmentVariable(string const & name, string& outValue)
 {
     int valueLen = 16; // first shot
     outValue.resize(valueLen);
@@ -76,7 +76,7 @@ WINADVAPI
 BOOL
 WINAPI
 GetUserNameW (
-    __out_ecount_part_opt(*pcbBuffer, *pcbBuffer) LPWSTR lpBuffer,
+    __out_ecount_part_opt(*pcbBuffer, *pcbBuffer) LPSTR lpBuffer,
     __inout LPDWORD pcbBuffer
     )
 {
@@ -89,10 +89,10 @@ GetUserNameW (
     string unameA, udirA;
     if (GetPwUid(uid, unameA, udirA) == 0)
     {
-        wstring unameW = utf8to16(unameA.c_str());
+        string unameW = utf8to16(unameA.c_str());
         if (*pcbBuffer > unameW.length() && lpBuffer != NULL)
         {
-            memcpy_s(lpBuffer, sizeof(wchar_t) * (*pcbBuffer), unameW.c_str(), sizeof(wchar_t)* (unameW.length() + 1));
+            memcpy_s(lpBuffer, sizeof(char) * (*pcbBuffer), unameW.c_str(), sizeof(char)* (unameW.length() + 1));
         }
 
         *pcbBuffer = unameW.length() + 1;
@@ -255,13 +255,13 @@ __success(return != 0)
 DWORD
 WINAPI
 ExpandEnvironmentStringsW(
-    __in LPCWSTR lpSrc,
-    __out_ecount_part_opt(nSize, return) LPWSTR lpDst,
+    __in LPCSTR lpSrc,
+    __out_ecount_part_opt(nSize, return) LPSTR lpDst,
     __in DWORD nSize
     )
 {
     int si = 0;
-    wstring dest;
+    string dest;
 
     while(lpSrc[si])
     {
@@ -275,7 +275,7 @@ ExpandEnvironmentStringsW(
             int endtoken = si + 1;
             while(lpSrc[endtoken] && lpSrc[endtoken] != '%')  endtoken++;
 
-            wstring token, tokenvalue;
+            string token, tokenvalue;
             if(lpSrc[endtoken] == '%')
             {
                 for (int i = si + 1; i < endtoken; i++)
@@ -294,7 +294,7 @@ ExpandEnvironmentStringsW(
     }
     if (nSize > dest.length())
     {
-        memcpy(lpDst, dest.c_str(), sizeof(wchar_t)*dest.length());
+        memcpy(lpDst, dest.c_str(), sizeof(char)*dest.length());
         lpDst[dest.length()] = 0;
     }
     return dest.length() + 1;
@@ -406,19 +406,19 @@ BOOL
 WINAPI
 GetComputerNameExW (
     __in    COMPUTER_NAME_FORMAT NameType,
-    __out_ecount_part_opt(*nSize, *nSize + 1) LPWSTR lpBuffer,
+    __out_ecount_part_opt(*nSize, *nSize + 1) LPSTR lpBuffer,
     __inout LPDWORD nSize
     )
 {
-    memcpy(lpBuffer, L"Test", 10);
+    memcpy(lpBuffer, "Test", 10);
     return TRUE;
 }
 
 BOOLEAN
 APIENTRY
 CreateSymbolicLinkW (
-    __in LPCWSTR lpSymlinkFileName,
-    __in LPCWSTR lpTargetFileName,
+    __in LPCSTR lpSymlinkFileName,
+    __in LPCSTR lpTargetFileName,
     __in DWORD dwFlags
     )
 {

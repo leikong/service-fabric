@@ -26,7 +26,7 @@ namespace Common
         virtual ~ComXmlFileStream();
 
         static Common::ErrorCode Open(
-            std::wstring fileName, 
+            std::string fileName, 
             bool fWrite, 
             __out ComPointer<IStream> & xmlFileStream);
 

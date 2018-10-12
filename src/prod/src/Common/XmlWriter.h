@@ -23,7 +23,7 @@ namespace Common
     public:
         XmlWriter(ComProxyXmlLiteWriterUPtr & xmlLiteWriter);
         ~XmlWriter();
-        static ErrorCode Create(std::wstring const & fileName, __out XmlWriterUPtr & writer, bool writeByteOrderMark = true, bool indent = true);
+        static ErrorCode Create(std::string const & fileName, __out XmlWriterUPtr & writer, bool writeByteOrderMark = true, bool indent = true);
 
         static ErrorCode Create(
                 Common::ComPointer<IUnknown> const& output, 
@@ -43,59 +43,59 @@ namespace Common
         ErrorCode WriteStartDocument(XmlStandalone value = XmlStandalone_Omit);
 
         //Gives the the current element the given attribute name, value pair.
-        //@param std::wstring & attrName, the name of the attribute
-        //@param std::wstring & attrValue, the value of the attribute
-        //@param std::wstring & prefix, the prefix of the attribute (default is empty string)
-        //@param std::wstring & nameSpace, the namespace for the attribute (default is empty string)
-        ErrorCode WriteAttribute(std::wstring const & attrName, std::wstring const & value,
-            std::wstring const & prefix = L"", std::wstring const & nameSpace = L"");
+        //@param std::string & attrName, the name of the attribute
+        //@param std::string & attrValue, the value of the attribute
+        //@param std::string & prefix, the prefix of the attribute (default is empty string)
+        //@param std::string & nameSpace, the namespace for the attribute (default is empty string)
+        ErrorCode WriteAttribute(std::string const & attrName, std::string const & value,
+            std::string const & prefix = "", std::string const & nameSpace = "");
 
 		//Writes a numerical attribute value with the given attribute name
 		//to the current element
 		//@param Type - the type of the attribute value
-		//@param std::wstring & attrName, the name of the attribute
+		//@param std::string & attrName, the name of the attribute
 		//@param Type & attrValue, the value of the attribute
-		//@param std::wstring & prefix, the prefix of the attribute (default is empty string)
-		//@param std::wstring & nameSpace, the namespace for the attribute (default is empty string)
+		//@param std::string & prefix, the prefix of the attribute (default is empty string)
+		//@param std::string & nameSpace, the namespace for the attribute (default is empty string)
 		template<typename Type>
-		ErrorCode WriteNumericAttribute(std::wstring const & attrName, Type & value,
-			std::wstring const & prefix = L"", std::wstring const & nameSpace = L"")
+		ErrorCode WriteNumericAttribute(std::string const & attrName, Type & value,
+			std::string const & prefix = "", std::string const & nameSpace = "")
 		{
 			wostringstream stream;
 			stream << value;
-			wstring attrValue = stream.str();
+			string attrValue = stream.str();
 			return  liteWriter_->WriteAttribute(attrName, attrValue, prefix, nameSpace);
 		}
 
 		//Writes a numerical attribute value with the given attribute name
 		//to the current element
 		//@param Type - the type of the attribute value
-		//@param std::wstring & attrName, the name of the attribute
+		//@param std::string & attrName, the name of the attribute
 		//@param bool & attrValue, the value of the attribute
-		//@param std::wstring & prefix, the prefix of the attribute (default is empty string)
-		//@param std::wstring & nameSpace, the namespace for the attribute (default is empty string)
-		ErrorCode WriteBooleanAttribute(std::wstring const & attrName, bool const & value,
-			std::wstring const & prefix = L"", std::wstring const & nameSpace = L"");
+		//@param std::string & prefix, the prefix of the attribute (default is empty string)
+		//@param std::string & nameSpace, the namespace for the attribute (default is empty string)
+		ErrorCode WriteBooleanAttribute(std::string const & attrName, bool const & value,
+			std::string const & prefix = "", std::string const & nameSpace = "");
 
         //Writes a valid comment at the current head of the writer 
-        //@param std::wstring & comment - the comment to be written
-        ErrorCode WriteComment(std::wstring const & comment);
+        //@param std::string & comment - the comment to be written
+        ErrorCode WriteComment(std::string const & comment);
 
         //Writes the document type with the describing parameters
-        ErrorCode WriteDocType(std::wstring const & name, std::wstring const & pubId, std::wstring const & sysid,
-            std::wstring const & subset);
+        ErrorCode WriteDocType(std::string const & name, std::string const & pubId, std::string const & sysid,
+            std::string const & subset);
 
         //Writes the given wchar as content to the current element
-        //@param std::wstring content - the content to write to the string
-        ErrorCode WriteString(std::wstring const & content);
+        //@param std::string content - the content to write to the string
+        ErrorCode WriteString(std::string const & content);
 
         //Creates a new element as a child of the current element with the given parameters
-        ErrorCode WriteStartElement(std::wstring const & name, std::wstring const & prefix = L"",
-            std::wstring const & nameSpace = L"");
+        ErrorCode WriteStartElement(std::string const & name, std::string const & prefix = "",
+            std::string const & nameSpace = "");
 
         //Creats a new element with the given parameters with the given string as content
-        ErrorCode WriteElementWithContent(std::wstring const & name, std::wstring const content,
-            std::wstring const & prefix = L"", std::wstring const & nameSpace = L"");
+        ErrorCode WriteElementWithContent(std::string const & name, std::string const content,
+            std::string const & prefix = "", std::string const & nameSpace = "");
 
         //Ends all the current tags up to and including the root element
         ErrorCode WriteEndDocument();
@@ -106,8 +106,8 @@ namespace Common
         //Ends the document and flushes
         ErrorCode Close();
 
-        __declspec (property(get=get_FileName)) std::wstring const & FileName;
-        std::wstring const & get_FileName() const { return this->liteWriter_->OutputName; }
+        __declspec (property(get=get_FileName)) std::string const & FileName;
+        std::string const & get_FileName() const { return this->liteWriter_->OutputName; }
 
     private:
         ComProxyXmlLiteWriterUPtr liteWriter_;

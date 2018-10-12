@@ -26,5 +26,5 @@ Abstract:
 #endif
 
 NTSTATUS
-BasicStateMachine( int argc, WCHAR* args[]);
+BasicStateMachine( int argc, CHAR* args[]);
 

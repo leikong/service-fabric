@@ -71,7 +71,7 @@ namespace
     public:
         void VerifyCount(int expected)
         {
-            VERIFY_ARE_EQUAL(expected, events_.size(), L"Size");
+            VERIFY_ARE_EQUAL(expected, events_.size(), "Size");
         }
 
         void VerifySequenceNumberIsGreater(size_t earlierEventIndex, size_t laterEventIndex)
@@ -79,7 +79,7 @@ namespace
             auto const & earlierEvent = GetEvent(earlierEventIndex);
             auto const & laterEvent = GetEvent(laterEventIndex);
 
-            VERIFY_IS_TRUE(earlierEvent.SequenceNumber < laterEvent.SequenceNumber, L"Sequence Number");
+            VERIFY_IS_TRUE(earlierEvent.SequenceNumber < laterEvent.SequenceNumber, "Sequence Number");
         }
 
         void Clear()
@@ -89,7 +89,7 @@ namespace
 
         void HealthCallback(EventName::Enum name, MonitoringHealthEventList const & events)
         {
-            VERIFY_IS_FALSE(events.empty(), L"Events cannot be empty");
+            VERIFY_IS_FALSE(events.empty(), "Events cannot be empty");
 
             for (auto const & i : events)
             {
@@ -139,7 +139,7 @@ namespace
 
         void VerifyNoEvents()
         {
-            VERIFY_ARE_EQUAL(0, events_.size(), L"EventSize");
+            VERIFY_ARE_EQUAL(0, events_.size(), "EventSize");
         }
 
         Event const & GetEvent(size_t index) const
@@ -154,11 +154,11 @@ namespace
             EventName::Enum expectedName, 
             ApiCallDescriptionSPtr const & expected)
         {
-            VERIFY_IS_TRUE(index < events_.size(), L"Event not found");
+            VERIFY_IS_TRUE(index < events_.size(), "Event not found");
             
             auto const & actual = GetEvent(index);
-            VERIFY_ARE_EQUAL(expectedName, actual.Name, L"Event Type");
-            VERIFY_ARE_EQUAL(expected->Data.ReplicaId, actual.Data->ReplicaId, L"ReplicaId");
+            VERIFY_ARE_EQUAL(expectedName, actual.Name, "Event Type");
+            VERIFY_ARE_EQUAL(expected->Data.ReplicaId, actual.Data->ReplicaId, "ReplicaId");
         }
 
         vector<Event> events_;
@@ -308,7 +308,7 @@ void TestMonitoringComponent::TestSetup()
 
     CreateComponent();
 
-    component_->Open(MonitoringComponentMetadata(L"", L""));
+    component_->Open(MonitoringComponentMetadata("", ""));
 }
 
 bool TestMonitoringComponent::TestCleanup()
@@ -332,19 +332,19 @@ void TestMonitoringComponent::Close()
 
 void TestMonitoringComponent::VerifyTimerIsSet()
 {
-    VERIFY_IS_TRUE(component_->Test_GetTimer != nullptr, L"Timer: Not null");
-    VERIFY_IS_TRUE(component_->Test_GetTimer->Test_IsSet(), L"Timer: IsSet");
+    VERIFY_IS_TRUE(component_->Test_GetTimer != nullptr, "Timer: Not null");
+    VERIFY_IS_TRUE(component_->Test_GetTimer->Test_IsSet(), "Timer: IsSet");
 }
 
 void TestMonitoringComponent::VerifyTimerIsNotSet()
 {
-    VERIFY_IS_TRUE(component_->Test_GetTimer != nullptr, L"Timer: IsNotSet");
-    VERIFY_IS_TRUE(!component_->Test_GetTimer->Test_IsSet(), L"Timer: IsNotSet");
+    VERIFY_IS_TRUE(component_->Test_GetTimer != nullptr, "Timer: IsNotSet");
+    VERIFY_IS_TRUE(!component_->Test_GetTimer->Test_IsSet(), "Timer: IsNotSet");
 }
 
 void TestMonitoringComponent::VerifyTimerIsNull()
 {
-    VERIFY_IS_TRUE(component_->Test_GetTimer == nullptr, L"Timer: IsNull");
+    VERIFY_IS_TRUE(component_->Test_GetTimer == nullptr, "Timer: IsNull");
 }
 
 ApiCallDescriptionSPtr TestMonitoringComponent::Start(function<ApiCallDescriptionSPtr()> factory)
@@ -396,8 +396,8 @@ void TestMonitoringComponent::ApiEndIsTracedIfEnabledTestHelper(EnabledTraceFlag
     Stop(desc, error);
 
     eventList_.VerifyApiEnd(0, desc);
-    VERIFY_ARE_EQUAL(error, eventList_.GetEvent(0).Error.ReadValue(), L"ErrorCode");
-    VERIFY_IS_TRUE(eventList_.GetEvent(0).Elapsed >= duration, L"Duration");
+    VERIFY_ARE_EQUAL(error, eventList_.GetEvent(0).Error.ReadValue(), "ErrorCode");
+    VERIFY_IS_TRUE(eventList_.GetEvent(0).Elapsed >= duration, "Duration");
 }
 
 void TestMonitoringComponent::ApiSlowIsTracedTestHelper(EnabledTraceFlags::Enum flags)

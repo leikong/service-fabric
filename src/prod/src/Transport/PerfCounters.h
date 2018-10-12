@@ -14,27 +14,27 @@ namespace Transport
     public:
 
         BEGIN_COUNTER_SET_DEFINITION(
-            L"cf1be4cf-e721-48d9-9b76-ae5f9148634a",
-            L"Transport",
-            L"Counters for Transport",
+            "cf1be4cf-e721-48d9-9b76-ae5f9148634a",
+            "Transport",
+            "Counters for Transport",
             Common::PerformanceCounterSetInstanceType::Multiple)
             COUNTER_DEFINITION(
                 1,
                 Common::PerformanceCounterType::RawData32,
-                L"# of Active Callback",
-                L"Counter for active threadpool callback")
+                "# of Active Callback",
+                "Counter for active threadpool callback")
             COUNTER_DEFINITION(
                 2,
                 Common::PerformanceCounterType::AverageBase,
-                L"Avg. TCP send size Base",
-                L"Base Counter for measuring the average TCP send size in bytes",
+                "Avg. TCP send size Base",
+                "Base Counter for measuring the average TCP send size in bytes",
                 noDisplay)
             COUNTER_DEFINITION_WITH_BASE(
                 3,
                 2,
                 Common::PerformanceCounterType::AverageCount64,
-                L"Avg. TCP send size (bytes)",
-                L"Counter for measuring the average TCP send size in bytes")
+                "Avg. TCP send size (bytes)",
+                "Counter for measuring the average TCP send size in bytes")
         END_COUNTER_SET_DEFINITION()
 
         DECLARE_COUNTER_INSTANCE(NumberOfActiveCallbacks)

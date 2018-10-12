@@ -12,8 +12,8 @@ namespace Common
     public:
         ConfigStoreDescription(
             ConfigStoreSPtr const & store,
-            std::wstring const & storeEnvironmentVariableName,
-            std::wstring const & storeEnvironmentVariableValue) :
+            std::string const & storeEnvironmentVariableName,
+            std::string const & storeEnvironmentVariableValue) :
             store_(store),
             storeEnvironmentVariableName_(storeEnvironmentVariableName),
             storeEnvironmentVariableValue_(storeEnvironmentVariableValue)
@@ -23,16 +23,16 @@ namespace Common
         __declspec(property(get = get_Store)) Common::ConfigStoreSPtr const & Store;
         Common::ConfigStoreSPtr const & get_Store() const { return store_; }
 
-        __declspec(property(get = get_StoreEnvironmentVariableName)) std::wstring const & StoreEnvironmentVariableName;
-        std::wstring const & get_StoreEnvironmentVariableName() const { return storeEnvironmentVariableName_; }
+        __declspec(property(get = get_StoreEnvironmentVariableName)) std::string const & StoreEnvironmentVariableName;
+        std::string const & get_StoreEnvironmentVariableName() const { return storeEnvironmentVariableName_; }
 
-        __declspec(property(get = get_StoreEnvironmentVariableValue)) std::wstring const & StoreEnvironmentVariableValue;
-        std::wstring const & get_StoreEnvironmentVariableValue() const { return storeEnvironmentVariableValue_; }
+        __declspec(property(get = get_StoreEnvironmentVariableValue)) std::string const & StoreEnvironmentVariableValue;
+        std::string const & get_StoreEnvironmentVariableValue() const { return storeEnvironmentVariableValue_; }
 
     private:
         ConfigStoreSPtr store_;
-        std::wstring storeEnvironmentVariableName_;
-        std::wstring storeEnvironmentVariableValue_;
+        std::string storeEnvironmentVariableName_;
+        std::string storeEnvironmentVariableValue_;
     };
 
     typedef std::unique_ptr<ConfigStoreDescription> ConfigStoreDescriptionUPtr;

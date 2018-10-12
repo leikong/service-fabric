@@ -19,7 +19,7 @@ const StringLiteral TraceType("CachedFileTest");
 
 #define FAIL_TEST( fmt, ...) \
     { \
-        wstring tmp; \
+        string tmp; \
         StringWriter writer(tmp); \
         writer.Write(fmt, __VA_ARGS__); \
         Trace.WriteError(TraceType, "{0}", tmp); \
@@ -28,7 +28,7 @@ const StringLiteral TraceType("CachedFileTest");
 
 #define LOG_INFO( fmt, ...) \
     { \
-        wstring tmp; \
+        string tmp; \
         StringWriter writer(tmp); \
         writer.Write(fmt, __VA_ARGS__); \
         Trace.WriteInfo(TraceType, "{0}", tmp); \
@@ -46,29 +46,29 @@ protected:
     // TEST_METHOD(CachedFileTest2);  /* Checks the consistency of reader's data with one writer and multiple readers */
 
     friend class CachedFile;
-    Common::ErrorCode ReadFromCache(wstring & );
-    Common::ErrorCode WriteToFile(wstring const & filepath, wstring const & filetext);
-    void VerifyContent(wstring const &, TimeSpan const &);
+    Common::ErrorCode ReadFromCache(string & );
+    Common::ErrorCode WriteToFile(string const & filepath, string const & filetext);
+    void VerifyContent(string const &, TimeSpan const &);
     
     CachedFileSPtr cachedFile_;
-    wstring expectedFileContent_;
+    string expectedFileContent_;
 
-    static wstring TestDirectoryName;
-    static wstring TestFileName;
-    static wstring TestFileContents;
+    static string TestDirectoryName;
+    static string TestFileName;
+    static string TestFileContents;
 };
 
-wstring CachedFileTest::TestDirectoryName = L"CachedFileTest.Data";
-wstring CachedFileTest::TestFileName = L"CachedFile.txt";
-wstring CachedFileTest::TestFileContents = L"This is a Cached file.";
+string CachedFileTest::TestDirectoryName = "CachedFileTest.Data";
+string CachedFileTest::TestFileName = "CachedFile.txt";
+string CachedFileTest::TestFileContents = "This is a Cached file.";
 
 
 BOOST_FIXTURE_TEST_SUITE(CachedFileTestSuite,CachedFileTest)
 
 BOOST_AUTO_TEST_CASE(CachedFileTest1)
 {
-    wstring testFilePath = Path::Combine(TestDirectoryName, TestFileName);
-    wstring expectedContent = TestFileContents;
+    string testFilePath = Path::Combine(TestDirectoryName, TestFileName);
+    string expectedContent = TestFileContents;
    
     VerifyContent(expectedContent, TimeSpan::FromSeconds(30));
 
@@ -106,11 +106,11 @@ bool CachedFileTest::SetupTestCase()
         return false;
     }
     
-    wstring filePath = Path::Combine(TestDirectoryName, TestFileName);
+    string filePath = Path::Combine(TestDirectoryName, TestFileName);
     CachedFileTest::WriteToFile(filePath, TestFileContents);
 
     error = CachedFile::Create(filePath,
-            [] (__in wstring const & filePath, __out wstring & content)
+            [] (__in string const & filePath, __out string & content)
         {
             ErrorCode error(ErrorCodeValue::Success);
             File file;
@@ -122,7 +122,7 @@ bool CachedFileTest::SetupTestCase()
             }
     
             int fileSize = static_cast<int>(file.size());
-            vector<wchar_t> buffer(fileSize);
+            vector<char> buffer(fileSize);
             DWORD bytesRead;
             error = file.TryRead2(reinterpret_cast<void*>(buffer.data()), fileSize, bytesRead);
 
@@ -133,7 +133,7 @@ bool CachedFileTest::SetupTestCase()
                 return error;
             }
 
-            content = wstring(buffer.data());
+            content = string(buffer.data());
             return error;
         },
         cachedFile_);
@@ -151,11 +151,11 @@ bool CachedFileTest::CleanupTestCase()
     this->cachedFile_ = nullptr;
     return true;
 }
-ErrorCode CachedFileTest::WriteToFile(wstring const & filePath, wstring const & fileText)
+ErrorCode CachedFileTest::WriteToFile(string const & filePath, string const & fileText)
 {
-    wstring directoryName = Path::GetDirectoryName(filePath);
-    wstring tempFileName = Guid::NewGuid().ToString();
-    wstring tempFilePath = Path::Combine(directoryName, tempFileName);
+    string directoryName = Path::GetDirectoryName(filePath);
+    string tempFileName = Guid::NewGuid().ToString();
+    string tempFilePath = Path::Combine(directoryName, tempFileName);
     int currentRetryCount = 0;
     int maxRetryCount = 10;
     ErrorCode error  = ErrorCodeValue::Success;
@@ -202,18 +202,18 @@ ErrorCode CachedFileTest::WriteToFile(wstring const & filePath, wstring const & 
     }
     return error;
 }
-ErrorCode CachedFileTest::ReadFromCache(wstring & value)
+ErrorCode CachedFileTest::ReadFromCache(string & value)
 {
     return cachedFile_->ReadFileContent(value);
 }
-void CachedFileTest::VerifyContent(wstring const & expectedContent, TimeSpan const & waitTimeMax)
+void CachedFileTest::VerifyContent(string const & expectedContent, TimeSpan const & waitTimeMax)
 {
     TimeSpan waitTime = TimeSpan::Zero;
     TimeSpan retryDelay = TimeSpan::FromMilliseconds(300);
 
     for(;;)
     {
-        wstring actualContent = L"";
+        string actualContent = "";
         ReadFromCache(actualContent);
         if (actualContent == expectedContent)
         {
@@ -245,13 +245,13 @@ void CachedFileTest::VerifyContent(wstring const & expectedContent, TimeSpan con
  // The data should be either updated or old (i.e. one of the two values that the writer wrote)
 //void CachedFileTest::CachedFileTest2()
 //{
-//    wstring testFilePath = Path::Combine(TestDirectoryName, TestFileName);
+//    string testFilePath = Path::Combine(TestDirectoryName, TestFileName);
 //   
 //    // Run for 1 minutes
 //    int executionTimeInMilliSeconds = 1* 60 * 1000;
-//    wstring data[2];
-//    data[0] = L"This is a Cached file.";
-//    data[1] = L"This is a modified Cached file.";
+//    string data[2];
+//    data[0] = "This is a Cached file.";
+//    data[1] = "This is a modified Cached file.";
 //    vector<unique_ptr<ManualResetEvent>> readThreadEvents(THREADCOUNT);
 //    ManualResetEvent writeThreadEvent(false);
 //    atomic_long readErrorCount(0L);
@@ -265,7 +265,7 @@ void CachedFileTest::VerifyContent(wstring const & expectedContent, TimeSpan con
 //            [this,&testFilePath, &writeErrorCount,&threadStopFlag,&writeThreadEvent,&i,&data]() -> void
 //        {
 //            ErrorCode error = ErrorCodeValue::Success;
-//            wstring writeContent;
+//            string writeContent;
 //            
 //            while(!threadStopFlag.load())
 //            {
@@ -295,7 +295,7 @@ void CachedFileTest::VerifyContent(wstring const & expectedContent, TimeSpan con
 //        Threadpool::Post(
 //            [this,&readErrorCount,eventPtr,&threadStopFlag,&data]() -> void
 //        {
-//            wstring actualContent;
+//            string actualContent;
 //            ErrorCode error = ErrorCodeValue::Success;
 //            while(!threadStopFlag.load())
 //            {

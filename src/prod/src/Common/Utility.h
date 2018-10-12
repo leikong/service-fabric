@@ -351,17 +351,10 @@ namespace Common
     };
 
     typedef Global<std::string> GlobalString;
-    typedef Global<std::wstring> GlobalWString;
 
-#ifdef PLATFORM_UNIX
     using StringT = std::string;
     using StringLiteralT = StringLiteral; 
     using GlobalStringT = GlobalString;
-#else
-    using StringT = std::wstring;
-    using StringLiteralT = WStringLiteral; 
-    using GlobalStringT = GlobalWString;
-#endif
 
     template <class T>
     Global<T> make_global()

@@ -130,7 +130,7 @@ RvdLogManagerImp::AsyncEnumerateLogsImp::OnStart()
         _DiskId,
         _DirectoryName);
 #else
-    _DirectoryName = L"";
+    _DirectoryName = "";
 #endif
 
     if (!NT_SUCCESS(status))
@@ -182,13 +182,13 @@ RvdLogManagerImp::AsyncEnumerateLogsImp::EnumCompletionCallback(
         for (ULONG ix = 0; ix < _NameArray.Count(); ix++)
         {
             UNICODE_STRING s = _NameArray[ix];
-            if (s.Length == (RvdDiskLogConstants::LogFileNameLength * sizeof(WCHAR)))
+            if (s.Length == (RvdDiskLogConstants::LogFileNameLength * sizeof(CHAR)))
             {
                 // Overall length of strings match - verify proper prefix
                 UNICODE_STRING t;
                 t.Buffer = (PWCH)(&RvdDiskLogConstants::NamePrefix());
-                t.Length = (s.Length = (RvdDiskLogConstants::NamePrefixSize * sizeof(WCHAR)));
-                t.MaximumLength = t.Length + sizeof(WCHAR);
+                t.Length = (s.Length = (RvdDiskLogConstants::NamePrefixSize * sizeof(CHAR)));
+                t.MaximumLength = t.Length + sizeof(CHAR);
 
                 if (RtlCompareUnicodeString(&t, &s, TRUE) == 0)
                 {
@@ -198,14 +198,14 @@ RvdLogManagerImp::AsyncEnumerateLogsImp::EnumCompletionCallback(
                     t.Buffer = (PWCH)(&RvdDiskLogConstants::NameExtension());
                     s.Buffer += RvdDiskLogConstants::LogFileNameExtensionOffset;
                     t.Length = (s.Length = RvdDiskLogConstants::NameExtensionSize);
-                    t.MaximumLength = t.Length + sizeof(WCHAR);
+                    t.MaximumLength = t.Length + sizeof(CHAR);
 
                     if (RtlCompareUnicodeString(&t, &s, TRUE) == 0)
                     {
                         // extension matches - try and extract a {GUID}
                         s.Buffer = sBuffer + RvdDiskLogConstants::LogFileNameGuidOffset;
-                        s.Length = (RvdDiskLogConstants::LogFileNameGuidStrLength * sizeof(WCHAR));
-                        s.MaximumLength = s.Length + sizeof(WCHAR);
+                        s.Length = (RvdDiskLogConstants::LogFileNameGuidStrLength * sizeof(CHAR));
+                        s.MaximumLength = s.Length + sizeof(CHAR);
                         sBuffer[RvdDiskLogConstants::LogFileNameExtensionOffset] = UNICODE_NULL;
 
                         GUID logGuid;

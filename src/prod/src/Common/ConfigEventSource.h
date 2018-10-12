@@ -13,15 +13,15 @@ namespace Common
     class ConfigEventSource
     { 
     public:
-        DECLARE_STRUCTURED_TRACE(ConfigStoreInitialized, std::wstring, std::wstring);
-        DECLARE_STRUCTURED_TRACE(FileConfigStoreFileNotFound, std::wstring);
-        DECLARE_STRUCTURED_TRACE(FileConfigStoreFileReadError, std::wstring);
-        DECLARE_STRUCTURED_TRACE(FileConfigStoreFileReadSuccess, std::wstring);
-        DECLARE_STRUCTURED_TRACE(PackageConfigStoreSettingsLoaded, std::wstring);
-        DECLARE_STRUCTURED_TRACE(XmlSettingsStoreSettingsLoaded, std::wstring);
-        DECLARE_STRUCTURED_TRACE(ValueUpdated, Common::StringLiteral, std::wstring, std::wstring, bool);
-        DECLARE_STRUCTURED_TRACE(RegisteredForUpdate, std::wstring, std::wstring, std::wstring);
-        DECLARE_STRUCTURED_TRACE(UnregisteredForUpdate, std::wstring, std::wstring, std::wstring);
+        DECLARE_STRUCTURED_TRACE(ConfigStoreInitialized, std::string, std::string);
+        DECLARE_STRUCTURED_TRACE(FileConfigStoreFileNotFound, std::string);
+        DECLARE_STRUCTURED_TRACE(FileConfigStoreFileReadError, std::string);
+        DECLARE_STRUCTURED_TRACE(FileConfigStoreFileReadSuccess, std::string);
+        DECLARE_STRUCTURED_TRACE(PackageConfigStoreSettingsLoaded, std::string);
+        DECLARE_STRUCTURED_TRACE(XmlSettingsStoreSettingsLoaded, std::string);
+        DECLARE_STRUCTURED_TRACE(ValueUpdated, Common::StringLiteral, std::string, std::string, bool);
+        DECLARE_STRUCTURED_TRACE(RegisteredForUpdate, std::string, std::string, std::string);
+        DECLARE_STRUCTURED_TRACE(UnregisteredForUpdate, std::string, std::string, std::string);
     public:
         ConfigEventSource() :
         CONFIG_STRUCTURED_TRACE(

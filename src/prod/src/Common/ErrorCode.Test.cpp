@@ -75,7 +75,7 @@ namespace Common
                 specifiedCount,
                 actualCount);
 
-            VERIFY_FAIL(wformatString(
+            VERIFY_FAIL(formatString(
                     "ErrorCodeValue::INTERNAL_ERROR_CODE_COUNT is %d but should be %d.  Please fix it before checking in.",
                     specifiedCount,
                     actualCount).c_str());
@@ -147,27 +147,27 @@ namespace Common
             LONG index = ix;
             Threadpool::Post([&, index]()
             {
-                auto inData = wformatString("error message {0}", index);
+                auto inData = formatString.L("error message {0}", index);
 
                 Sleep(rand.Next(minSleep, maxSleep));
 
                 {
-                    ErrorCode error(ErrorCodeValue::OperationFailed, wformatString(inData));
+                    ErrorCode error(ErrorCodeValue::OperationFailed, formatString(inData));
 
                     error.SetThreadErrorMessage();
 
                     Sleep(rand.Next(minSleep, maxSleep));
 
-                    wstring outData1 = FabricGlobals::Get().GetThreadErrorMessages().GetMessage();
+                    string outData1 = FabricGlobals::Get().GetThreadErrorMessages().GetMessage();
 
-                    VERIFY_IS_TRUE(outData1 == inData, wformatString("[{0}] read '{1}'", index, outData1).c_str());
+                    VERIFY_IS_TRUE(outData1 == inData, formatString.L("[{0}] read '{1}'", index, outData1).c_str());
                 }
 
                 Sleep(rand.Next(minSleep, maxSleep));
 
-                wstring outData2 = FabricGlobals::Get().GetThreadErrorMessages().GetMessage();
+                string outData2 = FabricGlobals::Get().GetThreadErrorMessages().GetMessage();
 
-                VERIFY_IS_TRUE(outData2.empty(), wformatString("[{0}] read '{1}'", index, outData2).c_str());
+                VERIFY_IS_TRUE(outData2.empty(), formatString.L("[{0}] read '{1}'", index, outData2).c_str());
 
                 if (--completedCount == 0)
                 {
@@ -180,46 +180,46 @@ namespace Common
 
         // test copy
         {
-            wstring msg(L"my error message 1");
-            ErrorCode error1(ErrorCodeValue::OperationFailed, wformatString(msg));
+            string msg("my error message 1");
+            ErrorCode error1(ErrorCodeValue::OperationFailed, formatString(msg));
 
             ErrorCode error2(error1);
-            VERIFY_IS_TRUE(error1.Message == error2.Message, wformatString("{0} == {1}", error1.Message, error2.Message).c_str());
+            VERIFY_IS_TRUE(error1.Message == error2.Message, formatString.L("{0} == {1}", error1.Message, error2.Message).c_str());
             VERIFY_IS_TRUE(error2.Message == msg);
             VERIFY_IS_TRUE(error2.IsError(ErrorCodeValue::OperationFailed));
 
             ErrorCode error3 = error1;
-            VERIFY_IS_TRUE(error1.Message == error3.Message, wformatString("{0} == {1}", error1.Message, error3.Message).c_str());
+            VERIFY_IS_TRUE(error1.Message == error3.Message, formatString.L("{0} == {1}", error1.Message, error3.Message).c_str());
             VERIFY_IS_TRUE(error3.Message == msg);
             VERIFY_IS_TRUE(error3.IsError(ErrorCodeValue::OperationFailed));
 
             ErrorCode error4;
             error4.Overwrite(error1);
-            VERIFY_IS_TRUE(error1.Message == error4.Message, wformatString("{0} == {1}", error1.Message, error4.Message).c_str());
+            VERIFY_IS_TRUE(error1.Message == error4.Message, formatString.L("{0} == {1}", error1.Message, error4.Message).c_str());
             VERIFY_IS_TRUE(error4.Message == msg);
             VERIFY_IS_TRUE(error4.IsError(ErrorCodeValue::OperationFailed));
         }
 
         // test move
         {
-            wstring msg(L"my error message 2");
-            ErrorCode error1(ErrorCodeValue::OperationFailed, wformatString(msg));
+            string msg("my error message 2");
+            ErrorCode error1(ErrorCodeValue::OperationFailed, formatString(msg));
 
             ErrorCode error2(move(error1));
-            VERIFY_IS_TRUE(error1.Message != error2.Message, wformatString("{0} != {1}", error1.Message, error2.Message).c_str());
+            VERIFY_IS_TRUE(error1.Message != error2.Message, formatString.L("{0} != {1}", error1.Message, error2.Message).c_str());
             VERIFY_IS_TRUE(error1.Message.empty());
             VERIFY_IS_TRUE(error2.Message == msg);
             VERIFY_IS_TRUE(error2.IsError(ErrorCodeValue::OperationFailed));
 
             ErrorCode error3 = move(error2);
-            VERIFY_IS_TRUE(error2.Message != error3.Message, wformatString("{0} != {1}", error2.Message, error3.Message).c_str());
+            VERIFY_IS_TRUE(error2.Message != error3.Message, formatString.L("{0} != {1}", error2.Message, error3.Message).c_str());
             VERIFY_IS_TRUE(error2.Message.empty());
             VERIFY_IS_TRUE(error3.Message == msg);
             VERIFY_IS_TRUE(error3.IsError(ErrorCodeValue::OperationFailed));
 
             ErrorCode error4;
             error4.Overwrite(move(error3));
-            VERIFY_IS_TRUE(error3.Message != error4.Message, wformatString("{0} != {1}", error3.Message, error4.Message).c_str());
+            VERIFY_IS_TRUE(error3.Message != error4.Message, formatString.L("{0} != {1}", error3.Message, error4.Message).c_str());
             VERIFY_IS_TRUE(error3.Message.empty());
             VERIFY_IS_TRUE(error4.Message == msg);
             VERIFY_IS_TRUE(error4.IsError(ErrorCodeValue::OperationFailed));

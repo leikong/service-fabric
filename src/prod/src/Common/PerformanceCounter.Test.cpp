@@ -22,16 +22,16 @@
 
 namespace Common
 {
-    Guid testCounterSet1Id(L"B11EA2D6-F1E0-4C4B-9C26-F304AC4B1462");
+    Guid testCounterSet1Id("B11EA2D6-F1E0-4C4B-9C26-F304AC4B1462");
 
     class TestCounterSet1
     {
         DENY_COPY(TestCounterSet1)
 
-        BEGIN_COUNTER_SET_DEFINITION(L"B11EA2D6-F1E0-4C4B-9C26-F304AC4B1462", L"B11EA2D6-F1E0-4C4B-9C26-F304AC4B1462", L"B11EA2D6-F1E0-4C4B-9C26-F304AC4B1462", PerformanceCounterSetInstanceType::Multiple)
-            COUNTER_DEFINITION(1, PerformanceCounterType::RawBase64, L"counter1", L"counter1 description")
-            COUNTER_DEFINITION(2, PerformanceCounterType::AverageBase, L"counter2", L"", noDisplay)
-            COUNTER_DEFINITION_WITH_BASE(3, 2, PerformanceCounterType::AverageTimer32, L"counter3", L"counter3 description")
+        BEGIN_COUNTER_SET_DEFINITION("B11EA2D6-F1E0-4C4B-9C26-F304AC4B1462", "B11EA2D6-F1E0-4C4B-9C26-F304AC4B1462", "B11EA2D6-F1E0-4C4B-9C26-F304AC4B1462", PerformanceCounterSetInstanceType::Multiple)
+            COUNTER_DEFINITION(1, PerformanceCounterType::RawBase64, "counter1", "counter1 description")
+            COUNTER_DEFINITION(2, PerformanceCounterType::AverageBase, "counter2", "", noDisplay)
+            COUNTER_DEFINITION_WITH_BASE(3, 2, PerformanceCounterType::AverageTimer32, "counter3", "counter3 description")
         END_COUNTER_SET_DEFINITION()
 
         DECLARE_COUNTER_INSTANCE(Count)
@@ -230,7 +230,7 @@ namespace Common
         counterSet->AddCounter(2, PerformanceCounterType::AverageTimer32);
         counterSet->AddCounter(3, PerformanceCounterType::AverageBase);
 
-        std::wstring instanceName = L"counterSetInstanceName";
+        std::string instanceName = "counterSetInstanceName";
 
         auto instance = counterSet->CreateCounterSetInstance(instanceName);
 
@@ -266,7 +266,7 @@ namespace Common
 
         VERIFY_ARE_EQUAL(counterSetId, Guid(instanceInfo->CounterSetGuid));
         VERIFY_ARE_EQUAL((ULONG)0, instanceInfo->InstanceId);
-        VERIFY_ARE_EQUAL(instanceName, std::wstring((wchar_t*)((BYTE*)(instanceInfo) + instanceInfo->InstanceNameOffset)));
+        VERIFY_ARE_EQUAL(instanceName, std::string((char*)((BYTE*)(instanceInfo) + instanceInfo->InstanceNameOffset)));
 #endif
     }
 
@@ -312,8 +312,8 @@ namespace Common
 
         PerformanceCounterId id = 0;
 
-        std::wstring name(L"CounterName");
-        std::wstring description(L"CounterDescription");
+        std::string name("CounterName");
+        std::string description("CounterDescription");
 
         for (auto it = begin(types); it != end(types); ++it)
         {
@@ -342,8 +342,8 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(TestPerformanceCounterSetDefinition)
     {
-        std::wstring name(L"counterSetName");
-        std::wstring description(L"counterSetDescription");
+        std::string name("counterSetName");
+        std::string description("counterSetDescription");
 
         std::vector<PerformanceCounterSetInstanceType::Enum> types;
         types.push_back(PerformanceCounterSetInstanceType::Single);
@@ -363,8 +363,8 @@ namespace Common
 
                 for (size_t i = 0; i < counterCount; ++i)
                 {
-                    std::wstring counterName(L"name");
-                    std::wstring counterDescription(L"description");
+                    std::string counterName("name");
+                    std::string counterDescription("description");
 
                     PerformanceCounterDefinition counter((PerformanceCounterId)i + 1, PerformanceCounterType::RawBase64, counterName, counterDescription);
 
@@ -431,7 +431,7 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(TestPerformanceCounterMacros)
     {
-        std::wstring instanceName1(L"instance1");
+        std::string instanceName1("instance1");
 
         auto instance1 = TestCounterSet1::CreateInstance(instanceName1);
         
@@ -468,16 +468,16 @@ namespace Common
         auto counterDef3 = definition.CounterDefinitions.find(3)->second;
 
         VERIFY_ARE_EQUAL(PerformanceCounterType::RawBase64, counterDef1.Type);
-        VERIFY_ARE_EQUAL(std::wstring(L"counter1"), counterDef1.Name);
-        VERIFY_ARE_EQUAL(std::wstring(L"counter1 description"), counterDef1.Description);
+        VERIFY_ARE_EQUAL(std::string("counter1"), counterDef1.Name);
+        VERIFY_ARE_EQUAL(std::string("counter1 description"), counterDef1.Description);
 
         VERIFY_ARE_EQUAL(PerformanceCounterType::AverageBase, counterDef2.Type);
-        VERIFY_ARE_EQUAL(std::wstring(L"counter2"), counterDef2.Name);
-        VERIFY_ARE_EQUAL(std::wstring(L""), counterDef2.Description);
+        VERIFY_ARE_EQUAL(std::string("counter2"), counterDef2.Name);
+        VERIFY_ARE_EQUAL(std::string(""), counterDef2.Description);
 
         VERIFY_ARE_EQUAL(PerformanceCounterType::AverageTimer32, counterDef3.Type);
-        VERIFY_ARE_EQUAL(std::wstring(L"counter3"), counterDef3.Name);
-        VERIFY_ARE_EQUAL(std::wstring(L"counter3 description"), counterDef3.Description);
+        VERIFY_ARE_EQUAL(std::string("counter3"), counterDef3.Name);
+        VERIFY_ARE_EQUAL(std::string("counter3 description"), counterDef3.Description);
 
         // check counterset
         auto & counterSet = TestCounterSet1::GetCounterSet();

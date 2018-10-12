@@ -9,13 +9,13 @@ using namespace Transport;
 using namespace std;
 using namespace Common;
 
-Common::WStringLiteral const UnreliableTransportSpecification::MatchAll(L"*");
+Common::StringLiteral const UnreliableTransportSpecification::MatchAll("*");
 
 UnreliableTransportSpecification::UnreliableTransportSpecification(
-    std::wstring const & name,
-    std::wstring const & source,
-    std::wstring const & destination, 
-    std::wstring const & action, 
+    std::string const & name,
+    std::string const & source,
+    std::string const & destination, 
+    std::string const & action, 
     double probabilityToApply, 
     Common::TimeSpan delay, 
     Common::TimeSpan delaySpan,
@@ -23,9 +23,9 @@ UnreliableTransportSpecification::UnreliableTransportSpecification(
     int applyCount,
     Common::StringMap const &  filters)
     :   name_(name),
-        source_(source == MatchAll ? L"" : source),
-        destination_(destination == MatchAll ? L"" : destination),
-        action_(action == MatchAll ? L"" : action),
+        source_(source == MatchAll ? "" : source),
+        destination_(destination == MatchAll ? "" : destination),
+        action_(action == MatchAll ? "" : action),
         probabilityToApply_(probabilityToApply),
         delay_(delay),
         delaySpan_(static_cast<double>(delaySpan.TotalMilliseconds())),
@@ -38,14 +38,14 @@ UnreliableTransportSpecification::UnreliableTransportSpecification(
     ASSERT_IF(probabilityToApply <= 0 || probabilityToApply > 1, "invalid probabilityToApply, must be (0, 1]");
 }
 
-bool UnreliableTransportSpecification::Match(std::wstring const & source, wstring const & destination, wstring const & action)
+bool UnreliableTransportSpecification::Match(std::string const & source, string const & destination, string const & action)
 {
     return ((source_.empty() || source_ == source) &&
             (destination_.empty() || destination_ == destination) &&
             (action_.empty() || action_ == action));
 }
 
-bool UnreliableTransportSpecification::Match(std::wstring const & source, wstring const & destination, Transport::Message const & message)
+bool UnreliableTransportSpecification::Match(std::string const & source, string const & destination, Transport::Message const & message)
 {
     bool match = Match(source, destination, message.Action);
 
@@ -54,7 +54,7 @@ bool UnreliableTransportSpecification::Match(std::wstring const & source, wstrin
     {        
         for (auto iter = filters_.begin(); iter != filters_.end(); ++iter)
         {
-            wstring propertyValue;
+            string propertyValue;
 
             // each property in filter must match. Currently only PartitionID is supported.
             if (StringUtility::Compare(iter->first, *Constants::PartitionIdWString) == 0)
@@ -108,10 +108,10 @@ TimeSpan UnreliableTransportSpecification::GetDelay()
 
 void UnreliableTransportSpecification::WriteTo(Common::TextWriter & w, Common::FormatOptions const &) const
 {
-    wstring filterInfo;
+    string filterInfo;
     for (auto iter = filters_.begin(); iter != filters_.end(); ++iter)
     {
-        filterInfo += wformatString("{0}:{1},", iter->first, iter->second);
+        filterInfo += formatString.L("{0}:{1},", iter->first, iter->second);
     }
 
     // trim "," from end of filters

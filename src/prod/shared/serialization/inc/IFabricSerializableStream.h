@@ -129,13 +129,13 @@ namespace Serialization
 
         virtual NTSTATUS ReadPointerArray(__out IFabricSerializable ** field, __in FabricActivatorFunction activator, __inout ULONG & count) = 0;
 
-        virtual NTSTATUS WriteString(__in WCHAR * field, __in ULONG count) = 0;
+        virtual NTSTATUS WriteString(__in CHAR * field, __in ULONG count) = 0;
 
-        virtual NTSTATUS ReadString(__out WCHAR * field, __inout ULONG & count) = 0;
+        virtual NTSTATUS ReadString(__out CHAR * field, __inout ULONG & count) = 0;
 
-        //virtual NTSTATUS WriteStringArray(__in WCHAR * field, __in ULONG count) = 0;
+        //virtual NTSTATUS WriteStringArray(__in CHAR * field, __in ULONG count) = 0;
 
-        //virtual NTSTATUS ReadStringArray(__out WCHAR * field, __inout ULONG & count) = 0;
+        //virtual NTSTATUS ReadStringArray(__out CHAR * field, __inout ULONG & count) = 0;
 
 
 

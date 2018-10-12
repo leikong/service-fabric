@@ -8,35 +8,35 @@
 
 using namespace std;
 
-static bool isslash(wchar_t c)
+static bool isslash(char c)
 {
     return c == '/' || c == '\\';
 }
 
-STDAPI_(BOOL) PathAppendW(LPWSTR pszPath, LPCWSTR pszMore)
+STDAPI_(BOOL) PathAppendW(LPSTR pszPath, LPCSTR pszMore)
 {
-    int lenPath = wcslen(pszPath);
-    int lenMore = wcslen(pszMore);
-    if (lenPath > 0 && pszPath[lenPath - 1] == L'/' &&
-        lenMore > 0 && pszMore[0] == L'/')
+    int lenPath = strlen(pszPath);
+    int lenMore = strlen(pszMore);
+    if (lenPath > 0 && pszPath[lenPath - 1] == '/' &&
+        lenMore > 0 && pszMore[0] == '/')
     {
         pszPath[lenPath - 1] = 0;
     }
-    else if (lenPath > 0 && pszPath[lenPath - 1] != L'/' &&
-             lenMore > 0 && pszMore[0] != L'/')
+    else if (lenPath > 0 && pszPath[lenPath - 1] != '/' &&
+             lenMore > 0 && pszMore[0] != '/')
     {
-        pszPath[lenPath] = L'/';
+        pszPath[lenPath] = '/';
         pszPath[lenPath + 1] = 0;
     }
     wcsncat(pszPath, pszMore, lenMore);
     return TRUE;
 }
 
-STDAPI_(BOOL) PathRemoveFileSpecW(LPWSTR pFile)
+STDAPI_(BOOL) PathRemoveFileSpecW(LPSTR pFile)
 {
     if (pFile)
     {
-        LPWSTR slow, fast = pFile;
+        LPSTR slow, fast = pFile;
 
         for (slow = fast; *fast; fast++)
         {
@@ -71,11 +71,11 @@ STDAPI_(BOOL) PathRemoveFileSpecW(LPWSTR pFile)
     return  FALSE;
 }
 
-STDAPI_(LPWSTR) PathCombineW(LPWSTR lpszDest, LPCWSTR lpszDir, LPCWSTR lpszFile)
+STDAPI_(LPSTR) PathCombineW(LPSTR lpszDest, LPCSTR lpszDir, LPCSTR lpszFile)
 {
     if (lpszDest)
     {
-        wstring dir, file;
+        string dir, file;
         if (lpszDir)
         {
             dir = lpszDir;
@@ -89,11 +89,11 @@ STDAPI_(LPWSTR) PathCombineW(LPWSTR lpszDest, LPCWSTR lpszDir, LPCWSTR lpszFile)
             file = lpszFile;
             if (!file.empty() && isslash(file.front()))
             {
-                dir = L"";
+                dir = "";
             }
         }
-        wstring path  = dir + file;
-        memcpy(lpszDest, path.c_str(), (path.length() + 1) * sizeof(wchar_t));
+        string path  = dir + file;
+        memcpy(lpszDest, path.c_str(), (path.length() + 1) * sizeof(char));
     }
     return lpszDest;
 }

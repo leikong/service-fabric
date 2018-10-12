@@ -84,11 +84,11 @@ namespace Common
     BOOST_AUTO_TEST_CASE(IsoStringTest)
     {
         DateTime dateTime = DateTime::Now();
-        std::wstring isoStr = dateTime.ToIsoString();
+        std::string isoStr = dateTime.ToIsoString();
         DateTime dateTime2 = DateTime(isoStr);
-        std::wstring isoStr2 = dateTime.ToIsoString();
+        std::string isoStr2 = dateTime.ToIsoString();
         VERIFY_ARE_EQUAL(isoStr, isoStr2);
-        std::wstring str = dateTime.ToString(true);
+        std::string str = dateTime.ToString(true);
         DateTime dateTime3 = DateTime(str);
         VERIFY_ARE_EQUAL(isoStr, dateTime3.ToIsoString());
     }

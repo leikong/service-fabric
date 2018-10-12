@@ -18,7 +18,7 @@ namespace
 SecurityContextSPtr SecurityContext::Create(
     IConnectionSPtr const & connection,
     TransportSecuritySPtr const & transportSecurity,
-    wstring const & targetName,
+    string const & targetName,
     ListenInstance localListenInstance)
 {
     SecurityContextSPtr result;
@@ -45,7 +45,7 @@ SecurityContextSPtr SecurityContext::Create(
 SecurityContext::SecurityContext(
     IConnectionSPtr const & connection,
     TransportSecuritySPtr const & transportSecurity,
-    wstring const & targetName,
+    string const & targetName,
     ListenInstance localListenInstance)
     : connection_(connection)
     , id_(connection->TraceId())
@@ -116,7 +116,7 @@ void SecurityContext::Initialize()
 
 ErrorCode SecurityContext::FaultToReport() const
 {
-    wstring errorMsg = wformatString(
+    string errorMsg = formatString(
         "{0}: {1}",
         inbound_ ? ErrorCodeValue::ConnectionDenied : ErrorCodeValue::ServerAuthenticationFailed,
         ErrorCodeValue::Enum(connectionAuthorizationState_));
@@ -306,7 +306,7 @@ SECURITY_STATUS SecurityContext::NegotiateSecurityContext(MessageUPtr const & in
             id_,
             transportSecurity_->SecurityProvider,
             targetName_,
-            L"",
+            "",
             0,
             contextExpiration_.ToString());
 #else
@@ -323,7 +323,7 @@ SECURITY_STATUS SecurityContext::NegotiateSecurityContext(MessageUPtr const & in
             id_,
             transportSecurity_->SecurityProvider,
             targetName_,
-            negotiationInfo.PackageInfo ? negotiationInfo.PackageInfo->Name : L"",
+            negotiationInfo.PackageInfo ? negotiationInfo.PackageInfo->Name : "",
             negotiationInfo.PackageInfo ? negotiationInfo.PackageInfo->fCapabilities : 0,
             contextExpiration_.ToString());
 #endif
@@ -414,14 +414,14 @@ PCtxtHandle SecurityContext::AscInputContext()
     return (!NegotiationStarted() ? nullptr : &hSecurityContext_);
 }
 
-wchar_t* SecurityContext::TargetName() const
+char* SecurityContext::TargetName() const
 {
     if (targetName_.empty())
     {
         return nullptr;
     }
 
-    return const_cast<wchar_t*>(targetName_.c_str());
+    return const_cast<char*>(targetName_.c_str());
 }
 
 _Use_decl_annotations_
@@ -678,10 +678,10 @@ void SecurityContext::DisableFramingProtection()
     WriteInfo(TraceType, id_, "FramingProtectionEnabled set false");
 }
 
-void SecurityContext::ReportSecurityApiSlow(wchar_t const* api, Common::TimeSpan duration, Common::TimeSpan threshold)
+void SecurityContext::ReportSecurityApiSlow(char const* api, Common::TimeSpan duration, Common::TimeSpan threshold)
 {
     auto reportCode = SystemHealthReportCode::FabricNode_SecurityApiSlow;
-    auto description = wformatString(
+    auto description = formatString(
         "call duration = {0}, configuration Setting Security/SlowApiThreshold = {1}",
         duration, threshold);
 
@@ -692,23 +692,23 @@ ConnectionAuthMessage::ConnectionAuthMessage()
 {
 }
 
-ConnectionAuthMessage::ConnectionAuthMessage(wstring const & errorMessage, RoleMask::Enum roleGranted)
+ConnectionAuthMessage::ConnectionAuthMessage(string const & errorMessage, RoleMask::Enum roleGranted)
     : errorMessage_(errorMessage)
     , roleGranted_(roleGranted)
 {
 }
 
-wstring const & ConnectionAuthMessage::ErrorMessage() const
+string const & ConnectionAuthMessage::ErrorMessage() const
 {
     return errorMessage_;
 }
 
-wstring && ConnectionAuthMessage::TakeMessage()
+string && ConnectionAuthMessage::TakeMessage()
 {
     return move(errorMessage_);
 }
 
 void ConnectionAuthMessage::WriteTo(Common::TextWriter & w, Common::FormatOptions const &) const
 {
-    w << errorMessage_ << L", role granted: " << roleGranted_;
+    w << errorMessage_ << ", role granted: " << roleGranted_;
 }

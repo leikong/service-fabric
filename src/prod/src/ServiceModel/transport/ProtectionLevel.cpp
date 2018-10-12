@@ -48,21 +48,21 @@ namespace Transport
         }
 
         _Use_decl_annotations_
-        Common::ErrorCode Parse(wstring const & inputString, Enum & result)
+        Common::ErrorCode Parse(string const & inputString, Enum & result)
         {
-            if (StringUtility::AreEqualCaseInsensitive(inputString, L"None"))
+            if (StringUtility::AreEqualCaseInsensitive(inputString, "None"))
             {
                 result = None;
                 return Common::ErrorCode::Success();
             }
 
-            if (StringUtility::AreEqualCaseInsensitive(inputString, L"Sign"))
+            if (StringUtility::AreEqualCaseInsensitive(inputString, "Sign"))
             {
                 result = Sign;
                 return Common::ErrorCode::Success();
             }
 
-            if (StringUtility::AreEqualCaseInsensitive(inputString, L"EncryptAndSign"))
+            if (StringUtility::AreEqualCaseInsensitive(inputString, "EncryptAndSign"))
             {
                 result = EncryptAndSign;
                 return Common::ErrorCode::Success();
@@ -76,9 +76,9 @@ namespace Transport
         {
             switch (e)
             {
-                case None: w << L"None"; return;
-                case Sign: w << L"Sign"; return;
-                case EncryptAndSign: w << L"EncryptAndSign"; return;
+                case None: w << "None"; return;
+                case Sign: w << "Sign"; return;
+                case EncryptAndSign: w << "EncryptAndSign"; return;
             }
 
             w << "ProtectionLevel(" << static_cast<int>(e) << ')';

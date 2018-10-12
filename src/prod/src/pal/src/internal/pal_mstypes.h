@@ -595,12 +595,12 @@ typedef unsigned long int uintptr_t;
 typedef unsigned int uintptr_t;
 #endif // !BIT64
 
-//typedef char16_t WCHAR;
-typedef wchar_t WCHAR;
+//typedef char16_t CHAR;
+typedef char CHAR;
 
 #else // PAL_STDCPP_COMPAT
 
-typedef wchar_t WCHAR;
+typedef char CHAR;
 #if defined(__linux__) 
 #ifdef BIT64
 typedef long int intptr_t;
@@ -625,13 +625,13 @@ typedef WORD LANGID;
 
 typedef DWORD LCTYPE;
 
-typedef WCHAR *PWCHAR;
-typedef WCHAR *LPWCH, *PWCH;
-typedef CONST WCHAR *LPCWCH, *PCWCH;
-typedef WCHAR *NWPSTR;
-typedef WCHAR *LPWSTR, *PWSTR;
+typedef CHAR *PCHAR;
+typedef CHAR *LPWCH, *PWCH;
+typedef CONST CHAR *LPCWCH, *PCWCH;
+typedef CHAR *NWPSTR;
+typedef CHAR *LPSTR, *PWSTR;
 
-typedef CONST WCHAR *LPCWSTR, *PCWSTR;
+typedef CONST CHAR *LPCSTR, *PCWSTR;
 
 typedef char CHAR;
 typedef CHAR *PCHAR;
@@ -642,8 +642,8 @@ typedef CHAR *LPSTR, *PSTR;
 typedef CONST CHAR *LPCSTR, *PCSTR;
 
 #ifdef UNICODE
-typedef WCHAR TCHAR;
-typedef WCHAR _TCHAR;
+typedef CHAR TCHAR;
+typedef CHAR _TCHAR;
 #else
 typedef CHAR TCHAR;
 typedef CHAR _TCHAR;

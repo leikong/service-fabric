@@ -10,27 +10,27 @@ namespace Common
     class RegistryKey
     {
     public:
-        explicit RegistryKey(std::wstring const & name, bool const readOnly = true, bool const openExisting = false);
+        explicit RegistryKey(std::string const & name, bool const readOnly = true, bool const openExisting = false);
 
-        RegistryKey(std::wstring const & name, LPCWSTR machineName, bool const readOnly = true, bool const openExisting = false);
+        RegistryKey(std::string const & name, LPCSTR machineName, bool const readOnly = true, bool const openExisting = false);
 
-        bool GetValue(std::wstring const & name, DWORD & value);
+        bool GetValue(std::string const & name, DWORD & value);
 
-        bool GetValue(std::wstring const & name, std::wstring & value);
+        bool GetValue(std::string const & name, std::string & value);
 
-        bool GetValue(std::wstring const & name, std::wstring & value, bool expandEnvironmentStrings);
+        bool GetValue(std::string const & name, std::string & value, bool expandEnvironmentStrings);
 
-        bool GetValue(std::wstring const & name, std::vector<std::wstring> & value);
+        bool GetValue(std::string const & name, std::vector<std::string> & value);
 
-        bool SetValue(std::wstring const & name, DWORD value);
+        bool SetValue(std::string const & name, DWORD value);
 
-        bool SetValue(std::wstring const & name, std::wstring const & value, bool typeRegSZ = false);
+        bool SetValue(std::string const & name, std::string const & value, bool typeRegSZ = false);
 
-        bool SetValue(std::wstring const & name, std::vector<std::wstring> const & value);
+        bool SetValue(std::string const & name, std::vector<std::string> const & value);
 
-        bool SetValue(std::wstring const & name, const BYTE * value, ULONG valueLen);
+        bool SetValue(std::string const & name, const BYTE * value, ULONG valueLen);
 
-        bool DeleteValue(std::wstring const & name);
+        bool DeleteValue(std::string const & name);
 
         bool DeleteKey();
 
@@ -48,7 +48,7 @@ namespace Common
     private:
         DENY_COPY(RegistryKey);
         
-        std::wstring keyName_;
+        std::string keyName_;
         HKEY key_;
         bool existed_;
         bool initialized_;

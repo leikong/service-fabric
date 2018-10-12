@@ -22,7 +22,7 @@
 #include <stdlib.h>
 
 #define ObjectFolderDefault ".service.fabric"
-#define ObjectFolderDefaultW L".service.fabric"
+#define ObjectFolderDefaultW ".service.fabric"
 
 #include "FabricSignal.h"
 

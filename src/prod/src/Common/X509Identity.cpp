@@ -38,7 +38,7 @@ void X509IdentitySet::Add(X509IdentitySet const & other)
     set_.insert(other.set_.cbegin(), other.set_.cend());
 }
 
-ErrorCode X509IdentitySet::AddThumbprint(wstring const & thumbprintString)
+ErrorCode X509IdentitySet::AddThumbprint(string const & thumbprintString)
 {
     Thumbprint::SPtr thumbprint;
     auto error = Thumbprint::Create(thumbprintString, thumbprint);
@@ -65,7 +65,7 @@ bool X509IdentitySet::IsEmpty() const
     return set_.empty();
 }
 
-ErrorCode X509IdentitySet::SetToThumbprints(std::wstring const & thumbprints)
+ErrorCode X509IdentitySet::SetToThumbprints(std::string const & thumbprints)
 {
     set_.clear();
 
@@ -76,8 +76,8 @@ ErrorCode X509IdentitySet::SetToThumbprints(std::wstring const & thumbprints)
         return ErrorCode();
     }
 
-    vector<wstring> thumbprintList;
-    StringUtility::Split<wstring>(thumbprintsCopy, thumbprintList, L",", true);
+    vector<string> thumbprintList;
+    StringUtility::Split<string>(thumbprintsCopy, thumbprintList, ",", true);
     if (thumbprintList.empty())
     {
         return ErrorCodeValue::InvalidArgument;
@@ -142,22 +142,22 @@ void X509IdentitySet::WriteTo(TextWriter & w, FormatOptions const &) const
     }
 }
 
-wstring X509IdentitySet::ToString() const
+string X509IdentitySet::ToString() const
 {
-    wstring result;
+    string result;
     StringWriter(result).Write(*this);
     return result;
 }
 
-vector<wstring> X509IdentitySet::ToStrings() const
+vector<string> X509IdentitySet::ToStrings() const
 {
-    vector<wstring> result;
+    vector<string> result;
     for (auto const & id : set_)
     {
         // Only thumbprint is supported for now, as this is used by SecuritySettings::ToPublicApi. Ignore otherwise.
         if (id->IdType() == X509Identity::Thumbprint)
         {
-            result.emplace_back(wformatString(*id));
+            result.emplace_back(formatString(*id));
         }      
     }
 

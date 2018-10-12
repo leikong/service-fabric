@@ -11,18 +11,18 @@ namespace Transport
     {
     public:
         static IDatagramTransportSPtr CreateTcp(
-            std::wstring const & address,
-            std::wstring const & id = L"",
-            std::wstring const & owner = L"");
+            std::string const & address,
+            std::string const & id = "",
+            std::string const & owner = "");
 
         static IDatagramTransportSPtr CreateTcpClient(
-            std::wstring const & id = L"",
-            std::wstring const & owner = L"");
+            std::string const & id = "",
+            std::string const & owner = "");
 
         // Returns an empty pointer if the local address already exists
         static IDatagramTransportSPtr  CreateMem(
-            std::wstring const & name,
-            std::wstring const & id = L"");
+            std::string const & name,
+            std::string const & id = "");
 
         static IDatagramTransportSPtr CreateUnreliable(
             Common::ComponentRoot const & root,

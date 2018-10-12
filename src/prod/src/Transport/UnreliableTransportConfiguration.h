@@ -11,16 +11,16 @@ namespace Transport
     {
         DECLARE_SINGLETON_COMPONENT_CONFIG(UnreliableTransportConfiguration, "UnreliableTransport")
 
-        INTERNAL_CONFIG_ENTRY(Common::TimeSpan, L"UnreliableTransport", MaxAllowedDelayInSeconds, Common::TimeSpan::FromSeconds(40), Common::ConfigEntryUpgradePolicy::Dynamic)
+        INTERNAL_CONFIG_ENTRY(Common::TimeSpan, "UnreliableTransport", MaxAllowedDelayInSeconds, Common::TimeSpan::FromSeconds(40), Common::ConfigEntryUpgradePolicy::Dynamic)
 
     public:
         bool AddSpecification(UnreliableTransportSpecificationUPtr && spec);
 
-        bool AddSpecification(std::wstring const & name, std::wstring const & data);
+        bool AddSpecification(std::string const & name, std::string const & data);
 
-        bool RemoveSpecification(std::wstring const & name);
+        bool RemoveSpecification(std::string const & name);
 
-        Common::TimeSpan GetDelay(std::wstring const & source, std::wstring const & destination, std::wstring const & action);
+        Common::TimeSpan GetDelay(std::string const & source, std::string const & destination, std::string const & action);
 
         void WriteTo(Common::TextWriter & w, Common::FormatOptions const &) const;
 

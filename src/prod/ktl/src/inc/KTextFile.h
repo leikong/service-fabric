@@ -55,7 +55,7 @@ public:
         );
 
     KTextFile(
-        __in KUniquePtr<WCHAR>& Buffer,
+        __in KUniquePtr<CHAR>& Buffer,
         __in ULONG Length,
         __in ULONG MaxLineLength,
         __in ULONG AllocationTag,
@@ -89,15 +89,15 @@ public:
         __out KBuffer::SPtr& Result
         );
 
-    static const WCHAR UnicodeBom = 0xFEFF;
+    static const CHAR UnicodeBom = 0xFEFF;
 
 private:
 
     class OpenContext;
 
-    KUniquePtr<WCHAR> _Buffer;
-    PWCHAR _EndBuffer;
-    PWCHAR _LineStart;
+    KUniquePtr<CHAR> _Buffer;
+    PCHAR _EndBuffer;
+    PCHAR _LineStart;
     ULONG _LineNumber;
     ULONG _MaxLength;
     ULONG _AllocationTag;

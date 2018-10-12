@@ -154,10 +154,10 @@ namespace Common
         T high_;
     };
 
-    class NotEmpty : public Validator<std::wstring>
+    class NotEmpty : public Validator<std::string>
     {
     public:
-        bool IsValid(std::wstring & arg) const
+        bool IsValid(std::string & arg) const
         {
             return (!arg.empty());
         }

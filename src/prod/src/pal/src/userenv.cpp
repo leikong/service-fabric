@@ -17,9 +17,9 @@ USERENVAPI
 BOOL
 WINAPI
 DeleteProfileW (
-        IN LPCWSTR lpSidString,
-        IN LPCWSTR lpProfilePath,
-        IN LPCWSTR lpComputerName)
+        IN LPCSTR lpSidString,
+        IN LPCSTR lpProfilePath,
+        IN LPCSTR lpComputerName)
 {
     DIR *dir;
     if(lpProfilePath)

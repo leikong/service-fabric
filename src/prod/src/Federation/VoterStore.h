@@ -65,13 +65,13 @@ namespace Federation
     class VoterStoreWStringEntry : public VoterStoreEntry, public SerializedVoterStoreEntry
     {
     public:
-        VoterStoreWStringEntry(std::wstring const & value)
+        VoterStoreWStringEntry(std::string const & value)
             : SerializedVoterStoreEntry(SerializableWithActivationTypes::WString), value_(value)
         {
         }
 
-        __declspec (property(get = getValue)) std::wstring const & Value;
-        std::wstring const & getValue() const
+        __declspec (property(get = getValue)) std::string const & Value;
+        std::string const & getValue() const
         {
             return value_;
         }
@@ -88,7 +88,7 @@ namespace Federation
         FABRIC_FIELDS_01(value_);
 
     private:
-        std::wstring value_;
+        std::string value_;
     };
 
     class VoterStoreRequestAsyncOperation : public Common::TimedAsyncOperation
@@ -126,7 +126,7 @@ namespace Federation
     public:
         VoterStoreReadWriteAsyncOperation(
             SiteNode & site,
-            std::wstring const & key,
+            std::string const & key,
             Common::TimeSpan timeout,
             Common::AsyncCallback const & callback,
             Common::AsyncOperationSPtr const & parent);
@@ -146,7 +146,7 @@ namespace Federation
         virtual bool ShouldRetry();
 
         SiteNode & site_;
-        std::wstring key_;
+        std::string key_;
         int64 checkSequence_;
         SerializedVoterStoreEntryUPtr result_;
     };
@@ -178,7 +178,7 @@ namespace Federation
         void UpdateVoterConfig();
 
         Common::AsyncOperationSPtr BeginRead(
-            std::wstring const & key,
+            std::string const & key,
             Common::TimeSpan timeout,
             Common::AsyncCallback const & callback,
             Common::AsyncOperationSPtr const & parent);
@@ -186,7 +186,7 @@ namespace Federation
         Common::ErrorCode EndRead(Common::AsyncOperationSPtr const & operation, __out SerializedVoterStoreEntryUPtr & value, __out int64 & sequence);
 
         Common::AsyncOperationSPtr BeginWrite(
-            std::wstring const & key,
+            std::string const & key,
             int64 checkSequence,
             SerializedVoterStoreEntryUPtr && value,
             bool isIdempotent,
@@ -198,7 +198,7 @@ namespace Federation
 
         void GetConfiguration(ReplicaSetConfiguration & config) const;
 
-        SerializedVoterStoreEntryUPtr GetEntry(std::wstring const & key) const;
+        SerializedVoterStoreEntryUPtr GetEntry(std::string const & key) const;
 
         void Resolve(VoterStoreRequestAsyncOperationSPtr const & operation);
         void ReportDownVoter(NodeInstance const & target);
@@ -353,7 +353,7 @@ namespace Federation
         Transport::MessageUPtr ProcessReadRequest(Transport::Message & request);
         Transport::MessageUPtr ProcessWriteRequest(Transport::Message & request, RequestReceiverContextUPtr & requestReceiverContext);
 
-        Transport::MessageUPtr ProcessWriteRequest(std::wstring const & key, int64 checkSequence, SerializedVoterStoreEntryUPtr && entry, RequestReceiverContextUPtr & requestReceiverContext);
+        Transport::MessageUPtr ProcessWriteRequest(std::string const & key, int64 checkSequence, SerializedVoterStoreEntryUPtr && entry, RequestReceiverContextUPtr & requestReceiverContext);
 
         void ProcessMessageCommon(Transport::Message & message, NodeInstance const & target);
 
@@ -385,7 +385,7 @@ namespace Federation
         void BecomePrimary();
         void CompletePendingRequests(std::vector<VoterStoreRequestAsyncOperationSPtr> const & pendingRequests, Common::ErrorCode error);
 
-        Common::ErrorCode Write(std::wstring const & key, int64 sequence, int64 checkSequence, SerializedVoterStoreEntry const & value);
+        Common::ErrorCode Write(std::string const & key, int64 sequence, int64 checkSequence, SerializedVoterStoreEntry const & value);
 
 		SiteNode & site_;
 		MUTABLE_RWLOCK(Federation.VoteStore, lock_);
@@ -399,8 +399,8 @@ namespace Federation
         Common::StopwatchTime bootstrapStartTime_;
         std::vector<VoterInfo> voters_;
         std::vector<VoterStoreRequestAsyncOperationSPtr> pendingRequests_;
-        std::map<std::wstring, StoreEntry> entries_;
-        std::wstring lastTracedState_;
+        std::map<std::string, StoreEntry> entries_;
+        std::string lastTracedState_;
         Common::DateTime lastTraceTime_;
     };
 }

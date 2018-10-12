@@ -21,7 +21,7 @@ class CabOperations::CabOperation
     DENY_COPY(CabOperation)
 
 public:
-    CabOperation(std::wstring const & cabPath)
+    CabOperation(std::string const & cabPath)
         : cabPath_(cabPath)
     {
         if (cabPath_.length() > MAX_PATH)
@@ -224,13 +224,13 @@ protected:
     static FNOPEN(fnFileOpen)
     {
         size_t len = strlen(pszFile) + 1;
-        std::vector<WCHAR> u16_fileName(len);
+        std::vector<CHAR> u16_fileName(len);
         MultiByteToWideChar(CP_UTF8, 0, pszFile, -1, u16_fileName.data(), static_cast<int>(len));
         INT_PTR handle = fnFileOpenW(u16_fileName.data(), oflag, pmode);
         return handle;
     }
 
-    static INT_PTR fnFileOpenW(const WCHAR* u16_fileName, int oflag, int)
+    static INT_PTR fnFileOpenW(const CHAR* u16_fileName, int oflag, int)
     {
         HANDLE hFile = NULL;
         DWORD dwDesiredAccess = 0;
@@ -309,7 +309,7 @@ protected:
 #pragma endregion
 
 protected:
-    std::wstring cabPath_;
+    std::string cabPath_;
     HFDI fdiContext_ = NULL;
     INT_PTR fileDescriptor_ = NULL;
     int error_ = FDIERROR_NONE;
@@ -321,7 +321,7 @@ class CabOperations::CabIsCabOperation : public CabOperation
     DENY_COPY(CabIsCabOperation)
 
 public:
-    CabIsCabOperation(std::wstring const & cabPath)
+    CabIsCabOperation(std::string const & cabPath)
         : CabOperation(cabPath)
     {
     }
@@ -342,7 +342,7 @@ class CabOperations::CabExtractAllOperation : public CabOperation
     DENY_COPY(CabExtractAllOperation)
 
 public:
-    CabExtractAllOperation(std::wstring const & cabPath, std::wstring const & extractPath)
+    CabExtractAllOperation(std::string const & cabPath, std::string const & extractPath)
         : CabOperation(cabPath)
         , destPath_(extractPath)
     {
@@ -363,8 +363,8 @@ public:
             return -1;
         }
 
-        std::string cabFileName = formatString("{0}", Path::GetFileName(cabPath_));
-        std::string cabDirectory = formatString("{0}\\", Path::GetDirectoryName(cabPath_));
+        std::string cabFileName = formatString.L("{0}", Path::GetFileName(cabPath_));
+        std::string cabDirectory = formatString.L("{0}\\", Path::GetDirectoryName(cabPath_));
 
         // Extract https://msdn.microsoft.com/en-us/library/ff797927(v=vs.85).aspx
         WriteInfo(TraceType, "CabExtract FDICopy using cab:{0}, dir:{1}", cabFileName, cabDirectory);
@@ -379,7 +379,7 @@ public:
 
     virtual INT_PTR vCOPY_FILE(FDINOTIFICATIONTYPE, PFDINOTIFICATION pfdin)
     {
-        std::wstring cabFilePath = wformatString("{0}", pfdin->psz1);
+        std::string cabFilePath = formatString.L("{0}", pfdin->psz1);
 
         if (ExcludeFile(cabFilePath))
         {
@@ -401,7 +401,7 @@ public:
             return -1;
         }
 
-        std::wstring fullFileName = Path::Combine(destPath_, cabFilePath);
+        std::string fullFileName = Path::Combine(destPath_, cabFilePath);
         WriteInfo(TraceType, "Extract File \"{0}\" (Size: {1} bytes) -> \"{2}\"", cabFilePath, pfdin->cb, fullFileName);
         INT_PTR result = fnFileOpenW(fullFileName.c_str(), _O_WRONLY | _O_CREAT, 0);
         if (result <= 0)
@@ -414,12 +414,12 @@ public:
     }
 
 protected:
-    virtual bool ExcludeFile(std::wstring const &)
+    virtual bool ExcludeFile(std::string const &)
     {
         return false;
     }
 
-    std::wstring destPath_;
+    std::string destPath_;
 };
 
 class CabOperations::CabExtractFilteredOperation : public CabExtractAllOperation
@@ -427,13 +427,13 @@ class CabOperations::CabExtractFilteredOperation : public CabExtractAllOperation
     DENY_COPY(CabExtractFilteredOperation)
 
 public:
-    CabExtractFilteredOperation(std::wstring const & cabPath, std::wstring const & extractPath, std::vector<std::wstring> const & filters, bool inclusive)
+    CabExtractFilteredOperation(std::string const & cabPath, std::string const & extractPath, std::vector<std::string> const & filters, bool inclusive)
         : CabExtractAllOperation(cabPath, extractPath)
         , filters_(filters)
         , inclusive_(inclusive)
     {}
 
-    bool ExcludeFile(std::wstring const & fileName)
+    bool ExcludeFile(std::string const & fileName)
     {
         bool found = false;
         for (auto i = 0; i < filters_.size() && !found; i++)
@@ -444,7 +444,7 @@ public:
     }
 
 private:
-    std::vector<std::wstring> filters_;
+    std::vector<std::string> filters_;
     bool inclusive_;
 };
 
@@ -453,7 +453,7 @@ class CabOperations::CabContainsFileOperation : public CabOperation
     DENY_COPY(CabContainsFileOperation)
 
 public:
-    CabContainsFileOperation(std::wstring const & cabPath, std::wstring const & checkedFile)
+    CabContainsFileOperation(std::string const & cabPath, std::string const & checkedFile)
         : CabOperation(cabPath)
         , inputFileName_(checkedFile)
         , fileFound_(false)
@@ -462,8 +462,8 @@ public:
 
     virtual int Execute()
     {
-        std::string cabFileName = formatString("{0}", Path::GetFileName(cabPath_));
-        std::string cabDirectory = formatString("{0}\\", Path::GetDirectoryName(cabPath_));
+        std::string cabFileName = formatString.L("{0}", Path::GetFileName(cabPath_));
+        std::string cabDirectory = formatString.L("{0}\\", Path::GetDirectoryName(cabPath_));
 
         // Extract https://msdn.microsoft.com/en-us/library/ff797927(v=vs.85).aspx
         WriteInfo(TraceType, "CabContains FDICopy using cab:{0}, dir:{1}", cabFileName.c_str(), cabDirectory.c_str());
@@ -482,8 +482,8 @@ public:
 
     virtual INT_PTR vCOPY_FILE(FDINOTIFICATIONTYPE, PFDINOTIFICATION pfdin)
     {
-        std::wstring filePath = wformatString("{0}", pfdin->psz1);
-        std::wstring fileName = Path::GetFileName(filePath);
+        std::string filePath = formatString.L("{0}", pfdin->psz1);
+        std::string fileName = Path::GetFileName(filePath);
         if (Common::StringUtility::Compare(fileName, inputFileName_) == 0)
         {
             fileFound_ = true;
@@ -494,7 +494,7 @@ public:
     }
 
 private:
-    std::wstring inputFileName_;
+    std::string inputFileName_;
     bool fileFound_;
 };
 #endif //!defined(PLATFORM_UNIX)
@@ -502,7 +502,7 @@ private:
 // ----------------------------------------------------------------------------
 // CabOperations Definitions
 // ----------------------------------------------------------------------------
-bool CabOperations::IsCabFile(std::wstring const & cabPath)
+bool CabOperations::IsCabFile(std::string const & cabPath)
 {
 #if !defined(PLATFORM_UNIX)
     auto op = make_unique<CabIsCabOperation>(cabPath);
@@ -513,7 +513,7 @@ bool CabOperations::IsCabFile(std::wstring const & cabPath)
 #endif
 }
 
-int CabOperations::ExtractAll(std::wstring const & cabPath, std::wstring const & extractPath)
+int CabOperations::ExtractAll(std::string const & cabPath, std::string const & extractPath)
 {
 #if !defined(PLATFORM_UNIX)
     auto op = make_unique<CabExtractAllOperation>(cabPath, extractPath);
@@ -524,7 +524,7 @@ int CabOperations::ExtractAll(std::wstring const & cabPath, std::wstring const &
 #endif
 }
 
-int CabOperations::ExtractFiltered(std::wstring const & cabPath, std::wstring const & extractPath, std::vector<std::wstring> const & filters, bool inclusive)
+int CabOperations::ExtractFiltered(std::string const & cabPath, std::string const & extractPath, std::vector<std::string> const & filters, bool inclusive)
 {
 #if !defined(PLATFORM_UNIX)
     auto op = make_unique<CabExtractFilteredOperation>(cabPath, extractPath, filters, inclusive);
@@ -535,7 +535,7 @@ int CabOperations::ExtractFiltered(std::wstring const & cabPath, std::wstring co
 #endif
 }
 
-int CabOperations::ContainsFile(__in std::wstring const & cabPath, __in std::wstring const & checkedFile, __out bool & found)
+int CabOperations::ContainsFile(__in std::string const & cabPath, __in std::string const & checkedFile, __out bool & found)
 {
 #if !defined(PLATFORM_UNIX)
     auto op = make_unique<CabContainsFileOperation>(cabPath, checkedFile);

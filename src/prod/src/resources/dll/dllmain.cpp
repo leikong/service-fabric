@@ -19,7 +19,7 @@ using namespace std;
 class StringResourceRepo
 {
 private:
-    map<int, wstring> resourceMap_;
+    map<int, string> resourceMap_;
 
 public:
     static StringResourceRepo *Get_Singleton()
@@ -28,12 +28,12 @@ public:
         return repo;
     }
 
-    void AddResource(int id, wstring const& str)
+    void AddResource(int id, string const& str)
     {
         resourceMap_.insert(make_pair(id, str));
     }
 
-    wstring GetResource(int id)
+    string GetResource(int id)
     {
         return resourceMap_[id];
     }
@@ -46,13 +46,13 @@ public:
 };
 
 
-int LoadStringResource(UINT id, __out_ecount(bufferMax) LPWSTR buffer, int bufferMax)
+int LoadStringResource(UINT id, __out_ecount(bufferMax) LPSTR buffer, int bufferMax)
 {
-    wstring str = StringResourceRepo::Get_Singleton()->GetResource(id);
+    string str = StringResourceRepo::Get_Singleton()->GetResource(id);
     int size = str.size();
     if(size > bufferMax -1)
        size = bufferMax - 1;
-    memcpy(buffer, str.c_str(), size*sizeof(wchar_t));
+    memcpy(buffer, str.c_str(), size*sizeof(char));
     buffer[size] = 0;
     return size;
 }
@@ -80,7 +80,7 @@ BOOL APIENTRY DllMain(
     return TRUE;
 }
 
-int LoadStringResource(UINT id, __out_ecount(bufferMax) LPWSTR buffer, int bufferMax)
+int LoadStringResource(UINT id, __out_ecount(bufferMax) LPSTR buffer, int bufferMax)
 {
     return LoadString(ThisModule, id, buffer, bufferMax);
 }

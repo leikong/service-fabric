@@ -10,7 +10,7 @@ using namespace Common;
 
 StringLiteral const TraceType_XmlReader = "XmlReader";
 
-ErrorCode XmlReader::Create(wstring const & fileName, __out XmlReaderUPtr & reader)
+ErrorCode XmlReader::Create(string const & fileName, __out XmlReaderUPtr & reader)
 {
     ComProxyXmlLiteReaderUPtr liteReader;
 
@@ -24,10 +24,10 @@ ErrorCode XmlReader::Create(wstring const & fileName, __out XmlReaderUPtr & read
 }
 
 ErrorCode XmlReader::ReadXmlFile(
-    wstring const & fileName, 
-    wstring const & rootElementName,  
-    wstring const & namespaceUri, 
-    __out wstring & xmlContent)
+    string const & fileName, 
+    string const & rootElementName,  
+    string const & namespaceUri, 
+    __out string & xmlContent)
 {
     auto error = ErrorCode(ErrorCodeValue::Success);
 
@@ -71,7 +71,7 @@ XmlReader::~XmlReader()
 }
 
 
-bool XmlReader::IsStartElement(wstring const & localName, wstring const & namespaceUri, bool readAttrs)
+bool XmlReader::IsStartElement(string const & localName, string const & namespaceUri, bool readAttrs)
 {
     XmlNodeType nodeType = MoveToContent();
     bool success;
@@ -93,7 +93,7 @@ bool XmlReader::IsStartElement(wstring const & localName, wstring const & namesp
     return success;
 }
 
-void XmlReader::StartElement(wstring const & localName, wstring const & namespaceUri, bool readAttrs)
+void XmlReader::StartElement(string const & localName, string const & namespaceUri, bool readAttrs)
 {
     XmlNodeType nodeType = MoveToContent();
 
@@ -102,8 +102,8 @@ void XmlReader::StartElement(wstring const & localName, wstring const & namespac
         ThrowInvalidContent(::XmlNodeType_Element, nodeType);
     }
 
-    wstring nodeLocalName = GetLocalName();
-    wstring nodeNamespaceUri = GetNamespaceUri();
+    string nodeLocalName = GetLocalName();
+    string nodeNamespaceUri = GetNamespaceUri();
 
     if ((nodeLocalName != localName) || (nodeNamespaceUri != namespaceUri))
     {
@@ -153,7 +153,7 @@ void XmlReader::MoveToNextElement()
      Read(nodeType);
 }
 
-void XmlReader::SkipElement(wstring const & localName, wstring const & namespaceUri, bool isOptional)
+void XmlReader::SkipElement(string const & localName, string const & namespaceUri, bool isOptional)
 {
     if (isOptional && !IsStartElement(localName, namespaceUri, false)) return;
 
@@ -189,28 +189,28 @@ void XmlReader::SkipElement(wstring const & localName, wstring const & namespace
 
         if (!foundMatchingEndElement)
         {
-            ThrowUnexpectedEOF(L"SkipElement");
+            ThrowUnexpectedEOF("SkipElement");
         }
     }
 }
 
-bool XmlReader::HasAttribute(wstring const & attrName, wstring const & namespaceUri)
+bool XmlReader::HasAttribute(string const & attrName, string const & namespaceUri)
 {
     auto iter = attrValues_.find(GetFullyQualifiedName(namespaceUri, attrName));
     return (iter != attrValues_.end());
 }
 
-wstring XmlReader::ReadAttributeValue(wstring const & attrName, wstring const & namespaceUri, bool trim)
+string XmlReader::ReadAttributeValue(string const & attrName, string const & namespaceUri, bool trim)
 {
-    wstring key = GetFullyQualifiedName(namespaceUri, attrName);
+    string key = GetFullyQualifiedName(namespaceUri, attrName);
 
     auto iter = attrValues_.find(key);
     if (iter == attrValues_.end())
     {
-        ThrowInvalidContent(L"Attribute: " + key, L"none");
+        ThrowInvalidContent("Attribute: " + key, "none");
     }
 
-    wstring retval = iter->second;
+    string retval = iter->second;
     if (trim)
     {
         StringUtility::TrimWhitespaces(retval);
@@ -219,9 +219,9 @@ wstring XmlReader::ReadAttributeValue(wstring const & attrName, wstring const & 
     return retval;
 }
 
-wstring XmlReader::ReadElementValue(bool trim)
+string XmlReader::ReadElementValue(bool trim)
 {
-    wstring retval;
+    string retval;
     ::XmlNodeType nodeType = GetNodeType();
     bool done = false;
     while(!done)
@@ -257,7 +257,7 @@ wstring XmlReader::ReadElementValue(bool trim)
     return retval;
 }
 
-wstring XmlReader::ReadOuterXml()
+string XmlReader::ReadOuterXml()
 {
     ::XmlNodeType nodeType = MoveToContent();
     if (nodeType != ::XmlNodeType_Element)
@@ -269,44 +269,44 @@ wstring XmlReader::ReadOuterXml()
     memoryStream.SetNoAddRef(::SHCreateMemStream(NULL, 0));
     if (!memoryStream)
     {
-        ThrowIfNotSuccess(E_FAIL, L"::SHCreateMemStream");
+        ThrowIfNotSuccess(E_FAIL, "::SHCreateMemStream");
     }
 
     ComPointer<IXmlWriterOutput> writerOutput;
-    auto hr = ::CreateXmlWriterOutputWithEncodingName(memoryStream.GetRawPointer(), NULL, L"utf-16", writerOutput.InitializationAddress());
-    ThrowIfNotSuccess(hr, L"CreateXmlWriterOutputWithEncodingName");
+    auto hr = ::CreateXmlWriterOutputWithEncodingName(memoryStream.GetRawPointer(), NULL, "utf-16", writerOutput.InitializationAddress());
+    ThrowIfNotSuccess(hr, "CreateXmlWriterOutputWithEncodingName");
     
     ComPointer<IUnknown> comPointer;
     hr = writerOutput->QueryInterface(IID_IUnknown, reinterpret_cast<void**>(comPointer.InitializationAddress()));
-    ThrowIfNotSuccess(hr, L"writerOutput->QueryInterface");
+    ThrowIfNotSuccess(hr, "writerOutput->QueryInterface");
 
     XmlWriterUPtr xmlWriterUPtr;
     auto errorCode = XmlWriter::Create(comPointer, xmlWriterUPtr, false);
-    ThrowIfNotSuccess(errorCode, L"XmlWriter::Create");
+    ThrowIfNotSuccess(errorCode, "XmlWriter::Create");
 
     xmlWriterUPtr->WriteNode(*this, false);
     xmlWriterUPtr->Flush();
 
     STATSTG streamData = {0};
     hr = memoryStream->Stat(&streamData, STATFLAG_NONAME);
-    ThrowIfNotSuccess(hr, L"memoryStream->Stat");
+    ThrowIfNotSuccess(hr, "memoryStream->Stat");
     ULONG size = streamData.cbSize.LowPart;
 
-    LPWSTR content = (WCHAR*) new BYTE[size + sizeof(WCHAR)];
+    LPSTR content = (CHAR*) new BYTE[size + sizeof(CHAR)];
     LARGE_INTEGER position;
     position.QuadPart = 0;
 
     hr = memoryStream->Seek(position, STREAM_SEEK_SET, NULL);
     if (hr != S_OK)  { delete[] content; }
-    ThrowIfNotSuccess(hr, L"memoryStream->Seek");
+    ThrowIfNotSuccess(hr, "memoryStream->Seek");
 
     ULONG read;
     hr = memoryStream->Read(content, size, &read);
     if (hr != S_OK)  { delete[] content; }
-    ThrowIfNotSuccess(hr, L"memoryStream->Read");
+    ThrowIfNotSuccess(hr, "memoryStream->Read");
 
-    content[size / sizeof(WCHAR)] = L'\0';
-    wstring result(content);
+    content[size / sizeof(CHAR)] = '\0';
+    string result(content);
     delete[] content;
     
     return result;
@@ -349,7 +349,7 @@ void XmlReader::Read()
                 done = !Read(nodeType);
                 if (done)
                 {
-                    ThrowUnexpectedEOF(L"MoveToContent"); 
+                    ThrowUnexpectedEOF("MoveToContent"); 
                 }
                 break;
             }
@@ -391,14 +391,14 @@ void XmlReader::ReadAttributes()
     }
 }
 
-wstring XmlReader::GetFullyQualifiedName()
+string XmlReader::GetFullyQualifiedName()
 {
     return GetFullyQualifiedName(GetNamespaceUri(), GetLocalName());
 }
 
-wstring XmlReader::GetFullyQualifiedName(wstring const & namespaceUri, wstring const & attrName)
+string XmlReader::GetFullyQualifiedName(string const & namespaceUri, string const & attrName)
 {
-    return wstring(namespaceUri + L":" + attrName);
+    return string(namespaceUri + ":" + attrName);
 }
 
 UINT XmlReader::GetAttributeCount()
@@ -437,18 +437,18 @@ UINT XmlReader::GetLinePosition()
     return linePosition;
 }
 
-wstring XmlReader::GetLocalName()
+string XmlReader::GetLocalName()
 {
-    wstring localName;
+    string localName;
     auto error = liteReader_->GetLocalName(localName);
     ThrowIfNotSuccess(error);
 
     return localName;
 }
 
-wstring XmlReader::GetNamespaceUri()
+string XmlReader::GetNamespaceUri()
 {
-    wstring namespaceUri;
+    string namespaceUri;
     auto error = liteReader_->GetNamespaceUri(namespaceUri);
     ThrowIfNotSuccess(error);
 
@@ -465,27 +465,27 @@ wstring XmlReader::GetNamespaceUri()
     return nodeType;
 }
 
-wstring XmlReader::GetPrefix()
+string XmlReader::GetPrefix()
 {
-    wstring prefix;
+    string prefix;
     auto error = liteReader_->GetPrefix(prefix);
     ThrowIfNotSuccess(error);
 
     return prefix;
 }
 
-wstring XmlReader::GetQualifiedName()
+string XmlReader::GetQualifiedName()
 {
-    wstring qualifiedName;
+    string qualifiedName;
     auto error = liteReader_->GetQualifiedName(qualifiedName);
     ThrowIfNotSuccess(error);
 
     return qualifiedName;
 }
 
-wstring XmlReader::GetValue()
+string XmlReader::GetValue()
 {
-    wstring value;
+    string value;
     auto error = liteReader_->GetValue(value);
     ThrowIfNotSuccess(error);
 
@@ -534,7 +534,7 @@ bool XmlReader::IsEmptyElement()
     return liteReader_->IsEmptyElement();
 }
 
-void XmlReader::ThrowUnexpectedEOF(wstring const & operationName)
+void XmlReader::ThrowUnexpectedEOF(string const & operationName)
 {
     WriteError(
         TraceType_XmlReader,
@@ -562,7 +562,7 @@ void XmlReader::ThrowInvalidContent(::XmlNodeType expectedContentType, ::XmlNode
     throw XmlException(ErrorCode(ErrorCodeValue::XmlInvalidContent));
 }
 
-void XmlReader::ThrowInvalidContent(wstring const & expectedContent, wstring const & actualContent)
+void XmlReader::ThrowInvalidContent(string const & expectedContent, string const & actualContent)
 {
     UINT lineNo = GetLineNumber();
     UINT linePos = GetLinePosition();
@@ -579,7 +579,7 @@ void XmlReader::ThrowInvalidContent(wstring const & expectedContent, wstring con
     throw XmlException(ErrorCode(ErrorCodeValue::XmlInvalidContent));
 }
 
-void XmlReader::ThrowIfNotSuccess(HRESULT hr, wstring const& operationNAme)
+void XmlReader::ThrowIfNotSuccess(HRESULT hr, string const& operationNAme)
 {
     if (hr != S_OK)
     {
@@ -592,7 +592,7 @@ void XmlReader::ThrowIfNotSuccess(HRESULT hr, wstring const& operationNAme)
     }
 }
 
-void XmlReader::ThrowIfNotSuccess(ErrorCode const & error, wstring const& operationNAme)
+void XmlReader::ThrowIfNotSuccess(ErrorCode const & error, string const& operationNAme)
 {
     if (!error.IsSuccess())
     {

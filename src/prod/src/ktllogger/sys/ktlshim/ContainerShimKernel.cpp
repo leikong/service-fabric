@@ -225,7 +225,7 @@ KtlLogContainerKernel::AsyncCreateLogStreamContextKernel::LogStreamCreateFSM(
                 return;
             }   
 
-            KStringView prefix(L"KernelWrite");
+            KStringView prefix("KernelWrite");
             Status = _LogStream->_WriteIC->SetComponentName(prefix, _LogStreamId.Get());
             if (! NT_SUCCESS(Status))
             {               
@@ -830,7 +830,7 @@ KtlLogContainerKernel::AsyncOpenLogStreamContextKernel::OnStart(
         return;
     }   
 
-    KStringView prefix(L"KernelWrite");
+    KStringView prefix("KernelWrite");
     status = _LogStream->_WriteIC->SetComponentName(prefix, _LogStreamId.Get());
     if (! NT_SUCCESS(status))
     {

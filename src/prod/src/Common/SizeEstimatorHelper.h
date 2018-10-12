@@ -185,14 +185,14 @@ namespace Common
             return sizeof(value);
         }
         
-        static size_t EvaluateDynamicSize(std::wstring const & value)
+        static size_t EvaluateDynamicSize(std::string const & value)
         {
             if (value.empty())
             {
                 return 0;
             }
 
-            return (value.size() + 1) * sizeof(wchar_t) - 1;
+            return (value.size() + 1) * sizeof(char) - 1;
         }
 
         template<class TEntry>

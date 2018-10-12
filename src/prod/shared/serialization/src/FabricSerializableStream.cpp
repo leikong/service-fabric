@@ -1127,15 +1127,15 @@ NTSTATUS FabricSerializableStream::ReadDoubleArray(DOUBLE * field, ULONG & count
     return this->ReadBlittableArray<DOUBLE, FabricSerializationTypes::Double>(field, count);
 }
 
-NTSTATUS FabricSerializableStream::WriteString(__in WCHAR * field, __in ULONG count)
+NTSTATUS FabricSerializableStream::WriteString(__in CHAR * field, __in ULONG count)
 {
-    return this->WriteBlittableArray<WCHAR, FabricSerializationTypes::WString>(field, count);
+    return this->WriteBlittableArray<CHAR, FabricSerializationTypes::WString>(field, count);
 }
 
 _Use_decl_annotations_
-NTSTATUS FabricSerializableStream::ReadString(WCHAR * field, ULONG & count)
+NTSTATUS FabricSerializableStream::ReadString(CHAR * field, ULONG & count)
 {
-    return this->ReadBlittableArray<WCHAR, FabricSerializationTypes::WString>(field, count);
+    return this->ReadBlittableArray<CHAR, FabricSerializationTypes::WString>(field, count);
 }
 
 NTSTATUS FabricSerializableStream::WritePointer(__in IFabricSerializable * field)
@@ -1863,7 +1863,7 @@ NTSTATUS FabricSerializableStream::ReadUnknownDataArray(FabricSerializationTypes
     }
     else if (FabricSerializationTypes::IsOfBaseType(readMetadata, FabricSerializationTypes::WString))
     {
-        status = this->ReadBlittableArray<WCHAR, FabricSerializationTypes::WString>(nullptr, count, true);
+        status = this->ReadBlittableArray<CHAR, FabricSerializationTypes::WString>(nullptr, count, true);
     }
     else if (FabricSerializationTypes::IsOfBaseType(readMetadata, FabricSerializationTypes::Pointer))
     {

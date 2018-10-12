@@ -24,7 +24,7 @@ class P2PRequestAsyncOperation : public RequestAsyncOperation
 public:
     P2PRequestAsyncOperation(
         NodeInstance const & target,
-        wstring const & ringName,
+        string const & ringName,
         RequestTable & owner,
         Transport::MessageId const & messageId,
         TimeSpan timeout,
@@ -37,13 +37,13 @@ public:
     }
 
     NodeInstance Target;
-    wstring RingName;
+    string RingName;
 };
 
 PointToPointManager::PointToPointManager(__in SiteNode & siteNode)
     : siteNode_(siteNode)
     , applicationActorMapClosed_(false)
-    , loopbackDispatcher_(wformatString("{0}_loopback", siteNode.Id), siteNode, false /* forceEnqueue */, FederationConfig::GetConfig().LoopbackJobQueueThreadMax)
+    , loopbackDispatcher_(formatString.L("{0}_loopback", siteNode.Id), siteNode, false /* forceEnqueue */, FederationConfig::GetConfig().LoopbackJobQueueThreadMax)
 {
     loopbackDispatcher_.SetExtraTracing(FederationConfig::GetConfig().TraceLoopbackJobQueue);
 
@@ -183,7 +183,7 @@ void PointToPointManager::RetryPToPSendRequest(MessageUPtr && request, PartnerNo
     this->PToPSend(std::move(request), to, exactInstance, actor);
 }
 
-bool AllowedWithoutLease(wstring const & action)
+bool AllowedWithoutLease(string const & action)
 {
     return (action == FederationMessage::GetArbitrateRequest().Action ||
             action == FederationMessage::GetArbitrateReply().Action ||

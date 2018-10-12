@@ -13,7 +13,7 @@ namespace Common {
     class Operator
     {
     public:
-        Operator(int level, std::wstring const& op)
+        Operator(int level, std::string const& op)
             : level_(level), op_(op)
         {
         }
@@ -22,21 +22,21 @@ namespace Common {
         int getLevel() const { return level_; }
 
         __declspec(property(get=getIsInvalid)) bool IsInvalid;
-        bool getIsInvalid() const {return op_.compare(L"Invalid") == 0; }
+        bool getIsInvalid() const {return op_.compare("Invalid") == 0; }
 
-        __declspec(property(get=getOp)) std::wstring const& Op;
-        std::wstring const& getOp() const { return op_; }
+        __declspec(property(get=getOp)) std::string const& Op;
+        std::string const& getOp() const { return op_; }
 
-        virtual OperationResult Evaluate(std::map<std::wstring, std::wstring> & params, ExpressionSPtr arg1, ExpressionSPtr arg2, bool forPrimary) = 0;
+        virtual OperationResult Evaluate(std::map<std::string, std::string> & params, ExpressionSPtr arg1, ExpressionSPtr arg2, bool forPrimary) = 0;
 
-        bool Match(std::wstring const& expression, size_t & start);
+        bool Match(std::string const& expression, size_t & start);
 
         __declspec(property(get=getForPrimary)) bool ForPrimary;
-        bool getForPrimary() const {return op_.back() == L'P'; }
+        bool getForPrimary() const {return op_.back() == 'P'; }
 
 
     private:
-        std::wstring op_;
+        std::string op_;
         int level_;
     };
 
@@ -45,36 +45,36 @@ namespace Common {
     class LiteralOperator : public Operator
     {
     public:
-        LiteralOperator(int level, std::wstring const& op)
+        LiteralOperator(int level, std::string const& op)
             : Operator(level, op), value_(op)
         {
         }
 
-        virtual OperationResult Evaluate(std::map<std::wstring, std::wstring> & params, ExpressionSPtr arg1, ExpressionSPtr arg2, bool forPrimary);
+        virtual OperationResult Evaluate(std::map<std::string, std::string> & params, ExpressionSPtr arg1, ExpressionSPtr arg2, bool forPrimary);
 
     private:
-        std::wstring value_;
+        std::string value_;
     };
 
     class ComparisonOperator : public Operator
     {
     public:
-        ComparisonOperator(int level, std::wstring const& op)
+        ComparisonOperator(int level, std::string const& op)
             : Operator(level, op)
         {
         }
 
-        virtual OperationResult Evaluate(std::map<std::wstring, std::wstring> & params, ExpressionSPtr arg1, ExpressionSPtr arg2, bool forPrimary);
+        virtual OperationResult Evaluate(std::map<std::string, std::string> & params, ExpressionSPtr arg1, ExpressionSPtr arg2, bool forPrimary);
     };
 
     class BooleanOperator : public Operator
     {
     public:
-        BooleanOperator(int level, std::wstring const& op)
+        BooleanOperator(int level, std::string const& op)
             : Operator(level, op)
         {
         }
 
-       virtual OperationResult Evaluate(std::map<std::wstring, std::wstring> & params, ExpressionSPtr arg1, ExpressionSPtr arg2, bool forPrimary);
+       virtual OperationResult Evaluate(std::map<std::string, std::string> & params, ExpressionSPtr arg1, ExpressionSPtr arg2, bool forPrimary);
     };
 }

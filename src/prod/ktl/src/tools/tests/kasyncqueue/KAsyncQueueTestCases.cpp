@@ -26,7 +26,7 @@ Abstract:
 
 const KU_TEST_ENTRY gs_KuTestCases[] =
 {
-    {   L"KAsyncHelperTests",              KAsyncHelperTests,         L"BVT", L"Basic KAsync helper derivation unit tests"}
+    {   "KAsyncHelperTests",              KAsyncHelperTests,         "BVT", "Basic KAsync helper derivation unit tests"}
 };
 
 const ULONG gs_KuTestCasesSize = ARRAYSIZE(gs_KuTestCases);

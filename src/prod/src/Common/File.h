@@ -10,7 +10,7 @@
 #if defined(PLATFORM_UNIX)
 extern DWORD FileGetLastErrorFromErrno(void);
 extern DWORD DirGetLastErrorFromErrno();
-extern std::string FileNormalizePath(LPCWSTR pathW);
+extern std::string FileNormalizePath(LPCSTR pathW);
 extern bool GlobMatch(const char *str, const char *pat);
 #endif
 
@@ -131,14 +131,14 @@ namespace Common
         File& operator = (File &&);
 
         ErrorCode Open(
-            std::wstring const & fname, 
+            std::string const & fname, 
             FABRIC_FILE_MODE fileMode, 
             FABRIC_FILE_ACCESS fileAccess, 
             FABRIC_FILE_SHARE fileShare,
             ::HANDLE * fileHandle);
 
         ErrorCode Open(
-            std::wstring const & fname,
+            std::string const & fname,
             FABRIC_FILE_MODE fileMode,
             FABRIC_FILE_ACCESS fileAccess,
             FABRIC_FILE_SHARE fileShare,
@@ -146,7 +146,7 @@ namespace Common
             ::HANDLE * fileHandle);
 
         ErrorCode TryOpen(
-            std::wstring const & fname, 
+            std::string const & fname, 
             FileMode::Enum mode = FileMode::Open, 
             FileAccess::Enum access = FileAccess::Read, 
             FileShare::Enum share = FileShare::None,
@@ -155,8 +155,8 @@ namespace Common
         ErrorCode File::TryRead2(__out_bcount_part(count, bytesRead) void* buffer, int count, DWORD &bytesRead);
         ErrorCode File::TryWrite2(__in_bcount(count) const void* buffer, int count, DWORD & bytesWritten);
 
-        __declspec(property(get=get_FileName)) std::wstring const & FileName;
-        std::wstring const & get_FileName() const { return fileName_; }
+        __declspec(property(get=get_FileName)) std::string const & FileName;
+        std::string const & get_FileName() const { return fileName_; }
 
         void Close();
         ErrorCode Close2();
@@ -186,16 +186,16 @@ namespace Common
         virtual int64 size() const; // todo, check if this needs to be virtual
         virtual bool TryGetSize(__out int64 & size) const; // todo, check if this needs to be virtual
         virtual ErrorCode GetSize(_Out_ int64 & size) const;
-        static ErrorCode GetSize(std::wstring const &, _Out_ int64 & size);
+        static ErrorCode GetSize(std::string const &, _Out_ int64 & size);
 #if !defined(PLATFORM_UNIX)
         virtual void resize(int64 position);
 #endif
 
         int64 Seek(int64 offset, Common::SeekOrigin::Enum origin);
 
-        static ErrorCode GetAttributes(const std::wstring& path, FileAttributes::Enum & attributes);
-        static ErrorCode SetAttributes(const std::wstring& path, FileAttributes::Enum fileAttributes);
-        static ErrorCode RemoveReadOnlyAttribute(const std::wstring& path);
+        static ErrorCode GetAttributes(const std::string& path, FileAttributes::Enum & attributes);
+        static ErrorCode SetAttributes(const std::string& path, FileAttributes::Enum fileAttributes);
+        static ErrorCode RemoveReadOnlyAttribute(const std::string& path);
 
         void Flush();
 
@@ -222,65 +222,65 @@ namespace Common
 
         // The following three functions are used by ut only and 
         // does not seem to belong to a File class at all
-        bool StringAtPosition(std::wstring const & value, int atPosition);
-        bool StartsWith(std::wstring const & value) { return StringAtPosition(value, 0); }
-        bool Contains(std::wstring const & value);
+        bool StringAtPosition(std::string const & value, int atPosition);
+        bool StartsWith(std::string const & value) { return StringAtPosition(value, 0); }
+        bool Contains(std::string const & value);
 
         //// SIN: refactor until you don't need this method
         // ISSUE:2006/07/25-jonfisch  I needed this for MiniDumpWriteDump and didn't feel like 
         // writing wrappers, so sue me :).
         ::HANDLE GetHandle() { return handle_; }
 
-        static std::wstring GetTempFileName(std::wstring const& path = L"");
+        static std::string GetTempFileName(std::string const& path = "");
 
         static ErrorCode Copy(
-            const std::wstring& sourceFileName,
-            const std::wstring& destFileName,
+            const std::string& sourceFileName,
+            const std::string& destFileName,
             bool overwrite = false);
 
 #if defined(PLATFORM_UNIX)
         static ErrorCode Copy(
-                const std::wstring& sourceFileName,
-                const std::wstring& destFileName,
-                const std::wstring& accountName,
-                const std::wstring& password,
+                const std::string& sourceFileName,
+                const std::string& destFileName,
+                const std::string& accountName,
+                const std::string& password,
                 bool overwrite = false);
 #endif
 
         static ErrorCode SafeCopy(
-            const std::wstring& sourceFileName,
-            const std::wstring& destFileName,
+            const std::string& sourceFileName,
+            const std::string& destFileName,
             bool overWrite = false,
             bool shouldAcquireLock = true,
             Common::TimeSpan const timeout = TimeSpan::Zero);
 
         ErrorCode Delete();
 
-        static void Delete( std::wstring const & path, bool throwIfNotFound = true );
+        static void Delete( std::string const & path, bool throwIfNotFound = true );
 
-        static bool Delete(std::wstring const & path, NOTHROW, bool const deleteReadonly = false);
+        static bool Delete(std::string const & path, NOTHROW, bool const deleteReadonly = false);
 
-        static ErrorCode Delete2( std::wstring const & path, bool const deleteReadonly = false);
+        static ErrorCode Delete2( std::string const & path, bool const deleteReadonly = false);
 
-        static ErrorCode Replace(std::wstring const & replacedFileName, std::wstring const & replacementFileName, std::wstring const & backupFileName, bool ignoreMergeErrors);
+        static ErrorCode Replace(std::string const & replacedFileName, std::string const & replacementFileName, std::string const & backupFileName, bool ignoreMergeErrors);
 
-        static ErrorCode Move( const std::wstring& SourceFile, const std::wstring& DestFilei, bool throwIfFail = true);
+        static ErrorCode Move( const std::string& SourceFile, const std::string& DestFilei, bool throwIfFail = true);
 
-        static ErrorCode MoveTransacted(const std::wstring & src, const std::wstring & dest, bool overwrite);
+        static ErrorCode MoveTransacted(const std::string & src, const std::string & dest, bool overwrite);
 
-        static ErrorCode Echo(const std::wstring & src, const std::wstring & dest, Common::TimeSpan const timeout = TimeSpan::Zero);
+        static ErrorCode Echo(const std::string & src, const std::string & dest, Common::TimeSpan const timeout = TimeSpan::Zero);
 
-        static ErrorCode GetLastWriteTime(std::wstring const & path, __out DateTime & lastWriteTime);
+        static ErrorCode GetLastWriteTime(std::string const & path, __out DateTime & lastWriteTime);
 
-        static bool Exists(const std::wstring& path);
+        static bool Exists(const std::string& path);
 
-        static bool CreateHardLink(std::wstring const & fileName, std::wstring const & existingFileName);
+        static bool CreateHardLink(std::string const & fileName, std::string const & existingFileName);
 
 #if !defined(PLATFORM_UNIX)
-        static ErrorCode FlushVolume(const WCHAR driveLetter);
+        static ErrorCode FlushVolume(const char driveLetter);
 #endif
 
-        static ErrorCode Touch(std::wstring const & fileName);
+        static ErrorCode Touch(std::string const & fileName);
 
         static std::string GetFileAccessDiagnostics(std::string const & path);
 
@@ -292,15 +292,15 @@ namespace Common
             virtual ErrorCode MoveNext() = 0;
             virtual WIN32_FIND_DATA const & GetCurrent() = 0;
             virtual DWORD GetCurrentAttributes() = 0;
-            virtual std::wstring GetCurrentPath() = 0;
+            virtual std::string GetCurrentPath() = 0;
         };
 
-        static std::shared_ptr<IFileEnumerator> Search(std::wstring && pattern);
+        static std::shared_ptr<IFileEnumerator> Search(std::string && pattern);
 
     private:
         class FileFind;
 
-        std::wstring fileName_;
+        std::string fileName_;
         ::HANDLE handle_;
         bool isHandleOwned_;
     };
@@ -313,12 +313,12 @@ namespace Common
     {
         DENY_COPY(temporary_file);
     public:
-        explicit temporary_file(std::wstring const & fileName);
+        explicit temporary_file(std::string const & fileName);
         ~temporary_file();
 
     private:
         HANDLE file_handle_;
-        std::wstring const & file_name_;
+        std::string const & file_name_;
     };
 
 } // end namespace Common

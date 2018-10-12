@@ -10,56 +10,56 @@ namespace Common
     class AccountHelper
     {
     public:
-        static Common::ErrorCode GetDomainUserAccountName(std::wstring accountName, __out std::wstring & username, __out std::wstring & domain, __out std::wstring & dlnFormatName);
-        static Common::ErrorCode GetServiceAccountName(std::wstring accountName, __out std::wstring & username, __out std::wstring & domain, __out std::wstring & dlnFormatName);
+        static Common::ErrorCode GetDomainUserAccountName(std::string accountName, __out std::string & username, __out std::string & domain, __out std::string & dlnFormatName);
+        static Common::ErrorCode GetServiceAccountName(std::string accountName, __out std::string & username, __out std::string & domain, __out std::string & dlnFormatName);
 
-        static Common::GlobalWString UPNDelimiter;
-        static Common::GlobalWString DLNDelimiter;
+        static Common::GlobalString UPNDelimiter;
+        static Common::GlobalString DLNDelimiter;
 
-        static bool GroupAllowsMemberAddition(std::wstring const & groupName);
+        static bool GroupAllowsMemberAddition(std::string const & groupName);
 
         // If canSkipAddCounter is true, the counter is not added if the name size is 20 characters.
-        static std::wstring GetAccountName(std::wstring const & name, ULONG applicationPackageCounter, bool canSkipAddCounter = false);
+        static std::string GetAccountName(std::string const & name, ULONG applicationPackageCounter, bool canSkipAddCounter = false);
 
         static ErrorCode GetAccountNamesWithCertificateCommonName(
-            std::wstring const& commonName,
+            std::string const& commonName,
             X509StoreLocation::Enum storeLocation,
-            std::wstring const & storeName,
+            std::string const & storeName,
             bool generateV1Account,
-            __inout std::map<std::wstring, std::wstring> & accountNamesMap); // key: account name, value: thumbprint
+            __inout std::map<std::string, std::string> & accountNamesMap); // key: account name, value: thumbprint
 
         static ErrorCode GeneratePasswordForNTLMAuthenticatedUser(
-            std::wstring const& accountName,
+            std::string const& accountName,
             Common::SecureString const & passwordSecret,
             __inout Common::SecureString & password);
 
         static ErrorCode GeneratePasswordForNTLMAuthenticatedUser(
-            std::wstring const& accountName,
+            std::string const& accountName,
             Common::SecureString const & passwordSecret,
             X509StoreLocation::Enum storeLocation,
-            std::wstring const & x509StoreName,
-            std::wstring const & x509Thumbprint,
+            std::string const & x509StoreName,
+            std::string const & x509Thumbprint,
             __inout Common::SecureString & password);
 
-        static std::wstring GenerateUserAcountNameV1(
+        static std::string GenerateUserAcountNameV1(
             Thumbprint::SPtr const & thumbprint);
 
-        static std::wstring GenerateUserAcountName(
+        static std::string GenerateUserAcountName(
             Thumbprint::SPtr const & thumbprint,
             DateTime const & expirationTime);
 
-        static void ReplaceAccountInvalidChars(__inout std::wstring & accountName);
+        static void ReplaceAccountInvalidChars(__inout std::string & accountName);
 
 #if !defined(PLATFORM_UNIX)
         static bool GenerateRandomPassword(__out Common::SecureString & password);
 #endif
 
     private:
-        static Common::GlobalWString PasswordPrefix;
+        static Common::GlobalString PasswordPrefix;
         static DWORD const RandomDigitsInPassword;
         static size_t const MaxCharactersInAccountUsername;
         static int64 const ExpiryBaselineTicks;
 
-        static Common::GlobalWString GroupNameLOCAL;
+        static Common::GlobalString GroupNameLOCAL;
     };
 }

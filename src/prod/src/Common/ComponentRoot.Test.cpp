@@ -23,8 +23,8 @@ namespace Common
     public:
         ~MockComponentRoot() { }
 
-        void SetTraceId(wstring const & value, size_t capacity) { ComponentRoot::SetTraceId(value, capacity); }
-        bool TryPutReservedTraceId(wstring const & value) { return ComponentRoot::TryPutReservedTraceId(value); }
+        void SetTraceId(string const & value, size_t capacity) { ComponentRoot::SetTraceId(value, capacity); }
+        bool TryPutReservedTraceId(string const & value) { return ComponentRoot::TryPutReservedTraceId(value); }
     };
 
     BOOST_FIXTURE_TEST_SUITE(ComponentRootTestSuite,ComponentRootTest)
@@ -37,7 +37,7 @@ namespace Common
 
         // Reserve capacity: this will result in memory allocation
         
-        wstring traceId1(L"TraceId1");
+        string traceId1("TraceId1");
         size_t capacity = 32;
         root->SetTraceId(traceId1, capacity);
 
@@ -51,7 +51,7 @@ namespace Common
 
         // Put longer string: should overwrite old string in-place
 
-        wstring traceId2(L"LongerTraceId");
+        string traceId2("LongerTraceId");
         bool success = root->TryPutReservedTraceId(traceId2);
         VERIFY_IS_TRUE(success);
 
@@ -66,7 +66,7 @@ namespace Common
 
         // Put shorter string: should overwrite old string in-place
 
-        wstring traceId3(L"sTraceId");
+        string traceId3("sTraceId");
         success = root->TryPutReservedTraceId(traceId3);
         VERIFY_IS_TRUE(success);
 
@@ -81,10 +81,10 @@ namespace Common
 
         // Put string that is greater than capacity: should fail and leave traceId unchanged
 
-        wstring traceId4;
+        string traceId4;
         for (size_t ix = 0; ix <= oldCapacity; ++ix)
         {
-            traceId4.push_back(L'X');
+            traceId4.push_back('X');
         }
 
         success = root->TryPutReservedTraceId(traceId4);
@@ -101,10 +101,10 @@ namespace Common
 
         // Put string that is equal to capacity: should succeed
 
-        wstring traceId5;
+        string traceId5;
         for (size_t ix = 0; ix < oldCapacity; ++ix)
         {
-            traceId5.push_back(L'Y');
+            traceId5.push_back('Y');
         }
 
         success = root->TryPutReservedTraceId(traceId5);

@@ -13,34 +13,34 @@ StringLiteral const TraceType_Parser("Parser");
 
 /*
 ErrorCode Parser::ParseServicePackage(
-    wstring const & fileName, 
+    string const & fileName, 
     __out ServicePackageDescription & servicePackage)
 {
     return ParseElement<ServicePackageDescription>(
         fileName,
-        L"ServicePackage",
+        "ServicePackage",
         servicePackage);
 }
 
 ErrorCode Parser::ParseServiceManifest(
-    wstring const & fileName,
+    string const & fileName,
     __out ServiceManifestDescription & serviceManifest)
 {
     return ParseElement<ServiceManifestDescription>(
         fileName,
-        L"ServiceManifest",
+        "ServiceManifest",
         serviceManifest);
 }
 
 ErrorCode Parser::ParseConfigSettings(
-    wstring const & fileName, 
+    string const & fileName, 
     __out Common::ConfigSettings & configSettings)
 {
     ConfigSettingsDescription desc;
 
     auto error = ParseElement<ConfigSettingsDescription>(
         fileName,
-        L"ConfigSettings",
+        "ConfigSettings",
         desc);
 
     if (error.IsSuccess())
@@ -52,61 +52,61 @@ ErrorCode Parser::ParseConfigSettings(
 }
 
 ErrorCode Parser::ParseApplicationManifest(
-    std::wstring const & fileName, 
+    std::string const & fileName, 
     __out ApplicationManifestDescription & applicationManifest)
 {
     return ParseElement<ApplicationManifestDescription>(
             fileName,
-            L"ApplicationManifest",
+            "ApplicationManifest",
             applicationManifest);
 }
 
 ErrorCode Parser::ParseApplicationPackage(
-    std::wstring const & fileName,
+    std::string const & fileName,
     __out ApplicationPackageDescription & applicationPackage)
 {
     auto error = ParseElement<ApplicationPackageDescription>(
         fileName,
-        L"ApplicationPackage",
+        "ApplicationPackage",
         applicationPackage);
 
     return error;
 }
 
 ErrorCode Parser::ParseApplicationInstance(
-    std::wstring const & fileName, 
+    std::string const & fileName, 
     __out ApplicationInstanceDescription & applicationInstance)
 {
     return ParseElement<ApplicationInstanceDescription>(
             fileName,
-            L"ApplicationInstance",
+            "ApplicationInstance",
             applicationInstance);
 }
 
 ErrorCode Parser::ParseInfrastructureDescription(
-    std::wstring const & fileName, 
+    std::string const & fileName, 
     __out InfrastructureDescription & infrastructureDescription)
 {
     return ParseElement<InfrastructureDescription>(
             fileName,
-            L"InfrastructureInformation",
+            "InfrastructureInformation",
             infrastructureDescription);
 }
 
 ErrorCode Parser::ParseTargetInformationFileDescription(
-    std::wstring const & fileName,
+    std::string const & fileName,
     __out TargetInformationFileDescription & targetInformationFileDescription)
 {
     return ParseElement<TargetInformationFileDescription>(
         fileName,
-        L"TargetInformation",
+        "TargetInformation",
         targetInformationFileDescription);
 }
 
 void Parser::ThrowInvalidContent(
     XmlReaderUPtr const & xmlReader,
-    wstring const & expectedContent, 
-    wstring const & actualContent)
+    string const & expectedContent, 
+    string const & actualContent)
 {
     UINT lineNo = xmlReader->GetLineNumber();
     UINT linePos = xmlReader->GetLinePosition();
@@ -125,9 +125,9 @@ void Parser::ThrowInvalidContent(
 
 void Parser::ThrowInvalidContent(
     XmlReaderUPtr const & xmlReader,
-    wstring const & expectedContent, 
-    wstring const & actualContent,
-    wstring const & reason)
+    string const & expectedContent, 
+    string const & actualContent,
+    string const & reason)
 {
     UINT lineNo = xmlReader->GetLineNumber();
     UINT linePos = xmlReader->GetLinePosition();
@@ -147,8 +147,8 @@ void Parser::ThrowInvalidContent(
 
 template <typename ElementType>
 ErrorCode Parser::ParseElement(
-    wstring const & fileName,
-    wstring const & elementTypeName,
+    string const & fileName,
+    string const & elementTypeName,
     __out ElementType & element)
 {
     auto error = ErrorCode(ErrorCodeValue::Success);
@@ -181,20 +181,20 @@ ErrorCode Parser::ParseElement(
 
 void Parser::Utility::ReadPercentageAttribute(
     XmlReaderUPtr const & xmlReader, 
-    wstring const & attrName,
+    string const & attrName,
     byte & value)
 {
-    wstring attrValue = xmlReader->ReadAttributeValue(attrName);
+    string attrValue = xmlReader->ReadAttributeValue(attrName);
     int intValue = 0;
     
     if (!StringUtility::TryFromWString<int>(attrValue, intValue))
     {
-        Parser::ThrowInvalidContent(xmlReader, L"percentage[0-100]", attrValue);
+        Parser::ThrowInvalidContent(xmlReader, "percentage[0-100]", attrValue);
     }
     
     if (intValue < 0 || intValue > 100)
     {
-        Parser::ThrowInvalidContent(xmlReader, L"percentage[0-100]", attrValue);
+        Parser::ThrowInvalidContent(xmlReader, "percentage[0-100]", attrValue);
     }
     
     value = (byte)intValue;
@@ -203,12 +203,12 @@ void Parser::Utility::ReadPercentageAttribute(
 
 ErrorCode Parser::ReadSettingsValue(
     __in ComPointer<IFabricConfigurationPackage> configPackageCPtr,
-    __in std::wstring const & sectionName, 
-    __in std::wstring const & paramName, 
-    __out wstring & value, 
+    __in std::string const & sectionName, 
+    __in std::string const & paramName, 
+    __out string & value, 
     __out bool & hasValue)
 {
-    LPCWSTR configValue = nullptr;
+    LPCSTR configValue = nullptr;
     BOOLEAN isEncrypted = FALSE;
 
     HRESULT hr = configPackageCPtr->GetValue(sectionName.c_str(), paramName.c_str(), &isEncrypted, &configValue);
@@ -225,7 +225,7 @@ ErrorCode Parser::ReadSettingsValue(
     {
         if (hr == FABRIC_E_CONFIGURATION_SECTION_NOT_FOUND)
         {
-            wstring errorMessage;
+            string errorMessage;
             StringWriter messageWriter(errorMessage);
 
             messageWriter.Write("Failed to find section {0} in configuration package name = {1}", sectionName, configPackageCPtr->get_Description()->Name);
@@ -234,7 +234,7 @@ ErrorCode Parser::ReadSettingsValue(
         return ErrorCode::FromHResult(hr);
     }
 
-    value = wstring(configValue);
+    value = string(configValue);
     hasValue = true;
 
     return ErrorCode::Success();
@@ -242,12 +242,12 @@ ErrorCode Parser::ReadSettingsValue(
 
 ErrorCode Parser::ReadSettingsValue(
     __in ComPointer<IFabricConfigurationPackage> configPackageCPtr,
-    __in std::wstring const & sectionName, 
-    __in std::wstring const & paramName, 
+    __in std::string const & sectionName, 
+    __in std::string const & paramName, 
     __out int64 & value, 
     __out bool & hasValue)
 {
-    wstring configValue;
+    string configValue;
     hasValue = false;
     value = 0;
 
@@ -257,7 +257,7 @@ ErrorCode Parser::ReadSettingsValue(
 
     if (!Config::TryParse<int64>(value, configValue))
     {
-        wstring errorMessage;
+        string errorMessage;
         StringWriter messageWriter(errorMessage);
 
         messageWriter.Write("Failed to parse config entry {0} with value {1} in section {2}. Config Package Name = {3}", paramName, configValue, sectionName, configPackageCPtr->get_Description()->Name);
@@ -272,12 +272,12 @@ ErrorCode Parser::ReadSettingsValue(
 
 ErrorCode Parser::ReadSettingsValue(
     __in ComPointer<IFabricConfigurationPackage> configPackageCPtr,
-    __in std::wstring const & sectionName, 
-    __in std::wstring const & paramName, 
+    __in std::string const & sectionName, 
+    __in std::string const & paramName, 
     __out int & value, 
     __out bool & hasValue)
 {
-    wstring configValue;
+    string configValue;
     hasValue = false;
     value = 0;
 
@@ -287,7 +287,7 @@ ErrorCode Parser::ReadSettingsValue(
 
     if (!Config::TryParse<int>(value, configValue))
     {
-        wstring errorMessage;
+        string errorMessage;
         StringWriter messageWriter(errorMessage);
 
         messageWriter.Write("Failed to parse config entry {0} with value {1} in section {2}. Config Package Name = {3}", paramName, configValue, sectionName, configPackageCPtr->get_Description()->Name);
@@ -302,12 +302,12 @@ ErrorCode Parser::ReadSettingsValue(
 
 ErrorCode Parser::ReadSettingsValue(
     __in ComPointer<IFabricConfigurationPackage> configPackageCPtr,
-    __in std::wstring const & sectionName, 
-    __in std::wstring const & paramName, 
+    __in std::string const & sectionName, 
+    __in std::string const & paramName, 
     __out TimeSpan & value, 
     __out bool & hasValue)
 {
-    wstring configValue;
+    string configValue;
     hasValue = false;
     value = TimeSpan::Zero;
 
@@ -320,7 +320,7 @@ ErrorCode Parser::ReadSettingsValue(
     
     if (!Config::TryParse<TimeSpan>(value, configValue))
     {
-        wstring errorMessage;
+        string errorMessage;
         StringWriter messageWriter(errorMessage);
 
         messageWriter.Write("Failed to parse config entry {0} with value {1} in section {2}. Config Package Name = {3}", paramName, configValue, sectionName, configPackageCPtr->get_Description()->Name);
@@ -335,12 +335,12 @@ ErrorCode Parser::ReadSettingsValue(
 
 ErrorCode Parser::ReadSettingsValue(
     __in ComPointer<IFabricConfigurationPackage> configPackageCPtr,
-    __in std::wstring const & sectionName, 
-    __in std::wstring const & paramName, 
+    __in std::string const & sectionName, 
+    __in std::string const & paramName, 
     __out bool & value, 
     __out bool & hasValue)
 {
-    wstring configValue;
+    string configValue;
     hasValue = false;
     value = FALSE;
 
@@ -351,19 +351,19 @@ ErrorCode Parser::ReadSettingsValue(
     StringUtility::TrimWhitespaces(configValue);
     StringUtility::ToLower(configValue);
 
-    if (configValue == L"true")
+    if (configValue == "true")
     {
         value = TRUE;
         hasValue = true;
     }
-    else if (configValue == L"false")
+    else if (configValue == "false")
     {
         value = FALSE;
         hasValue = true;
     }
     else
     {
-        wstring errorMessage;
+        string errorMessage;
         StringWriter messageWriter(errorMessage);
 
         messageWriter.Write("Failed to parse config entry {0} with value {1} in section {2}. Config Package Name = {3}", paramName, configValue, sectionName, configPackageCPtr->get_Description()->Name);
@@ -377,9 +377,9 @@ ErrorCode Parser::ReadSettingsValue(
 
 ErrorCode Parser::ReadSettingsValue(
     __in ComPointer<IFabricConfigurationPackage2> configPackageCPtr,
-    __in std::wstring const & sectionName,
-    __in std::wstring const & paramPrefix,
-    __out std::map<wstring, wstring> & values,
+    __in std::string const & sectionName,
+    __in std::string const & paramPrefix,
+    __out std::map<string, string> & values,
     __out bool & hasValue)
 {
     FABRIC_CONFIGURATION_PARAMETER_LIST *configValues;
@@ -396,7 +396,7 @@ ErrorCode Parser::ReadSettingsValue(
     {
         if (hr == FABRIC_E_CONFIGURATION_SECTION_NOT_FOUND)
         {
-            wstring errorMessage;
+            string errorMessage;
             StringWriter messageWriter(errorMessage);
 
             messageWriter.Write("Failed to find section {0} in configuration package name = {1}", sectionName, configPackageCPtr->get_Description()->Name);
@@ -409,8 +409,8 @@ ErrorCode Parser::ReadSettingsValue(
     {
         ASSERT_IF(configValues->Items[ix].IsEncrypted == TRUE, "ReplicatorSettings value cannot be encrypted");
 
-        wstring parameterNameWithoutPrefix = wstring(configValues->Items[ix].Name).substr(paramPrefix.size());
-        values.insert(std::pair<wstring, wstring>(parameterNameWithoutPrefix, wstring(configValues->Items[ix].Value)));
+        string parameterNameWithoutPrefix = string(configValues->Items[ix].Name).substr(paramPrefix.size());
+        values.insert(std::pair<string, string>(parameterNameWithoutPrefix, string(configValues->Items[ix].Value)));
     }
 
     hasValue = true;
@@ -419,7 +419,7 @@ ErrorCode Parser::ReadSettingsValue(
 
 /*
 ErrorCode Parser::IsServiceManifestFile(
-    wstring const & fileName,
+    string const & fileName,
     __out bool & result)
 {
     result = false;
@@ -447,11 +447,11 @@ ErrorCode Parser::IsServiceManifestFile(
 
 template <class T>
 Common::ErrorCode Parser::ParseContinuationToken(
-    std::wstring const & continuationToken,
+    std::string const & continuationToken,
     __out T & continuationTokenObj)
 {
     // url decode the continuation token string
-    wstring continuationTokenDecoded;
+    string continuationTokenDecoded;
     auto error = Common::NamingUri::UnescapeString(continuationToken, continuationTokenDecoded);
 
     if (!error.IsSuccess)
@@ -462,7 +462,7 @@ Common::ErrorCode Parser::ParseContinuationToken(
     // If it's empty, then return an empty error
     if (continuationTokenDecoded.empty())
     {
-        return Common::ErrorCode(Common::ErrorCodeValue::ArgumentNull, wformatString(GET_COMMON_RC(Invalid_Continuation_Token), continuationToken));
+        return Common::ErrorCode(Common::ErrorCodeValue::ArgumentNull, formatString(GET_COMMON_RC(Invalid_Continuation_Token), continuationToken));
     }
 
     // Try to parse as a JSON
@@ -474,7 +474,7 @@ Common::ErrorCode Parser::ParseContinuationToken(
     {
         return Common::ErrorCode(
             Common::ErrorCodeValue::InvalidArgument,
-            Common::wformatString(GET_COMMON_RC(Invalid_Continuation_Token), continuationTokenDecoded));
+            Common::formatString(GET_COMMON_RC(Invalid_Continuation_Token), continuationTokenDecoded));
     }
 
     return error;
@@ -484,16 +484,16 @@ Common::ErrorCode Parser::ParseContinuationToken(
 // Replace with declaration of ApplicationTypeQueryContinuationToken
 // template�<>
 // Common::ErrorCode�Parser::ParseContinuationToken<ApplicationTypeQueryContinuationToken>(
-// std::wstring const & continuationToken,
+// std::string const & continuationToken,
 // __out ApplicationTypeQueryContinuationToken & continuationTokenObj)
 
 template <>
 ErrorCode Parser::ParseContinuationToken<ApplicationTypeQueryContinuationToken>(
-    std::wstring const & continuationToken,
+    std::string const & continuationToken,
     __out ApplicationTypeQueryContinuationToken & continuationTokenObj)
 {
     // url decode the continuation token string
-    wstring continuationTokenDecoded;
+    string continuationTokenDecoded;
     auto error = NamingUri::UnescapeString(continuationToken, continuationTokenDecoded);
 
     if (!error.IsSuccess())
@@ -504,7 +504,7 @@ ErrorCode Parser::ParseContinuationToken<ApplicationTypeQueryContinuationToken>(
     // If it's empty, then return an empty error
     if (continuationTokenDecoded.empty())
     {
-        return ErrorCode(ErrorCodeValue::ArgumentNull, wformatString(GET_COMMON_RC(Invalid_Continuation_Token), continuationToken));
+        return ErrorCode(ErrorCodeValue::ArgumentNull, formatString(GET_COMMON_RC(Invalid_Continuation_Token), continuationToken));
     }
 
     // Try to parse as a JSON
@@ -516,7 +516,7 @@ ErrorCode Parser::ParseContinuationToken<ApplicationTypeQueryContinuationToken>(
     {
         // If the code has reached here, then we know that we don't have a JSON object
         // Take care of the "+" case
-        vector<std::wstring> continuationTokenList;
+        vector<std::string> continuationTokenList;
         StringUtility::Split(continuationToken, continuationTokenList, Constants::ContinuationTokenParserDelimiter);
 
         // Continuation tokens that are passed in here should not be empty
@@ -525,7 +525,7 @@ ErrorCode Parser::ParseContinuationToken<ApplicationTypeQueryContinuationToken>(
         {
             return ErrorCode(
                 ErrorCodeValue::InvalidArgument,
-                wformatString(GET_COMMON_RC(Invalid_Continuation_Token), continuationTokenDecoded));
+                formatString(GET_COMMON_RC(Invalid_Continuation_Token), continuationTokenDecoded));
         }
 
         continuationTokenObj = move(ApplicationTypeQueryContinuationToken(move(continuationTokenList[0]), move(continuationTokenList[1])));
@@ -537,7 +537,7 @@ ErrorCode Parser::ParseContinuationToken<ApplicationTypeQueryContinuationToken>(
     {
         return ErrorCode(
             ErrorCodeValue::InvalidArgument,
-            wformatString(GET_COMMON_RC(Invalid_Continuation_Token), continuationTokenDecoded));
+            formatString(GET_COMMON_RC(Invalid_Continuation_Token), continuationTokenDecoded));
     }
 
     return error;

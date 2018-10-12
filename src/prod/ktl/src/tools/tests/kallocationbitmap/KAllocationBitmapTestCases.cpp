@@ -26,5 +26,5 @@ Abstract:
 
 const KU_TEST_ENTRY gs_KuTestCases[] =
 {
-    {   L"KAllocationBitmapTest",              KAllocationBitmapTest,         L"BVT", L"KAllocationBitmap unit test"}
+    {   "KAllocationBitmapTest",              KAllocationBitmapTest,         "BVT", "KAllocationBitmap unit test"}
 };

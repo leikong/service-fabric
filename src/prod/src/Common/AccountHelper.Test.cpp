@@ -19,7 +19,7 @@ namespace Common
     class AccountHelperTest
     {
     public:
-        static void TraceAccountNames(map<wstring, wstring> const & accountNames);
+        static void TraceAccountNames(map<string, string> const & accountNames);
 
     protected:
         SecurityTestSetup securityTestSetup_;
@@ -29,8 +29,8 @@ namespace Common
 
     BOOST_AUTO_TEST_CASE(GeneratePwd)
     {
-        const wstring accountName = L"redmond\testAccount";
-        const SecureString testSecret(L"test secret");
+        const string accountName = "redmond\testAccount";
+        const SecureString testSecret("test secret");
         SecureString password;
         auto error = AccountHelper::GeneratePasswordForNTLMAuthenticatedUser(
             accountName,
@@ -56,8 +56,8 @@ namespace Common
     {
         InstallTestCertInScope testCert;
         
-        const wstring accountName = L"redmond\testAccount";
-        const SecureString testSecret(L"test secret");
+        const string accountName = "redmond\testAccount";
+        const SecureString testSecret("test secret");
         SecureString password;
         auto error = AccountHelper::GeneratePasswordForNTLMAuthenticatedUser(
             accountName,
@@ -88,11 +88,11 @@ namespace Common
     BOOST_AUTO_TEST_CASE(GetAccountNamesFromX509CommonName)
     {
         // Install a certificate with a specified common name
-        wstring commonName = wformatString("GetCnAccountNamesTest{0}", Guid::NewGuid());
-        wstring subjectName = L"CN=" + commonName;
+        string commonName = formatString.L("GetCnAccountNamesTest{0}", Guid::NewGuid());
+        string subjectName = "CN=" + commonName;
         InstallTestCertInScope testCert(subjectName);
 
-        wstring actualCommonName;
+        string actualCommonName;
         auto error = CryptoUtility::GetCertificateCommonName(
             testCert.CertContext(),
             actualCommonName);
@@ -100,7 +100,7 @@ namespace Common
         VERIFY_ARE_EQUAL(testCert.SubjectName(), subjectName);
         VERIFY_ARE_EQUAL(commonName, actualCommonName);
 
-        map<wstring, wstring> accountNames;
+        map<string, string> accountNames;
         error = AccountHelper::GetAccountNamesWithCertificateCommonName(
             commonName,
             testCert.StoreLocation(),
@@ -115,11 +115,11 @@ namespace Common
         VERIFY_IS_TRUE(accountNames.size() == 2u);
 
         Thumbprint::SPtr thumbprint = testCert.Thumbprint();
-        wstring expectedThumbprint = wformatString(thumbprint);
+        string expectedThumbprint = formatString(thumbprint);
 
         for (auto const & accountName : accountNames)
         {
-            wstring actualThumbprint = accountName.second;
+            string actualThumbprint = accountName.second;
             Trace.WriteInfo(AccountHelperTraceType, "GetAccountNamesFromX509CommonName: Verify expectedThumbprint {0} equals actual {1}", expectedThumbprint, actualThumbprint);
             VERIFY_ARE_EQUAL(expectedThumbprint, actualThumbprint);
         }
@@ -128,7 +128,7 @@ namespace Common
         // Install one more certificate with the same common name
         //
         InstallTestCertInScope testCert2(subjectName);
-        map<wstring, wstring> accountNames2;
+        map<string, string> accountNames2;
         error = AccountHelper::GetAccountNamesWithCertificateCommonName(
             commonName,
             testCert2.StoreLocation(),
@@ -142,7 +142,7 @@ namespace Common
         // V1 accounts are not generated, so expect 2 accounts using the new formats for the 2 certificates.
         VERIFY_IS_TRUE(accountNames2.size() == 2);
 
-        wstring expectedThumbprint2 = wformatString(testCert2.Thumbprint());
+        string expectedThumbprint2 = formatString(testCert2.Thumbprint());
         {
             auto it = find_if(accountNames2.begin(), accountNames2.end(),
                 [expectedThumbprint](auto const & entry) { return expectedThumbprint == entry.second; });
@@ -156,7 +156,7 @@ namespace Common
         // Install a new certificate with expiration date higher than max supported of 2049. The expiration date is truncated.
         //
         InstallTestCertInScope testCert3(subjectName, nullptr, TimeSpan::FromHours(24 * 365 * 100) /*100 years*/);
-        map<wstring, wstring> accountNames3;
+        map<string, string> accountNames3;
         error = AccountHelper::GetAccountNamesWithCertificateCommonName(
             commonName,
             testCert3.StoreLocation(),
@@ -170,7 +170,7 @@ namespace Common
         // V1 accounts are not generated, so expect 3 accounts using the new formats for the 3 certificates.
         VERIFY_IS_TRUE(accountNames3.size() == 3);
 
-        wstring expectedThumbprint3 = wformatString(testCert3.Thumbprint());
+        string expectedThumbprint3 = formatString(testCert3.Thumbprint());
         {
             auto it = find_if(accountNames3.begin(), accountNames3.end(),
                 [expectedThumbprint](auto const & entry) { return expectedThumbprint == entry.second; });
@@ -193,9 +193,9 @@ namespace Common
 
 
 void AccountHelperTest::TraceAccountNames(
-    map<wstring, wstring> const & accountNames)
+    map<string, string> const & accountNames)
 {
-    wstring traceInfo;
+    string traceInfo;
     StringWriter writer(traceInfo);
     for (auto const & entry : accountNames)
     {

@@ -11,8 +11,8 @@
 #include "LeaseAgentInstance.h"
 #include "Lease/inc/public/leaselayerinc.h"
 
-#define DISK_PROBE_FILE_NAME L"LeaseHeartbeat.tmp"
-#define DISK_PROBE_REOPEN_FILE_NAME L"LeaseHeartbeatReopen.tmp"
+#define DISK_PROBE_FILE_NAME "LeaseHeartbeat.tmp"
+#define DISK_PROBE_REOPEN_FILE_NAME "LeaseHeartbeatReopen.tmp"
 
 // TODO: LeaseAgent and LeasePartner Source Code will be moving to ~src\Lease\Api directory later.
 
@@ -33,7 +33,7 @@ namespace LeaseWrapper
         }
 
         virtual void OnLeaseFailed() = 0;
-        virtual void OnRemoteLeasingApplicationFailed( std::wstring const & id ) = 0;
+        virtual void OnRemoteLeasingApplicationFailed( std::string const & id ) = 0;
         virtual void Arbitrate(
             LeaseAgentInstance const & local,
             Common::TimeSpan localTTL,
@@ -55,14 +55,14 @@ namespace LeaseWrapper
         LeaseAgentConfiguration();
 
         LeaseAgentConfiguration(
-            std::wstring const & leasingApplicationId,
-            std::wstring const & localLeaseAddress, 
+            std::string const & leasingApplicationId,
+            std::string const & localLeaseAddress, 
             bool enableArbitrate = false);
 
         LeaseAgentConfiguration(LeaseAgentConfiguration const & rhs);
 
-        std::wstring leasingApplicationId_; // The ID of this Lease Agent that would be registered with the Lease Layer
-        std::wstring localLeaseAddress_; // The socket address at which the listener for the lease agent is listening.
+        std::string leasingApplicationId_; // The ID of this Lease Agent that would be registered with the Lease Layer
+        std::string localLeaseAddress_; // The socket address at which the listener for the lease agent is listening.
         Common::TimeSpan leaseSuspendTimeout_; // Short arbitration timeout
         Common::TimeSpan arbitrationTimeout_; // Long arbitration timeout
         int leaseRetryCount_; // Number of renew times in a lease duration
@@ -76,7 +76,7 @@ namespace LeaseWrapper
     struct LeaseCertHashStore
     {
         BYTE ShaHash[20];
-        WCHAR pwszStoreName[SCH_CRED_MAX_STORE_NAME_SIZE];
+        CHAR pwszStoreName[SCH_CRED_MAX_STORE_NAME_SIZE];
     };
 #endif
 
@@ -93,15 +93,15 @@ namespace LeaseWrapper
 #if !defined(PLATFORM_UNIX)
         static DWORD LoadRemoteCertificate(DWORD cbCertificate, PBYTE pbCertificate, PCCERT_CONTEXT *ppCertContext);
 #endif
-        static void SetHealthReportCallback(std::function<void(int, wstring const &, wstring const &)> & callback);
+        static void SetHealthReportCallback(std::function<void(int, string const &, string const &)> & callback);
 #if !defined(PLATFORM_UNIX)
-        static void InvokeHealthReportCallback(int reportCode, LPCWSTR dynamicProperty, LPCWSTR extraDescription);
+        static void InvokeHealthReportCallback(int reportCode, LPCSTR dynamicProperty, LPCSTR extraDescription);
 #endif
 
         Common::ErrorCode OnOpen();
         Common::ErrorCode OnClose();
         void OnAbort();
-        Common::ErrorCode Restart(std::wstring const & newLeasingApplicationId);
+        Common::ErrorCode Restart(std::string const & newLeasingApplicationId);
 
         __declspec (property(get=getInstanceId)) int64 InstanceId;
         int64 getInstanceId() const { return instanceId_; }
@@ -111,11 +111,11 @@ namespace LeaseWrapper
         _Success_(return)
         static bool InitializeListenEndpoint(
             _Inout_opt_ LeaseAgent* leaseAgent,
-            std::wstring const & localLeaseAddress,
+            std::string const & localLeaseAddress,
             _Out_ TRANSPORT_LISTEN_ENDPOINT & endPoint);
 
         _Success_(return)
-        bool InitializeListenEndpoint(std::wstring const & localLeaseAddress, _Out_ TRANSPORT_LISTEN_ENDPOINT & endPoint);
+        bool InitializeListenEndpoint(std::string const & localLeaseAddress, _Out_ TRANSPORT_LISTEN_ENDPOINT & endPoint);
 
         void InitializeLeaseConfigDurations(LEASE_CONFIG_DURATIONS & durations);
 
@@ -125,17 +125,17 @@ namespace LeaseWrapper
 
         // Sync - Don't wait for Establish Reply
         void Establish(
-            std::wstring const & remoteLeasingApplicationId,
-            std::wstring const & remoteFaultDomain,
-            std::wstring const & remoteLeaseAddress, 
+            std::string const & remoteLeasingApplicationId,
+            std::string const & remoteFaultDomain,
+            std::string const & remoteLeaseAddress, 
             int64 remoteLeaseAgentInstanceId,
             LEASE_DURATION_TYPE leaseTimeoutType);
 
         // Async Op
         Common::AsyncOperationSPtr BeginEstablish(
-            std::wstring const & remoteLeasingApplicationId,
-            std::wstring const & remoteFaultDomain,
-            std::wstring const & remoteLeaseAgentAddress,
+            std::string const & remoteLeasingApplicationId,
+            std::string const & remoteFaultDomain,
+            std::string const & remoteLeaseAgentAddress,
             int64 remoteLeaseAgentInstanceId,
             LEASE_DURATION_TYPE leaseTimeoutType,
             Common::TimeSpan timeout,
@@ -144,27 +144,27 @@ namespace LeaseWrapper
 
         static Common::ErrorCode EndEstablish(__in Common::AsyncOperationSPtr const & operation);
 
-        void Terminate(std::wstring const & remoteLeasingApplicationId);
+        void Terminate(std::string const & remoteLeasingApplicationId);
 
         BOOL GetLeasingApplicationExpirationTime(PLONG milliseconds, PLONGLONG kernelCurrentTime) const;
         BOOL GetLeasingApplicationExpirationTimeFromIPC(PLONG milliseconds, PLONGLONG kernelCurrentTime) const;
         static BOOL GetLeasingApplicationExpirationTime(HANDLE appHandle, PLONG milliseconds, PLONGLONG kernelCurrentTime);
         BOOL SetGlobalLeaseExpirationTime(LONGLONG expireTime);
 
-        BOOL GetRemoteLeaseExpirationTime(std::wstring const & remoteLeasingApplicationId, Common::StopwatchTime & monitorExpireTime, Common::StopwatchTime & subjectExpireTime);
+        BOOL GetRemoteLeaseExpirationTime(std::string const & remoteLeasingApplicationId, Common::StopwatchTime & monitorExpireTime, Common::StopwatchTime & subjectExpireTime);
 
         //
         // Callbacks from the driver.
         //
         void OnLeaseFailed();
-        void OnRemoteLeasingApplicationFailed( std::wstring const & remoteLeasingApplicationId );
-        void OnLeaseEstablished( std::wstring remoteLeasingApplicationId, HANDLE leaseHandle);
+        void OnRemoteLeasingApplicationFailed( std::string const & remoteLeasingApplicationId );
+        void OnLeaseEstablished( std::string remoteLeasingApplicationId, HANDLE leaseHandle);
         void OnCompleteRemoteCertificateVerification(DWORD cbCertificate, PBYTE pbCertificate, PVOID RemoteCertVerifyCallbackOperation);
         void Arbitrate(
             HANDLE appHandle,
             int64 localInstance,
             long localTTL,
-            std::wstring const & remoteLeaseAddress,
+            std::string const & remoteLeaseAddress,
             int64 remoteInstance,
             long remoteTTL,
             USHORT remoteVersion,
@@ -174,7 +174,7 @@ namespace LeaseWrapper
 
         void RetryEstablish(LeasePartnerSPtr const & leaseParnter, LEASE_DURATION_TYPE leaseTimeoutType);
 
-        void CompleteArbitrationSuccessProcessing(LONGLONG localInstance, __in LPCWSTR remoteLeaseAddress, LONGLONG remoteInstance, Common::TimeSpan localTTL, Common::TimeSpan remoteTTL, BOOL isDelayed);
+        void CompleteArbitrationSuccessProcessing(LONGLONG localInstance, __in LPCSTR remoteLeaseAddress, LONGLONG remoteInstance, Common::TimeSpan localTTL, Common::TimeSpan remoteTTL, BOOL isDelayed);
         // Chl = caller holding lock
 
         BOOL CompleteRemoteCertificateVerification(PVOID RemoteCertVerifyCallbackOperation, NTSTATUS verifyResult);
@@ -211,7 +211,7 @@ namespace LeaseWrapper
         void WriteTo(Common::TextWriter&, Common::FormatOptions const &) const;
 
     private:
-        typedef std::map<std::wstring, LeasePartnerSPtr> LeasePartnerMap;
+        typedef std::map<std::string, LeasePartnerSPtr> LeasePartnerMap;
 
         void Cleanup(bool isDelayed);
         HANDLE InternalClose();
@@ -219,12 +219,12 @@ namespace LeaseWrapper
         bool InitializeCertHashStore(Transport::SecuritySettings const & securitySettings);
         Transport::TransportSecuritySPtr LeaseSecurity();
 
-        LeasePartner* GetLeasePartnerByAddress(std::wstring const & remoteLeaseAddress);
+        LeasePartner* GetLeasePartnerByAddress(std::string const & remoteLeaseAddress);
 
         // Wrappers around lease functions to call dummy or real lease agents dependign upon config.
         HANDLE RegisterLeasingApplication(Transport::SecuritySettings const & securitySettings);
-        void UnregisterLeasingApplication(HANDLE handle, std::wstring const & leasingApplicationId, BOOL isDelayed);
-        BOOL CompleteArbitrationSuccessProcessing(HANDLE appHandle, LONGLONG localInstance, __in LPCWSTR remoteLeaseAddress, LONGLONG remoteInstance, LONG localTTL, LONG remoteTTL, BOOL isDelayed);
+        void UnregisterLeasingApplication(HANDLE handle, std::string const & leasingApplicationId, BOOL isDelayed);
+        BOOL CompleteArbitrationSuccessProcessing(HANDLE appHandle, LONGLONG localInstance, __in LPCSTR remoteLeaseAddress, LONGLONG remoteInstance, LONG localTTL, LONG remoteTTL, BOOL isDelayed);
 
         // For security
         BOOL UpdateCertificate();
@@ -273,7 +273,7 @@ namespace LeaseWrapper
         Common::TimerSPtr heartbeatTimer_; // Timer for disk probing
         HANDLE diskProbeFileHandle_; // File handle for disk probing
         Common::ByteBuffer diskProbeBuffer_; // Disk probing buffer
-        static std::function<void(int, wstring const &, wstring const &)> healthReportCallback_;
+        static std::function<void(int, string const &, string const &)> healthReportCallback_;
         Common::Random random_;
     };
 }

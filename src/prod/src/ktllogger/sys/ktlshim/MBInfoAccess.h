@@ -598,8 +598,8 @@ class SharedLCMBInfoAccess : public KAsyncContextBase
             ULONG MaxRecordSize;
             LONGLONG StreamSize;
             DispositionFlags Flags;
-            WCHAR AliasName[KtlLogContainer::MaxAliasLength+1];
-            WCHAR PathToDedicatedContainer[KtlLogManager::MaxPathnameLengthInChar];
+            CHAR AliasName[KtlLogContainer::MaxAliasLength+1];
+            CHAR PathToDedicatedContainer[KtlLogManager::MaxPathnameLengthInChar];
             UCHAR Padding[1];
         } SharedLCEntryWithoutPadding;
 
@@ -607,7 +607,7 @@ class SharedLCMBInfoAccess : public KAsyncContextBase
         // Ensure that max pathname fits within an entry
         //
         static const ULONG _SpaceAvailableForPathname = 1024 - FIELD_OFFSET(SharedLCEntryWithoutPadding, PathToDedicatedContainer);
-        static_assert(KtlLogManager::MaxPathnameLengthInChar <= (_SpaceAvailableForPathname/sizeof(WCHAR)), "KtlLogManager::MaxPathnameLengthInChar is too large");
+        static_assert(KtlLogManager::MaxPathnameLengthInChar <= (_SpaceAvailableForPathname/sizeof(CHAR)), "KtlLogManager::MaxPathnameLengthInChar is too large");
 
     public:
         typedef struct
@@ -618,8 +618,8 @@ class SharedLCMBInfoAccess : public KAsyncContextBase
             ULONG MaxRecordSize;
             LONGLONG StreamSize;
             DispositionFlags Flags;
-            WCHAR AliasName[KtlLogContainer::MaxAliasLength+1];
-            WCHAR PathToDedicatedContainer[KtlLogManager::MaxPathnameLengthInChar];
+            CHAR AliasName[KtlLogContainer::MaxAliasLength+1];
+            CHAR PathToDedicatedContainer[KtlLogManager::MaxPathnameLengthInChar];
             UCHAR PaddingTo1024Bytes[1024 - FIELD_OFFSET(SharedLCEntryWithoutPadding, Padding)];
         } SharedLCEntry;
 

@@ -89,7 +89,7 @@ KInstrumentedComponent::KInstrumentedComponent(
 {
     NTSTATUS status;
     
-    KStringView name(L"Unspecified");   
+    KStringView name("Unspecified");   
     status = SetComponentName(name);
     if (! NT_SUCCESS(status))
     {
@@ -135,7 +135,7 @@ NTSTATUS KInstrumentedComponent::SetComponentName(
 {
     NTSTATUS status;
     BOOLEAN b;
-    KStringView separator(L":");
+    KStringView separator(":");
     ULONG sizeNeeded = ComponentPrefix.Length() + 1 + KStringView::GuidLengthInChars + 1;
     KString::SPtr local;
 
@@ -175,7 +175,7 @@ NTSTATUS KInstrumentedComponent::SetComponentName(
 {
     NTSTATUS status;
     BOOLEAN b;
-    KStringView separator(L":");
+    KStringView separator(":");
     ULONG sizeNeeded = ComponentPrefix.Length() + 2 + (2*KStringView::GuidLengthInChars) + 1;
     KString::SPtr local;
 

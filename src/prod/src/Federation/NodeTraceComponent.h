@@ -30,21 +30,21 @@ namespace Federation
             this->SetTraceInfo(node);
         }
 
-        __declspec(property(get=get_TraceId)) std::wstring const & TraceId;
+        __declspec(property(get=get_TraceId)) std::string const & TraceId;
         __declspec(property(get=get_NodeInstance)) Federation::NodeInstance const & NodeInstance;
 
-        std::wstring const & get_TraceId() const { return traceId_; }
+        std::string const & get_TraceId() const { return traceId_; }
         Federation::NodeInstance const & get_NodeInstance() const { return node_; }
 
         void SetTraceInfo(Federation::NodeInstance const & value) 
         { 
             node_ = value; 
-            traceId_ = Common::wformatString("[{0}]", node_);
+            traceId_ = Common::formatString.L("[{0}]", node_);
         }
 
     private:
 
-        std::wstring traceId_;
+        std::string traceId_;
         Federation::NodeInstance node_;
     };
 }

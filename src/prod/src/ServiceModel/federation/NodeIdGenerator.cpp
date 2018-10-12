@@ -13,9 +13,9 @@ using namespace std;
 using namespace Common;
 using namespace Federation;
 
-GlobalWString NodeIdGenerator::NodeIdNamePrefix = make_global<wstring>(L"nodeid:");
-GlobalWString NodeIdGenerator::PrefixPearson = make_global<wstring>(L"UTzJ");
-GlobalWString NodeIdGenerator::SuffixPearson = make_global<wstring>(L"X3if");
+GlobalString NodeIdGenerator::NodeIdNamePrefix = make_global<string>("nodeid:");
+GlobalString NodeIdGenerator::PrefixPearson = make_global<string>("UTzJ");
+GlobalString NodeIdGenerator::SuffixPearson = make_global<string>("X3if");
 
 static const BYTE T[256] =
 {
@@ -37,24 +37,24 @@ static const BYTE T[256] =
      51,  65,  28, 144, 254, 221,  93, 189, 194, 139, 112,  43,  71, 109, 184, 209
 };
 
-wstring NodeIdGenerator::GenerateNodeName(NodeId nodeId)
+string NodeIdGenerator::GenerateNodeName(NodeId nodeId)
 {
     return *NodeIdNamePrefix + nodeId.ToString();
 }
 
-ErrorCode NodeIdGenerator::GenerateFromString(wstring const & input, NodeId & nodeId)
+ErrorCode NodeIdGenerator::GenerateFromString(string const & input, NodeId & nodeId)
 {
-    wstring rolesForWhichToUseV1Generator = ServiceModel::ServiceModelConfig::GetConfig().NodeNamePrefixesForV1Generator;
+    string rolesForWhichToUseV1Generator = ServiceModel::ServiceModelConfig::GetConfig().NodeNamePrefixesForV1Generator;
     bool useV2NodeIdGenerator = ServiceModel::ServiceModelConfig::GetConfig().UseV2NodeIdGenerator;
-    const wstring nodeIdGeneratorVersion = ServiceModel::ServiceModelConfig::GetConfig().NodeIdGeneratorVersion;
+    const string nodeIdGeneratorVersion = ServiceModel::ServiceModelConfig::GetConfig().NodeIdGeneratorVersion;
     return NodeIdGenerator::GenerateFromString(input, nodeId, rolesForWhichToUseV1Generator, useV2NodeIdGenerator, nodeIdGeneratorVersion);
 }
 
-ErrorCode NodeIdGenerator::GenerateFromString(wstring const & input, NodeId & nodeId, wstring const & rolesForWhichToUseV1generator, bool useV2NodeIdGenerator, wstring const & nodeIdGeneratorVersion)
+ErrorCode NodeIdGenerator::GenerateFromString(string const & input, NodeId & nodeId, string const & rolesForWhichToUseV1generator, bool useV2NodeIdGenerator, string const & nodeIdGeneratorVersion)
 {
-    if (StringUtility::StartsWith<wstring>(input, *NodeIdNamePrefix))
+    if (StringUtility::StartsWith<string>(input, *NodeIdNamePrefix))
     {
-        wstring nodeIdString = input.substr(NodeIdNamePrefix->size());
+        string nodeIdString = input.substr(NodeIdNamePrefix->size());
         bool parseResult = NodeId::TryParse(nodeIdString, nodeId);
         return (parseResult ? ErrorCode::Success() : ErrorCodeValue::InvalidArgument);
     }
@@ -71,17 +71,17 @@ ErrorCode NodeIdGenerator::GenerateFromString(wstring const & input, NodeId & no
         return errorCode;
     }
 
-    bool useV4NodeIdGenerator = !nodeIdGeneratorVersion.empty() && StringUtility::AreEqualCaseInsensitive(nodeIdGeneratorVersion, L"V4");
+    bool useV4NodeIdGenerator = !nodeIdGeneratorVersion.empty() && StringUtility::AreEqualCaseInsensitive(nodeIdGeneratorVersion, "V4");
 
     size_t index = string::npos;
     if (useV4NodeIdGenerator)
     {
-        wchar_t delims[] = { L'.', L'_' };
+        char delims[] = { '.', '_' };
         index = input.find_last_of(delims, input.length(), _countof(delims));
     }
     else
     {
-        index = input.find_last_of(L".");
+        index = input.find_last_of(".");
     }
 
     if (index != string::npos)
@@ -99,11 +99,11 @@ ErrorCode NodeIdGenerator::GenerateFromString(wstring const & input, NodeId & no
         }
 
         // Generating the 8 bit mask based on the index.
-        wstring instance = input.substr(index + 1);
+        string instance = input.substr(index + 1);
         unsigned char mask8Bit = static_cast<unsigned char>(_wtoi(instance.c_str()));
 
         // Avoid bit-reversal for V3
-        if (!StringUtility::AreEqualCaseInsensitive(nodeIdGeneratorVersion, L"V3"))
+        if (!StringUtility::AreEqualCaseInsensitive(nodeIdGeneratorVersion, "V3"))
         {
             mask8Bit = (mask8Bit & 0x0f) << 4 | (mask8Bit & 0xf0) >> 4;
             mask8Bit = (mask8Bit & 0x33) << 2 | (mask8Bit & 0xcc) >> 2;
@@ -111,7 +111,7 @@ ErrorCode NodeIdGenerator::GenerateFromString(wstring const & input, NodeId & no
         }
 
         uint64 high;
-        if (StringUtility::AreEqualCaseInsensitive(nodeIdGeneratorVersion, L"V3") || (useV2NodeIdGenerator && !useV1NodeIdGenerator))
+        if (StringUtility::AreEqualCaseInsensitive(nodeIdGeneratorVersion, "V3") || (useV2NodeIdGenerator && !useV1NodeIdGenerator))
         {
             BYTE prefixHash[16];
             errorCode = GenerateHash(input.substr(0, index), prefixHash, 16 * sizeof(BYTE), nodeIdGeneratorVersion);
@@ -147,7 +147,7 @@ ErrorCode NodeIdGenerator::GenerateFromString(wstring const & input, NodeId & no
     return ErrorCodeValue::Success;
 }
 
-bool NodeIdGenerator::UseV1NodeIdGenerator(wstring const & roleName, wstring const & rolesForWhichToUseV1Generator)
+bool NodeIdGenerator::UseV1NodeIdGenerator(string const & roleName, string const & rolesForWhichToUseV1Generator)
 {
     if (rolesForWhichToUseV1Generator.empty())
     {
@@ -155,8 +155,8 @@ bool NodeIdGenerator::UseV1NodeIdGenerator(wstring const & roleName, wstring con
     }
 
     StringCollection NodeNamePrefixesForV1Generator;
-    StringUtility::Split<wstring>(rolesForWhichToUseV1Generator, NodeNamePrefixesForV1Generator, L",");
-    for (wstring role : NodeNamePrefixesForV1Generator)
+    StringUtility::Split<string>(rolesForWhichToUseV1Generator, NodeNamePrefixesForV1Generator, ",");
+    for (string role : NodeNamePrefixesForV1Generator)
     {
         if (role == roleName)
         {
@@ -166,7 +166,7 @@ bool NodeIdGenerator::UseV1NodeIdGenerator(wstring const & roleName, wstring con
     return false;
 }
 
-ErrorCode NodeIdGenerator::GenerateHash(wstring const & input, BYTE * hash, DWORD dwHashLen, wstring const & nodeIdGeneratorVersion)
+ErrorCode NodeIdGenerator::GenerateHash(string const & input, BYTE * hash, DWORD dwHashLen, string const & nodeIdGeneratorVersion)
 {
     if (nodeIdGeneratorVersion.empty())
     {
@@ -182,7 +182,7 @@ ErrorCode NodeIdGenerator::GenerateHash(wstring const & input, BYTE * hash, DWOR
 
 // TODO: Another hash generator has been added based on Pearson algorithm; this one, at some point,
 // needs to be deprecated; because, it uses MD5
-ErrorCode NodeIdGenerator::GenerateMD5Hash(wstring const & input, BYTE * hash, DWORD dwHashLen)
+ErrorCode NodeIdGenerator::GenerateMD5Hash(string const & input, BYTE * hash, DWORD dwHashLen)
 {
 #if !defined(PLATFORM_UNIX)
     HCRYPTPROV hCryptProv = NULL;
@@ -197,7 +197,7 @@ ErrorCode NodeIdGenerator::GenerateMD5Hash(wstring const & input, BYTE * hash, D
 
     if (result)
     {
-        result = CryptHashData(hHash, (BYTE *)input.c_str(), (DWORD)input.size() * sizeof(WCHAR), 0);
+        result = CryptHashData(hHash, (BYTE *)input.c_str(), (DWORD)input.size() * sizeof(CHAR), 0);
     }
 
     if (result)
@@ -227,7 +227,7 @@ ErrorCode NodeIdGenerator::GenerateMD5Hash(wstring const & input, BYTE * hash, D
 #endif 
 }
 
-ErrorCode NodeIdGenerator::GeneratePearsonHash(wstring const & input, BYTE * hash, DWORD dWHashLen)
+ErrorCode NodeIdGenerator::GeneratePearsonHash(string const & input, BYTE * hash, DWORD dWHashLen)
 {
     // Currently only 128-bit hash is supported
     if (dWHashLen != 16)
@@ -235,8 +235,8 @@ ErrorCode NodeIdGenerator::GeneratePearsonHash(wstring const & input, BYTE * has
         return ErrorCodeValue::InvalidArgument;
     }
 
-    const wstring paddedInput = *PrefixPearson + input + *SuffixPearson;
-    const size_t nBytes = paddedInput.size() * sizeof(wchar_t);
+    const string paddedInput = *PrefixPearson + input + *SuffixPearson;
+    const size_t nBytes = paddedInput.size() * sizeof(char);
     const BYTE * const HEAD = (BYTE *)paddedInput.c_str();
 
     int i, j;
@@ -261,12 +261,12 @@ ErrorCode NodeIdGenerator::GeneratePearsonHash(wstring const & input, BYTE * has
 
 // P = 73, M = 2^24, P_inv mod M = 14938617
 // nodeId already contains hash of the entire node name
-ErrorCode NodeIdGenerator::GenerateV4NodeId(wstring const & input, NodeId & nodeId, size_t index)
+ErrorCode NodeIdGenerator::GenerateV4NodeId(string const & input, NodeId & nodeId, size_t index)
 {
     ErrorCode errorCode = ErrorCodeValue::Success;
 
-    wstring roleName = input.substr(0, index);
-    wstring instance_s = input.substr(index + 1);
+    string roleName = input.substr(0, index);
+    string instance_s = input.substr(index + 1);
 
     int64 instance_i;
     if (!TryParseInt64(instance_s, instance_i) || instance_i < 0)
@@ -288,7 +288,7 @@ ErrorCode NodeIdGenerator::GenerateV4NodeId(wstring const & input, NodeId & node
     return errorCode;
 }
 
-ErrorCode NodeIdGenerator::GenerateHashedNodeId(wstring const & input, NodeId & nodeId, wstring const & nodeIdGeneratorVersion)
+ErrorCode NodeIdGenerator::GenerateHashedNodeId(string const & input, NodeId & nodeId, string const & nodeIdGeneratorVersion)
 {
     return GenerateHash(input, (BYTE *)&nodeId, sizeof(NodeId), nodeIdGeneratorVersion);
 }

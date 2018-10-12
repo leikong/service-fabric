@@ -27,5 +27,5 @@ Abstract:
 
 NTSTATUS
 KTaskTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     );

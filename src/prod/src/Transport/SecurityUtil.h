@@ -20,33 +20,33 @@ namespace Transport
 
         static Common::ErrorCode GetX509SvrCredThumbprint(
             Common::X509StoreLocation::Enum certStoreLocation,
-            std::wstring const & certStoreName,
+            std::string const & certStoreName,
             std::shared_ptr<Common::X509FindValue> const & findValue,
             _In_opt_ Common::Thumbprint const * loadedCredThumbprint,
             _Out_ Common::Thumbprint & thumbprint);
 
         static Common::ErrorCode GetX509CltCredExpiration(
             Common::X509StoreLocation::Enum certStoreLocation,
-            std::wstring const & certStoreName,
+            std::string const & certStoreName,
             std::shared_ptr<Common::X509FindValue> const & findValue,
             _Out_ Common::DateTime & expiration);
 
         static Common::ErrorCode GetX509SvrCredExpiration(
             Common::X509StoreLocation::Enum certStoreLocation,
-            std::wstring const & certStoreName,
+            std::string const & certStoreName,
             std::shared_ptr<Common::X509FindValue> const & findValue,
             _Out_ Common::DateTime & expiration);
 
         static Common::ErrorCode GetX509CltCredAttr(
             Common::X509StoreLocation::Enum certStoreLocation,
-            std::wstring const & certStoreName,
+            std::string const & certStoreName,
             std::shared_ptr<Common::X509FindValue> const & findValue,
             _Out_ Common::Thumbprint & thumbprint,
             _Out_ Common::DateTime & expiration);
 
         static Common::ErrorCode GetX509SvrCredAttr(
             Common::X509StoreLocation::Enum certStoreLocation,
-            std::wstring const & certStoreName,
+            std::string const & certStoreName,
             std::shared_ptr<Common::X509FindValue> const & findValue,
             _Out_ Common::Thumbprint & thumbprint,
             _Out_ Common::DateTime & expiration);
@@ -54,11 +54,11 @@ namespace Transport
         static Common::ErrorCode AllowDefaultClientsIfNeeded(
             _Inout_ SecuritySettings & serverSecuritySettings,
             Common::FabricNodeConfig const & nodeConfig,
-            std::wstring const& traceId);
+            std::string const& traceId);
 
         static Common::ErrorCode EnableClientRoleIfNeeded(
             _Inout_ SecuritySettings & serverSecuritySettings,
             Common::FabricNodeConfig const & nodeConfig,
-            std::wstring const& traceId);
+            std::string const& traceId);
     };
 }

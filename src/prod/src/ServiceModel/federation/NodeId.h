@@ -57,7 +57,7 @@ namespace Federation
         // Exceptions: (optional)
         //       none (this must be guaranteed)
         //
-        static bool TryParse(const std::wstring& data, __out NodeId & id);
+        static bool TryParse(const std::string& data, __out NodeId & id);
 
         //---------------------------------------------------------------------
         // Function: NodeId::SuccWalk
@@ -193,7 +193,7 @@ namespace Federation
         void operator --();
 
         void WriteTo(Common::TextWriter&, Common::FormatOptions const &) const;
-        std::wstring ToString() const;
+        std::string ToString() const;
 
         // Properties.
         __declspec (property(get=getIdValue)) Common::LargeInteger IdValue;

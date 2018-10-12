@@ -31,4 +31,4 @@ Revision History:
 //
 
 static const GUID KtlPerInstanceCachedBlockFileCountersId = { 0xf4aacc4b, 0x660d, 0x4f56, { 0x86, 0x94, 0x53, 0x20, 0xe3, 0xb1, 0xe2, 0xb2 } };
-static const WCHAR* KtlPerInstanceCachedBlockFileCountersIdString = L"Perf{F4AACC4B-660D-4f56-8694-5320E3B1E2B2}";
+static const CHAR* KtlPerInstanceCachedBlockFileCountersIdString = "Perf{F4AACC4B-660D-4f56-8694-5320E3B1E2B2}";

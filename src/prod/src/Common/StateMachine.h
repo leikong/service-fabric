@@ -20,7 +20,7 @@ namespace Common
         void Abort();
         uint64 GetState() const;
         void GetStateAndRefCount(__out uint64 & state, __out uint64 & refCount) const;
-        virtual std::wstring StateToString(uint64 const state) const;
+        virtual std::string StateToString(uint64 const state) const;
 
         Common::AsyncOperationSPtr BeginWaitForTransition(
             uint64 const targetStateMask,
@@ -72,11 +72,11 @@ namespace Common
         
     private:
         mutable Common::RwLock lock_;
-        mutable std::map<std::wstring, Common::AsyncOperationSPtr> transitionWaiters_;
+        mutable std::map<std::string, Common::AsyncOperationSPtr> transitionWaiters_;
         uint64 current_;
         uint64 currentRefCount_;
         bool abortCalled_;
-        std::wstring traceId_;
+        std::string traceId_;
     };
 }
 
@@ -84,9 +84,9 @@ namespace Common
 public:                                                                                                                     \
     static const uint64 STATE1 = 2;                                                                                         \
                                                                                                                             \
-    virtual std::wstring StateToString(uint64 const state) const                                                            \
+    virtual std::string StateToString(uint64 const state) const                                                            \
     {                                                                                                                       \
-        if (state == STATE1) return L ## #STATE1;                                                                           \
+        if (state == STATE1) return #STATE1;                                                                           \
         else return StateMachine::StateToString(state);                                                                     \
     }                                                                                                                       \
 
@@ -95,10 +95,10 @@ public:                                                                         
     static const uint64 STATE1 = 2;                                                                                         \
     static const uint64 STATE2 = 4;                                                                                         \
                                                                                                                             \
-    virtual std::wstring StateToString(uint64 const state) const                                                            \
+    virtual std::string StateToString(uint64 const state) const                                                            \
     {                                                                                                                       \
-        if (state == STATE1) return L ## #STATE1;                                                                           \
-        if (state == STATE2) return L ## #STATE2;                                                                           \
+        if (state == STATE1) return #STATE1;                                                                           \
+        if (state == STATE2) return #STATE2;                                                                           \
         else return StateMachine::StateToString(state);                                                                     \
     }                                                                                                                       \
 
@@ -108,11 +108,11 @@ public:                                                                         
     static const uint64 STATE2 = 4;                                                                                         \
     static const uint64 STATE3 = 8;                                                                                         \
                                                                                                                             \
-    virtual std::wstring StateToString(uint64 const state) const                                                            \
+    virtual std::string StateToString(uint64 const state) const                                                            \
     {                                                                                                                       \
-        if (state == STATE1) return L ## #STATE1;                                                                           \
-        if (state == STATE2) return L ## #STATE2;                                                                           \
-        if (state == STATE3) return L ## #STATE3;                                                                           \
+        if (state == STATE1) return #STATE1;                                                                           \
+        if (state == STATE2) return #STATE2;                                                                           \
+        if (state == STATE3) return #STATE3;                                                                           \
         else return StateMachine::StateToString(state);                                                                     \
     }                                                                                                                       \
 
@@ -123,12 +123,12 @@ public:                                                                         
     static const uint64 STATE3 = 8;                                                                                         \
     static const uint64 STATE4 = 16;                                                                                        \
                                                                                                                             \
-    virtual std::wstring StateToString(uint64 const state) const                                                            \
+    virtual std::string StateToString(uint64 const state) const                                                            \
     {                                                                                                                       \
-        if (state == STATE1) return L ## #STATE1;                                                                           \
-        if (state == STATE2) return L ## #STATE2;                                                                           \
-        if (state == STATE3) return L ## #STATE3;                                                                           \
-        if (state == STATE4) return L ## #STATE4;                                                                           \
+        if (state == STATE1) return #STATE1;                                                                           \
+        if (state == STATE2) return #STATE2;                                                                           \
+        if (state == STATE3) return #STATE3;                                                                           \
+        if (state == STATE4) return #STATE4;                                                                           \
         else return StateMachine::StateToString(state);                                                                     \
     }                                                                                                                       \
 
@@ -140,13 +140,13 @@ public:                                                                         
     static const uint64 STATE4 = 16;                                                                                        \
     static const uint64 STATE5 = 32;                                                                                        \
                                                                                                                             \
-    virtual std::wstring StateToString(uint64 const state) const                                                            \
+    virtual std::string StateToString(uint64 const state) const                                                            \
     {                                                                                                                       \
-        if (state == STATE1) return L ## #STATE1;                                                                           \
-        if (state == STATE2) return L ## #STATE2;                                                                           \
-        if (state == STATE3) return L ## #STATE3;                                                                           \
-        if (state == STATE4) return L ## #STATE4;                                                                           \
-        if (state == STATE5) return L ## #STATE5;                                                                           \
+        if (state == STATE1) return #STATE1;                                                                           \
+        if (state == STATE2) return #STATE2;                                                                           \
+        if (state == STATE3) return #STATE3;                                                                           \
+        if (state == STATE4) return #STATE4;                                                                           \
+        if (state == STATE5) return #STATE5;                                                                           \
         else return StateMachine::StateToString(state);                                                                     \
     }                                                                                                                       \
 
@@ -159,14 +159,14 @@ public:                                                                         
     static const uint64 STATE5 = 32;                                                                                        \
     static const uint64 STATE6 = 64;                                                                                        \
                                                                                                                             \
-    virtual std::wstring StateToString(uint64 const state) const                                                            \
+    virtual std::string StateToString(uint64 const state) const                                                            \
     {                                                                                                                       \
-        if (state == STATE1) return L ## #STATE1;                                                                           \
-        if (state == STATE2) return L ## #STATE2;                                                                           \
-        if (state == STATE3) return L ## #STATE3;                                                                           \
-        if (state == STATE4) return L ## #STATE4;                                                                           \
-        if (state == STATE5) return L ## #STATE5;                                                                           \
-        if (state == STATE6) return L ## #STATE6;                                                                           \
+        if (state == STATE1) return #STATE1;                                                                           \
+        if (state == STATE2) return #STATE2;                                                                           \
+        if (state == STATE3) return #STATE3;                                                                           \
+        if (state == STATE4) return #STATE4;                                                                           \
+        if (state == STATE5) return #STATE5;                                                                           \
+        if (state == STATE6) return #STATE6;                                                                           \
         else return StateMachine::StateToString(state);                                                                     \
     }                                                                                                                       \
 
@@ -180,15 +180,15 @@ public:                                                                         
     static const uint64 STATE6 = 64;                                                                                        \
     static const uint64 STATE7 = 128;                                                                                       \
                                                                                                                             \
-    virtual std::wstring StateToString(uint64 const state) const                                                            \
+    virtual std::string StateToString(uint64 const state) const                                                            \
     {                                                                                                                       \
-        if (state == STATE1) return L ## #STATE1;                                                                           \
-        if (state == STATE2) return L ## #STATE2;                                                                           \
-        if (state == STATE3) return L ## #STATE3;                                                                           \
-        if (state == STATE4) return L ## #STATE4;                                                                           \
-        if (state == STATE5) return L ## #STATE5;                                                                           \
-        if (state == STATE6) return L ## #STATE6;                                                                           \
-        if (state == STATE7) return L ## #STATE7;                                                                           \
+        if (state == STATE1) return #STATE1;                                                                           \
+        if (state == STATE2) return #STATE2;                                                                           \
+        if (state == STATE3) return #STATE3;                                                                           \
+        if (state == STATE4) return #STATE4;                                                                           \
+        if (state == STATE5) return #STATE5;                                                                           \
+        if (state == STATE6) return #STATE6;                                                                           \
+        if (state == STATE7) return #STATE7;                                                                           \
         else return StateMachine::StateToString(state);                                                                     \
     }             
 
@@ -203,16 +203,16 @@ public:                                                                         
     static const uint64 STATE7 = 128;                                                                                       \
     static const uint64 STATE8 = 256;                                                                                       \
                                                                                                                             \
-    virtual std::wstring StateToString(uint64 const state) const                                                            \
+    virtual std::string StateToString(uint64 const state) const                                                            \
     {                                                                                                                       \
-        if (state == STATE1) return L ## #STATE1;                                                                           \
-        if (state == STATE2) return L ## #STATE2;                                                                           \
-        if (state == STATE3) return L ## #STATE3;                                                                           \
-        if (state == STATE4) return L ## #STATE4;                                                                           \
-        if (state == STATE5) return L ## #STATE5;                                                                           \
-        if (state == STATE6) return L ## #STATE6;                                                                           \
-        if (state == STATE7) return L ## #STATE7;                                                                           \
-        if (state == STATE8) return L ## #STATE8;                                                                           \
+        if (state == STATE1) return #STATE1;                                                                           \
+        if (state == STATE2) return #STATE2;                                                                           \
+        if (state == STATE3) return #STATE3;                                                                           \
+        if (state == STATE4) return #STATE4;                                                                           \
+        if (state == STATE5) return #STATE5;                                                                           \
+        if (state == STATE6) return #STATE6;                                                                           \
+        if (state == STATE7) return #STATE7;                                                                           \
+        if (state == STATE8) return #STATE8;                                                                           \
         else return StateMachine::StateToString(state);                                                                     \
     }             
 
@@ -228,17 +228,17 @@ public:                                                                         
     static const uint64 STATE8 = 256;                                                                                       \
     static const uint64 STATE9 = 512;                                                                                       \
                                                                                                                             \
-    virtual std::wstring StateToString(uint64 const state) const                                                            \
+    virtual std::string StateToString(uint64 const state) const                                                            \
     {                                                                                                                       \
-        if (state == STATE1) return L ## #STATE1;                                                                           \
-        if (state == STATE2) return L ## #STATE2;                                                                           \
-        if (state == STATE3) return L ## #STATE3;                                                                           \
-        if (state == STATE4) return L ## #STATE4;                                                                           \
-        if (state == STATE5) return L ## #STATE5;                                                                           \
-        if (state == STATE6) return L ## #STATE6;                                                                           \
-        if (state == STATE7) return L ## #STATE7;                                                                           \
-        if (state == STATE8) return L ## #STATE8;                                                                           \
-        if (state == STATE9) return L ## #STATE9;                                                                           \
+        if (state == STATE1) return #STATE1;                                                                           \
+        if (state == STATE2) return #STATE2;                                                                           \
+        if (state == STATE3) return #STATE3;                                                                           \
+        if (state == STATE4) return #STATE4;                                                                           \
+        if (state == STATE5) return #STATE5;                                                                           \
+        if (state == STATE6) return #STATE6;                                                                           \
+        if (state == STATE7) return #STATE7;                                                                           \
+        if (state == STATE8) return #STATE8;                                                                           \
+        if (state == STATE9) return #STATE9;                                                                           \
         else return StateMachine::StateToString(state);                                                                     \
     }             
 
@@ -255,18 +255,18 @@ public:                                                                         
     static const uint64 STATE9 = 512;                                                                                       \
     static const uint64 STATE10 = 1024;                                                                                     \
                                                                                                                             \
-    virtual std::wstring StateToString(uint64 const state) const                                                            \
+    virtual std::string StateToString(uint64 const state) const                                                            \
     {                                                                                                                       \
-        if (state == STATE1) return L ## #STATE1;                                                                           \
-        if (state == STATE2) return L ## #STATE2;                                                                           \
-        if (state == STATE3) return L ## #STATE3;                                                                           \
-        if (state == STATE4) return L ## #STATE4;                                                                           \
-        if (state == STATE5) return L ## #STATE5;                                                                           \
-        if (state == STATE6) return L ## #STATE6;                                                                           \
-        if (state == STATE7) return L ## #STATE7;                                                                           \
-        if (state == STATE8) return L ## #STATE8;                                                                           \
-        if (state == STATE9) return L ## #STATE9;                                                                           \
-        if (state == STATE10) return L ## #STATE10;                                                                         \
+        if (state == STATE1) return #STATE1;                                                                           \
+        if (state == STATE2) return #STATE2;                                                                           \
+        if (state == STATE3) return #STATE3;                                                                           \
+        if (state == STATE4) return #STATE4;                                                                           \
+        if (state == STATE5) return #STATE5;                                                                           \
+        if (state == STATE6) return #STATE6;                                                                           \
+        if (state == STATE7) return #STATE7;                                                                           \
+        if (state == STATE8) return #STATE8;                                                                           \
+        if (state == STATE9) return #STATE9;                                                                           \
+        if (state == STATE10) return #STATE10;                                                                         \
         else return StateMachine::StateToString(state);                                                                     \
     }
 
@@ -284,19 +284,19 @@ public:                                                                         
     static const uint64 STATE10 = 1024;                                                                                     \
     static const uint64 STATE11 = 2048;                                                                                     \
                                                                                                                             \
-    virtual std::wstring StateToString(uint64 const state) const                                                            \
+    virtual std::string StateToString(uint64 const state) const                                                            \
     {                                                                                                                       \
-        if (state == STATE1) return L ## #STATE1;                                                                           \
-        if (state == STATE2) return L ## #STATE2;                                                                           \
-        if (state == STATE3) return L ## #STATE3;                                                                           \
-        if (state == STATE4) return L ## #STATE4;                                                                           \
-        if (state == STATE5) return L ## #STATE5;                                                                           \
-        if (state == STATE6) return L ## #STATE6;                                                                           \
-        if (state == STATE7) return L ## #STATE7;                                                                           \
-        if (state == STATE8) return L ## #STATE8;                                                                           \
-        if (state == STATE9) return L ## #STATE9;                                                                           \
-        if (state == STATE10) return L ## #STATE10;                                                                         \
-        if (state == STATE11) return L ## #STATE11;                                                                         \
+        if (state == STATE1) return #STATE1;                                                                           \
+        if (state == STATE2) return #STATE2;                                                                           \
+        if (state == STATE3) return #STATE3;                                                                           \
+        if (state == STATE4) return #STATE4;                                                                           \
+        if (state == STATE5) return #STATE5;                                                                           \
+        if (state == STATE6) return #STATE6;                                                                           \
+        if (state == STATE7) return #STATE7;                                                                           \
+        if (state == STATE8) return #STATE8;                                                                           \
+        if (state == STATE9) return #STATE9;                                                                           \
+        if (state == STATE10) return #STATE10;                                                                         \
+        if (state == STATE11) return #STATE11;                                                                         \
         else return StateMachine::StateToString(state);                                                                     \
     }  
 
@@ -315,20 +315,20 @@ public:                                                                         
     static const uint64 STATE11 = 2048;                                                                                     \
     static const uint64 STATE12 = 4096;                                                                                     \
                                                                                                                             \
-    virtual std::wstring StateToString(uint64 const state) const                                                            \
+    virtual std::string StateToString(uint64 const state) const                                                            \
     {                                                                                                                       \
-        if(state == STATE1) return L ## #STATE1;                                                                            \
-        if(state == STATE2) return L ## #STATE2;                                                                            \
-        if(state == STATE3) return L ## #STATE3;                                                                            \
-        if(state == STATE4) return L ## #STATE4;                                                                            \
-        if(state == STATE5) return L ## #STATE5;                                                                            \
-        if(state == STATE6) return L ## #STATE6;                                                                            \
-        if(state == STATE7) return L ## #STATE7;                                                                            \
-        if(state == STATE8) return L ## #STATE8;                                                                            \
-        if(state == STATE9) return L ## #STATE9;                                                                            \
-        if(state == STATE10) return L ## #STATE10;                                                                          \
-        if(state == STATE11) return L ## #STATE11;                                                                          \
-        if(state == STATE12) return L ## #STATE12;                                                                          \
+        if(state == STATE1) return #STATE1;                                                                            \
+        if(state == STATE2) return #STATE2;                                                                            \
+        if(state == STATE3) return #STATE3;                                                                            \
+        if(state == STATE4) return #STATE4;                                                                            \
+        if(state == STATE5) return #STATE5;                                                                            \
+        if(state == STATE6) return #STATE6;                                                                            \
+        if(state == STATE7) return #STATE7;                                                                            \
+        if(state == STATE8) return #STATE8;                                                                            \
+        if(state == STATE9) return #STATE9;                                                                            \
+        if(state == STATE10) return #STATE10;                                                                          \
+        if(state == STATE11) return #STATE11;                                                                          \
+        if(state == STATE12) return #STATE12;                                                                          \
         else return StateMachine::StateToString(state);                                                                     \
     }
 

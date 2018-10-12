@@ -25,14 +25,14 @@ namespace Common
     {
     }
 
-    Uri::Uri(std::wstring const & scheme)
+    Uri::Uri(std::string const & scheme)
         : type_(UriType::Empty),
           scheme_(scheme)
     {
         Normalize();
     }
 
-    Uri::Uri(std::wstring const & scheme, std::wstring const & authority)
+    Uri::Uri(std::string const & scheme, std::string const & authority)
         : type_(authority.empty() ? UriType::Empty : UriType::AuthorityAbEmpty),
           scheme_(scheme),
           authority_(authority)
@@ -40,7 +40,7 @@ namespace Common
         Normalize();
     }
 
-    Uri::Uri(std::wstring const & scheme, std::wstring const & authority, std::wstring const & path)
+    Uri::Uri(std::string const & scheme, std::string const & authority, std::string const & path)
         : type_(authority.empty() ? (path.empty() ? UriType::Empty : UriType::Absolute) : UriType::AuthorityAbEmpty),
           scheme_(scheme),
           authority_(authority),
@@ -51,11 +51,11 @@ namespace Common
     }
 
     Uri::Uri(
-        std::wstring const & scheme,
-        std::wstring const & authority,
-        std::wstring const & path,
-        std::wstring const & query,
-        std::wstring const & fragment)
+        std::string const & scheme,
+        std::string const & authority,
+        std::string const & path,
+        std::string const & query,
+        std::string const & fragment)
         : type_(authority.empty() ? UriType::Absolute : UriType::AuthorityAbEmpty),
           scheme_(scheme),
           authority_(authority),
@@ -139,9 +139,9 @@ namespace Common
         }
     }
 
-    std::wstring Uri::ToString() const
+    std::string Uri::ToString() const
     {
-        std::wstring product;
+        std::string product;
         Common::StringWriter writer(product);
         WriteTo(writer, Common::FormatOptions(0, false, ""));
         return product;
@@ -156,10 +156,10 @@ namespace Common
                 contextSequenceId, 
                 scheme_,
                 authority_,
-                path_.empty() ? (fragment_.empty() ? L"" : L"/") : path_,
-                query_.empty() ? L"" : L"?",
+                path_.empty() ? (fragment_.empty() ? "" : "/") : path_,
+                query_.empty() ? "" : "?",
                 query_,
-                fragment_.empty() ? L"" : L"#",
+                fragment_.empty() ? "" : "#",
                 fragment_);
             break;
 
@@ -167,10 +167,10 @@ namespace Common
             CommonEventSource::Events->UriTrace(
                 contextSequenceId, 
                 scheme_,
-                path_.empty() ? L"/" : path_,
-                query_.empty() ? L"" : L"?",
+                path_.empty() ? "/" : path_,
+                query_.empty() ? "" : "?",
                 query_,
-                fragment_.empty() ? L"" : L"#",
+                fragment_.empty() ? "" : "#",
                 fragment_);
             break;
 
@@ -180,9 +180,9 @@ namespace Common
                 contextSequenceId, 
                 scheme_,
                 path_,
-                query_.empty() ? L"" : L"?",
+                query_.empty() ? "" : "?",
                 query_,
-                fragment_.empty() ? L"" : L"#",
+                fragment_.empty() ? "" : "#",
                 fragment_);
             break;
 
@@ -192,9 +192,9 @@ namespace Common
                 static_cast<int>(type_),
                 scheme_,
                 path_,
-                query_.empty() ? L"" : L"?",
+                query_.empty() ? "" : "?",
                 query_,
-                fragment_.empty() ? L"" : L"#",
+                fragment_.empty() ? "" : "#",
                 fragment_);
             break;
         }
@@ -205,17 +205,17 @@ namespace Common
         switch (type_)
         {
         case UriType::AuthorityAbEmpty:
-            w << scheme_ << L"://" << authority_;
+            w << scheme_ << "://" << authority_;
             break;
 
         case UriType::Absolute:
         case UriType::Rootless:
         case UriType::Empty:
-            w << scheme_ << L":";
+            w << scheme_ << ":";
             break;
 
         default:
-            w << L"UNRECOGNIZED-URI-TYPE: '" << static_cast<int>(type_) << L"'" << scheme_ << L":";
+            w << "UNRECOGNIZED-URI-TYPE: '" << static_cast<int>(type_) << "'" << scheme_ << ":";
         }
 
         if (!path_.empty())
@@ -224,34 +224,34 @@ namespace Common
         }
         else if (type_ == UriType::Absolute)
         {
-            w << L"/";
+            w << "/";
         }
         else if (UriType::AuthorityAbEmpty == type_ && !fragment_.empty()) // for service group
         {
-            w << L"/";
+            w << "/";
         }
 
         if (!query_.empty())
         {
-            w << L"?" << query_;
+            w << "?" << query_;
         }
         if (!fragment_.empty())
         {
-            w << L"#" << fragment_;
+            w << "#" << fragment_;
         }
     }
 
-    bool Uri::TryParse(std::wstring const & input, __out Uri & output)
+    bool Uri::TryParse(std::string const & input, __out Uri & output)
     {
         return TryParse(input, false, output);
     }
 
-    bool Uri::TryParseAndTraceOnFailure(std::wstring const & input, __out Uri & output)
+    bool Uri::TryParseAndTraceOnFailure(std::string const & input, __out Uri & output)
     {
         return TryParse(input, true, output);
     }
 
-    bool Uri::TryParse(std::wstring const & input, bool traceOnFailure, __out Uri & output)
+    bool Uri::TryParse(std::string const & input, bool traceOnFailure, __out Uri & output)
     {
         Uri::Parser parser(traceOnFailure);
 
@@ -262,14 +262,14 @@ namespace Common
 
         Uri uri;
         uri.type_ = parser.UriType;
-        uri.scheme_ = std::wstring(parser.SchemeStart, parser.SchemeEnd);
-        uri.authority_ = std::wstring(parser.AuthorityStart, parser.AuthorityEnd);
+        uri.scheme_ = std::string(parser.SchemeStart, parser.SchemeEnd);
+        uri.authority_ = std::string(parser.AuthorityStart, parser.AuthorityEnd);
         uri.hostType_ = parser.HostType;
-        uri.host_ = std::wstring(parser.HostStart, parser.HostEnd);
+        uri.host_ = std::string(parser.HostStart, parser.HostEnd);
         uri.port_ = parser.Port;
-        uri.path_ = std::wstring(parser.PathStart, parser.PathEnd);
-        uri.query_ = std::wstring(parser.QueryStart, parser.QueryEnd);
-        uri.fragment_ = std::wstring(parser.FragmentStart, parser.FragmentEnd);
+        uri.path_ = std::string(parser.PathStart, parser.PathEnd);
+        uri.query_ = std::string(parser.QueryStart, parser.QueryEnd);
+        uri.fragment_ = std::string(parser.FragmentStart, parser.FragmentEnd);
 
         uri.Normalize();
 
@@ -277,11 +277,11 @@ namespace Common
         uri.pathSegments_.reserve(segmentCount);
         for (size_t i=0; i<segmentCount; i++)
         {
-            std::wstring segment(parser.PathSegments[i].first, parser.PathSegments[i].second);
+            std::string segment(parser.PathSegments[i].first, parser.PathSegments[i].second);
 
             // We disallow relative references, so we do not support '.' or '..' in the path.
-            if (((segment.size() == 1) && (segment[0] == L'.')) ||
-                ((segment.size() == 2) && (segment[0] == L'.') && (segment[1] == L'.')))
+            if (((segment.size() == 1) && (segment[0] == '.')) ||
+                ((segment.size() == 2) && (segment[0] == '.') && (segment[1] == '.')))
             {
                 if (traceOnFailure)
                 {
@@ -318,22 +318,22 @@ namespace Common
 
     void Uri::Normalize()
     {
-        CharLowerBuff(const_cast<wchar_t*>(scheme_.c_str()), static_cast<DWORD>(scheme_.size()));
-        CharLowerBuff(const_cast<wchar_t*>(authority_.c_str()), static_cast<DWORD>(authority_.size()));
+        CharLowerBuff(const_cast<char*>(scheme_.c_str()), static_cast<DWORD>(scheme_.size()));
+        CharLowerBuff(const_cast<char*>(authority_.c_str()), static_cast<DWORD>(authority_.size()));
 
         // Removing trailing slash from authority with no path.
-        if ((type_ == UriType::AuthorityAbEmpty) && (path_.size() == 1) && (path_[0] == L'/'))
+        if ((type_ == UriType::AuthorityAbEmpty) && (path_.size() == 1) && (path_[0] == '/'))
         {
             path_.clear();
         }
     }
 
     // This is only used for test constructors that pass in the path directly.
-    std::wstring Uri::FixPathForConstructor(std::wstring const & path)
+    std::string Uri::FixPathForConstructor(std::string const & path)
     {
-        if (!path.empty() && (path[0] != L'/'))
+        if (!path.empty() && (path[0] != '/'))
         {
-            return L"/" + path;
+            return "/" + path;
         }
         else
         {
@@ -341,11 +341,11 @@ namespace Common
         }
     }
 
-    std::vector<std::wstring> Uri::GetSegments(std::wstring const & path)
+    std::vector<std::string> Uri::GetSegments(std::string const & path)
     {
-        std::vector<std::wstring> segments;
+        std::vector<std::string> segments;
 
-        StringUtility::Split<std::wstring>(path, segments, L"/");
+        StringUtility::Split<std::string>(path, segments, "/");
 
         // Path includes initial '/', so remove spurious initial segment unless it is the only one
         if ((segments.size() > 1) && (segments[0].size() == 0))

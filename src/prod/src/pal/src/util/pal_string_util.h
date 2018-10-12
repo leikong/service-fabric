@@ -9,8 +9,8 @@
 
 namespace Pal {
 
-std::wstring utf8to16(const char *str);
+std::string utf8to16(const char *str);
 
-std::string utf16to8(const wchar_t *wstr);
+std::string utf16to8(const char *wstr);
 
 }

@@ -27,7 +27,7 @@ namespace LeaseWrapper
         //      instanceId - the instance id.
         //        id - the node id.
         //
-        LeaseAgentInstance(std::wstring const& id, int64 instance)
+        LeaseAgentInstance(std::string const& id, int64 instance)
             : id_(id), instanceId_(instance)
         {
         }
@@ -53,10 +53,10 @@ namespace LeaseWrapper
 
         // Properties
         __declspec (property(get=getInstanceId)) int64 InstanceId;
-        __declspec (property(get=getId)) std::wstring const & Id;
+        __declspec (property(get=getId)) std::string const & Id;
 
         // Getter functions for properties.
-        std::wstring const & getId() const { return id_; }
+        std::string const & getId() const { return id_; }
         int64 getInstanceId() const { return instanceId_; }
 
         // Operators
@@ -70,16 +70,16 @@ namespace LeaseWrapper
             w.Write("{0}:{1}", id_, instanceId_);
         }
 
-        std::wstring ToString() const
+        std::string ToString() const
         {
-            std::wstring result;
+            std::string result;
             Common::StringWriter(result).Write(*this);
             return result;
         }
 
     private:
         // The node id of the node which this instance is of.
-        std::wstring id_;
+        std::string id_;
 
         // Ths unique instance of the node.
         int64 instanceId_;

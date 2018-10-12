@@ -27,5 +27,5 @@ Abstract:
 
 NTSTATUS
 KVolumeNamespaceTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     );

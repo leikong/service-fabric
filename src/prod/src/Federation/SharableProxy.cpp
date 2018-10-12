@@ -13,13 +13,13 @@ using namespace Store;
 using namespace Transport;
 using namespace LeaseWrapper;
 
-wchar_t* ArbitrationRecordType = L"Arbitration";
-wchar_t* LockKey = L"Lock";
-wchar_t* VoteOwnerType = L"VoteOwnerData";
+char* ArbitrationRecordType = "Arbitration";
+char* LockKey = "Lock";
+char* VoteOwnerType = "VoteOwnerData";
 
 StringLiteral const TraceFailure("Failure");
 
-SharableProxy::SharableProxy(std::shared_ptr<Store::ILocalStore> && store, wstring const & ringName, NodeId voteId, NodeId proxyId)
+SharableProxy::SharableProxy(std::shared_ptr<Store::ILocalStore> && store, string const & ringName, NodeId voteId, NodeId proxyId)
     :   VoteProxy(voteId, proxyId, true),
         store_(move(store)),
         ringName_(ringName)
@@ -66,7 +66,7 @@ ErrorCode SharableProxy::OnAcquire(__inout NodeConfig & ownerConfig,
     }
 
     VoteOwnerData ownerData;
-    wstring key;
+    string key;
     _int64 sequenceNumber;
     error = GetVoteOwnerData(trans, ownerData, sequenceNumber);
     bool dataFound = !error.IsError(ErrorCodeValue::EnumerationCompleted);
@@ -103,7 +103,7 @@ ErrorCode SharableProxy::OnAcquire(__inout NodeConfig & ownerConfig,
 ErrorCode SharableProxy::GetVoteOwnerData(ILocalStore::TransactionSPtr const & trans, VoteOwnerData &ownerData, _int64 & operationLSN)
 {
     ILocalStore::EnumerationSPtr owners;
-    ErrorCode error = store_->CreateEnumerationByTypeAndKey(trans, VoteOwnerType, L"", owners);
+    ErrorCode error = store_->CreateEnumerationByTypeAndKey(trans, VoteOwnerType, "", owners);
 
     if (error.IsSuccess())
     {
@@ -208,11 +208,11 @@ ErrorCode SharableProxy::SetVoteOwnerData(VoteOwnerData const & ownerData, ILoca
 
     if (sequenceNumber == -1)
     {
-        return store_->Insert(trans, VoteOwnerType, L"", buffer.data(), buffer.size(), ILocalStore::OperationNumberUnspecified);
+        return store_->Insert(trans, VoteOwnerType, "", buffer.data(), buffer.size(), ILocalStore::OperationNumberUnspecified);
     }
     else 
     {
-        return store_->Update(trans, VoteOwnerType, L"", sequenceNumber, L"", buffer.data(), buffer.size(), ILocalStore::OperationNumberUnspecified);
+        return store_->Update(trans, VoteOwnerType, "", sequenceNumber, "", buffer.data(), buffer.size(), ILocalStore::OperationNumberUnspecified);
     }
 }
 
@@ -284,7 +284,7 @@ bool SharableProxy::RecordVector::IsReverted() const
 void SharableProxy::RecordVector::RevertMonitor()
 {
     records_.clear();
-    records_.push_back(ArbitrationRecord(LeaseAgentInstance(L"", 0), DateTime::Now()));
+    records_.push_back(ArbitrationRecord(LeaseAgentInstance("", 0), DateTime::Now()));
     updated_ = true;
 }
 
@@ -635,8 +635,8 @@ void SharableProxy::AribtrateAsyncOperation::StartProcessing(AsyncOperationSPtr 
 
 ErrorCode SharableProxy::AribtrateAsyncOperation::PreventDeadlock(ILocalStore::TransactionSPtr const & transPtr)
 {
-    wstring type(ArbitrationRecordType);
-    wstring key(LockKey);
+    string type(ArbitrationRecordType);
+    string key(LockKey);
 
     return store_->Update(transPtr, type, key, ILocalStore::SequenceNumberIgnore, key, nullptr, 0, ILocalStore::OperationNumberUnspecified);
 }

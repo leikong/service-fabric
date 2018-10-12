@@ -7,20 +7,20 @@
 
 namespace Transport
 {
-    struct TcpAddressComparision : public std::binary_function<std::wstring, std::wstring, bool>
+    struct TcpAddressComparision : public std::binary_function<std::string, std::string, bool>
     {
-        bool operator()(const std::wstring & lhs, const std::wstring &rhs) const
+        bool operator()(const std::string & lhs, const std::string &rhs) const
         {
-            // _wcsicmp is chosen over much slower std::lexicographical_compare for address comparison, since
+            // strcasecmp is chosen over much slower std::lexicographical_compare for address comparison, since
             // addresses in our system come (mostly) from the same configuration file, so internationalization
             // is mostly a non-issue, besides, we do not guarantee semantic equivalence in address comparison
             // anyway, e.g. "127.0.0.1:80" versus "localhost:80".
-            return _wcsicmp(lhs.c_str(), rhs.c_str()) < 0;
+            return strcasecmp(lhs.c_str(), rhs.c_str()) < 0;
         }
     };
 
-    typedef std::map<std::wstring, TcpSendTargetWPtr, TcpAddressComparision> NamedSendTargetMap;
-    typedef std::pair<std::wstring, TcpSendTargetWPtr> NamedSendTargetPair;
+    typedef std::map<std::string, TcpSendTargetWPtr, TcpAddressComparision> NamedSendTargetMap;
+    typedef std::pair<std::string, TcpSendTargetWPtr> NamedSendTargetPair;
 
     typedef std::map<TcpSendTarget const*, TcpSendTargetWPtr> AnonymousSendTargetMap;
     typedef std::pair<TcpSendTarget const*, TcpSendTargetWPtr> AnonymousSendTargetPair;
@@ -36,21 +36,21 @@ namespace Transport
 
     public:
         static TcpDatagramTransportSPtr Create(
-            std::wstring const & address,
-            std::wstring const & id = L"",
-            std::wstring const & owner = L"");
+            std::string const & address,
+            std::string const & id = "",
+            std::string const & owner = "");
 
-        static TcpDatagramTransportSPtr CreateClient(std::wstring const & id = L"", std::wstring const & owner = L"");
+        static TcpDatagramTransportSPtr CreateClient(std::string const & id = "", std::string const & owner = "");
 
-        TcpDatagramTransport(std::wstring const & id, std::wstring const & owner);
-        TcpDatagramTransport(std::wstring const & listenAddress, std::wstring const & id, std::wstring const & owner);
+        TcpDatagramTransport(std::string const & id, std::string const & owner);
+        TcpDatagramTransport(std::string const & listenAddress, std::string const & id, std::string const & owner);
         ~TcpDatagramTransport() override;
 
         Common::ErrorCode Start(bool completeStart = true) override;
         Common::ErrorCode CompleteStart() override;
         void Stop(Common::TimeSpan timeout = Common::TimeSpan::Zero) override;
 
-        std::wstring const & TraceId() const override; 
+        std::string const & TraceId() const override; 
 
         void SetMessageHandler(MessageHandler const & handler) override;
 
@@ -71,7 +71,7 @@ namespace Transport
         void SetConnectionFaultHandler(ConnectionFaultHandler const &) override;
         void RemoveConnectionFaultHandler() override;
 
-        std::wstring const & ListenAddress() const override;
+        std::string const & ListenAddress() const override;
 
         TransportSecuritySPtr Security() const override;
         Common::ErrorCode SetSecurity(SecuritySettings const & securitySettings);
@@ -81,7 +81,7 @@ namespace Transport
         bool FrameHeaderErrorCheckingEnabled() const { return frameHeaderErrorCheckingEnabled_; }
         bool MessageErrorCheckingEnabled() const { return messageErrorCheckingEnabled_; }
 
-        std::wstring const & get_IdString() const override;
+        std::string const & get_IdString() const override;
 
         void DisableSecureSessionExpiration() override;
 
@@ -127,7 +127,7 @@ namespace Transport
         uint64 Instance() const;
         virtual void SetInstance(uint64 instance);
 
-        std::wstring const & Owner() const;
+        std::string const & Owner() const;
 
         bool IsClientOnly() const;
 
@@ -158,9 +158,9 @@ namespace Transport
 
     protected:
         ISendTarget::SPtr Resolve(
-            std::wstring const & address,
-            std::wstring const & targetId,
-            std::wstring const & sspiTarget,
+            std::string const & address,
+            std::string const & targetId,
+            std::string const & sspiTarget,
             uint64 instance) override;
 
     private:
@@ -188,9 +188,9 @@ namespace Transport
         void OnConnectionFault(ISendTarget const & target, Common::ErrorCode const & fault);
 
         TcpSendTargetSPtr InnerResolveTarget(
-            std::wstring const & address,
-            std::wstring const & targetId,
-            std::wstring const & sspiTarget,
+            std::string const & address,
+            std::string const & targetId,
+            std::string const & sspiTarget,
             bool ensureSspiTarget,
             uint64 instance);
 
@@ -244,10 +244,10 @@ namespace Transport
     private:
         MUTABLE_RWLOCK(TcpDatagramTransport, lock_);
 
-        std::wstring const id_;
-        std::wstring const traceId_;
-        std::wstring const owner_;
-        std::wstring listenAddress_;
+        std::string const id_;
+        std::string const traceId_;
+        std::string const owner_;
+        std::string listenAddress_;
         uint64 instance_ = 0;
         ResolveOptions::Enum hostnameResolveOption_;
         std::vector<Common::Endpoint> listenEndpoints_;

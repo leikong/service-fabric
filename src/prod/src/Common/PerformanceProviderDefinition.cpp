@@ -7,7 +7,7 @@
 
 using namespace Common;
 
-Guid PerformanceProviderDefinition::identifier_(L"B8225977-FE30-42B6-A071-E8F591988F9C");
+Guid PerformanceProviderDefinition::identifier_("B8225977-FE30-42B6-A071-E8F591988F9C");
 
 PerformanceProviderDefinition* PerformanceProviderDefinition::singletonInstance_ = new PerformanceProviderDefinition();
 

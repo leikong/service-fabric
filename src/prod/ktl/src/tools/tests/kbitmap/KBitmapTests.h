@@ -27,5 +27,5 @@ Abstract:
 
 NTSTATUS
 KBitmapTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     );

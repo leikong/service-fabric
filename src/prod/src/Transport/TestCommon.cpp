@@ -78,22 +78,22 @@ void TTestUtil::LeaveTest(char const * testName)
     AcceptThrottle::GetThrottle()->Test_Reset();
 }
 
-wstring TTestUtil::GetListenAddress(ListenAddressType::Enum listenAddressType)
+string TTestUtil::GetListenAddress(ListenAddressType::Enum listenAddressType)
 {
     switch (listenAddressType)
     {
     case ListenAddressType::LoopbackIpv4:
-        return GetListenAddress(L"127.0.0.1");
+        return GetListenAddress("127.0.0.1");
 
     case ListenAddressType::LoopbackIpv6:
-        return GetListenAddress(L"[::1]");
+        return GetListenAddress("[::1]");
 
     case ListenAddressType::Localhost:
-        return GetListenAddress(L"localhost");
+        return GetListenAddress("localhost");
 
     case ListenAddressType::Fqdn:
     {
-        wstring localFqdn;
+        string localFqdn;
         auto error = TcpTransportUtility::GetLocalFqdn(localFqdn);
         ASSERT_IFNOT(error.IsSuccess(), "TcpTransportUtility::GetLocalFqdn failed: {0}", error);
         return GetListenAddress(localFqdn);
@@ -104,7 +104,7 @@ wstring TTestUtil::GetListenAddress(ListenAddressType::Enum listenAddressType)
     }
 }
 
-wstring TTestUtil::GetListenAddress(wstring const & addressWithoutPort)
+string TTestUtil::GetListenAddress(string const & addressWithoutPort)
 {
     USHORT listenPort = 0;
     for(int i = 0; i < 600; ++i)
@@ -118,20 +118,20 @@ wstring TTestUtil::GetListenAddress(wstring const & addressWithoutPort)
             continue;
         }
 
-        return wformatString("{0}:{1}", addressWithoutPort, listenPort);
+        return formatString.L("{0}:{1}", addressWithoutPort, listenPort);
     }
 
     Assert::CodingError("failed to get a listen port");
 }
 
-wstring TTestUtil::GetGuidAction()
+string TTestUtil::GetGuidAction()
 {
     return Guid::NewGuid().ToString();
 }
 
 void TTestUtil::SetMessageHandler(
     IDatagramTransportSPtr transport,
-    wstring const & action,
+    string const & action,
     IDatagramTransport::MessageHandler const & handler)
 {
     transport->SetMessageHandler(
@@ -166,32 +166,32 @@ SecuritySettings TTestUtil::CreateTestSecuritySettings(SecurityProvider::Enum pr
     if (provider == SecurityProvider::Ssl)
     {
         SecurityConfig::X509NameMap remoteNames;
-        remoteNames.Add(L"WinFabricRing.Rings.WinFabricTestDomain.com", L"b3 44 9b 01 8d 0f 68 39 a2 c5 d6 2b 5b 6c 6a c8 22 b6 f6 62");
-        return CreateX509Settings(L"CN=WinFabric-Test-SAN1-Bob", remoteNames);
+        remoteNames.Add("WinFabricRing.Rings.WinFabricTestDomain.com", "b3 44 9b 01 8d 0f 68 39 a2 c5 d6 2b 5b 6c 6a c8 22 b6 f6 62");
+        return CreateX509Settings("CN=WinFabric-Test-SAN1-Bob", remoteNames);
     }
 
     securitySettings.Test_SetRawValues(provider, protectionLevel);
     return securitySettings;
 }
 
-SecuritySettings TTestUtil::CreateSvrX509Settings_ClaimsTest(wstring const & svrCertThumbprint, wstring const & clientCertThumbprints)
+SecuritySettings TTestUtil::CreateSvrX509Settings_ClaimsTest(string const & svrCertThumbprint, string const & clientCertThumbprints)
 {
     SecuritySettings securitySettings;
     auto error = SecuritySettings::FromConfiguration(
-        L"X509",
+        "X509",
         X509Default::StoreName(),
-        wformatString(X509Default::StoreLocation()),
-        wformatString(X509FindType::FindByThumbprint),
+        formatString(X509Default::StoreLocation()),
+        formatString(X509FindType::FindByThumbprint),
         svrCertThumbprint,
-        L"",
-        wformatString(ProtectionLevel::EncryptAndSign),
+        "",
+        formatString(ProtectionLevel::EncryptAndSign),
         clientCertThumbprints,
         SecurityConfig::X509NameMap(),
         SecurityConfig::IssuerStoreKeyValueMap(),
-        L"",
-        L"",
-        L"",
-        L"",
+        "",
+        "",
+        "",
+        "",
         securitySettings);
 
     ASSERT_IFNOT(error.IsSuccess(), "SecuritySettings::FromConfiguration failed: {0}", error);
@@ -199,25 +199,25 @@ SecuritySettings TTestUtil::CreateSvrX509Settings_ClaimsTest(wstring const & svr
 }
 
 SecuritySettings TTestUtil::CreateX509Settings(
-    wstring const & subjectNameFindValue,
+    string const & subjectNameFindValue,
     SecurityConfig::X509NameMap const & remoteX509Names)
 {
     SecuritySettings securitySettings;
     auto error = SecuritySettings::FromConfiguration(
-        L"X509",
+        "X509",
         X509Default::StoreName(),
-        wformatString(X509Default::StoreLocation()),
-        wformatString(X509FindType::FindBySubjectName),
+        formatString(X509Default::StoreLocation()),
+        formatString(X509FindType::FindBySubjectName),
         subjectNameFindValue,
-        L"",
-        wformatString(ProtectionLevel::EncryptAndSign),
-        L"",
+        "",
+        formatString(ProtectionLevel::EncryptAndSign),
+        "",
         remoteX509Names,
         SecurityConfig::IssuerStoreKeyValueMap(),
-        L"",
-        L"",
-        L"",
-        L"",
+        "",
+        "",
+        "",
+        "",
         securitySettings);
 
     ASSERT_IFNOT(error.IsSuccess(), "SecuritySettings::FromConfiguration failed: {0}", error);
@@ -225,25 +225,25 @@ SecuritySettings TTestUtil::CreateX509Settings(
 }
 
 SecuritySettings TTestUtil::CreateX509Settings2(
-    wstring const & thumbprintFindValue,
+    string const & thumbprintFindValue,
     SecurityConfig::X509NameMap const & remoteX509Names)
 {
     SecuritySettings securitySettings;
     auto error = SecuritySettings::FromConfiguration(
-        L"X509",
+        "X509",
         X509Default::StoreName(),
-        wformatString(X509Default::StoreLocation()),
-        wformatString(X509FindType::FindByThumbprint),
+        formatString(X509Default::StoreLocation()),
+        formatString(X509FindType::FindByThumbprint),
         thumbprintFindValue,
-        L"",
-        wformatString(ProtectionLevel::EncryptAndSign),
-        L"",
+        "",
+        formatString(ProtectionLevel::EncryptAndSign),
+        "",
         remoteX509Names,
         SecurityConfig::IssuerStoreKeyValueMap(),
-        L"",
-        L"",
-        L"",
-        L"",
+        "",
+        "",
+        "",
+        "",
         securitySettings);
 
     ASSERT_IFNOT(error.IsSuccess(), "SecuritySettings::FromConfiguration failed: {0}", error);
@@ -251,26 +251,26 @@ SecuritySettings TTestUtil::CreateX509Settings2(
 }
 
 SecuritySettings TTestUtil::CreateX509Settings(
-    wstring const & subjectNameFindValue,
+    string const & subjectNameFindValue,
     SecurityConfig::X509NameMap const & remoteX509Names,
     SecurityConfig::IssuerStoreKeyValueMap const & issuerStores)
 {
     SecuritySettings securitySettings;
     auto error = SecuritySettings::FromConfiguration(
-        L"X509",
+        "X509",
         X509Default::StoreName(),
-        wformatString(X509Default::StoreLocation()),
-        wformatString(X509FindType::FindBySubjectName),
+        formatString(X509Default::StoreLocation()),
+        formatString(X509FindType::FindBySubjectName),
         subjectNameFindValue,
-        L"",
-        wformatString(ProtectionLevel::EncryptAndSign),
-        L"",
+        "",
+        formatString(ProtectionLevel::EncryptAndSign),
+        "",
         remoteX509Names,
         issuerStores,
-        L"",
-        L"",
-        L"",
-        L"",
+        "",
+        "",
+        "",
+        "",
         securitySettings);
 
     ASSERT_IFNOT(error.IsSuccess(), "SecuritySettings::FromConfiguration failed: {0}", error);
@@ -278,10 +278,10 @@ SecuritySettings TTestUtil::CreateX509Settings(
 }
 
 SecuritySettings TTestUtil::CreateX509Settings(
-    wstring const & subjectNameFindValue,
-    wstring const & subjectNameFindValueSecondary,
-    wstring const & remoteCommonNames,
-    wstring const & certIssuerThumbprints)
+    string const & subjectNameFindValue,
+    string const & subjectNameFindValueSecondary,
+    string const & remoteCommonNames,
+    string const & certIssuerThumbprints)
 {
     SecurityConfig::X509NameMap remoteNames;
     auto error = remoteNames.AddNames(remoteCommonNames, certIssuerThumbprints);
@@ -289,20 +289,20 @@ SecuritySettings TTestUtil::CreateX509Settings(
 
     SecuritySettings securitySettings;
     error = SecuritySettings::FromConfiguration(
-        L"X509",
+        "X509",
         X509Default::StoreName(),
-        wformatString(X509Default::StoreLocation()),
-        wformatString(X509FindType::FindBySubjectName),
+        formatString(X509Default::StoreLocation()),
+        formatString(X509FindType::FindBySubjectName),
         subjectNameFindValue,
         subjectNameFindValueSecondary,
-        wformatString(ProtectionLevel::EncryptAndSign),
-        L"",
+        formatString(ProtectionLevel::EncryptAndSign),
+        "",
         remoteNames,
         SecurityConfig::IssuerStoreKeyValueMap(),
-        L"",
-        L"",
-        L"",
-        L"",
+        "",
+        "",
+        "",
+        "",
         securitySettings);
 
     ASSERT_IFNOT(error.IsSuccess(), "SecuritySettings::FromConfiguration failed: {0}", error);
@@ -310,38 +310,38 @@ SecuritySettings TTestUtil::CreateX509Settings(
 }
 
 SecuritySettings TTestUtil::CreateX509Settings(
-    wstring const & subjectNameFindValue,
-    wstring const & remoteCommonNames,
-    wstring const & certIssuerThumbprints)
+    string const & subjectNameFindValue,
+    string const & remoteCommonNames,
+    string const & certIssuerThumbprints)
 {
-    return CreateX509Settings(subjectNameFindValue, L"", remoteCommonNames, certIssuerThumbprints);
+    return CreateX509Settings(subjectNameFindValue, "", remoteCommonNames, certIssuerThumbprints);
 }
 
 SecuritySettings TTestUtil::CreateX509Settings(
-    wstring const & subjectNameFindValue,
-    wstring const & remoteCommonNames,
+    string const & subjectNameFindValue,
+    string const & remoteCommonNames,
     SecurityConfig::IssuerStoreKeyValueMap const & certIssuerStores)
 {
     SecurityConfig::X509NameMap remoteNames;
-    auto error = remoteNames.AddNames(remoteCommonNames, L"");
+    auto error = remoteNames.AddNames(remoteCommonNames, "");
     ASSERT_IFNOT(error.IsSuccess(), "X509NameMap::AddNames() failed: {0}", error);
 
     SecuritySettings securitySettings;
     error = SecuritySettings::FromConfiguration(
-        L"X509",
+        "X509",
         X509Default::StoreName(),
-        wformatString(X509Default::StoreLocation()),
-        wformatString(X509FindType::FindBySubjectName),
+        formatString(X509Default::StoreLocation()),
+        formatString(X509FindType::FindBySubjectName),
         subjectNameFindValue,
-        L"",
-        wformatString(ProtectionLevel::EncryptAndSign),
-        L"",
+        "",
+        formatString(ProtectionLevel::EncryptAndSign),
+        "",
         remoteNames,
         certIssuerStores,
-        L"",
-        L"",
-        L"",
-        L"",
+        "",
+        "",
+        "",
+        "",
         securitySettings);
 
     ASSERT_IFNOT(error.IsSuccess(), "SecuritySettings::FromConfiguration failed: {0}", error);
@@ -349,9 +349,9 @@ SecuritySettings TTestUtil::CreateX509Settings(
 }
 
 SecuritySettings TTestUtil::CreateX509Settings3(
-    wstring const & findBySubjectAltName,
-    wstring const & remoteCommonNames,
-    wstring const & certIssuerThumbprints)
+    string const & findBySubjectAltName,
+    string const & remoteCommonNames,
+    string const & certIssuerThumbprints)
 {
     SecurityConfig::X509NameMap remoteNames;
     auto error = remoteNames.AddNames(remoteCommonNames, certIssuerThumbprints);
@@ -359,20 +359,20 @@ SecuritySettings TTestUtil::CreateX509Settings3(
 
     SecuritySettings securitySettings;
     error = SecuritySettings::FromConfiguration(
-        L"X509",
+        "X509",
         X509Default::StoreName(),
-        wformatString(X509Default::StoreLocation()),
-        wformatString(X509FindType::FindByExtension),
+        formatString(X509Default::StoreLocation()),
+        formatString(X509FindType::FindByExtension),
         findBySubjectAltName,
-        L"",
-        wformatString(ProtectionLevel::EncryptAndSign),
-        L"",
+        "",
+        formatString(ProtectionLevel::EncryptAndSign),
+        "",
         remoteNames,
         SecurityConfig::IssuerStoreKeyValueMap(),
-        L"",
-        L"",
-        L"",
-        L"",
+        "",
+        "",
+        "",
+        "",
         securitySettings);
 
     ASSERT_IFNOT(error.IsSuccess(), "SecuritySettings::FromConfiguration failed: {0}", error);
@@ -380,10 +380,10 @@ SecuritySettings TTestUtil::CreateX509Settings3(
 }
 
 SecuritySettings TTestUtil::CreateX509Settings2(
-    wstring const & thumbprintFindValue,
-    wstring const & thumbprintFindValueSecondary,
-    wstring const & remoteCommonNames,
-    wstring const & certIssuerThumbprints)
+    string const & thumbprintFindValue,
+    string const & thumbprintFindValueSecondary,
+    string const & remoteCommonNames,
+    string const & certIssuerThumbprints)
 {
     SecurityConfig::X509NameMap remoteNames;
     auto error = remoteNames.AddNames(remoteCommonNames, certIssuerThumbprints);
@@ -391,20 +391,20 @@ SecuritySettings TTestUtil::CreateX509Settings2(
 
     SecuritySettings securitySettings;
     error = SecuritySettings::FromConfiguration(
-        L"X509",
+        "X509",
         X509Default::StoreName(),
-        wformatString(X509Default::StoreLocation()),
-        wformatString(X509FindType::FindByThumbprint),
+        formatString(X509Default::StoreLocation()),
+        formatString(X509FindType::FindByThumbprint),
         thumbprintFindValue,
         thumbprintFindValueSecondary,
-        wformatString(ProtectionLevel::EncryptAndSign),
-        L"",
+        formatString(ProtectionLevel::EncryptAndSign),
+        "",
         remoteNames,
         SecurityConfig::IssuerStoreKeyValueMap(),
-        L"",
-        L"",
-        L"",
-        L"",
+        "",
+        "",
+        "",
+        "",
         securitySettings);
 
     ASSERT_IFNOT(error.IsSuccess(), "SecuritySettings::FromConfiguration failed: {0}", error);
@@ -412,30 +412,30 @@ SecuritySettings TTestUtil::CreateX509Settings2(
 }
 
 SecuritySettings TTestUtil::CreateX509SettingsBySan(
-    wstring const & storeName,
-    wstring const & localDnsNameInSan,
-    wstring const & remoteDnsNameInSan)
+    string const & storeName,
+    string const & localDnsNameInSan,
+    string const & remoteDnsNameInSan)
 {
     SecurityConfig::X509NameMap remoteNames;
-    auto error = remoteNames.AddNames(remoteDnsNameInSan, L"");
+    auto error = remoteNames.AddNames(remoteDnsNameInSan, "");
     ASSERT_IFNOT(error.IsSuccess(), "X509NameMap::AddNames() failed: {0}", error);
 
     SecuritySettings securitySettings;
     error = SecuritySettings::FromConfiguration(
-        L"X509",
+        "X509",
         storeName,
-        wformatString(X509Default::StoreLocation()),
-        wformatString(X509FindType::FindByExtension),
-        L"2.5.29.17:3=" + localDnsNameInSan,
-        L"",
-        wformatString(ProtectionLevel::EncryptAndSign),
-        L"",
+        formatString(X509Default::StoreLocation()),
+        formatString(X509FindType::FindByExtension),
+        "2.5.29.17:3=" + localDnsNameInSan,
+        "",
+        formatString(ProtectionLevel::EncryptAndSign),
+        "",
         remoteNames,
         SecurityConfig::IssuerStoreKeyValueMap(),
-        L"",
-        L"",
-        L"",
-        L"",
+        "",
+        "",
+        "",
+        "",
         securitySettings);
 
     ASSERT_IFNOT(error.IsSuccess(), "SecuritySettings::FromConfiguration failed: {0}", error);
@@ -443,35 +443,35 @@ SecuritySettings TTestUtil::CreateX509SettingsBySan(
 }
 
 SecuritySettings TTestUtil::CreateX509Settings2(
-    wstring const & thumbprintFindValue,
-    wstring const & remoteCommonNames,
-    wstring const & certIssuerThumbprints)
+    string const & thumbprintFindValue,
+    string const & remoteCommonNames,
+    string const & certIssuerThumbprints)
 {
-    return CreateX509Settings2(thumbprintFindValue, L"", remoteCommonNames, certIssuerThumbprints);
+    return CreateX509Settings2(thumbprintFindValue, "", remoteCommonNames, certIssuerThumbprints);
 }
 
 SecuritySettings TTestUtil::CreateX509SettingsForRoundTripTest(
-    wstring const & certIssuerThumbprints,
-    wstring const & remoteCertThumbprints,
-    wstring const & findValueSecondary,
+    string const & certIssuerThumbprints,
+    string const & remoteCertThumbprints,
+    string const & findValueSecondary,
     X509FindType::Enum findType)
 {
     SecuritySettings securitySettings;
     auto error = SecuritySettings::FromConfiguration(
-        L"X509",
+        "X509",
         X509Default::StoreName(),
-        wformatString(X509Default::StoreLocation()),
-        wformatString(findType),
-        (findType == X509FindType::FindByThumbprint) ? L"00 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 00" : L"CN=SomeName",
+        formatString(X509Default::StoreLocation()),
+        formatString(findType),
+        (findType == X509FindType::FindByThumbprint) ? "00 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 00" : "CN=SomeName",
         findValueSecondary,
-        wformatString(ProtectionLevel::EncryptAndSign),
+        formatString(ProtectionLevel::EncryptAndSign),
         remoteCertThumbprints,
         SecurityConfig::X509NameMap(),
         SecurityConfig::IssuerStoreKeyValueMap(),
-        L"RemoteName",
+        "RemoteName",
         certIssuerThumbprints,
-        L"",
-        L"",
+        "",
+        "",
         securitySettings);
 
     ASSERT_IFNOT(error.IsSuccess(), "SecuritySettings::FromConfiguration failed: {0}", error);
@@ -479,29 +479,29 @@ SecuritySettings TTestUtil::CreateX509SettingsForRoundTripTest(
 }
 
 SecuritySettings TTestUtil::CreateX509SettingsTp(
-    wstring const & localCertThumbprint,
-    wstring const & localCertThumbprint2,
-    wstring const & remoteCertThumbprint,
-    wstring const & remoteCertThumbprint2)
+    string const & localCertThumbprint,
+    string const & localCertThumbprint2,
+    string const & remoteCertThumbprint,
+    string const & remoteCertThumbprint2)
 {
-    auto remoteTpList = remoteCertThumbprint2.empty() ? remoteCertThumbprint : wformatString("{0},{1}", remoteCertThumbprint, remoteCertThumbprint2);
+    auto remoteTpList = remoteCertThumbprint2.empty() ? remoteCertThumbprint : formatString.L("{0},{1}", remoteCertThumbprint, remoteCertThumbprint2);
 
     SecuritySettings securitySettings;
     auto error = SecuritySettings::FromConfiguration(
-        L"X509",
+        "X509",
         X509Default::StoreName(),
-        wformatString(X509Default::StoreLocation()),
-        wformatString(X509FindType::FindByThumbprint),
+        formatString(X509Default::StoreLocation()),
+        formatString(X509FindType::FindByThumbprint),
         localCertThumbprint,
         localCertThumbprint2,
-        wformatString(ProtectionLevel::EncryptAndSign),
+        formatString(ProtectionLevel::EncryptAndSign),
         remoteTpList,
         SecurityConfig::X509NameMap(),
         SecurityConfig::IssuerStoreKeyValueMap(),
-        L"",
-        L"",
-        L"",
-        L"",
+        "",
+        "",
+        "",
+        "",
         securitySettings);
 
     ASSERT_IFNOT(error.IsSuccess(), "SecuritySettings::FromConfiguration failed: {0}", error);
@@ -509,25 +509,25 @@ SecuritySettings TTestUtil::CreateX509SettingsTp(
 }
 
 SecuritySettings TTestUtil::CreateX509Settings_LoadByName_AuthByThumbprint(
-    wstring const & localCertCommonName,
-    wstring const & remoteCertThumbprint)
+    string const & localCertCommonName,
+    string const & remoteCertThumbprint)
 {
     SecuritySettings securitySettings;
     auto error = SecuritySettings::FromConfiguration(
-        L"X509",
+        "X509",
         X509Default::StoreName(),
-        wformatString(X509Default::StoreLocation()),
-        wformatString(X509FindType::FindBySubjectName),
+        formatString(X509Default::StoreLocation()),
+        formatString(X509FindType::FindBySubjectName),
         localCertCommonName,
-        L"",
-        wformatString(ProtectionLevel::EncryptAndSign),
+        "",
+        formatString(ProtectionLevel::EncryptAndSign),
         remoteCertThumbprint,
         SecurityConfig::X509NameMap(),
         SecurityConfig::IssuerStoreKeyValueMap(),
-        L"",
-        L"",
-        L"",
-        L"",
+        "",
+        "",
+        "",
+        "",
         securitySettings);
 
     ASSERT_IFNOT(error.IsSuccess(), "SecuritySettings::FromConfiguration failed: {0}", error);
@@ -535,51 +535,51 @@ SecuritySettings TTestUtil::CreateX509Settings_LoadByName_AuthByThumbprint(
 }
 
 SecuritySettings TTestUtil::CreateX509Settings_CertRefresh_IssuerStore(
-    wstring const & localCertCommonName,
+    string const & localCertCommonName,
     SecurityConfig::X509NameMap remoteNames,
     SecurityConfig::IssuerStoreKeyValueMap issuerStores)
 {
     SecuritySettings securitySettings;
 
     auto error = SecuritySettings::FromConfiguration(
-        L"X509",
-        L"Root",
-        wformatString(X509Default::StoreLocation()),
-        wformatString(X509FindType::FindBySubjectName),
+        "X509",
+        "Root",
+        formatString(X509Default::StoreLocation()),
+        formatString(X509FindType::FindBySubjectName),
         localCertCommonName,
-        L"",
-        wformatString(ProtectionLevel::EncryptAndSign),
-        L"",
+        "",
+        formatString(ProtectionLevel::EncryptAndSign),
+        "",
         remoteNames,
         issuerStores,
-        L"",
-        L"",
-        L"",
-        L"",
+        "",
+        "",
+        "",
+        "",
         securitySettings);
 
     ASSERT_IFNOT(error.IsSuccess(), "SecuritySettings::FromConfiguration failed: {0}", error);
     return securitySettings;
 }
 
-SecuritySettings TTestUtil::CreateX509SettingsExpired(wstring const & remoteCommonNames)
+SecuritySettings TTestUtil::CreateX509SettingsExpired(string const & remoteCommonNames)
 {
     SecuritySettings securitySettings;
     auto error = SecuritySettings::FromConfiguration(
-        L"X509",
-        L"Root",
-        wformatString(X509Default::StoreLocation()),
-        wformatString(X509FindType::FindBySubjectName),
-        L"CN=WinFabric-Test-Expired",
-        L"",
-        wformatString(ProtectionLevel::EncryptAndSign),
-        L"",
+        "X509",
+        "Root",
+        formatString(X509Default::StoreLocation()),
+        formatString(X509FindType::FindBySubjectName),
+        "CN=WinFabric-Test-Expired",
+        "",
+        formatString(ProtectionLevel::EncryptAndSign),
+        "",
         SecurityConfig::X509NameMap(),
         SecurityConfig::IssuerStoreKeyValueMap(),
         remoteCommonNames,
-        L"",
-        L"",
-        L"",
+        "",
+        "",
+        "",
         securitySettings);
 
     ASSERT_IFNOT(error.IsSuccess(), "SecuritySettings::FromConfiguration failed: {0}", error);
@@ -589,20 +589,20 @@ SecuritySettings TTestUtil::CreateX509SettingsExpired(wstring const & remoteComm
 SecuritySettings TTestUtil::CreateKerbSettings()
 {
     SecuritySettings securitySettings;
-    auto error = SecuritySettings::CreateKerberos(L"", L"", wformatString(ProtectionLevel::EncryptAndSign), securitySettings);
+    auto error = SecuritySettings::CreateKerberos("", "", formatString(ProtectionLevel::EncryptAndSign), securitySettings);
     ASSERT_IFNOT(error.IsSuccess(), "SecuritySettings::CreateKerberos failed: {0}", error);
     return securitySettings;
 }
 
-void TTestUtil::CopyFile(std::wstring const & file, std::wstring const & srcDir, std::wstring & destDir)
+void TTestUtil::CopyFile(std::string const & file, std::string const & srcDir, std::string & destDir)
 {
-    wstring srcPath = Path::Combine(srcDir, Path::GetFileName(file));
-    wstring destPath = Path::Combine(destDir, Path::GetFileName(file));
+    string srcPath = Path::Combine(srcDir, Path::GetFileName(file));
+    string destPath = Path::Combine(destDir, Path::GetFileName(file));
     auto error = File::Copy(srcPath, destPath, true);
     Invariant(error.IsSuccess());
 }
 
-void TTestUtil::CopyFiles(std::vector<std::wstring> const & files, std::wstring const & srcDir, std::wstring & destDir)
+void TTestUtil::CopyFiles(std::vector<std::string> const & files, std::string const & srcDir, std::string & destDir)
 {
     for (auto const & file : files)
     {
@@ -633,20 +633,20 @@ void TTestUtil::DisableSendThrottling()
 #ifndef PLATFORM_UNIX
 
 void TTestUtil::CreateRemoteProcessWithPsExec(
-    wstring const & computer, 
-    wstring const & cmdline,
-    wstring const & workDir,
+    string const & computer, 
+    string const & cmdline,
+    string const & workDir,
     DWORD flags)
 {
-    //vector<wstring> tokens;
-    //StringUtility::Split<wstring>(cmdline, tokens, L" ");
-    //wstring outputFile = wformatString("{0}.out.txt", Path::GetFileName(tokens.front()));
+    //vector<string> tokens;
+    //StringUtility::Split<string>(cmdline, tokens, " ");
+    //string outputFile = formatString.L("{0}.out.txt", Path::GetFileName(tokens.front()));
 
-    //wstring cmd = wformatString("psexec -c -w {0} {1} {2} > {3}", workDir, computer, cmdline, outputFile);
-    auto cmd = wformatString("psexec -c -f -w {0} {1} {2}", workDir, computer, cmdline);
+    //string cmd = formatString.L("psexec -c -w {0} {1} {2} > {3}", workDir, computer, cmdline, outputFile);
+    auto cmd = formatString.L("psexec -c -f -w {0} {1} {2}", workDir, computer, cmdline);
     wcout << "TTestUtil::CreateRemoteProcess: " << cmd << endl;
     HandleUPtr processHandle, threadHandle;
-    vector<wchar_t> environmentBlock;
+    vector<char> environmentBlock;
     auto error = ProcessUtility::CreateProcess(
         cmd,
         workDir,
@@ -682,9 +682,9 @@ static BOOL CALLBACK ComSecInitConfigFunction(PINIT_ONCE, PVOID, PVOID *)
 static INIT_ONCE comSecInitOnceFlag = INIT_ONCE_STATIC_INIT; // CoInitializeSecurity needs to be called exactly once
 
 void TTestUtil::CreateRemoteProcess(
-    wstring const & computer,
-    wstring const & cmdline,
-    wstring const & workDir,
+    string const & computer,
+    string const & cmdline,
+    string const & workDir,
     DWORD/*flags*/)
 {
     PVOID lpContext = nullptr;;
@@ -703,7 +703,7 @@ void TTestUtil::CreateRemoteProcess(
     ComPointer<IWbemServices> services;
 
     // Connect to remote root\default namespace with the current user.
-    wstring remoteNamespace = computer + L"\\root\\cimv2";
+    string remoteNamespace = computer + "\\root\\cimv2";
     wcout << "remote namespace = " << remoteNamespace << endl;
     BSTR rns = SysAllocString(remoteNamespace.c_str());
     KFinally([=] { SysFreeString(rns); });
@@ -733,9 +733,9 @@ void TTestUtil::CreateRemoteProcess(
 
     Invariant(SUCCEEDED(hr));
 
-    BSTR className = SysAllocString(L"Win32_Process");
+    BSTR className = SysAllocString("Win32_Process");
     KFinally([=] { SysFreeString(className); });
-    BSTR methodName = SysAllocString(L"Create");
+    BSTR methodName = SysAllocString("Create");
     KFinally([=] { SysFreeString(methodName); });
 
     ComPointer<IWbemClassObject> classCPtr;
@@ -756,14 +756,14 @@ void TTestUtil::CreateRemoteProcess(
     varCommand.bstrVal = _bstr_t(cmdline.c_str());
 
     // Store the value for the in parameters
-    hr = classInstance->Put(L"CommandLine", 0, &varCommand, 0);
+    hr = classInstance->Put("CommandLine", 0, &varCommand, 0);
     Invariant(SUCCEEDED(hr));
 
     VARIANT varCommand2;
     varCommand2.vt = VT_BSTR;
     varCommand2.bstrVal = _bstr_t(workDir.c_str());
 
-    hr = classInstance->Put(L"CurrentDirectory", 0, &varCommand2, 0);
+    hr = classInstance->Put("CurrentDirectory", 0, &varCommand2, 0);
     Invariant(SUCCEEDED(hr));
 
     // Execute Method

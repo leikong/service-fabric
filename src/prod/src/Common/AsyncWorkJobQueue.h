@@ -35,8 +35,8 @@ namespace Common
         DENY_COPY(AsyncWorkJobQueue);
     public:
         AsyncWorkJobQueue(
-            std::wstring const & ownerName,
-            std::wstring const & ownerInstance,
+            std::string const & ownerName,
+            std::string const & ownerInstance,
             ComponentRootSPtr && rootSPtr,
             JobQueueConfigSettingsHolderUPtr && settingsHolder,
             bool createPerfCounters = true,
@@ -77,8 +77,8 @@ namespace Common
             Trace.WriteInfo("AsyncWorkJobQueue", name_, ".dtor");
         }
 
-        __declspec (property(get = get_Name)) std::wstring const & Name;
-        std::wstring const & get_Name() { return name_; }
+        __declspec (property(get = get_Name)) std::string const & Name;
+        std::string const & get_Name() { return name_; }
 
         virtual void Close()
         {
@@ -86,7 +86,7 @@ namespace Common
             { // lock
                 AcquireExclusiveLock grab(lock_);
                 isClosed_ = true;
-                completeClose = CompleteCloseIfNeededCallerHoldsLock(L"Close()");
+                completeClose = CompleteCloseIfNeededCallerHoldsLock("Close()");
                 if (!completeClose)
                 {
                     Trace.WriteInfo("AsyncWorkJobQueue", name_, "Close called: {0}", *this);
@@ -208,7 +208,7 @@ namespace Common
                         TerminateThreadCallerHoldsLock();
                         if (isClosed_)
                         {
-                            completeClose = CompleteCloseIfNeededCallerHoldsLock(L"Process()");
+                            completeClose = CompleteCloseIfNeededCallerHoldsLock("Process()");
                         }
                     }                    
                 } // endlock
@@ -476,7 +476,7 @@ namespace Common
             --activeThreads_;
         }
 
-        bool CompleteCloseIfNeededCallerHoldsLock(std::wstring const & caller)
+        bool CompleteCloseIfNeededCallerHoldsLock(std::string const & caller)
         {
             if (activeThreads_ == 0 &&
                 isClosed_ &&
@@ -568,7 +568,7 @@ namespace Common
             }
         };
 
-        std::wstring name_;
+        std::string name_;
         ComponentRootSPtr rootSPtr_;
         JobQueueConfigSettingsHolderUPtr settingsHolder_;
         AsyncWorkJobQueuePerfCountersSPtr perfCounters_;

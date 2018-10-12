@@ -653,7 +653,7 @@ RvdLogManagerImp::RvdOnDiskLog::PopulateLogState(__in LogState::SPtr& State)
         _NextLsnToWrite = State->_NextLsnToWrite;
         _HighestCompletedLsn = State->_HighestCompletedLsn;
         _CompletingStreamWriteLsnOrderedGate->SetNextOrderedItemValue(_NextLsnToWrite);
-        KMemCpySafe(&_LogType, sizeof(_LogType), &State->_LogType, RvdLogManager::AsyncCreateLog::MaxLogTypeLength*sizeof(WCHAR));
+        KMemCpySafe(&_LogType, sizeof(_LogType), &State->_LogType, RvdLogManager::AsyncCreateLog::MaxLogTypeLength*sizeof(CHAR));
 
         for (ULONG ix = 0; ix < State->_NumberOfStreams; ix++)
         {

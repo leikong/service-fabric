@@ -20,13 +20,13 @@
 #define VERIFY_IS_TRUE(cond, msg) if (! (cond)) { printf("Failure %s in %s at line %d\n",  msg, __FILE__, __LINE__); ExitProcess(static_cast<UINT>(-1)); }
 
 #define CONVERT_TO_ARGS(argc, cargs) \
-    std::vector<WCHAR*> args_vec(argc);\
-    WCHAR** args = (WCHAR**)args_vec.data();\
-    std::vector<std::wstring> wargs(argc);\
+    std::vector<CHAR*> args_vec(argc);\
+    CHAR** args = (CHAR**)args_vec.data();\
+    std::vector<std::string> wargs(argc);\
     for (int iter = 0; iter < argc; iter++)\
     {\
         wargs[iter] = Utf8To16(cargs[iter]);\
-        args[iter] = (WCHAR*)(wargs[iter].data());\
+        args[iter] = (CHAR*)(wargs[iter].data());\
     }\
 
 KAllocator* g_Allocator;
@@ -437,7 +437,7 @@ VOID DumpStreamInfo(
 }
 
 VOID DumpCoreContainerInfo(
-    LPCWSTR ContainerPath,
+    LPCSTR ContainerPath,
     ULONG& NumberStreams
     )
 {
@@ -652,7 +652,7 @@ NTSTATUS DumpEachEntryEnumCallback(
 
 
 void DumpSharedContainerMBInfo(
-    LPCWSTR ContainerPath,
+    LPCSTR ContainerPath,
     ULONG NumberStreams
     )
 {
@@ -693,7 +693,7 @@ void DumpSharedContainerMBInfo(
 
 
 void DumpAllContainerInfo(
-    LPCWSTR ContainerPath
+    LPCSTR ContainerPath
     )
 {
     ULONG numberStreams;
@@ -843,7 +843,7 @@ void ValidateAndDisplaySection(
 }
 
 void DumpSharedContainerMBInfoRaw(
-    LPCWSTR ContainerPath
+    LPCSTR ContainerPath
     )
 {
     NTSTATUS status;
@@ -852,9 +852,9 @@ void DumpSharedContainerMBInfoRaw(
     KWString fileName(*g_Allocator);    
 
 #if !defined(PLATFORM_UNIX)
-    fileName = L"\\??\\";
+    fileName = "\\??\\";
 #else
-    fileName = L"";
+    fileName = "";
 #endif
     
     fileName += ContainerPath;
@@ -1657,7 +1657,7 @@ void ReadAndDumpRecord(
 }
 
 void DumpRecords(
-    LPCWSTR ContainerPath,
+    LPCSTR ContainerPath,
     RvdLogStreamId StreamId,
     RvdLogAsn Asn,
     BOOLEAN Forward,
@@ -1812,7 +1812,7 @@ void Usage()
 
 typedef struct
 {
-    PWCHAR LogFileName;
+    PCHAR LogFileName;
     RvdLogStreamId StreamId;
     RvdLogAsn RecordNumber;
     BOOLEAN DumpForward;
@@ -1827,7 +1827,7 @@ typedef struct
     RvdLogId ContainerId;
 } COMMAND_OPTIONS, *PCOMMAND_OPTIONS;
 
-ULONG ParseCommandLine(__in int argc, __in wchar_t** args, __out PCOMMAND_OPTIONS Options)
+ULONG ParseCommandLine(__in int argc, __in char** args, __out PCOMMAND_OPTIONS Options)
 {
     Options->LogFileName = NULL;
     Options->StreamId = { 0 };
@@ -1839,38 +1839,38 @@ ULONG ParseCommandLine(__in int argc, __in wchar_t** args, __out PCOMMAND_OPTION
     Options->OpenViaRawFile = FALSE;
     Options->DumpAllData = FALSE;
 
-    WCHAR flag;
+    CHAR flag;
     size_t len;
-    PWCHAR arg;
+    PCHAR arg;
 
     for (int i = 1; i < argc; i++)
     {
         arg = args[i];
 
-        len = wcslen(arg);
+        len = strlen(arg);
         if (len < 3)
         {
             Usage();
             return(ERROR_INVALID_PARAMETER);
         }
 
-        if ((arg[0] != L'-') || (arg[2] != L':'))
+        if ((arg[0] != '-') || (arg[2] != ':'))
         {
             Usage();
             return(ERROR_INVALID_PARAMETER);
         }
 
-        flag = (WCHAR)tolower(arg[1]);
+        flag = (CHAR)tolower(arg[1]);
 
         switch (flag)
         {
-            case L'l':
+            case 'l':
             {
                 Options->LogFileName = arg + 3;
                 break;
             }
 
-            case L's':
+            case 's':
             {
                 KStringView guidText(arg+3);
                 RvdLogStreamId streamId;
@@ -1883,7 +1883,7 @@ ULONG ParseCommandLine(__in int argc, __in wchar_t** args, __out PCOMMAND_OPTION
                 break;
             }
 
-            case L'r':
+            case 'r':
             {
                 KStringView asnText(arg+3);
                 RvdLogAsn asn;
@@ -1893,7 +1893,7 @@ ULONG ParseCommandLine(__in int argc, __in wchar_t** args, __out PCOMMAND_OPTION
                 break;
             }
 
-            case L'f':
+            case 'f':
             {
                 if (!Options->DumpBackward)
                 {
@@ -1915,7 +1915,7 @@ ULONG ParseCommandLine(__in int argc, __in wchar_t** args, __out PCOMMAND_OPTION
                 break;
             }
 
-            case L'b':
+            case 'b':
             {
                 if (!Options->DumpForward)
                 {
@@ -1933,31 +1933,31 @@ ULONG ParseCommandLine(__in int argc, __in wchar_t** args, __out PCOMMAND_OPTION
                 break;
             }
 
-            case L'a':
+            case 'a':
             {
                 Options->DumpAllData = TRUE;
                 break;
             }
 
-            case L'k':
+            case 'k':
             {
                 Options->OpenViaKtlLogger = TRUE;
                 break;
             }
 
-            case L'p':
+            case 'p':
             {
                 Options->OpenViaRawFile = TRUE;
                 break;
             }
 
-            case L'm':
+            case 'm':
             {
                 Options->RawLCMBInfo = TRUE;
                 break;
             }
 
-            case L'c':
+            case 'c':
             {
                 KStringView guidText(arg + 3);
                 GUID guid;
@@ -1968,7 +1968,7 @@ ULONG ParseCommandLine(__in int argc, __in wchar_t** args, __out PCOMMAND_OPTION
                 break;
             }
 
-            case L'd':
+            case 'd':
             {
                 KStringView guidText(arg + 3);
                 GUID guid;
@@ -2072,7 +2072,7 @@ void OpenViaKtl(
 
 #if !defined(PLATFORM_UNIX)
 NTSTATUS FindDiskIdForDriveLetter(
-    __in WCHAR DriveLetter,
+    __in CHAR DriveLetter,
     __out GUID& DiskIdGuid
     )
 {
@@ -2113,7 +2113,7 @@ NTSTATUS FindDiskIdForDriveLetter(
 NTSTATUS GenerateFileName(
     __out KWString& FileName,
     __in KGuid DiskId,
-    __in WCHAR* inputFileName
+    __in CHAR* inputFileName
     )
 {
     KString::SPtr guidString;
@@ -2147,8 +2147,8 @@ NTSTATUS GenerateFileName(
         return(STATUS_UNSUCCESSFUL);
     }
 
-    FileName = L"\\GLOBAL??\\Volume";
-    FileName += static_cast<WCHAR*>(*guidString);
+    FileName = "\\GLOBAL??\\Volume";
+    FileName += static_cast<CHAR*>(*guidString);
 
     FileName += inputFileName;
     return(FileName.Status());
@@ -2734,7 +2734,7 @@ ScanForRecordsAndDump(
 
 VOID
 OpenViaRawFile(
-    __in PWCHAR Filename,
+    __in PCHAR Filename,
     __in RvdLogId& LogId,
     __in ULONGLONG RecordLSN,
     __in ULONGLONG StartOffset,
@@ -2787,9 +2787,9 @@ OpenViaRawFile(
     ULONGLONG logFileLsnSpace = fileSize - (2 * RvdDiskLogConstants::MasterBlockSize);
 
 #if !defined(PLATFORM_UNIX)
-    printf("%ws\n\n", (PWCHAR)fileName);
+    printf("%ws\n\n", (PCHAR)fileName);
 #else
-    printf("%s\n\n", Utf16To8((PWCHAR)fileName).c_str());
+    printf("%s\n\n", Utf16To8((PCHAR)fileName).c_str());
 #endif
     printf("    File Size: %lld (%llx)\n", fileSize, fileSize);
     //
@@ -2952,7 +2952,7 @@ OpenViaRawFile(
 }
 
 int
-TheMain(__in int argc, __in wchar_t** args)
+TheMain(__in int argc, __in char** args)
 {
     ULONG error;
     COMMAND_OPTIONS options;
@@ -3037,7 +3037,7 @@ TheMain(__in int argc, __in wchar_t** args)
 
 #if !defined(PLATFORM_UNIX)
 int
-wmain(int argc, WCHAR* args[])
+wmain(int argc, CHAR* args[])
 {
     return TheMain(argc, args);
 }

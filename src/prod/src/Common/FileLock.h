@@ -11,7 +11,7 @@ namespace Common
     class FileLock : public TextTraceComponent<TraceTaskCodes::Common>
     {
     public:
-        FileLock(std::wstring const & path);
+        FileLock(std::string const & path);
         virtual ~FileLock();
 
         virtual ErrorCode Acquire(TimeSpan timeout = TimeSpan::Zero);
@@ -21,24 +21,24 @@ namespace Common
 
 #ifdef PLATFORM_UNIX
 
-        std::wstring const id_;
+        std::string const id_;
         ErrorCode openStatus_;
         std::string path_;
         int file_;
 
 #else
 
-        static std::wstring GetReaderLockPath(std::wstring const & path);
-        static std::wstring GetWriterLockPath(std::wstring const & path);        
-        static const std::wstring ReaderLockExtension;
-        static const std::wstring WriterLockExtension;
+        static std::string GetReaderLockPath(std::string const & path);
+        static std::string GetWriterLockPath(std::string const & path);        
+        static const std::string ReaderLockExtension;
+        static const std::string WriterLockExtension;
 
         ErrorCode AcquireImpl();
 
         std::unique_ptr<File> readFile_;
         std::unique_ptr<File> writeFile_;
-        std::wstring path_;
-        std::wstring operation_;
+        std::string path_;
+        std::string operation_;
 
 #endif
     };

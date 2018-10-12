@@ -10,14 +10,14 @@ namespace Transport
     class SecuritySettings : public Common::TextTraceComponent<Common::TraceTaskCodes::Transport>
     {
     public:
-        class IdentitySet : public std::set<std::wstring, Common::IsLessCaseInsensitiveComparer<std::wstring>>
+        class IdentitySet : public std::set<std::string, Common::IsLessCaseInsensitiveComparer<std::string>>
         {
         public:
             bool operator == (IdentitySet const & rhs) const;
             bool operator != (IdentitySet const & rhs) const;
 
             void WriteTo(Common::TextWriter & w, Common::FormatOptions const &) const;
-            std::wstring ToString() const;
+            std::string ToString() const;
         };
 
         class RoleClaimsOrList;
@@ -26,23 +26,23 @@ namespace Transport
         class RoleClaims
         {
         public:
-            bool AddClaim(std::wstring const & claimType, std::wstring const & claimValue);
-            bool AddClaim(std::wstring const & claim);
+            bool AddClaim(std::string const & claimType, std::string const & claimValue);
+            bool AddClaim(std::string const & claim);
             bool operator < (RoleClaims const & rhs) const;
             bool operator == (RoleClaims const & rhs) const;
             bool operator != (RoleClaims const & rhs) const;
-            bool Contains(std::wstring const & claimType, std::wstring const & claimValue) const;
+            bool Contains(std::string const & claimType, std::string const & claimValue) const;
             bool Contains(RoleClaims const & other) const;
             bool Satisfy(RoleClaims const & other) const;
             bool IsInRole(RoleClaimsOrList const & roleClaimsOrList) const;
 
-            std::multimap<std::wstring, std::wstring, Common::IsLessCaseInsensitiveComparer<std::wstring>> const & Value() const;
+            std::multimap<std::string, std::string, Common::IsLessCaseInsensitiveComparer<std::string>> const & Value() const;
 
             void WriteTo(Common::TextWriter & w, Common::FormatOptions const &) const;
-            std::wstring ToString() const;
+            std::string ToString() const;
 
         private:
-            std::multimap<std::wstring/*ClaimType*/, std::wstring/*ClaimValue*/, Common::IsLessCaseInsensitiveComparer<std::wstring>> value_;
+            std::multimap<std::string/*ClaimType*/, std::string/*ClaimValue*/, Common::IsLessCaseInsensitiveComparer<std::string>> value_;
         };
 
         // All possible RoleClaims for a role, string representation: RoleClaims1 || RoleClaims2 || RoleClaims3
@@ -59,31 +59,31 @@ namespace Transport
             std::set<RoleClaims> const & Value() const;
 
             void WriteTo(Common::TextWriter & w, Common::FormatOptions const &) const;
-            std::wstring ToString() const;
+            std::string ToString() const;
 
         private:
             std::set<RoleClaims> value_;
         };
 
-        static Common::ErrorCode StringToRoleClaims(std::wstring const & inputString, RoleClaims & roleClaims);
-        static Common::ErrorCode StringToRoleClaimsOrList(std::wstring const & inputString, RoleClaimsOrList & roleClaimsOrList);
+        static Common::ErrorCode StringToRoleClaims(std::string const & inputString, RoleClaims & roleClaims);
+        static Common::ErrorCode StringToRoleClaimsOrList(std::string const & inputString, RoleClaimsOrList & roleClaimsOrList);
         static bool ClaimListToRoleClaim(std::vector<ServiceModel::Claim> const& claimList, _Out_ RoleClaims &roleClaims);
 
         static Common::ErrorCode FromConfiguration(
-            std::wstring const & credentialType,
-            std::wstring const & x509StoreName,
-            std::wstring const & x509StoreLocation,
-            std::wstring const & x509FindType,
-            std::wstring const & x509FindValue,
-            std::wstring const & x509FindValueSecondary,
-            std::wstring const & protectionLevel,
-            std::wstring const & remoteCertThumbprints,
+            std::string const & credentialType,
+            std::string const & x509StoreName,
+            std::string const & x509StoreLocation,
+            std::string const & x509FindType,
+            std::string const & x509FindValue,
+            std::string const & x509FindValueSecondary,
+            std::string const & protectionLevel,
+            std::string const & remoteCertThumbprints,
             Common::SecurityConfig::X509NameMap const & remoteX509Names,
             Common::SecurityConfig::IssuerStoreKeyValueMap const & remoteCertIssuers,
-            std::wstring const & remoteCertCommonNames,
-            std::wstring const & defaultRemoteCertIssuers,
-            std::wstring const & remoteSpn,
-            std::wstring const & clientIdentities,
+            std::string const & remoteCertCommonNames,
+            std::string const & defaultRemoteCertIssuers,
+            std::string const & remoteSpn,
+            std::string const & clientIdentities,
             _Out_ SecuritySettings & object);
 
         static Common::ErrorCode FromPublicApi(
@@ -91,17 +91,17 @@ namespace Transport
             _Out_ SecuritySettings & object);
 
         static Common::ErrorCode CreateNegotiateServer(
-            std::wstring const & clientIdentity,
+            std::string const & clientIdentity,
             _Out_ SecuritySettings & object);
 
         static Common::ErrorCode CreateNegotiateClient(
-            std::wstring const & serverIdentity,
+            std::string const & serverIdentity,
             _Out_ SecuritySettings & object);
 
         static Common::ErrorCode CreateNegotiate(
-            std::wstring const & serverIdentity,
-            std::wstring const & clientIdentities,
-            std::wstring const & protectionLevel,
+            std::string const & serverIdentity,
+            std::string const & clientIdentities,
+            std::string const & protectionLevel,
             _Out_ SecuritySettings & object);
 
         static Common::ErrorCode CreateSelfGeneratedCertSslServer(
@@ -109,25 +109,25 @@ namespace Transport
 
         static Common::ErrorCode CreateSslClient(
             Common::CertContextUPtr & certContext,
-            std::wstring const & serverThumbprint,
+            std::string const & serverThumbprint,
             _Out_ SecuritySettings & object);
 
         static Common::ErrorCode CreateSslClient(
-            std::wstring const & serverThumbprint,
+            std::string const & serverThumbprint,
             _Out_ SecuritySettings & object);
 
         static Common::ErrorCode CreateKerberos(
-            std::wstring const & remoteSpn,
-            std::wstring const & clientIdentities,
-            std::wstring const & protectionLevel,
+            std::string const & remoteSpn,
+            std::string const & clientIdentities,
+            std::string const & protectionLevel,
             _Out_ SecuritySettings & object);
 
         static Common::ErrorCode CreateClaimTokenClient(
-            std::wstring const & localClaimToken,
-            std::wstring const & serverCertThumbpints,
-            std::wstring const & serverCertCommonNames,
-            std::wstring const & serverCertIssuers,
-            std::wstring const & protectionLevel,
+            std::string const & localClaimToken,
+            std::string const & serverCertThumbpints,
+            std::string const & serverCertCommonNames,
+            std::string const & serverCertIssuers,
+            std::string const & protectionLevel,
             _Out_ SecuritySettings & object);
 
         SecuritySettings();
@@ -146,21 +146,21 @@ namespace Transport
         SecurityProvider::Enum SecurityProvider() const;
         ProtectionLevel::Enum ProtectionLevel() const;
 
-        void SetX509CertType(std::wstring certType) { x509CertType_ = move(certType); }
-        std::wstring const & X509CertType() const { return x509CertType_; }
+        void SetX509CertType(std::string certType) { x509CertType_ = move(certType); }
+        std::string const & X509CertType() const { return x509CertType_; }
 
         Common::X509StoreLocation::Enum X509StoreLocation() const;
-        std::wstring const& X509StoreName() const;
+        std::string const& X509StoreName() const;
         Common::X509FindType::Enum X509FindType() const;
         Common::X509FindValue::SPtr const& X509FindValue() const;
-        std::wstring const& X509FindValueString() const;
+        std::string const& X509FindValueString() const;
 
         Common::CertContextUPtrSPtr const & CertContext() const { return certContext_; }
 
         bool IsSelfGeneratedCert() const { return isSelfGeneratedCert_; }
 
         Common::ThumbprintSet const & RemoteCertThumbprints() const;
-        Common::ErrorCode SetRemoteCertThumbprints(std::wstring const & thumbprints);
+        Common::ErrorCode SetRemoteCertThumbprints(std::string const & thumbprints);
         Common::ThumbprintSet const & AdminClientCertThumbprints() const;
 
         Common::SecurityConfig::X509NameMap const & RemoteX509Names() const;
@@ -186,11 +186,11 @@ namespace Transport
         bool ReadyNewSessionBeforeExpiration() const;
         void SetReadyNewSessionBeforeExpirationCallback(BooleanFlagCallback const & callback);
 
-        std::wstring const& RemoteSpn() const;
-        void SetRemoteSpn(std::wstring const & remoteSpn);
+        std::string const& RemoteSpn() const;
+        void SetRemoteSpn(std::string const & remoteSpn);
 
         IdentitySet const & RemoteIdentities() const;
-        void AddRemoteIdentity(std::wstring const & value);
+        void AddRemoteIdentity(std::string const & value);
         Common::ErrorCode AddRemoteX509Name(PCCERT_CONTEXT certContext);
 
         bool IsClientRoleInEffect() const;
@@ -198,24 +198,24 @@ namespace Transport
         void SetDefaultRemoteRole(RoleMask::Enum roleMask) { defaultRemoteRole_ = roleMask; }
 
         IdentitySet const & AdminClientIdentities() const;
-        void EnableAdminRole(std::wstring const & adminClientIdentities);
+        void EnableAdminRole(std::string const & adminClientIdentities);
         Common::ErrorCode EnableAdminRole(
-            std::wstring const & adminClientCertThumbprints,
+            std::string const & adminClientCertThumbprints,
             Common::SecurityConfig::X509NameMap const & adminClientX509Names,
-            std::wstring const & adminClientCommonNames);
+            std::string const & adminClientCommonNames);
 
-        void AddClientToAdminRole(std::wstring const & clientIdentity);
+        void AddClientToAdminRole(std::string const & clientIdentity);
         void AddAdminClientIdentities(IdentitySet const & identities);
         void AddAdminClientX509Names(Common::SecurityConfig::X509NameMap const & names);
         Common::ErrorCode AddAdminClientX509Name(PCCERT_CONTEXT certContext);
 
         // Enable claim based auth on clients automatically enables role based access control on clients
         Common::ErrorCode EnableClaimBasedAuthOnClients(
-            std::wstring const & clientClaimList, // claims for talking to server, string representation of RoleClaimsOrList
-            std::wstring const & adminClientClaimList // claims for admin client role, string representation of RoleClaimsOrList
+            std::string const & clientClaimList, // claims for talking to server, string representation of RoleClaimsOrList
+            std::string const & adminClientClaimList // claims for admin client role, string representation of RoleClaimsOrList
             /* this list internally gets added to 'clientClaimList', so no need to add the same entry to both lists */);
 
-        std::wstring const & LocalClaimToken() const;
+        std::string const & LocalClaimToken() const;
 
         bool ClaimBasedClientAuthEnabled() const;
         RoleClaimsOrList const & ClientClaims() const;
@@ -229,7 +229,7 @@ namespace Transport
         void SetSessionDurationCallback(SessionDurationCallback callback) { sessionDurationCallback_ = std::move(callback); }
 
         void WriteTo(Common::TextWriter & w, Common::FormatOptions const &) const;
-        std::wstring ToString() const;
+        std::string ToString() const;
 
         // For testing only
         void Test_SetRawValues(
@@ -243,9 +243,9 @@ namespace Transport
         ::FABRIC_SECURITY_CREDENTIAL_KIND credTypeFromPublicApi_ = FABRIC_SECURITY_CREDENTIAL_KIND_INVALID;
         ProtectionLevel::Enum protectionLevel_ = ProtectionLevel::EncryptAndSign;
 
-        std::wstring x509CertType_;
+        std::string x509CertType_;
         Common::X509StoreLocation::Enum x509StoreLocation_;
-        std::wstring x509StoreName_;
+        std::string x509StoreName_;
         std::shared_ptr<Common::X509FindValue> x509FindValue_;
 
         Common::CertContextUPtrSPtr certContext_;
@@ -271,7 +271,7 @@ namespace Transport
         IdentitySet remoteIdentities_;
 
         // Service principal name of remote listeners, used by Kerberos
-        std::wstring remoteSpn_;
+        std::string remoteSpn_;
 
         // Identities of clients in admin role
         Common::SecurityConfig::X509NameMap adminClientX509Names_;
@@ -279,7 +279,7 @@ namespace Transport
         Common::ThumbprintSet adminClientCertThumbprints_;
 
         // local token string for claim based security, client side setting
-        std::wstring localClaimToken_;
+        std::string localClaimToken_;
 
         // expected remote claims
         RoleClaimsOrList clientClaims_; // claims expected for clients

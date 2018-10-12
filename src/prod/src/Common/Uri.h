@@ -30,15 +30,15 @@ namespace Common
         // TODO: make constructors protected after unit test class can be made a friend (switched to TAEF)
         Uri(): type_(UriType::AuthorityAbEmpty), hostType_(UriHostType::None), port_(0) { }
         Uri(Uri && other);
-        explicit Uri(std::wstring const & scheme);
-        Uri(std::wstring const & scheme, std::wstring const & authority);
-        Uri(std::wstring const & scheme, std::wstring const & authority, std::wstring const & path);
+        explicit Uri(std::string const & scheme);
+        Uri(std::string const & scheme, std::string const & authority);
+        Uri(std::string const & scheme, std::string const & authority, std::string const & path);
         Uri(
-            std::wstring const & scheme,
-            std::wstring const & authority,
-            std::wstring const & path,
-            std::wstring const & query,
-            std::wstring const & fragment);
+            std::string const & scheme,
+            std::string const & authority,
+            std::string const & path,
+            std::string const & query,
+            std::string const & fragment);
 
         virtual ~Uri();
         
@@ -48,39 +48,39 @@ namespace Common
         Uri & operator = (Uri && other);
 
         __declspec(property(get=get_Type)) UriType::Enum Type;
-        __declspec(property(get=get_Scheme)) std::wstring const & Scheme;
-        __declspec(property(get=get_Authority)) std::wstring const & Authority;
+        __declspec(property(get=get_Scheme)) std::string const & Scheme;
+        __declspec(property(get=get_Authority)) std::string const & Authority;
         __declspec(property(get=get_HostType)) UriHostType::Enum HostType;
-        __declspec(property(get=get_Host)) std::wstring const & Host;
+        __declspec(property(get=get_Host)) std::string const & Host;
         __declspec(property(get=get_Port)) int Port;
-        __declspec(property(get=get_Path)) std::wstring const & Path;
-        __declspec(property(get=get_Query)) std::wstring const & Query;
-        __declspec(property(get=get_Fragment)) std::wstring const & Fragment;
-        __declspec(property(get=get_Segments)) std::vector<std::wstring> const & Segments;
+        __declspec(property(get=get_Path)) std::string const & Path;
+        __declspec(property(get=get_Query)) std::string const & Query;
+        __declspec(property(get=get_Fragment)) std::string const & Fragment;
+        __declspec(property(get=get_Segments)) std::vector<std::string> const & Segments;
         __declspec(property(get=get_HasQueryOrFragment)) bool HasQueryOrFragment;
 
         UriType::Enum get_Type() const { return type_; }
-        std::wstring const & get_Scheme() const { return scheme_; }
-        std::wstring const & get_Authority() const { return authority_; }
+        std::string const & get_Scheme() const { return scheme_; }
+        std::string const & get_Authority() const { return authority_; }
         UriHostType::Enum get_HostType() const { return hostType_; }
-        std::wstring const & get_Host() const { return host_; }
+        std::string const & get_Host() const { return host_; }
         int get_Port() const { return port_; }
-        std::wstring const & get_Path() const { return path_; }
-        std::wstring const & get_Query() const { return query_; }
-        std::wstring const & get_Fragment() const { return fragment_; }
-        std::vector<std::wstring> const & get_Segments() const { return pathSegments_; }
+        std::string const & get_Path() const { return path_; }
+        std::string const & get_Query() const { return query_; }
+        std::string const & get_Fragment() const { return fragment_; }
+        std::vector<std::string> const & get_Segments() const { return pathSegments_; }
         bool get_HasQueryOrFragment() const { return (!query_.empty() || !fragment_.empty()); }
 
         int Compare(Uri const & other) const;
 
         Uri GetTrimQueryAndFragment() const;
 
-        std::wstring ToString() const;
+        std::string ToString() const;
         void WriteTo(__in Common::TextWriter & w, Common::FormatOptions const &) const;
         void WriteToEtw(uint16 contextSequenceId) const;
 
-        static bool TryParse(std::wstring const & uriText, __out Uri & uri);
-        static bool TryParseAndTraceOnFailure(std::wstring const & uriText, __out Uri & uri);
+        static bool TryParse(std::string const & uriText, __out Uri & uri);
+        static bool TryParseAndTraceOnFailure(std::string const & uriText, __out Uri & uri);
 
         bool IsPrefixOf(Uri const & other) const;
 
@@ -100,23 +100,23 @@ namespace Common
 
     private:
         class Parser;
-        static bool TryParse(std::wstring const & uriText, bool traceOnFailure, __out Uri & uri);
+        static bool TryParse(std::string const & uriText, bool traceOnFailure, __out Uri & uri);
 
 
-        std::vector<std::wstring> GetSegments(std::wstring const & path);
+        std::vector<std::string> GetSegments(std::string const & path);
         void Normalize();
-        static std::wstring FixPathForConstructor(std::wstring const & path);
+        static std::string FixPathForConstructor(std::string const & path);
 
         UriType::Enum type_;
-        std::wstring scheme_;
-        std::wstring authority_;
+        std::string scheme_;
+        std::string authority_;
         UriHostType::Enum hostType_;
-        std::wstring host_;
+        std::string host_;
         int port_;
-        std::wstring path_;
-        std::wstring query_;
-        std::wstring fragment_;
-        std::vector<std::wstring> pathSegments_;
+        std::string path_;
+        std::string query_;
+        std::string fragment_;
+        std::vector<std::string> pathSegments_;
     };
 }
 

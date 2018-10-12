@@ -55,7 +55,7 @@ NTSTATUS AsyncValidateLinuxLogForDDContext::Create(
 
 VOID
 AsyncValidateLinuxLogForDDContext::StartValidate(
-	__in LPCWSTR LogFile,
+	__in LPCSTR LogFile,
 	__in_opt KAsyncContextBase* const ParentAsyncContext,
 	__in_opt KAsyncContextBase::CompletionCallback CallbackPtr)
 {

@@ -57,7 +57,7 @@ namespace AccessControl
 
         FabricAcl();
 
-        bool AccessCheckX509(std::wstring const & commonName, DWORD desiredAccess) const;
+        bool AccessCheckX509(std::string const & commonName, DWORD desiredAccess) const;
         bool AccessCheckClaim(Transport::SecuritySettings::RoleClaims const & claims, DWORD desiredAccess) const;
         bool AccessCheckWindows(HANDLE token, DWORD desiredAccess) const;
 

@@ -55,7 +55,7 @@ Test1()
     NTSTATUS Result;
 
     ULONG Key = 32;
-    Result =  Tbl.Put(Key, KWString(KtlSystem::GlobalNonPagedAllocator(), L"ABC"));
+    Result =  Tbl.Put(Key, KWString(KtlSystem::GlobalNonPagedAllocator(), "ABC"));
 
     Key = 55;
     Result =  Tbl.Put(Key, KWString(KtlSystem::GlobalNonPagedAllocator(),L"DEF"));
@@ -727,9 +727,9 @@ Scenario_KUriView_Test()
     NTSTATUS Result;
 
     // Inputs
-    KUriView uriA1(L"fabric:/a");
-    KUriView uriA2(L"fabric:/a");
-    KUriView uriB(L"fabric:/b");
+    KUriView uriA1("fabric:/a");
+    KUriView uriA2("fabric:/a");
+    KUriView uriB("fabric:/b");
 
     // Setup
     KHashTable<KUriView, KUriView> hashTable(17, K_DefaultHashFunction, *gp_Allocator);
@@ -768,9 +768,9 @@ Scenario_KUriSPtr_Test()
     NTSTATUS Result;
 
     // Inputs
-    KUriView uriA1View(L"fabric:/a");
-    KUriView uriA2View(L"fabric:/a");
-    KUriView uriBView(L"fabric:/b");
+    KUriView uriA1View("fabric:/a");
+    KUriView uriA2View("fabric:/a");
+    KUriView uriBView("fabric:/b");
 
     KUri::SPtr uriA1 = nullptr;
     Result = KUri::Create(uriA1View, *gp_Allocator, uriA1);
@@ -814,9 +814,9 @@ Scenario_KUriCSPtr_Test()
     NTSTATUS Result;
 
     // Inputs
-    KUriView uriA1View(L"fabric:/a");
-    KUriView uriA2View(L"fabric:/a");
-    KUriView uriBView(L"fabric:/b");
+    KUriView uriA1View("fabric:/a");
+    KUriView uriA2View("fabric:/a");
+    KUriView uriBView("fabric:/b");
 
     KUri::CSPtr uriA1 = nullptr;
     KUri::CSPtr uriA2 = nullptr;
@@ -860,9 +860,9 @@ Scenario_KUriCSPtr_MovedHashTable_Test()
     NTSTATUS Result;
 
     // Inputs
-    KUriView uriA1View(L"fabric:/a");
-    KUriView uriA2View(L"fabric:/a");
-    KUriView uriBView(L"fabric:/b");
+    KUriView uriA1View("fabric:/a");
+    KUriView uriA2View("fabric:/a");
+    KUriView uriBView("fabric:/b");
 
     KUri::CSPtr uriA1 = nullptr;
     Result = KUri::Create(uriA1View, *gp_Allocator, uriA1);
@@ -912,7 +912,7 @@ MoveTest()
 
     ULONG Key = 32;
 
-    Result =  Tbl.Put(Key, KWString(KtlSystem::GlobalNonPagedAllocator(), L"ABC"));
+    Result =  Tbl.Put(Key, KWString(KtlSystem::GlobalNonPagedAllocator(), "ABC"));
     KInvariant(Result == S_OK);
 
     Key = 55;
@@ -924,7 +924,7 @@ MoveTest()
     KInvariant(Result == S_OK);
 
     ULONG getKey;
-    KWString getValue(KtlSystem::GlobalNonPagedAllocator(), L"temp");
+    KWString getValue(KtlSystem::GlobalNonPagedAllocator(), "temp");
     Tbl.Reset();
 
     Result = Tbl.Next(getKey, getValue);
@@ -951,7 +951,7 @@ MoveTest()
     // Part 2 : Move assignment operator test
     Key = 999;
     KHashTable<ULONG, KWString> Tbl2(7, MyHashFunction, *gp_Allocator);
-    Result =  Tbl2.Put(Key, KWString(KtlSystem::GlobalNonPagedAllocator(), L"XYZ"));
+    Result =  Tbl2.Put(Key, KWString(KtlSystem::GlobalNonPagedAllocator(), "XYZ"));
 
     MovedTbl = Ktl::Move(Tbl2);
 
@@ -994,7 +994,7 @@ Hash_LongLong_Negative()
 void
 Hash_KStringView_Deterministic()
 {
-    LPCWSTR stateProviderName = L"fabric:/stateprovides/stateprovider";
+    LPCSTR stateProviderName = "fabric:/stateprovides/stateprovider";
 
     KStringView stringView1(stateProviderName);
     KStringView stringView2(stateProviderName);
@@ -1009,7 +1009,7 @@ void
 Hash_KStringSmartPointer_Deterministic()
 {
     NTSTATUS status;
-    LPCWSTR stateProviderName = L"fabric:/stateprovides/stateprovider";
+    LPCSTR stateProviderName = "fabric:/stateprovides/stateprovider";
 
     KStringView stringView(stateProviderName);
     KString::SPtr stringSPtr = nullptr;
@@ -1033,7 +1033,7 @@ Hash_KStringSmartPointer_Deterministic()
 void
 Hash_KUriView_Deterministic()
 {
-    LPCWSTR stateProviderName = L"fabric:/stateprovides/stateprovider";
+    LPCSTR stateProviderName = "fabric:/stateprovides/stateprovider";
 
     KUriView uriView1(stateProviderName);
     KUriView uriView2(stateProviderName);
@@ -1048,7 +1048,7 @@ void
 Hash_KUriSmartPointer_Deterministic()
 {
     NTSTATUS status;
-    LPCWSTR stateProviderName = L"fabric:/stateprovides/stateprovider";
+    LPCSTR stateProviderName = "fabric:/stateprovides/stateprovider";
 
     const KUriView constUriView(stateProviderName);
 
@@ -1630,7 +1630,7 @@ TestBody()
 
 NTSTATUS
 KHashTableTest(
-    __in int argc, __in_ecount(argc) WCHAR* args[]
+    __in int argc, __in_ecount(argc) CHAR* args[]
     )
 {
     UNREFERENCED_PARAMETER(argc);
@@ -1653,7 +1653,7 @@ KHashTableTest(
 #if CONSOLE_TEST
 int
 #if !defined(PLATFORM_UNIX)
-main(__in  int argc, __in_ecount(argc) WCHAR* args[])
+main(__in  int argc, __in_ecount(argc) CHAR* args[])
 {
 #else
 main(int argc, char* cargs[])

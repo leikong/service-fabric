@@ -29,7 +29,7 @@ ComXmlFileStream::~ComXmlFileStream()
 }
 
 Common::ErrorCode ComXmlFileStream::Open(
-    std::wstring fileName, 
+    std::string fileName, 
     bool fWrite, 
     __out ComPointer<IStream> & xmlFileStream)
 {

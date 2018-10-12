@@ -25,7 +25,7 @@
 #ifndef KDualStringDefine
 #define KDualStringDefine(str, value) \
     CHAR const * const str##A = value; \
-    WCHAR const * const str = L##value;
+    CHAR const * const str = L##value;
 #endif
 
 //
@@ -46,8 +46,8 @@ namespace WebSocketHeaders
 
 namespace WebSocketSchemes
 {
-    WCHAR const * const Insecure  =  L"ws";
-    WCHAR const * const Secure    =  L"wss";
+    CHAR const * const Insecure  =  "ws";
+    CHAR const * const Secure    =  "wss";
 };
 
 class KWebSocket : public KAsyncServiceBase

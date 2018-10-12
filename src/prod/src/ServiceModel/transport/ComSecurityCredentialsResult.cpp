@@ -43,8 +43,8 @@ HRESULT STDMETHODCALLTYPE ComSecurityCredentialsResult::ReturnSecurityCredential
 
 HRESULT ComSecurityCredentialsResult::FromConfig(
     __in ComPointer<IFabricCodePackageActivationContext> codePackageActivationContextCPtr,
-    __in std::wstring const & configurationPackageName,
-    __in std::wstring const & sectionName,
+    __in std::string const & configurationPackageName,
+    __in std::string const & sectionName,
     __out IFabricSecurityCredentialsResult ** securityCredentialsResult)
 {
     // Validate code package activation context is not null
@@ -65,14 +65,14 @@ HRESULT ComSecurityCredentialsResult::FromConfig(
         return ComUtility::OnPublicApiReturn(hr);
     }
 
-    wstring credentialType;
-    wstring allowedCommonNames;
-    wstring findType;
-    wstring findValue;
-    wstring findValueSecondary;
-    wstring storeLocation;
-    wstring storeName;
-    wstring protectionLevel;
+    string credentialType;
+    string allowedCommonNames;
+    string findType;
+    string findValue;
+    string findValueSecondary;
+    string storeLocation;
+    string storeName;
+    string protectionLevel;
 
     // credential type
     bool hasValue = false;
@@ -84,12 +84,12 @@ HRESULT ComSecurityCredentialsResult::FromConfig(
     error = Parser::ReadSettingsValue(configPackageCPtr, sectionName, SecuritySettingsNames::AllowedCommonNames, allowedCommonNames, hasValue);
     if (!error.IsSuccess()) { return ComUtility::OnPublicApiReturn(error.ToHResult()); }
 
-    wstring issuerThumbprints;
+    string issuerThumbprints;
     hasValue = false;
     error = Parser::ReadSettingsValue(configPackageCPtr, sectionName, SecuritySettingsNames::IssuerThumbprints, issuerThumbprints, hasValue);
     if (!error.IsSuccess()) { return ComUtility::OnPublicApiReturn(error.ToHResult()); }
 
-    wstring remoteCertThumbprints;
+    string remoteCertThumbprints;
     hasValue = false;
     error = Parser::ReadSettingsValue(configPackageCPtr, sectionName, SecuritySettingsNames::RemoteCertThumbprints, remoteCertThumbprints, hasValue);
     if (!error.IsSuccess()) { return ComUtility::OnPublicApiReturn(error.ToHResult()); }
@@ -139,12 +139,12 @@ HRESULT ComSecurityCredentialsResult::FromConfig(
     if (!error.IsSuccess()) { return ComUtility::OnPublicApiReturn(error.ToHResult()); }
 
     // service principal name
-    wstring servicePrincipalName;
+    string servicePrincipalName;
     error = Parser::ReadSettingsValue(configPackageCPtr, sectionName, SecuritySettingsNames::ServicePrincipalName, servicePrincipalName, hasValue);
     if (!error.IsSuccess()) { return ComUtility::OnPublicApiReturn(error.ToHResult()); }
 
     // Windows identity list of all replicas
-    wstring windowsIdentities;
+    string windowsIdentities;
     error = Parser::ReadSettingsValue(configPackageCPtr, sectionName, SecuritySettingsNames::WindowsIdentities, windowsIdentities, hasValue);
     if (!error.IsSuccess()) { return ComUtility::OnPublicApiReturn(error.ToHResult()); }
 
@@ -186,7 +186,7 @@ HRESULT ComSecurityCredentialsResult::ClusterSecuritySettingsFromConfig(
     ErrorCode error = SecuritySettings::FromConfiguration(
         securityConfig.ClusterCredentialType,
         config_->ClusterX509StoreName,
-        wformatString(X509StoreLocation::LocalMachine),
+        formatString(X509StoreLocation::LocalMachine),
         config_->ClusterX509FindType,
         config_->ClusterX509FindValue,
         config_->ClusterX509FindValueSecondary,

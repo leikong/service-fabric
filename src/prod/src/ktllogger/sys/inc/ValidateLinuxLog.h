@@ -19,7 +19,7 @@ class AsyncValidateLinuxLogForDDContext : public KAsyncContextBase, public KThre
         
         VOID
         StartValidate(
-            __in LPCWSTR LogFile,
+            __in LPCSTR LogFile,
             __in_opt KAsyncContextBase* const ParentAsyncContext,
             __in_opt KAsyncContextBase::CompletionCallback CallbackPtr);
 
@@ -32,5 +32,5 @@ class AsyncValidateLinuxLogForDDContext : public KAsyncContextBase, public KThre
         Execute() override ;
 
     private:
-        LPCWSTR _LogFile;
+        LPCSTR _LogFile;
 };

@@ -41,7 +41,7 @@ ParallelLogTest()
     UCHAR const testDriveLetter = 'C';
 
     // Clean the unit test drive environment
-    status = CleanAndPrepLog((WCHAR)testDriveLetter);
+    status = CleanAndPrepLog((CHAR)testDriveLetter);
     if (!NT_SUCCESS(status))
     {
         KDbgPrintf("ParallelLogTest: CleanAndPrepLog Failed: %i\n", __LINE__);
@@ -172,7 +172,7 @@ ParallelLogTest()
 #endif
     }
 
-    KWString logType(KtlSystem::GlobalNonPagedAllocator(), L"RvdLog");
+    KWString logType(KtlSystem::GlobalNonPagedAllocator(), "RvdLog");
     KInvariant(NT_SUCCESS(logType.Status()));
 
     for (int i = 0; i < noOfParallelOps; i++)
@@ -195,7 +195,7 @@ ParallelLogTest()
         {
             KDbgPrintf(
                 "ParallelLogTest: StartCreateLog Failed for log %ws: 0x%x at %i\n",
-                (WCHAR*)KWString(KtlSystem::GlobalNonPagedAllocator(), logGuidArray[i]),
+                (CHAR*)KWString(KtlSystem::GlobalNonPagedAllocator(), logGuidArray[i]),
                 createOpArray[i]->Status(),
                 __LINE__);
 
@@ -243,7 +243,7 @@ ParallelLogTest()
         {
             KDbgPrintf(
                 "ParallelLogTest: StartEnumerateLogs could not find log file %ws: %i\n",
-                (WCHAR*)KWString(KtlSystem::GlobalNonPagedAllocator(), logGuidArray[i]), __LINE__);
+                (CHAR*)KWString(KtlSystem::GlobalNonPagedAllocator(), logGuidArray[i]), __LINE__);
 
             KInvariant(FALSE);
             return STATUS_UNSUCCESSFUL;
@@ -257,7 +257,7 @@ ParallelLogTest()
         {
             KDbgPrintf(
                 "ParallelLogTest: expected destruction did not occur for log %ws: %i\n",
-                (WCHAR*)KWString(KtlSystem::GlobalNonPagedAllocator(), logGuidArray[i]), __LINE__);
+                (CHAR*)KWString(KtlSystem::GlobalNonPagedAllocator(), logGuidArray[i]), __LINE__);
 
             KInvariant(FALSE);
             return STATUS_UNSUCCESSFUL;
@@ -283,7 +283,7 @@ ParallelLogTest()
         {
             KDbgPrintf(
                 "ParallelLogTest: StartOpenLog failed for log %ws: 0x%X: %i\n",
-                (WCHAR*)KWString(KtlSystem::GlobalNonPagedAllocator(), logGuidArray[i]),
+                (CHAR*)KWString(KtlSystem::GlobalNonPagedAllocator(), logGuidArray[i]),
                 openOpArray[i]->Status(),
                 __LINE__);
 
@@ -299,7 +299,7 @@ ParallelLogTest()
         {
             KDbgPrintf(
                 "ParallelLogTest: expected destruction did not occur for log %ws: %i\n",
-                (WCHAR*)KWString(KtlSystem::GlobalNonPagedAllocator(), logGuidArray[i]), __LINE__);
+                (CHAR*)KWString(KtlSystem::GlobalNonPagedAllocator(), logGuidArray[i]), __LINE__);
 
             KInvariant(FALSE);
             return STATUS_UNSUCCESSFUL;
@@ -326,7 +326,7 @@ ParallelLogTest()
         {
             KDbgPrintf(
                 "ParallelLogTest: StartOpenLog failed for log %ws: %i %x\n",
-                (WCHAR*)KWString(KtlSystem::GlobalNonPagedAllocator(), logGuidArray[0]), __LINE__, openOpArray[i]->Status());
+                (CHAR*)KWString(KtlSystem::GlobalNonPagedAllocator(), logGuidArray[0]), __LINE__, openOpArray[i]->Status());
 
             KInvariant(FALSE);
             return openOpArray[i]->Status();
@@ -357,7 +357,7 @@ ParallelLogTest()
         {
             KDbgPrintf(
                 "ParallelLogTest: StartDeleteLog failed for log %ws: %i\n",
-                (WCHAR*)KWString(KtlSystem::GlobalNonPagedAllocator(), logGuidArray[i]), __LINE__);
+                (CHAR*)KWString(KtlSystem::GlobalNonPagedAllocator(), logGuidArray[i]), __LINE__);
 
             KInvariant(FALSE);
             return deleteOpArray[i]->Status();

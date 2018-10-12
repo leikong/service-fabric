@@ -17,7 +17,7 @@ RealConsole console;
 #ifdef PLATFORM_UNIX
 int main(int argc, char* argv[])
 #else
-int wmain(int argc, wchar_t* argv[])
+int wmain(int argc, char* argv[])
 #endif
 {
     Config config; //trigger config loading
@@ -32,11 +32,11 @@ int wmain(int argc, wchar_t* argv[])
     }
 
 #ifdef PLATFORM_UNIX
-    auto destAddress = StringUtility::Utf8ToUtf16(string(argv[1]));
-    auto providerString = StringUtility::Utf8ToUtf16(string(argv[2]));
+    auto destAddress = string(argv[1]);
+    auto providerString = string(argv[2]);
 #else
-    auto destAddress = wstring(argv[1]);
-    auto providerString = wstring(argv[2]);
+    auto destAddress = string(argv[1]);
+    auto providerString = string(argv[2]);
 #endif
 
     console.WriteLine("connecting to {0} with security provider {1}", destAddress, providerString);
@@ -101,7 +101,7 @@ int wmain(int argc, wchar_t* argv[])
     TraceProvider::GetSingleton()->SetDefaultLevel(TraceSinkType::Console, LogLevel::Enum::Warning);
 
     const uint sendThrottle = 1024 * 1024 * 1024; // 1 GB
-    wstring testAction = TTestUtil::GetGuidAction();
+    string testAction = TTestUtil::GetGuidAction();
     if (testParameters.ThreadCount() == 1)
     {
         for (uint i = 0; i < testParameters.MessageCount(); ++i)

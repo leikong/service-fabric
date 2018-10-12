@@ -32,7 +32,7 @@ namespace Common
         virtual ~AsyncOpContainer() {}
 
         AsyncOperationSPtr BeginOp(
-            wstring const & id,
+            string const & id,
             TimeSpan const timeToWait,
             TimeSpan const timeout,
             bool hasRetryableErrors,
@@ -57,7 +57,7 @@ namespace Common
                 }
                 else
                 {
-                    VERIFY_ARE_EQUAL(pendingOps_, 1, L"Primary is the first operation");
+                    VERIFY_ARE_EQUAL(pendingOps_, 1, "Primary is the first operation");
                     Trace.WriteInfo(LinkableTraceType, "Create primary {0}.", id);
                     operation = AsyncOperation::CreateAndStart<MyLinkableAsyncOperation>(
                         *this,
@@ -92,7 +92,7 @@ namespace Common
             VERIFY_ARE_EQUAL(
                 error.ReadValue(), 
                 expectedEndResult.ReadValue(), 
-                L"Operation completed with expected error");
+                "Operation completed with expected error");
 
             {
                 AcquireExclusiveLock lock(lock_);
@@ -110,8 +110,8 @@ namespace Common
         {
             auto error = allOpsCompletedEvent_.Wait(TimeSpan::FromSeconds(10));
             Trace.WriteInfo(LinkableTraceType, "AllOpsCompleted.waitOne returned {0}", error);
-            VERIFY_IS_TRUE(error.IsSuccess(), L"All operations completed");
-            VERIFY_ARE_EQUAL(pendingOps_, 0, L"All operations completed");
+            VERIFY_IS_TRUE(error.IsSuccess(), "All operations completed");
+            VERIFY_ARE_EQUAL(pendingOps_, 0, "All operations completed");
         }
         
     private:
@@ -120,7 +120,7 @@ namespace Common
         public:
             MyLinkableAsyncOperation(
                 __in AsyncOpContainer & owner,
-                wstring const & id,
+                string const & id,
                 TimeSpan const timeToWait,
                 TimeSpan const timeout,
                 bool hasRetryableErrors,
@@ -141,7 +141,7 @@ namespace Common
 
             MyLinkableAsyncOperation(
                 __in AsyncOpContainer & owner,
-                wstring const & id,
+                string const & id,
                 TimeSpan const timeToWait,
                 TimeSpan const timeout,
                 bool hasRetryableErrors,
@@ -246,7 +246,7 @@ namespace Common
             }
 
             AsyncOpContainer & owner_;
-            wstring id_;
+            string id_;
             bool hasRetryableErrors_;
             TimeoutHelper timeoutHelper_;
             TimeSpan timeToWait_;
@@ -274,14 +274,14 @@ namespace Common
     {
         shared_ptr<AsyncOpContainer> root = make_shared<AsyncOpContainer>();
         root->BeginOp(
-            L"TestSuccess0",
+            "TestSuccess0",
             TimeSpan::FromMilliseconds(100),
             TimeSpan::FromSeconds(1),
             false,
             ErrorCode(ErrorCodeValue::Success));
 
         root->BeginOp(
-            L"TestSuccess1",
+            "TestSuccess1",
             TimeSpan::FromSeconds(10),
             TimeSpan::FromSeconds(1),
             false,
@@ -296,14 +296,14 @@ namespace Common
     {
         shared_ptr<AsyncOpContainer> root = make_shared<AsyncOpContainer>();
         root->BeginOp(
-            L"TestTimeoutNoRetryableErrors0",
+            "TestTimeoutNoRetryableErrors0",
             TimeSpan::FromSeconds(1),
             TimeSpan::FromMilliseconds(100),
             false,
             ErrorCode(ErrorCodeValue::Timeout));
 
         root->BeginOp(
-            L"TestTimeoutNoRetryableErrors1",
+            "TestTimeoutNoRetryableErrors1",
             TimeSpan::FromMilliseconds(100),
             TimeSpan::FromSeconds(1),
             false,
@@ -322,21 +322,21 @@ namespace Common
         // Wait time is longer than timeout, so op times out
         // Before timing out, the other operations are linked to it as secondaries
         root->BeginOp(
-            L"TestTimeoutWithRetryableErrors0",
+            "TestTimeoutWithRetryableErrors0",
             TimeSpan::FromSeconds(1),
             TimeSpan::FromMilliseconds(100),
             true,
             ErrorCode(ErrorCodeValue::Timeout));
 
         root->BeginOp(
-            L"TestTimeoutWithRetryableErrors1",
+            "TestTimeoutWithRetryableErrors1",
             TimeSpan::FromMilliseconds(100),
             TimeSpan::FromSeconds(1),
             true,
             ErrorCode(ErrorCodeValue::Success));
 
         root->BeginOp(
-            L"TestTimeoutWithRetryableErrors2",
+            "TestTimeoutWithRetryableErrors2",
             TimeSpan::FromMilliseconds(500),
             TimeSpan::FromSeconds(1),
             true,
@@ -354,14 +354,14 @@ namespace Common
         // Wait time is longer than timeout, so op times out
         // Before timing out, the other operations are linked to it as secondaries
         root->BeginOp(
-            L"TestCancelSecondary0",
+            "TestCancelSecondary0",
             TimeSpan::FromSeconds(10),
             TimeSpan::FromSeconds(2),
             true,
             ErrorCode(ErrorCodeValue::Timeout));
 
         auto secondary = root->BeginOp(
-            L"TestCancelSecondary1",
+            "TestCancelSecondary1",
             TimeSpan::FromSeconds(5),
             TimeSpan::FromSeconds(7),
             true,
@@ -369,7 +369,7 @@ namespace Common
         secondary->Cancel(true);
 
         root->BeginOp(
-            L"TestCancelSecondary2",
+            "TestCancelSecondary2",
             TimeSpan::FromSeconds(1),
             TimeSpan::FromSeconds(5),
             true,

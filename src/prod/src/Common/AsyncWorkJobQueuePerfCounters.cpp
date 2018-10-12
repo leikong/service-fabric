@@ -12,10 +12,10 @@ namespace Common
     INITIALIZE_COUNTER_SET(AsyncWorkJobQueuePerfCounters)
 
     AsyncWorkJobQueuePerfCountersSPtr AsyncWorkJobQueuePerfCounters::CreateInstance(
-        std::wstring const & ownerName,
-        std::wstring const & ownerInstance)
+        std::string const & ownerName,
+        std::string const & ownerInstance)
     {
-        std::wstring id;
+        std::string id;
         Common::StringWriter writer(id);
         writer.Write("{0}:{1}:{2}", ownerName, ownerInstance, SequenceNumber::GetNext());
         return AsyncWorkJobQueuePerfCounters::CreateInstance(id);

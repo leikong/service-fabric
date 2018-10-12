@@ -48,9 +48,9 @@ namespace Common
 
         void WriteTo(__in TextWriter&, FormatOptions const &) const;
         
-        std::wstring ToString() const;
-        static ErrorCode FromString(std::wstring const & fabricCodeVersionString, __out FabricCodeVersion & fabricCodeVersion);
-        static bool TryParse(std::wstring const &, __out FabricCodeVersion &);
+        std::string ToString() const;
+        static ErrorCode FromString(std::string const & fabricCodeVersionString, __out FabricCodeVersion & fabricCodeVersion);
+        static bool TryParse(std::string const &, __out FabricCodeVersion &);
         
         FABRIC_FIELDS_04(majorVersion_, minorVersion_, buildVersion_, hotfixVersion_);
 
@@ -63,7 +63,7 @@ namespace Common
         uint buildVersion_;
         uint hotfixVersion_;
 
-        static GlobalWString Delimiter;
+        static GlobalString Delimiter;
     };
 }
 DEFINE_USER_ARRAY_UTILITY(Common::FabricCodeVersion);

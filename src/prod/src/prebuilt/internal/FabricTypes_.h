@@ -76,9 +76,9 @@ typedef GUID FABRIC_BACKUP_OPERATION_ID;
 
 typedef GUID FABRIC_RESTORE_OPERATION_ID;
 
-#define	FABRIC_SECURITY_ROLE_NAME_AUTHENTICATED_USERS	( L"Authenticated Users" )
+#define	FABRIC_SECURITY_ROLE_NAME_AUTHENTICATED_USERS	( "Authenticated Users" )
 
-#define	FABRIC_SECURITY_ROLE_NAME_ADMINISTRATOR	( L"Administrator" )
+#define	FABRIC_SECURITY_ROLE_NAME_ADMINISTRATOR	( "Administrator" )
 
 #define	FABRIC_INVALID_STATE_PROVIDER_ID	( -1 )
 
@@ -302,8 +302,8 @@ typedef struct TRANSACTIONAL_REPLICATOR_SETTINGS
 
 typedef struct KTLLOGGER_SHARED_LOG_SETTINGS
     {
-    LPCWSTR ContainerPath;
-    LPCWSTR ContainerId;
+    LPCSTR ContainerPath;
+    LPCSTR ContainerId;
     LONGLONG LogSize;
     ULONG MaximumNumberStreams;
     ULONG MaximumRecordSize;
@@ -464,8 +464,8 @@ enum FABRIC_RESTORE_POLICY
 
 typedef struct FABRIC_IMAGE_STORE_COPY_DESCRIPTION
     {
-    LPCWSTR RemoteSource;
-    LPCWSTR RemoteDestination;
+    LPCSTR RemoteSource;
+    LPCSTR RemoteDestination;
     FABRIC_STRING_LIST *SkipFiles;
     FABRIC_IMAGE_STORE_COPY_FLAG CopyFlag;
     BOOLEAN CheckMarkFile;
@@ -474,24 +474,24 @@ typedef struct FABRIC_IMAGE_STORE_COPY_DESCRIPTION
 
 typedef struct FABRIC_IMAGE_STORE_LIST_DESCRIPTION
     {
-    LPCWSTR RemoteLocation;
-    LPCWSTR ContinuationToken;
+    LPCSTR RemoteLocation;
+    LPCSTR ContinuationToken;
     BOOLEAN IsRecursive;
     void *Reserved;
     } 	FABRIC_IMAGE_STORE_LIST_DESCRIPTION;
 
 typedef struct FABRIC_IMAGE_STORE_FILE_INFO_QUERY_RESULT_ITEM
     {
-    LPCWSTR StoreRelativePath;
-    LPCWSTR FileVersion;
-    LPCWSTR FileSize;
-    LPCWSTR ModifiedDate;
+    LPCSTR StoreRelativePath;
+    LPCSTR FileVersion;
+    LPCSTR FileSize;
+    LPCSTR ModifiedDate;
     } 	FABRIC_IMAGE_STORE_FILE_INFO_QUERY_RESULT_ITEM;
 
 typedef struct FABRIC_IMAGE_STORE_FOLDER_INFO_QUERY_RESULT_ITEM
     {
-    LPCWSTR StoreRelativePath;
-    LPCWSTR FileCount;
+    LPCSTR StoreRelativePath;
+    LPCSTR FileCount;
     } 	FABRIC_IMAGE_STORE_FOLDER_INFO_QUERY_RESULT_ITEM;
 
 typedef struct FABRIC_IMAGE_STORE_FILE_INFO_QUERY_RESULT_LIST
@@ -516,21 +516,21 @@ typedef struct FABRIC_IMAGE_STORE_PAGED_CONTENT_QUERY_RESULT
     {
     FABRIC_IMAGE_STORE_FILE_INFO_QUERY_RESULT_LIST *Files;
     FABRIC_IMAGE_STORE_FOLDER_INFO_QUERY_RESULT_LIST *Folders;
-    LPCWSTR ContinuationToken;
+    LPCSTR ContinuationToken;
     void *Reserved;
     } 	FABRIC_IMAGE_STORE_PAGED_CONTENT_QUERY_RESULT;
 
 typedef struct FABRIC_IMAGE_STORE_PAGED_RELATIVEPATH_QUERY_RESULT
     {
     FABRIC_STRING_LIST *Files;
-    LPCWSTR ContinuationToken;
+    LPCSTR ContinuationToken;
     void *Reserved;
     } 	FABRIC_IMAGE_STORE_PAGED_RELATIVEPATH_QUERY_RESULT;
 
 typedef struct FABRIC_UPLOAD_CHUNK_RANGE_QUERY_RESULT_ITEM
     {
-    LPCWSTR StartPosition;
-    LPCWSTR EndPosition;
+    LPCSTR StartPosition;
+    LPCSTR EndPosition;
     void *Reserved;
     } 	FABRIC_UPLOAD_CHUNK_RANGE_QUERY_RESULT_ITEM;
 
@@ -542,10 +542,10 @@ typedef struct FABRIC_UPLOAD_CHUNK_RANGE_QUERY_RESULT_LIST
 
 typedef struct FABRIC_UPLOAD_SESSION_INFO_QUERY_RESULT_ITEM
     {
-    LPCWSTR StoreRelativePath;
+    LPCSTR StoreRelativePath;
     FABRIC_UPLOAD_SESSION_ID SessionId;
-    LPCWSTR FileSize;
-    LPCWSTR ModifiedDate;
+    LPCSTR FileSize;
+    LPCSTR ModifiedDate;
     FABRIC_UPLOAD_CHUNK_RANGE_QUERY_RESULT_LIST *ExpectedRanges;
     void *Reserved;
     } 	FABRIC_UPLOAD_SESSION_INFO_QUERY_RESULT_ITEM;
@@ -564,7 +564,7 @@ typedef struct FABRIC_UPLOAD_SESSION_QUERY_RESULT
 
 typedef struct FABRIC_NODE_TASK_DESCRIPTION
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_NODE_TASK_TYPE TaskType;
     void *Reserved;
     } 	FABRIC_NODE_TASK_DESCRIPTION;
@@ -578,7 +578,7 @@ typedef struct FABRIC_NODE_TASK_DESCRIPTION_LIST
 typedef struct FABRIC_INFRASTRUCTURE_TASK_DESCRIPTION
     {
     FABRIC_PARTITION_ID SourcePartitionId;
-    LPCWSTR TaskId;
+    LPCSTR TaskId;
     ULONGLONG InstanceId;
     FABRIC_NODE_TASK_DESCRIPTION_LIST *NodeTasks;
     void *Reserved;
@@ -600,7 +600,7 @@ typedef struct FABRIC_INFRASTRUCTURE_TASK_QUERY_RESULT_LIST
 typedef struct FABRIC_REPLICATOR_LOG_SETTINGS
     {
     DWORD Flags;
-    LPCWSTR ContainerPath;
+    LPCSTR ContainerPath;
     LOG_CONTAINER_ID ContainerId;
     ULONG MaxCheckpointSize;
     void *Reserved;
@@ -641,7 +641,7 @@ typedef struct FABRIC_QUERY_RESULT_ITEM
 
 typedef struct FABRIC_QUERY_METADATA_QUERY_RESULT_ITEM
     {
-    LPCWSTR QueryName;
+    LPCSTR QueryName;
     FABRIC_STRING_LIST *RequiredArguments;
     FABRIC_STRING_LIST *OptionalArguments;
     void *Reserved;
@@ -656,12 +656,12 @@ typedef struct FABRIC_INTERNAL_REPLICATION_QUEUE_COUNTERS
 
 typedef struct FABRIC_TOKEN_CLAIM
     {
-    LPCWSTR ClaimType;
-    LPCWSTR Issuer;
-    LPCWSTR OriginalIssuer;
-    LPCWSTR Subject;
-    LPCWSTR Value;
-    LPCWSTR ValueType;
+    LPCSTR ClaimType;
+    LPCSTR Issuer;
+    LPCSTR OriginalIssuer;
+    LPCSTR Subject;
+    LPCSTR Value;
+    LPCSTR ValueType;
     void *Reserved;
     } 	FABRIC_TOKEN_CLAIM;
 
@@ -673,9 +673,9 @@ typedef struct FABRIC_TOKEN_CLAIM_RESULT_LIST
 
 typedef struct FABRIC_TOKEN_SERVICE_METADATA
     {
-    LPCWSTR Metadata;
-    LPCWSTR ServiceName;
-    LPCWSTR ServiceDnsName;
+    LPCSTR Metadata;
+    LPCSTR ServiceName;
+    LPCSTR ServiceDnsName;
     void *Reserved;
     } 	FABRIC_TOKEN_SERVICE_METADATA;
 
@@ -687,13 +687,13 @@ typedef struct FABRIC_SECURITY_RESOURCE_IDENTIFIER
 
 typedef struct FABRIC_SECURITY_IMAGESTORE_PATH_RESOURCE_IDENTIFIER
     {
-    LPCWSTR Path;
+    LPCSTR Path;
     void *Reserved;
     } 	FABRIC_SECURITY_IMAGESTORE_PATH_RESOURCE_IDENTIFIER;
 
 typedef struct FABRIC_SECURITY_APPLICATION_TYPE_RESOURCE_IDENTIFIER
     {
-    LPCWSTR ApplicationTypeName;
+    LPCSTR ApplicationTypeName;
     void *Reserved;
     } 	FABRIC_SECURITY_APPLICATION_TYPE_RESOURCE_IDENTIFIER;
 
@@ -723,25 +723,25 @@ typedef struct FABRIC_SECURITY_PRINCIPAL_IDENTIFIER
 
 typedef struct FABRIC_SECURITY_X509_PRINCIPAL_IDENTIFIER
     {
-    LPCWSTR CommonName;
+    LPCSTR CommonName;
     void *Reserved;
     } 	FABRIC_SECURITY_X509_PRINCIPAL_IDENTIFIER;
 
 typedef struct FABRIC_SECURITY_WINDOWS_PRINCIPAL_IDENTIFIER
     {
-    LPCWSTR AccountName;
+    LPCSTR AccountName;
     void *Reserved;
     } 	FABRIC_SECURITY_WINDOWS_PRINCIPAL_IDENTIFIER;
 
 typedef struct FABRIC_SECURITY_CLAIM_PRINCIPAL_IDENTIFIER
     {
-    LPCWSTR Claim;
+    LPCSTR Claim;
     void *Reserved;
     } 	FABRIC_SECURITY_CLAIM_PRINCIPAL_IDENTIFIER;
 
 typedef struct FABRIC_SECURITY_ROLE_PRINCIPAL_IDENTIFIER
     {
-    LPCWSTR RoleName;
+    LPCSTR RoleName;
     void *Reserved;
     } 	FABRIC_SECURITY_ROLE_PRINCIPAL_IDENTIFIER;
 
@@ -762,7 +762,7 @@ typedef struct FABRIC_SECURITY_ACL
 
 typedef struct FABRIC_MOVE_PRIMARY_REPLICA_DESCRIPTION
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_PARTITION_ID PartitionId;
     void *Reserved;
     } 	FABRIC_MOVE_PRIMARY_REPLICA_DESCRIPTION;
@@ -775,8 +775,8 @@ typedef struct FABRIC_MOVE_PRIMARY_REPLICA_DESCRIPTION_EX1
 
 typedef struct FABRIC_MOVE_SECONDARY_REPLICA_DESCRIPTION
     {
-    LPCWSTR CurrentSecondaryNodeName;
-    LPCWSTR NewSecondaryNodeName;
+    LPCSTR CurrentSecondaryNodeName;
+    LPCSTR NewSecondaryNodeName;
     FABRIC_PARTITION_ID PartitionId;
     void *Reserved;
     } 	FABRIC_MOVE_SECONDARY_REPLICA_DESCRIPTION;
@@ -796,7 +796,7 @@ typedef struct FABRIC_OPERATION_DATA_BUFFER_LIST
 typedef struct FABRIC_STATE_PROVIDER_FACTORY_ARGUMENTS
     {
     FABRIC_URI name;
-    LPCWSTR typeName;
+    LPCSTR typeName;
     FABRIC_PARTITION_ID partitionId;
     FABRIC_REPLICA_ID replicaId;
     FABRIC_STATE_PROVIDER_ID stateProviderId;
@@ -806,29 +806,29 @@ typedef struct FABRIC_STATE_PROVIDER_FACTORY_ARGUMENTS
 
 typedef struct FABRIC_COMPOSE_DEPLOYMENT_DESCRIPTION
     {
-    LPCWSTR DeploymentName;
-    LPCWSTR ComposeFilePath;
-    LPCWSTR OverridesFilePath;
-    LPCWSTR ContainerRepositoryUserName;
-    LPCWSTR ContainerRepositoryPassword;
+    LPCSTR DeploymentName;
+    LPCSTR ComposeFilePath;
+    LPCSTR OverridesFilePath;
+    LPCSTR ContainerRepositoryUserName;
+    LPCSTR ContainerRepositoryPassword;
     BOOLEAN IsPasswordEncrypted;
     void *Reserved;
     } 	FABRIC_COMPOSE_DEPLOYMENT_DESCRIPTION;
 
 typedef struct FABRIC_COMPOSE_DEPLOYMENT_STATUS_QUERY_DESCRIPTION
     {
-    LPCWSTR DeploymentNameFilter;
-    LPCWSTR ContinuationToken;
+    LPCSTR DeploymentNameFilter;
+    LPCSTR ContinuationToken;
     LONG MaxResults;
     void *Reserved;
     } 	FABRIC_COMPOSE_DEPLOYMENT_STATUS_QUERY_DESCRIPTION;
 
 typedef struct FABRIC_COMPOSE_DEPLOYMENT_STATUS_QUERY_RESULT_ITEM
     {
-    LPCWSTR DeploymentName;
+    LPCSTR DeploymentName;
     FABRIC_URI ApplicationName;
     FABRIC_COMPOSE_DEPLOYMENT_STATUS Status;
-    LPCWSTR StatusDetails;
+    LPCSTR StatusDetails;
     void *Reserved;
     } 	FABRIC_COMPOSE_DEPLOYMENT_STATUS_QUERY_RESULT_ITEM;
 
@@ -840,11 +840,11 @@ typedef struct FABRIC_COMPOSE_DEPLOYMENT_STATUS_QUERY_RESULT_LIST
 
 typedef struct FABRIC_COMPOSE_DEPLOYMENT_UPGRADE_DESCRIPTION
     {
-    LPCWSTR DeploymentName;
+    LPCSTR DeploymentName;
     FABRIC_STRING_LIST ComposeFilePaths;
     FABRIC_STRING_LIST ServiceFabricSettingsFilePaths;
-    LPCWSTR ContainerRegistryUserName;
-    LPCWSTR ContainerRegistryPassword;
+    LPCSTR ContainerRegistryUserName;
+    LPCSTR ContainerRegistryPassword;
     BOOLEAN IsPasswordEncrypted;
     FABRIC_APPLICATION_UPGRADE_KIND UpgradeKind;
     void *UpgradePolicyDescription;
@@ -853,13 +853,13 @@ typedef struct FABRIC_COMPOSE_DEPLOYMENT_UPGRADE_DESCRIPTION
 
 typedef struct FABRIC_COMPOSE_DEPLOYMENT_UPGRADE_PROGRESS
     {
-    LPCWSTR DeploymentName;
+    LPCSTR DeploymentName;
     FABRIC_URI ApplicationName;
     FABRIC_APPLICATION_UPGRADE_KIND UpgradeKind;
     void *UpgradePolicyDescription;
-    LPCWSTR TargetApplicationTypeVersion;
+    LPCSTR TargetApplicationTypeVersion;
     FABRIC_COMPOSE_DEPLOYMENT_UPGRADE_STATE UpgradeState;
-    LPCWSTR NextUpgradeDomain;
+    LPCSTR NextUpgradeDomain;
     const FABRIC_UPGRADE_DOMAIN_STATUS_DESCRIPTION_LIST *UpgradeDomains;
     DWORD UpgradeDurationInSeconds;
     DWORD CurrentUpgradeDomainDurationInSeconds;
@@ -869,21 +869,21 @@ typedef struct FABRIC_COMPOSE_DEPLOYMENT_UPGRADE_PROGRESS
     FILETIME FailureTimestampUtc;
     FABRIC_UPGRADE_FAILURE_REASON FailureReason;
     const FABRIC_UPGRADE_DOMAIN_PROGRESS *UpgradeDomainProgressAtFailure;
-    LPCWSTR UpgradeStatusDetails;
-    LPCWSTR ApplicationUpgradeStatusDetails;
+    LPCSTR UpgradeStatusDetails;
+    LPCSTR ApplicationUpgradeStatusDetails;
     void *Reserved;
     } 	FABRIC_COMPOSE_DEPLOYMENT_UPGRADE_PROGRESS;
 
 typedef struct FABRIC_DELETE_COMPOSE_DEPLOYMENT_DESCRIPTION
     {
-    LPCWSTR DeploymentName;
+    LPCSTR DeploymentName;
     void *Reserved;
     } 	FABRIC_DELETE_COMPOSE_DEPLOYMENT_DESCRIPTION;
 
 typedef struct FABRIC_UNRELIABLETRANSPORT_BEHAVIOR
     {
-    LPCWSTR Destination;
-    LPCWSTR Action;
+    LPCSTR Destination;
+    LPCSTR Action;
     DOUBLE ProbabilityToApply;
     DOUBLE DelayInSeconds;
     DOUBLE DelaySpanInSeconds;
@@ -919,9 +919,9 @@ typedef struct FABRIC_SERVICE_TRANSPORT_SETTINGS_EX1
 
 typedef struct FABRIC_SERVICE_LISTENER_ADDRESS
     {
-    LPCWSTR IPAddressOrFQDN;
+    LPCSTR IPAddressOrFQDN;
     ULONG Port;
-    LPCWSTR Path;
+    LPCSTR Path;
     } 	FABRIC_SERVICE_LISTENER_ADDRESS;
 
 typedef struct FABRIC_MESSAGE_BUFFER
@@ -938,7 +938,7 @@ typedef struct FABRIC_MESSAGE_BODY_BUFFER
 
 typedef struct FABRIC_STOP_NODE_DESCRIPTION_INTERNAL
     {
-    LPCWSTR NodeName;
+    LPCSTR NodeName;
     FABRIC_NODE_INSTANCE_ID NodeInstanceId;
     DWORD StopDurationInSeconds;
     void *Reserved;
@@ -946,13 +946,13 @@ typedef struct FABRIC_STOP_NODE_DESCRIPTION_INTERNAL
 
 typedef struct FABRIC_CHAOS_CLIENT_TYPE
     {
-    LPCWSTR ClientType;
+    LPCSTR ClientType;
     void *Reserved;
     } 	FABRIC_CHAOS_CLIENT_TYPE;
 
 typedef struct FABRIC_KEY_VALUE_STORE_REPLICA_SETTINGS_V2
     {
-    LPCWSTR WorkingDirectory;
+    LPCSTR WorkingDirectory;
     const KTLLOGGER_SHARED_LOG_SETTINGS *SharedLogSettings;
     FABRIC_KEY_VALUE_STORE_NOTIFICATION_MODE SecondaryNotificationMode;
     void *Reserved;
@@ -974,28 +974,28 @@ typedef struct FABRIC_BACKUP_STORE_INFORMATION
 
 typedef struct FABRIC_BACKUP_STORE_FILE_SHARE_INFORMATION
     {
-    LPCWSTR FileSharePath;
+    LPCSTR FileSharePath;
     FABRIC_BACKUP_STORE_FILE_SHARE_ACCESS_TYPE AccessType;
-    LPCWSTR PrimaryUserName;
-    LPCWSTR PrimaryPassword;
-    LPCWSTR SecondaryUserName;
-    LPCWSTR SecondaryPassword;
+    LPCSTR PrimaryUserName;
+    LPCSTR PrimaryPassword;
+    LPCSTR SecondaryUserName;
+    LPCSTR SecondaryPassword;
     BOOLEAN IsPasswordEncrypted;
     void *Reserved;
     } 	FABRIC_BACKUP_STORE_FILE_SHARE_INFORMATION;
 
 typedef struct FABRIC_BACKUP_STORE_AZURE_STORAGE_INFORMATION
     {
-    LPCWSTR ConnectionString;
-    LPCWSTR ContainerName;
-    LPCWSTR FolderPath;
+    LPCSTR ConnectionString;
+    LPCSTR ContainerName;
+    LPCSTR FolderPath;
     BOOLEAN IsConnectionStringEncrypted;
     void *Reserved;
     } 	FABRIC_BACKUP_STORE_AZURE_STORAGE_INFORMATION;
 
 typedef struct FABRIC_BACKUP_POLICY
     {
-    LPCWSTR Name;
+    LPCSTR Name;
     GUID PolicyId;
     FABRIC_BACKUP_POLICY_TYPE PolicyType;
     void *PolicyDescription;
@@ -1038,9 +1038,9 @@ typedef struct FABRIC_BACKUP_OPERATION_RESULT
     FABRIC_PARTITION_ID PartitionId;
     FABRIC_BACKUP_OPERATION_ID OperationId;
     HRESULT ErrorCode;
-    LPCWSTR Message;
+    LPCSTR Message;
     GUID BackupId;
-    LPCWSTR BackupLocation;
+    LPCSTR BackupLocation;
     FABRIC_EPOCH EpochOfLastBackupRecord;
     FABRIC_SEQUENCE_NUMBER LsnOfLastBackupRecord;
     FILETIME TimeStampUtc;
@@ -1053,7 +1053,7 @@ typedef struct FABRIC_RESTORE_OPERATION_RESULT
     FABRIC_PARTITION_ID PartitionId;
     FABRIC_RESTORE_OPERATION_ID OperationId;
     HRESULT ErrorCode;
-    LPCWSTR Message;
+    LPCSTR Message;
     FILETIME TimeStampUtc;
     void *Reserved;
     } 	FABRIC_RESTORE_OPERATION_RESULT;
@@ -1069,16 +1069,16 @@ typedef struct FABRIC_RESTORE_POINT_DETAILS
 
 typedef struct FABRIC_BACKUP_UPLOAD_INFO
     {
-    LPCWSTR BackupMetadataFilePath;
-    LPCWSTR LocalBackupPath;
-    LPCWSTR DestinationFolderName;
+    LPCSTR BackupMetadataFilePath;
+    LPCSTR LocalBackupPath;
+    LPCSTR DestinationFolderName;
     void *Reserved;
     } 	FABRIC_BACKUP_UPLOAD_INFO;
 
 typedef struct FABRIC_BACKUP_DOWNLOAD_INFO
     {
     const FABRIC_STRING_LIST *BackupLocations;
-    LPCWSTR DestinationRootPath;
+    LPCSTR DestinationRootPath;
     void *Reserved;
     } 	FABRIC_BACKUP_DOWNLOAD_INFO;
 
@@ -1092,8 +1092,8 @@ enum FABRIC_CONTAINER_ISOLATION_MODE
 
 typedef struct FABRIC_CONTAINER_DRIVER_OPTION_DESCRIPTION
     {
-    LPCWSTR Name;
-    LPCWSTR Value;
+    LPCSTR Name;
+    LPCSTR Value;
     BOOLEAN IsEncrypted;
     void *Reserved;
     } 	FABRIC_CONTAINER_DRIVER_OPTION_DESCRIPTION;
@@ -1106,9 +1106,9 @@ typedef struct FABRIC_CONTAINER_DRIVER_OPTION_DESCRIPTION_LIST
 
 typedef struct FABRIC_CONTAINER_VOLUME_DESCRIPTION
     {
-    LPCWSTR Source;
-    LPCWSTR Destination;
-    LPCWSTR Driver;
+    LPCSTR Source;
+    LPCSTR Destination;
+    LPCSTR Driver;
     BOOLEAN IsReadOnly;
     FABRIC_CONTAINER_DRIVER_OPTION_DESCRIPTION_LIST *DriverOpts;
     void *Reserved;
@@ -1122,8 +1122,8 @@ typedef struct FABRIC_CONTAINER_VOLUME_DESCRIPTION_LIST
 
 typedef struct FABRIC_CONTAINER_LABEL_DESCRIPTION
     {
-    LPCWSTR Name;
-    LPCWSTR Value;
+    LPCSTR Name;
+    LPCSTR Value;
     void *Reserved;
     } 	FABRIC_CONTAINER_LABEL_DESCRIPTION;
 
@@ -1135,16 +1135,16 @@ typedef struct FABRIC_CONTAINER_LABEL_DESCRIPTION_LIST
 
 typedef struct FABRIC_CONTAINER_LOG_CONFIG_DESCRIPTION
     {
-    LPCWSTR Driver;
+    LPCSTR Driver;
     FABRIC_CONTAINER_DRIVER_OPTION_DESCRIPTION_LIST *DriverOpts;
     void *Reserved;
     } 	FABRIC_CONTAINER_LOG_CONFIG_DESCRIPTION;
 
 typedef struct FABRIC_REPOSITORY_CREDENTIAL_DESCRIPTION
     {
-    LPCWSTR AccountName;
-    LPCWSTR Password;
-    LPCWSTR Email;
+    LPCSTR AccountName;
+    LPCSTR Password;
+    LPCSTR Email;
     BOOLEAN IsPasswordEncrypted;
     void *Reserved;
     } 	FABRIC_REPOSITORY_CREDENTIAL_DESCRIPTION;
@@ -1158,16 +1158,16 @@ typedef struct FABRIC_CONTAINER_HEALTH_CONFIG_DESCRIPTION
 
 typedef struct FABRIC_CONTAINER_DESCRIPTION
     {
-    LPCWSTR ApplicationName;
-    LPCWSTR ServiceName;
-    LPCWSTR ApplicationId;
-    LPCWSTR ContainerName;
-    LPCWSTR DeploymentFolder;
-    LPCWSTR NodeWorkFolder;
-    LPCWSTR AssignedIp;
-    LPCWSTR EntryPoint;
-    LPCWSTR HostName;
-    LPCWSTR GroupContainerName;
+    LPCSTR ApplicationName;
+    LPCSTR ServiceName;
+    LPCSTR ApplicationId;
+    LPCSTR ContainerName;
+    LPCSTR DeploymentFolder;
+    LPCSTR NodeWorkFolder;
+    LPCSTR AssignedIp;
+    LPCSTR EntryPoint;
+    LPCSTR HostName;
+    LPCSTR GroupContainerName;
     FABRIC_CONTAINER_ISOLATION_MODE IsolationMode;
     FABRIC_STRING_PAIR_LIST *PortBindings;
     FABRIC_CONTAINER_LOG_CONFIG_DESCRIPTION *LogConfig;
@@ -1179,9 +1179,9 @@ typedef struct FABRIC_CONTAINER_DESCRIPTION
     BOOLEAN AutoRemove;
     BOOLEAN RunInteractive;
     BOOLEAN IsContainerRoot;
-    LPCWSTR CodePackageName;
-    LPCWSTR ServicePackageActivationId;
-    LPCWSTR PartitionId;
+    LPCSTR CodePackageName;
+    LPCSTR ServicePackageActivationId;
+    LPCSTR PartitionId;
     void *Reserved;
     } 	FABRIC_CONTAINER_DESCRIPTION;
 
@@ -1202,11 +1202,11 @@ typedef struct FABRIC_CONTAINER_DESCRIPTION_EX2
 
 typedef struct FABRIC_PROCESS_DEBUG_PARAMETERS
     {
-    LPCWSTR ExePath;
-    LPCWSTR Arguments;
-    LPCWSTR LockFile;
-    LPCWSTR WorkingFolder;
-    LPCWSTR DebugParametersFile;
+    LPCSTR ExePath;
+    LPCSTR Arguments;
+    LPCSTR LockFile;
+    LPCSTR WorkingFolder;
+    LPCSTR DebugParametersFile;
     FABRIC_STRING_PAIR_LIST *EnvVars;
     FABRIC_STRING_LIST *ContainerEntryPoints;
     FABRIC_STRING_LIST *ContainerMountedVolumes;
@@ -1222,7 +1222,7 @@ typedef struct FABRIC_PROCESS_DEBUG_PARAMETERS_EX1
 
 typedef struct FABRIC_RESOURCE_GOVERNANCE_POLICY_DESCRIPTION
     {
-    LPCWSTR CodePackageRef;
+    LPCSTR CodePackageRef;
     ULONG MemoryInMB;
     ULONG MemorySwapInMB;
     ULONG MemoryReservationInMB;
@@ -1231,7 +1231,7 @@ typedef struct FABRIC_RESOURCE_GOVERNANCE_POLICY_DESCRIPTION
     ULONG MaximumIOps;
     ULONG MaximumIOBytesps;
     ULONG BlockIOWeight;
-    LPCWSTR CpusetCpus;
+    LPCSTR CpusetCpus;
     ULONGLONG NanoCpus;
     ULONG CpuQuota;
     void *Reserved;
@@ -1256,16 +1256,16 @@ typedef struct FABRIC_SERVICE_PACKAGE_RESOURCE_GOVERNANCE_DESCRIPTION
 
 typedef struct FABRIC_PROCESS_DESCRIPTION
     {
-    LPCWSTR ExePath;
-    LPCWSTR Arguments;
-    LPCWSTR StartInDirectory;
+    LPCSTR ExePath;
+    LPCSTR Arguments;
+    LPCSTR StartInDirectory;
     FABRIC_STRING_PAIR_LIST *EnvVars;
-    LPCWSTR AppDirectory;
-    LPCWSTR TempDirectory;
-    LPCWSTR WorkDirectory;
-    LPCWSTR LogDirectory;
+    LPCSTR AppDirectory;
+    LPCSTR TempDirectory;
+    LPCSTR WorkDirectory;
+    LPCSTR LogDirectory;
     BOOLEAN RedirectConsole;
-    LPCWSTR RedirectedConsoleFileNamePrefix;
+    LPCSTR RedirectedConsoleFileNamePrefix;
     LONG ConsoleRedirectionFileRetentionCount;
     LONG ConsoleRedirectionFileMaxSizeInKb;
     BOOLEAN ShowNoWindow;
@@ -1274,7 +1274,7 @@ typedef struct FABRIC_PROCESS_DESCRIPTION
     FABRIC_PROCESS_DEBUG_PARAMETERS *DebugParameters;
     FABRIC_RESOURCE_GOVERNANCE_POLICY_DESCRIPTION *ResourceGovernancePolicy;
     FABRIC_SERVICE_PACKAGE_RESOURCE_GOVERNANCE_DESCRIPTION *ServicePackageResourceGovernance;
-    LPCWSTR CgroupName;
+    LPCSTR CgroupName;
     BOOLEAN IsHostedServiceProcess;
     void *Reserved;
     } 	FABRIC_PROCESS_DESCRIPTION;
@@ -1287,7 +1287,7 @@ typedef struct FABRIC_PROCESS_DESCRIPTION_EX1
 
 typedef struct FABRIC_CONTAINER_IMAGE_DESCRIPTION
     {
-    LPCWSTR ImageName;
+    LPCSTR ImageName;
     FABRIC_REPOSITORY_CREDENTIAL_DESCRIPTION *RepositoryCredential;
     void *Reserved;
     } 	FABRIC_CONTAINER_IMAGE_DESCRIPTION;
@@ -1313,21 +1313,21 @@ typedef struct FABRIC_CONTAINER_IMAGE_DESCRIPTION_LIST
 typedef struct FABRIC_CONTAINER_ACTIVATION_ARGS
     {
     BOOLEAN IsUserLocalSystem;
-    LPCWSTR AppHostId;
-    LPCWSTR NodeId;
+    LPCSTR AppHostId;
+    LPCSTR NodeId;
     FABRIC_CONTAINER_DESCRIPTION *ContainerDescription;
     FABRIC_PROCESS_DESCRIPTION *ProcessDescription;
-    LPCWSTR FabricBinPath;
-    LPCWSTR GatewayIpAddress;
+    LPCSTR FabricBinPath;
+    LPCSTR GatewayIpAddress;
     void *Reserved;
     } 	FABRIC_CONTAINER_ACTIVATION_ARGS;
 
 typedef struct FABRIC_CONTAINER_DEACTIVATION_ARGS
     {
-    LPCWSTR ContainerName;
+    LPCSTR ContainerName;
     BOOLEAN ConfiguredForAutoRemove;
     BOOLEAN IsContainerRoot;
-    LPCWSTR CgroupName;
+    LPCSTR CgroupName;
     BOOLEAN IsGracefulDeactivation;
     void *Reserved;
     } 	FABRIC_CONTAINER_DEACTIVATION_ARGS;
@@ -1350,8 +1350,8 @@ enum FABRIC_CONTAINER_EVENT_TYPE
 typedef struct FABRIC_CONTAINER_EVENT_DESCRIPTION
     {
     FABRIC_CONTAINER_EVENT_TYPE EventType;
-    LPCWSTR ContainerId;
-    LPCWSTR ContainerName;
+    LPCSTR ContainerId;
+    LPCSTR ContainerName;
     ULONGLONG TimeStampInSeconds;
     BOOLEAN IsHealthy;
     ULONG ExitCode;
@@ -1374,19 +1374,19 @@ typedef struct FABRIC_CONTAINER_EVENT_NOTIFICATION
 
 typedef struct FABRIC_CONTAINER_API_EXECUTION_ARGS
     {
-    LPCWSTR ContainerName;
-    LPCWSTR HttpVerb;
-    LPCWSTR UriPath;
-    LPCWSTR ContentType;
-    LPCWSTR RequestBody;
+    LPCSTR ContainerName;
+    LPCSTR HttpVerb;
+    LPCSTR UriPath;
+    LPCSTR ContentType;
+    LPCSTR RequestBody;
     void *Reserved;
     } 	FABRIC_CONTAINER_API_EXECUTION_ARGS;
 
 typedef struct FABRIC_CONTAINER_API_EXECUTION_RESPONSE
     {
     USHORT StatusCode;
-    LPCWSTR ContentType;
-    LPCWSTR ContentEncoding;
+    LPCSTR ContentType;
+    LPCSTR ContentEncoding;
     ULONG ResponseBodyBufferSize;
     /* [size_is] */ BYTE *ResponseBodyBuffer;
     void *Reserved;

@@ -55,9 +55,9 @@ namespace Common
         int64 TotalRoundedMinutes() const;
         TimeSpan AddWithMaxAndMinValueCheck (TimeSpan const& rhs) const;
         TimeSpan SubtractWithMaxAndMinValueCheck (TimeSpan const& rhs) const;
-        std::wstring ToString() const;
-        std::wstring ToIsoString() const;
-        static bool TryFromIsoString(std::wstring & str, __out TimeSpan &);
+        std::string ToString() const;
+        std::string ToIsoString() const;
+        static bool TryFromIsoString(std::string & str, __out TimeSpan &);
         void WriteTo(TextWriter& w, FormatOptions const &) const;
 
         int get_Milliseconds() const 

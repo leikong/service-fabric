@@ -17,21 +17,21 @@ namespace Common
 
     public:
         //name must be non-empty, otherwise, RwLock should be used
-        static MutexHandleSPtr CreateSPtr(std::wstring const & name);
-        static MutexHandleUPtr CreateUPtr(std::wstring const & name);
+        static MutexHandleSPtr CreateSPtr(std::string const & name);
+        static MutexHandleUPtr CreateUPtr(std::string const & name);
 
-        explicit MutexHandle(std::wstring const & name);
+        explicit MutexHandle(std::string const & name);
         ~MutexHandle();
 
         ErrorCode WaitOne(TimeSpan timeout = TimeSpan::MaxValue);
         void Release();
 
     private:
-        std::wstring const id_;
+        std::string const id_;
 
 #ifdef PLATFORM_UNIX
-        static std::wstring NormalizeName(std::wstring const & name);
-        static std::wstring GetMutexPath(std::wstring const & name);
+        static std::string NormalizeName(std::string const & name);
+        static std::string GetMutexPath(std::string const & name);
 
         ExclusiveFile handle_;
 #else

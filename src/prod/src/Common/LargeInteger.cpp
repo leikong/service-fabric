@@ -8,7 +8,7 @@
 using namespace std;
 using namespace Common;
 
-wchar_t HexTable[] = { L'0', L'1', L'2', L'3', L'4', L'5', L'6', L'7', L'8', L'9', L'a', L'b', L'c', L'd', L'e', L'f' }; 
+char HexTable[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' }; 
 
 size_t const LargeInteger::SizeOfLargeInteger = sizeof(uint64) * 2;
 
@@ -362,7 +362,7 @@ void WriteLargeInteger_To(uint64 high, uint64 low, TextWriter& writer)
     }
 }
 
-bool TryParseLargeInteger(size_t sizeOfLargeInteger, wstring const & from, uint64 & high, uint64 & low)
+bool TryParseLargeInteger(size_t sizeOfLargeInteger, string const & from, uint64 & high, uint64 & low)
 {
     low = 0;
     high = 0;
@@ -392,9 +392,9 @@ bool TryParseLargeInteger(size_t sizeOfLargeInteger, wstring const & from, uint6
     return true;
 }
 
-wstring LargeInteger::ToString() const
+string LargeInteger::ToString() const
 {
-    wstring result;
+    string result;
     result.reserve(33);
     StringWriter(result).Write(*this);
     return result;
@@ -411,7 +411,7 @@ void LargeInteger::FillEventData(TraceEventContext & context) const
     context.Write<uint64>(low_);
 }
 
-bool LargeInteger::TryParse(wstring const & from, LargeInteger & value)
+bool LargeInteger::TryParse(string const & from, LargeInteger & value)
 {
     return TryParseLargeInteger(LargeInteger::SizeOfLargeInteger, from, value.high_, value.low_);
 }

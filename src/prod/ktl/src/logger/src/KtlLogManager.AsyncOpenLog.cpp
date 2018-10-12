@@ -150,8 +150,8 @@ RvdLogManagerImp::AsyncOpenLogImp::StartOpenLog(
 VOID
 RvdLogManagerImp::AsyncOpenLogImp::OnReuse()
 {
-    _FullyQualifiedLogFilename = L"";
-    _RelativePath = L"";
+    _FullyQualifiedLogFilename = "";
+    _RelativePath = "";
 }
 
 VOID 

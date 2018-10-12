@@ -7,13 +7,13 @@
 
 namespace Common
 {
-    ExtendedEventMetadata::ExtendedEventMetadata(std::wstring const& publicEventName, std::wstring const& category)
+    ExtendedEventMetadata::ExtendedEventMetadata(std::string const& publicEventName, std::string const& category)
         : publicEventName_(publicEventName)
         , category_(category)
     {
     }
 
-    std::unique_ptr<ExtendedEventMetadata> ExtendedEventMetadata::Create(std::wstring const& publicEventName, std::wstring const& category)
+    std::unique_ptr<ExtendedEventMetadata> ExtendedEventMetadata::Create(std::string const& publicEventName, std::string const& category)
     {
         return std::make_unique<ExtendedEventMetadata>(publicEventName, category);
     }
@@ -21,8 +21,8 @@ namespace Common
     std::string ExtendedEventMetadata::AddMetadataFields(TraceEvent & traceEvent, size_t & fieldsCount)
     {
         size_t index = 0;
-        traceEvent.AddEventField<std::wstring>("eventName", index);
-        traceEvent.AddEventField<std::wstring>("category", index);
+        traceEvent.AddEventField<std::string>("eventName", index);
+        traceEvent.AddEventField<std::string>("category", index);
         // Number of appended fields.
         fieldsCount = index;
         return std::string(GetMetadataFieldsFormat().begin());

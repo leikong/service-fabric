@@ -13,7 +13,7 @@ ClaimsMessage::ClaimsMessage()
 {
 }
 
-ClaimsMessage::ClaimsMessage(wstring const & claims) : claims_(claims)
+ClaimsMessage::ClaimsMessage(string const & claims) : claims_(claims)
 {
 }
 
@@ -22,12 +22,12 @@ void ClaimsMessage::WriteTo(TextWriter & w, FormatOptions const &) const
     w.Write("{0}", claims_);
 }
 
-wstring const & ClaimsMessage::Claims() const
+string const & ClaimsMessage::Claims() const
 {
     return claims_;
 }
 
-MessageUPtr ClaimsMessage::CreateClaimsMessage(wstring const& claims)
+MessageUPtr ClaimsMessage::CreateClaimsMessage(string const& claims)
 {
     return make_unique<Message>(ClaimsMessage(claims));
 }

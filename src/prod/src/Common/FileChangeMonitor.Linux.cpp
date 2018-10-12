@@ -221,12 +221,12 @@ ErrorCode FileChangeMonitor2::INotify::RemoveWatch(FileChangeMonitor2 const* fcm
 
 static StringLiteral const TraceType("FileChangeMonitor");
 
-FileChangeMonitor2SPtr FileChangeMonitor2::Create(wstring const & filePath, bool supportFileDelete)
+FileChangeMonitor2SPtr FileChangeMonitor2::Create(string const & filePath, bool supportFileDelete)
 {
     return make_shared<FileChangeMonitor2>(filePath, supportFileDelete);
 }
 
-FileChangeMonitor2::FileChangeMonitor2(wstring const & filePath, bool supportFileDelete)
+FileChangeMonitor2::FileChangeMonitor2(string const & filePath, bool supportFileDelete)
     : StateMachine(Created),
     wd_(),
     wdInitialized_(false),
@@ -237,7 +237,7 @@ FileChangeMonitor2::FileChangeMonitor2(wstring const & filePath, bool supportFil
 {
     StringWriter writer(traceId_);
     writer.Write("{0}", reinterpret_cast<void*>(this));
-    StringUtility::Utf16ToUtf8(filePath, filePath_);
+    Utf16ToUtf8NotNeeded2(filePath, filePath_);
 
     WriteInfo(TraceType, traceId_, "constructed");
 }

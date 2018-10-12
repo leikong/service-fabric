@@ -1384,7 +1384,7 @@ AsyncCreateLogTest::OnReuse()
     _LogManager = 0;
     _DiskId = zeroGuid;
     _LogId = zeroGuid;
-    _LogType = L"";
+    _LogType = "";
     _LogSize = 0;
     _LogObj = 0;
 }
@@ -1819,8 +1819,8 @@ ReadNextLine(__in KTextFile::SPtr& File, __out KWString& Result)
             return STATUS_SUCCESS;
         }
 
-        static_assert(sizeof(L"//") >= 4, "Size mismatch");
-        if (RtlCompareMemory((WCHAR*)Result, L"//", 4) != 4)
+        static_assert(sizeof("//") >= 4, "Size mismatch");
+        if (RtlCompareMemory((CHAR*)Result, "//", 4) != 4)
         {
             return STATUS_SUCCESS;
         }
@@ -1832,7 +1832,7 @@ ReadNextLine(__in KTextFile::SPtr& File, __out KWString& Result)
 VOID
 ParseScriptLine(__in KWString& Src, __in KArray<KWString>& Results)
 {
-    WCHAR*      srcPtr = (WCHAR*)Src;
+    CHAR*      srcPtr = (CHAR*)Src;
     USHORT      srcLgt = Src.Length();
     KAssert((srcLgt & 0x01) == 0);
     Results.Clear();
@@ -1840,11 +1840,11 @@ ParseScriptLine(__in KWString& Src, __in KArray<KWString>& Results)
     while (srcLgt > 0)
     {
         KWString    element(KtlSystem::GlobalNonPagedAllocator());
-        WCHAR*      subStrPtr = srcPtr;
+        CHAR*      subStrPtr = srcPtr;
 
         while (srcLgt > 0)
         {
-            if ((*srcPtr) == (WCHAR)':')
+            if ((*srcPtr) == (CHAR)':')
             {
                 *srcPtr = 0;
                 element = subStrPtr;
@@ -1873,11 +1873,11 @@ ParseScriptLine(__in KWString& Src, __in KArray<KWString>& Results)
 //** Main SingleLogStreamAsyncIoTests entry point
 NTSTATUS
 SingleLogStreamAsyncIoTests(
-    __in WCHAR const LogDriveLetter,
+    __in CHAR const LogDriveLetter,
     __in ULONG RepeatCount = 1,
     __in_opt KGuid *const LogId = nullptr,
     __in_opt LogState::SPtr *const ResultingLogState = nullptr,
-    _In_opt_z_ WCHAR *const OptionalScriptPath = nullptr)
+    _In_opt_z_ CHAR *const OptionalScriptPath = nullptr)
 {
     NTSTATUS status = STATUS_SUCCESS;
 
@@ -1982,7 +1982,7 @@ SingleLogStreamAsyncIoTests(
             return status;
         }
 
-        if (*((WCHAR*)(elements[0])) != (WCHAR)'I')
+        if (*((CHAR*)(elements[0])) != (CHAR)'I')
         {
             status = STATUS_UNSUCCESSFUL;
             KDbgCheckpointWStatus((ULONG)-1, "Script file error - I: line must be first in file", status);
@@ -2027,7 +2027,7 @@ SingleLogStreamAsyncIoTests(
         KInvariant(NT_SUCCESS(defaultLogConfig.Status()));
 
     LONGLONG                    logSize = defaultLogConfig.GetMinFileSize() * 4;
-    KWString                    logType(KtlSystem::GlobalNonPagedAllocator(), L"RvdLog");
+    KWString                    logType(KtlSystem::GlobalNonPagedAllocator(), "RvdLog");
     RvdLog::SPtr                log;
 
     // Create Log
@@ -2151,7 +2151,7 @@ SingleLogStreamAsyncIoTests(
                 //0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456
                 //0         1         2         3         4         5         6         7         8         9         0         1         2
                 //0         0         0         0         0         0         0         0         0         0         1         1         1
-                KDbgPrintf("I:%S:%S:%S:%08u\n", (WCHAR*)logIdStr, (WCHAR*)streamIdStr, (WCHAR*)streamTypeStr, noOfIoRequests);
+                KDbgPrintf("I:%S:%S:%S:%08u\n", (CHAR*)logIdStr, (CHAR*)streamIdStr, (CHAR*)streamTypeStr, noOfIoRequests);
 #endif
                 while (noOfIoRequests--)
                 {
@@ -2253,7 +2253,7 @@ SingleLogStreamAsyncIoTests(
                         return status;
                     }
 
-                    switch (*(WCHAR*)(elements[0]))
+                    switch (*(CHAR*)(elements[0]))
                     {
                         case 'T':
                             {
@@ -2329,7 +2329,7 @@ SingleLogStreamAsyncIoTests(
                                     return status;
                                 }
 
-                                BOOLEAN doWriteVerify = (*((WCHAR*)(elements[5])) == 'V');
+                                BOOLEAN doWriteVerify = (*((CHAR*)(elements[5])) == 'V');
                                 if (doWriteVerify)
                                 {
                                     verifyCount++;
@@ -2488,7 +2488,7 @@ SingleLogStreamAsyncIoTests(
 
 //** Main Test Entry Point: LogStreamAsyncIoTests
 NTSTATUS
-LogStreamAsyncIoTests(__in int argc, __in_ecount(argc) WCHAR* args[])
+LogStreamAsyncIoTests(__in int argc, __in_ecount(argc) CHAR* args[])
 {
     NTSTATUS status = STATUS_SUCCESS;
 
@@ -2532,8 +2532,8 @@ LogStreamAsyncIoTests(__in int argc, __in_ecount(argc) WCHAR* args[])
         }
     }
 
-    WCHAR*      scriptPath = nullptr;
-    //WCHAR*      scriptPath = L"\\SystemRoot\\temp\\log.log";
+    CHAR*      scriptPath = nullptr;
+    //CHAR*      scriptPath = "\\SystemRoot\\temp\\log.log";
     if (argc > 2)
     {
         scriptPath = args[2];

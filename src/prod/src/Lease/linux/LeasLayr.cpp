@@ -11,8 +11,8 @@ static Global<DRIVER_CONTEXT> driverContext = make_global<DRIVER_CONTEXT>();
 static const StringLiteral TraceType = "LeasLayr";
 
 bool LEASE_RELATIONSHIP_IDENTIFIER_COMPARATOR::operator()(_LEASE_RELATIONSHIP_IDENTIFIER* left, _LEASE_RELATIONSHIP_IDENTIFIER* right){
-    auto res1 = wcscmp(left->RemoteLeasingApplicationIdentifier, right->RemoteLeasingApplicationIdentifier);
-    auto res2 = wcscmp(left->LeasingApplicationContext->LeasingApplicationIdentifier, right->LeasingApplicationContext->LeasingApplicationIdentifier);
+    auto res1 = strcmp(left->RemoteLeasingApplicationIdentifier, right->RemoteLeasingApplicationIdentifier);
+    auto res2 = strcmp(left->LeasingApplicationContext->LeasingApplicationIdentifier, right->LeasingApplicationContext->LeasingApplicationIdentifier);
     if(res1 <0) {
         return TRUE;
     }
@@ -33,15 +33,15 @@ bool LEASE_AGENT_CONTEXT_COMPARATOR::operator()(_LEASE_AGENT_CONTEXT* left, _LEA
 }
 
 bool LEASING_APPLICATION_CONTEXT_COMPARATOR::operator()(_LEASING_APPLICATION_CONTEXT* left, _LEASING_APPLICATION_CONTEXT* right){
-    return wcscmp(left->LeasingApplicationIdentifier, right->LeasingApplicationIdentifier) < 0;
+    return strcmp(left->LeasingApplicationIdentifier, right->LeasingApplicationIdentifier) < 0;
 }
 
 bool TRANSPORT_BLOCKING_TEST_DESCRIPTOR_COMPARATOR::operator()(_TRANSPORT_BLOCKING_TEST_DESCRIPTOR* left, _TRANSPORT_BLOCKING_TEST_DESCRIPTOR* right){
-    wstringstream ss1, ss2, ss3, ss4;
-    ss1 << std::wstring(left->LocalSocketAddress.Address);
-    ss2 << std::wstring(right->LocalSocketAddress.Address);
-    ss3 << std::wstring(left->RemoteSocketAddress.Address);
-    ss4 << std::wstring(right->RemoteSocketAddress.Address);
+    stringstream ss1, ss2, ss3, ss4;
+    ss1 << std::string(left->LocalSocketAddress.Address);
+    ss2 << std::string(right->LocalSocketAddress.Address);
+    ss3 << std::string(left->RemoteSocketAddress.Address);
+    ss4 << std::string(right->RemoteSocketAddress.Address);
     return ss1.str() < ss2.str() ||
         left->LocalSocketAddress.Port < right->LocalSocketAddress.Port ||
         left->FromAny < right->FromAny ||
@@ -345,7 +345,7 @@ DestructArbitrationNeutralRemoteLeaseAgents(__in PLEASE_AGENT_CONTEXT LeaseAgent
             {
                 OpenRemoteLeaseAgentContext = *IterOpenRemoteLeaseAgent;
 
-                if (0 == wcscmp(FailedRemoteLeaseAgentContext->RemoteLeaseAgentIdentifier, OpenRemoteLeaseAgentContext->RemoteLeaseAgentIdentifier))
+                if (0 == strcmp(FailedRemoteLeaseAgentContext->RemoteLeaseAgentIdentifier, OpenRemoteLeaseAgentContext->RemoteLeaseAgentIdentifier))
                 {
                     if (IsRemoteLeaseAgentOpenTwoWay(OpenRemoteLeaseAgentContext))
                     {
@@ -514,8 +514,8 @@ CheckAndTraceDurationList(PLEASE_CONFIG_DURATIONS LeaseConfigDurations)
     EventWriteCheckLeaseDurationList(NULL, 0, LeaseConfigDurations->LeaseDuration);
     EventWriteCheckLeaseDurationList(NULL, 1, LeaseConfigDurations->LeaseDurationAcrossFD);
 
-    EventWriteLeaseDurationConfigs(NULL, L"Unresponsive duration: ", LeaseConfigDurations->UnresponsiveDuration);
-    EventWriteLeaseDurationConfigs(NULL, L"MaxIndirectLease duration: ", LeaseConfigDurations->MaxIndirectLeaseTimeout);
+    EventWriteLeaseDurationConfigs(NULL, "Unresponsive duration: ", LeaseConfigDurations->UnresponsiveDuration);
+    EventWriteLeaseDurationConfigs(NULL, "MaxIndirectLease duration: ", LeaseConfigDurations->MaxIndirectLeaseTimeout);
 
     if (!IsValidDuration(LeaseConfigDurations->LeaseDuration) ||
         DURATION_MAX_VALUE == LeaseConfigDurations->LeaseDuration ||
@@ -706,7 +706,7 @@ Return Value:
     {
         EventWriteLeaseDriverTextTraceError(
             NULL,
-            L"Invalid user mode lease durations inputs",
+            "Invalid user mode lease durations inputs",
             Status);
 
         goto End;
@@ -720,7 +720,7 @@ Return Value:
         Status = STATUS_INVALID_PARAMETER;
         EventWriteLeaseDriverTextTraceError(
             NULL,
-            L"Invalid user mode arbitration durations inputs",
+            "Invalid user mode arbitration durations inputs",
             Status);
 
         goto End;
@@ -772,7 +772,7 @@ Return Value:
         // Compare the lease agent address and check lease agent failed state.
         //
         if (!IsLeaseAgentFailed(LeaseAgentContextIter) &&
-            0 == wcscmp(
+            0 == strcmp(
                 TransportIdentifier(LeaseAgentContext->Transport), 
                 TransportIdentifier(LeaseAgentContextIter->Transport)
                 )
@@ -1310,7 +1310,7 @@ Return Value:
         //
         if (!IsLeaseAgentFailed(LeaseAgentContext)) {
 
-            if (0 == wcscmp(TransportIdentifier(LeaseAgentContext->Transport), TransportIdentifier(LeaseAgentContextLookup->Transport))) {
+            if (0 == strcmp(TransportIdentifier(LeaseAgentContext->Transport), TransportIdentifier(LeaseAgentContextLookup->Transport))) {
 
                 //
                 // The lease agent is found.
@@ -1493,7 +1493,7 @@ Return Value:
         goto End;
     }
 
-    //EventWriteLeaseDriverTextTraceError(NULL, L"Blocking Lease Connection:", 0);
+    //EventWriteLeaseDriverTextTraceError(NULL, "Blocking Lease Connection:", 0);
 
     ExAcquireFastMutex(&DriverContext->LeaseAgentContextHashTableAccessMutex);
 
@@ -1505,7 +1505,7 @@ Return Value:
         KeAcquireSpinLock(&LeaseAgentContext->Lock, &OldIrql);
 
         if (!IsLeaseAgentFailed(LeaseAgentContext) && 
-            (0 == wcscmp(TransportIdentifier(LeaseAgentContext->Transport), TransportIdentifier(LeaseAgentContextLookup->Transport))))
+            (0 == strcmp(TransportIdentifier(LeaseAgentContext->Transport), TransportIdentifier(LeaseAgentContextLookup->Transport))))
         {
             //
             // Check to see if an existent remote lease agent can be reused.
@@ -1559,7 +1559,7 @@ Return Value:
                     // trace target null error message
                     EventWriteLeaseDriverTextTraceError(
                         NULL,
-                        L"BlockLeaseConnection: target is NULL. ",
+                        "BlockLeaseConnection: target is NULL. ",
                         0
                         );
                 }
@@ -1666,7 +1666,7 @@ Routine Description:
 
     if (!NT_SUCCESS(Status))
     {
-        EventWriteLeaseDriverTextTraceError(NULL, L"TransportCreateSecurityDescriptor failed ", Status);
+        EventWriteLeaseDriverTextTraceError(NULL, "TransportCreateSecurityDescriptor failed ", Status);
         goto End;
     }
 
@@ -1774,7 +1774,7 @@ Routine Description:
 
                 EventWriteUpdateLeaseAgentDuration(
                     NULL,
-                    L"Regular",
+                    "Regular",
                     LeaseAgentContext->LeaseConfigDurations.LeaseDuration,
                     UpdateLeaseDurationBuffer->UpdatedLeaseDurations.LeaseDuration);
 
@@ -1790,7 +1790,7 @@ Routine Description:
 
                 EventWriteUpdateLeaseAgentDuration(
                     NULL,
-                    L"AcrossFD",
+                    "AcrossFD",
                     LeaseAgentContext->LeaseConfigDurations.LeaseDurationAcrossFD,
                     UpdateLeaseDurationBuffer->UpdatedLeaseDurations.LeaseDurationAcrossFD);
 
@@ -1830,7 +1830,7 @@ Routine Description:
     if (!Found)
     {
         EventWriteInvalidReq7( NULL );
-        EventWriteLeaseDriverTextTraceInfo(NULL, L"Updating lease duration didn't find the lease agent handle!");
+        EventWriteLeaseDriverTextTraceInfo(NULL, "Updating lease duration didn't find the lease agent handle!");
 
         Status = STATUS_INVALID_PARAMETER;
     }
@@ -1980,7 +1980,7 @@ Routine Description:
         KeAcquireSpinLock(&LeaseAgentContext->Lock, &OldIrql);
         
         if (!IsLeaseAgentFailed(LeaseAgentContext) && 
-            (0 == wcscmp(TransportIdentifier(LeaseAgentContext->Transport), TransportIdentifier(LeaseAgentContextLookup->Transport))))
+            (0 == strcmp(TransportIdentifier(LeaseAgentContext->Transport), TransportIdentifier(LeaseAgentContextLookup->Transport))))
         {
             //
             // Check to see if an existent remote lease agent can be reused.
@@ -1997,7 +1997,7 @@ Routine Description:
                 QueryDurationOutputBuffer->KernelSystemTime = 0;
                 BytesTransferred = sizeof(GET_LEASING_APPLICATION_EXPIRATION_OUTPUT_BUFFER);
 
-                EventWriteLeaseDriverTextTraceInfo(NULL, L"QueryLeaseDuration: Found the RLA and return the current lease duration to user mode.");
+                EventWriteLeaseDriverTextTraceInfo(NULL, "QueryLeaseDuration: Found the RLA and return the current lease duration to user mode.");
 
                 QueryDurationOutputBuffer->TimeToLive = RemoteLeaseAgentContext->LeaseRelationshipContext->Duration;
             }
@@ -2005,7 +2005,7 @@ Routine Description:
             {
                 EventWriteLeaseDriverTextTraceError(
                     NULL,
-                    L"QueryLeaseDuration: Couldn't find the requested lease relationship. ",
+                    "QueryLeaseDuration: Couldn't find the requested lease relationship. ",
                     0);
             }
         }
@@ -2243,9 +2243,9 @@ __in size_t InputBufferLength
                         subjectIter++)
                     {
                         LeaseRelationshipIdentifier = *subjectIter;
-                        GetRemoteLeaseExpirationTimeInputBuffer->RemoteLeasingApplicationIdentifier[MAX_PATH] = L'\0';
+                        GetRemoteLeaseExpirationTimeInputBuffer->RemoteLeasingApplicationIdentifier[MAX_PATH] = '\0';
 
-                        if (!IsRemoteLeaseAgentInPing(RemoteLeaseAgentContextIter) && 0 == wcscmp(
+                        if (!IsRemoteLeaseAgentInPing(RemoteLeaseAgentContextIter) && 0 == strcmp(
                             LeaseRelationshipIdentifier->RemoteLeasingApplicationIdentifier,
                             GetRemoteLeaseExpirationTimeInputBuffer->RemoteLeasingApplicationIdentifier
                             ))
@@ -2335,7 +2335,7 @@ End:
     {
         if (LeaseAgentContext == NULL)
         {
-            EventWriteLeaseDriverTextTraceInfo(NULL, L"GetRemoteLeaseExpirationTime LeaseAgentContext is null");
+            EventWriteLeaseDriverTextTraceInfo(NULL, "GetRemoteLeaseExpirationTime LeaseAgentContext is null");
             EventWriteLeaseDriverTextTraceInfo(NULL, GetRemoteLeaseExpirationTimeInputBuffer->RemoteLeasingApplicationIdentifier);
         }
         else
@@ -2344,12 +2344,12 @@ End:
                 NULL,
                 TransportIdentifier(LeaseAgentContext->Transport),
                 LeaseAgentContext->Instance.QuadPart,
-                L"",
+                "",
                 0,
                 0,
                 0,
-                L"",
-                L"",
+                "",
+                "",
                 GetRemoteLeaseExpirationTimeInputBuffer->RemoteLeasingApplicationIdentifier,
                 SubjectTTL,
                 MonitorTTL
@@ -2440,16 +2440,16 @@ removeLeaseBehavior(
     //
     LeaseAgentInputBuffer = (PTRANSPORT_BEHAVIOR_BUFFER)InputBuffer;
 
-    if (L'\0' == LeaseAgentInputBuffer->Alias[0])
+    if ('\0' == LeaseAgentInputBuffer->Alias[0])
     {
-        EventWriteRemoveLeaseBehavior(NULL, L"*");
+        EventWriteRemoveLeaseBehavior(NULL, "*");
     }
     else
     {
         EventWriteRemoveLeaseBehavior(NULL, LeaseAgentInputBuffer->Alias);
     }
 
-    if (L'\0' == LeaseAgentInputBuffer->Alias[0])
+    if ('\0' == LeaseAgentInputBuffer->Alias[0])
     {
         ClearAll = TRUE;
     }
@@ -2460,7 +2460,7 @@ removeLeaseBehavior(
     {
         descriptor = *iter;
 
-        if (ClearAll || (0 == wcscmp(LeaseAgentInputBuffer->Alias, descriptor->Alias)))
+        if (ClearAll || (0 == strcmp(LeaseAgentInputBuffer->Alias, descriptor->Alias)))
         {
             iter = DriverContext->TransportBehaviorTable.erase(iter);
         }
@@ -2763,7 +2763,7 @@ Return Value:
     //
     // Construct leasing application structure.
     //
-    CreateLeasingApplicationInputBuffer->LeasingApplicationIdentifier[MAX_PATH] = L'\0';
+    CreateLeasingApplicationInputBuffer->LeasingApplicationIdentifier[MAX_PATH] = '\0';
     LeasingApplicationContext = LeasingApplicationConstructor(
         CreateLeasingApplicationInputBuffer->LeasingApplicationIdentifier,
         UserModeCallingProcessHandle
@@ -3342,7 +3342,7 @@ CleanLeasingApplication(
     __in PLEASE_AGENT_CONTEXT LeaseAgentContext,
     __in PEPROCESS TerminatingProcessHandle,
     __in HANDLE TerminatingProcessId,
-    __in_opt LPCWSTR LeasingApplicationIdentifier,
+    __in_opt LPCSTR LeasingApplicationIdentifier,
     __in_opt HANDLE LeasingApplicationHandle,
     __in_opt BOOLEAN IsDelayed
     )
@@ -3384,7 +3384,7 @@ Return Value:
         //
         if (NULL != LeasingApplicationIdentifier) {
 
-            Compare = (0 == wcscmp(
+            Compare = (0 == strcmp(
                 LeasingApplicationContext->LeasingApplicationIdentifier,
                 LeasingApplicationIdentifier
                 ) );
@@ -3907,7 +3907,7 @@ Return Value:
                 //
                 // Construct new lease relationship identifier.
                 //
-                EstablishLeaseInputBuffer->RemoteLeasingApplicationIdentifier[MAX_PATH] = L'\0';
+                EstablishLeaseInputBuffer->RemoteLeasingApplicationIdentifier[MAX_PATH] = '\0';
                 LeaseRelationshipIdentifier = LeaseRelationshipIdentifierConstructor(
                     LeasingApplicationContext->LeasingApplicationIdentifier,
                     EstablishLeaseInputBuffer->RemoteLeasingApplicationIdentifier
@@ -3948,7 +3948,7 @@ Return Value:
                     //
                     RemoteLeaseAgentContextIter = RemoteLeaseAgentContextItem;
 
-                    if (0 != wcscmp(
+                    if (0 != strcmp(
                             RemoteLeaseAgentContextIter->RemoteLeaseAgentIdentifier, 
                             RemoteLeaseAgentContext->RemoteLeaseAgentIdentifier
                             ))
@@ -4663,9 +4663,9 @@ Return Value:
                         //
                         // Match the lease identifier with the provided input handle.
                         //
-                        LeaseInputBuffer->RemoteLeasingApplicationIdentifier[MAX_PATH] = L'\0';
+                        LeaseInputBuffer->RemoteLeasingApplicationIdentifier[MAX_PATH] = '\0';
                         if (LeaseRelationshipIdentifier == LeaseInputBuffer->LeaseHandle &&
-                            0 == wcscmp(LeaseRelationshipIdentifier->RemoteLeasingApplicationIdentifier,
+                            0 == strcmp(LeaseRelationshipIdentifier->RemoteLeasingApplicationIdentifier,
                                         LeaseInputBuffer->RemoteLeasingApplicationIdentifier)
                         )
                         {
@@ -5440,7 +5440,7 @@ Return Value:
             // Compare the remote lease agent instance and check remote lease agent state.
             //
             if (RemoteLeaseAgentContextIter->RemoteLeaseAgentInstance.QuadPart == ArbitrationResultInputBuffer->RemoteLeaseAgentInstance &&
-                0 == wcscmp(RemoteLeaseAgentContextIter->RemoteLeaseAgentIdentifier, RemoteLeaseAgentContext->RemoteLeaseAgentIdentifier)) {
+                0 == strcmp(RemoteLeaseAgentContextIter->RemoteLeaseAgentIdentifier, RemoteLeaseAgentContext->RemoteLeaseAgentIdentifier)) {
 
                 if (IsRemoteLeaseAgentFailed(RemoteLeaseAgentContextIter)) {
         
@@ -6067,106 +6067,106 @@ Return Value:
     return status;
 }
 
-const LPWSTR GetLeaseIoCode(
+const LPSTR GetLeaseIoCode(
     __in ULONG IoControlCode
 )
 {
-    LPWSTR IoCodeString = L"";
+    LPSTR IoCodeString = "";
 
     switch (IoControlCode) {
     case IOCTL_LEASING_CREATE_LEASE_AGENT:
-        IoCodeString = L"LEASING_CREATE_LEASE_AGENT";
+        IoCodeString = "LEASING_CREATE_LEASE_AGENT";
         break;
 
     case IOCTL_LEASING_CLOSE_LEASE_AGENT:
-        IoCodeString = L"LEASING_CLOSE_LEASE_AGENT";
+        IoCodeString = "LEASING_CLOSE_LEASE_AGENT";
         break;
 
     case IOCTL_LEASING_BLOCK_LEASE_AGENT:
-        IoCodeString = L"LEASING_BLOCK_LEASE_AGENT";
+        IoCodeString = "LEASING_BLOCK_LEASE_AGENT";
         break;
 
     case IOCTL_CREATE_LEASING_APPLICATION:
-        IoCodeString = L"CREATE_LEASING_APPLICATION";
+        IoCodeString = "CREATE_LEASING_APPLICATION";
         break;
 
     case IOCTL_REGISTER_LEASING_APPLICATION:
-        IoCodeString = L"REGISTER_LEASING_APPLICATION";
+        IoCodeString = "REGISTER_LEASING_APPLICATION";
         break;
 
     case IOCTL_UNREGISTER_LEASING_APPLICATION:
-        IoCodeString = L"UNREGISTER_LEASING_APPLICATION";
+        IoCodeString = "UNREGISTER_LEASING_APPLICATION";
         break;
 
     case IOCTL_ESTABLISH_LEASE:
-        IoCodeString = L"ESTABLISH_LEASE";
+        IoCodeString = "ESTABLISH_LEASE";
         break;
 
     case IOCTL_TERMINATE_LEASE:
-        IoCodeString = L"TERMINATE_LEASE";
+        IoCodeString = "TERMINATE_LEASE";
         break;
 
     case IOCTL_GET_LEASING_APPLICATION_EXPIRATION_TIME:
-        IoCodeString = L"GET_LEASING_APPLICATION_EXPIRATION_TIME";
+        IoCodeString = "GET_LEASING_APPLICATION_EXPIRATION_TIME";
         break;
 
     case IOCTL_SET_GLOBAL_LEASE_EXPIRATION_TIME:
-        IoCodeString = L"SET_GLOBAL_LEASE_EXPIRATION_TIME";
+        IoCodeString = "SET_GLOBAL_LEASE_EXPIRATION_TIME";
         break;
 
     case IOCTL_ARBITRATION_RESULT:
-        IoCodeString = L"ARBITRATION_RESULT";
+        IoCodeString = "ARBITRATION_RESULT";
         break;
 
     case IOCTL_REMOTE_CERT_VERIFY_RESULT:
-        IoCodeString = L"REMOTE_CERT_VERIFY_RESULT";
+        IoCodeString = "REMOTE_CERT_VERIFY_RESULT";
         break;
 
     case IOCTL_UPDATE_CERTIFICATE:
-        IoCodeString = L"UPDATE_CERTIFICATE";
+        IoCodeString = "UPDATE_CERTIFICATE";
         break;
 
     case IOCTL_BLOCK_LEASE_CONNECTION:
-        IoCodeString = L"BLOCK_LEASE_CONNECTION";
+        IoCodeString = "BLOCK_LEASE_CONNECTION";
         break;
 
     case IOCTL_SET_SECURITY_DESCRIPTOR:
-        IoCodeString = L"SET_SECURITY_DESCRIPTOR";
+        IoCodeString = "SET_SECURITY_DESCRIPTOR";
         break;
 
     case IOCTL_UPDATE_LEASE_DURATION:
-        IoCodeString = L"UPDATE_LEASE_DURATION";
+        IoCodeString = "UPDATE_LEASE_DURATION";
         break;
 
     case IOCTL_QUERY_LEASE_DURATION:
-        IoCodeString = L"QUERY_LEASE_DURATION";
+        IoCodeString = "QUERY_LEASE_DURATION";
         break;
 
     case IOCTL_GET_REMOTE_LEASE_EXPIRATION_TIME:
-        IoCodeString = L"GET_REMOTE_LEASE_EXPIRATION_TIME";
+        IoCodeString = "GET_REMOTE_LEASE_EXPIRATION_TIME";
         break;
 
     case IOCTL_ADD_TRANSPORT_BEHAVIOR:
-        IoCodeString = L"ADD_TRANSPORT_BEHAVIOR";
+        IoCodeString = "ADD_TRANSPORT_BEHAVIOR";
         break;
 
     case IOCTL_CLEAR_TRANSPORT_BEHAVIOR:
-        IoCodeString = L"CLEAR_TRANSPORT_BEHAVIOR";
+        IoCodeString = "CLEAR_TRANSPORT_BEHAVIOR";
         break;
 
     case IOCTL_CRASH_LEASING_APPLICATION:
-        IoCodeString = L"CRASH_LEASING_APPLICATION";
+        IoCodeString = "CRASH_LEASING_APPLICATION";
         break;
 
     default:
-        IoCodeString = L"UNKNOWN";
+        IoCodeString = "UNKNOWN";
         break;
     }
 
     return IoCodeString;
 }
 
-const LPWSTR GetLeaseState(
+const LPSTR GetLeaseState(
     __in ONE_WAY_LEASE_STATE State
     )
     
@@ -6187,21 +6187,21 @@ Return Value:
 --*/
 
 {
-    LPWSTR StateString = L"";
+    LPSTR StateString = "";
 
     switch (State) {
         
     case LEASE_STATE_INACTIVE:
-        StateString = L"INACTIVE";
+        StateString = "INACTIVE";
         break;
     case LEASE_STATE_ACTIVE:
-        StateString = L"ACTIVE";
+        StateString = "ACTIVE";
         break;
     case LEASE_STATE_EXPIRED:
-        StateString = L"EXPIRED";
+        StateString = "EXPIRED";
         break;
     case LEASE_STATE_FAILED:
-        StateString = L"FAILED";
+        StateString = "FAILED";
         break;
     }
 

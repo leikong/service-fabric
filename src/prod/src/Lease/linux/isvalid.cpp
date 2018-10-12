@@ -64,7 +64,7 @@ Return Value:
 
 BOOLEAN
 IsValidString(
-    PWCHAR String,
+    PCHAR String,
     __in ULONG StringWcharLengthIncludingNullTerminator
     )
 
@@ -91,7 +91,7 @@ Return Value:
     //
     // Check string.
     //
-    return wcsnlen((LPCWSTR)String, StringWcharLengthIncludingNullTerminator) < StringWcharLengthIncludingNullTerminator;
+    return strnlen((LPCSTR)String, StringWcharLengthIncludingNullTerminator) < StringWcharLengthIncludingNullTerminator;
 }
 
 BOOLEAN
@@ -113,7 +113,7 @@ IsValidListenEndpoint(
         return FALSE;
     }
 
-    if (listenEndpoint->Address[0] == L'\0')
+    if (listenEndpoint->Address[0] == '\0')
     {
         // Empty address string
         return FALSE;
@@ -122,7 +122,7 @@ IsValidListenEndpoint(
     // Look for the null terminator in the address string
     for (terminatorIndex = 1; terminatorIndex < ENDPOINT_ADDR_CCH_MAX; ++ terminatorIndex)
     {
-        if (listenEndpoint->Address[terminatorIndex] == L'\0')
+        if (listenEndpoint->Address[terminatorIndex] == '\0')
         {
             break;
         }
@@ -135,7 +135,7 @@ IsValidListenEndpoint(
 
     for (terminatorIndex = 0; terminatorIndex < ENDPOINT_ADDR_CCH_MAX; ++terminatorIndex)
     {
-        if (listenEndpoint->SspiTarget[terminatorIndex] == L'\0')
+        if (listenEndpoint->SspiTarget[terminatorIndex] == '\0')
         {
             break;
         }

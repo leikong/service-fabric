@@ -55,21 +55,21 @@ namespace Common
         return result;
     }
 
-    LPCWSTR ScopedHeap::AddString(std::wstring const & s)
+    LPCSTR ScopedHeap::AddString(std::string const & s)
     {
         return AddString(s, false);
     }
 
-    LPCWSTR ScopedHeap::AddString(std::wstring const & s, bool nullIfEmpty)
+    LPCSTR ScopedHeap::AddString(std::string const & s, bool nullIfEmpty)
     {
-        wchar_t * result = nullptr;
+        char * result = nullptr;
         if (nullIfEmpty && s.empty())
         {
             return result;
         }
         
-        size_t byteCount = (s.size() + 1) * sizeof(wchar_t);
-        result = reinterpret_cast<wchar_t*>(Allocate(byteCount));
+        size_t byteCount = (s.size() + 1) * sizeof(char);
+        result = reinterpret_cast<char*>(Allocate(byteCount));
         if (result != NULL)
         {
             memcpy_s(result, byteCount, s.c_str(), byteCount);

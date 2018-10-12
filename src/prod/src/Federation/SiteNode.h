@@ -61,7 +61,7 @@ namespace Federation
             return std::static_pointer_cast<SiteNode>(shared_from_this());
         }
 
-        __declspec (property(get=getWorkingDir)) std::wstring const & WorkingDir;
+        __declspec (property(get=getWorkingDir)) std::string const & WorkingDir;
         __declspec (property(get=getRoutingTable)) RoutingTable & Table;
         __declspec (property(get=getCodeVersion)) Common::FabricCodeVersion const & CodeVersion;
         __declspec (property(get=getChannel)) std::shared_ptr<Transport::IDatagramTransport> const & Channel;
@@ -126,7 +126,7 @@ namespace Federation
 
         IMultipleReplyContextSPtr MulticastRequest(Transport::MessageUPtr && message, std::vector<NodeInstance> && destinations);
 
-        std::wstring const & getWorkingDir() const { return workingDir_; }
+        std::string const & getWorkingDir() const { return workingDir_; }
 
         Common::FabricCodeVersion const & getCodeVersion() const { return codeVersion_; }
 
@@ -172,7 +172,7 @@ namespace Federation
         Common::ErrorCode RestartInstance();
 
         void OnLocalLeasingApplicationFailed();
-        void OnRemoteLeasingApplicationFailed(std::wstring const & remoteId);
+        void OnRemoteLeasingApplicationFailed(std::string const & remoteId);
         void Arbitrate(
             LeaseWrapper::LeaseAgentInstance const & local, 
             Common::TimeSpan localTTL, 
@@ -186,15 +186,15 @@ namespace Federation
         bool LivenessQuery(FederationPartnerNodeHeader const & target);
 
         Transport::ISendTarget::SPtr ResolveTarget(
-            std::wstring const & address,
-            std::wstring const & targetId,
+            std::string const & address,
+            std::string const & targetId,
             uint64 instance);
 
         Common::TimeSpan GetLeaseDuration(PartnerNode const & remotePartner, LEASE_DURATION_TYPE & durationType);
 
         void ReportArbitrationFailure(LeaseWrapper::LeaseAgentInstance const & local, LeaseWrapper::LeaseAgentInstance const & remote, int64 monitorLeaseInstance, int64 subjectLeaseInstance, std::string const & arbitrationType);
 
-        bool IsRingNameMatched(std::wstring const & ringName) const
+        bool IsRingNameMatched(std::string const & ringName) const
         {
             return (ringName.empty() || ringName == RingName);
         }
@@ -226,7 +226,7 @@ namespace Federation
             Transport::MessageUPtr && message,
             NodeId nodeId,
             uint64 instance,
-            std::wstring const & toRing,
+            std::string const & toRing,
             bool useExactRouting,
             Common::TimeSpan retryTimeout,
             Common::TimeSpan timeout,
@@ -237,7 +237,7 @@ namespace Federation
             Transport::MessageUPtr && request,
             NodeId nodeId,
             uint64 instance,
-            std::wstring const & toRing,
+            std::string const & toRing,
             bool useExactRouting,
             Common::TimeSpan retryTimeout,
             Common::TimeSpan timeout,
@@ -272,7 +272,7 @@ namespace Federation
 
         std::shared_ptr<const SiteNode> GetSiteNodeSPtr() const;
 
-        void RouteCallback(Common::AsyncOperationSPtr const & operation, std::wstring const & action);
+        void RouteCallback(Common::AsyncOperationSPtr const & operation, std::string const & action);
 
         void OpenRoutingTable(PartnerNodeSPtr const siteNode, size_t routingCapacity, int desiredHoodPerSide);
         
@@ -341,7 +341,7 @@ namespace Federation
         std::map<NodeId, Common::StopwatchTime> livenesQueryTable_;
 		RWLOCK(Federation.LivenessQueryTable, livenesQueryTableLock_);
 
-        std::wstring workingDir_;
+        std::string workingDir_;
         Common::FabricCodeVersion codeVersion_;
         Transport::SecuritySettings securitySettings_;
 
@@ -356,7 +356,7 @@ namespace Federation
         void PreSendDepartMessageCleanup();
         void PostSendDepartMessageCleanup();
 
-        static uint64 RetrieveInstanceID(std::wstring const & dir, Federation::NodeId nodeId);
+        static uint64 RetrieveInstanceID(std::string const & dir, Federation::NodeId nodeId);
 
         friend class RoutingTable;
         friend class JoinManager;

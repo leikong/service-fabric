@@ -108,16 +108,16 @@ public:
     //      Log file names have the following format: "Log{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}.log"
     //                                                 0123456789012345678901234567890123456789012345
 #if !defined(PLATFORM_UNIX)
-    static __inline wchar_t const&  DirectoryName() {return *(L"\\RvdLog\\");}
-    static __inline wchar_t const&  RawDirectoryName() {return *(L"RvdLog\\");}
+    static __inline char const&  DirectoryName() {return *("\\RvdLog\\");}
+    static __inline char const&  RawDirectoryName() {return *("RvdLog\\");}
 #else
-    static __inline wchar_t const&  DirectoryName() {return *(L"/RvdLog/");}
-    static __inline wchar_t const&  RawDirectoryName() {return *(L"RvdLog/");}
+    static __inline char const&  DirectoryName() {return *("/RvdLog/");}
+    static __inline char const&  RawDirectoryName() {return *("RvdLog/");}
 #endif
-    static __inline wchar_t const&  RawDirectoryNameStr() {return *(L"RvdLog");}
-    static __inline wchar_t const&  NamePrefix()    {return *(L"Log");}
+    static __inline char const&  RawDirectoryNameStr() {return *("RvdLog");}
+    static __inline char const&  NamePrefix()    {return *("Log");}
     static ULONG const              NamePrefixSize = 3;
-    static __inline wchar_t const&  NameExtension() {return *(L".log");}
+    static __inline char const&  NameExtension() {return *(".log");}
     static ULONG const              NameExtensionSize = 4;
     static ULONG const              LogFileNameLength = 45;
     static ULONG const              LogFileNameGuidOffset = 3;
@@ -209,7 +209,7 @@ public:
     BuildFullyQualifiedLogName(__in const KGuid& DiskId, __in const RvdLogId& LogId, __out KWString& FullyQualifiedLogName)
     // Build up _FullyQualifiedLogName from DiskId and LogId
     {
-        FullyQualifiedLogName = L"";
+        FullyQualifiedLogName = "";
         NTSTATUS status = FullyQualifiedLogName.Status();
 
         if (NT_SUCCESS(status))
@@ -219,7 +219,7 @@ public:
                 DiskId,
                 FullyQualifiedLogName);
 #else
-            FullyQualifiedLogName = L"";
+            FullyQualifiedLogName = "";
             status = FullyQualifiedLogName.Status();
 #endif
 
@@ -279,10 +279,10 @@ public:
     static BOOLEAN __inline
     IsReservedDirectory(__in const KStringView& PathInQuestion)
     {
-        KStringView             reservedDir((WCHAR*)&RvdDiskLogConstants::DirectoryName());
+        KStringView             reservedDir((CHAR*)&RvdDiskLogConstants::DirectoryName());
         return (reservedDir
                     .CompareNoCase(PathInQuestion
-                        .LeftString(__min(reservedDir.Length(), (PathInQuestion.Length() / sizeof(WCHAR))))) == 0);
+                        .LeftString(__min(reservedDir.Length(), (PathInQuestion.Length() / sizeof(CHAR))))) == 0);
     }
 };
 
@@ -1248,12 +1248,12 @@ struct RvdLogMasterBlock
     // LogFile creation path: empty if created (only) in the default location
     //      NOTE: If this directory does not contain a hardlink to the log file,
     //            the file will be deleted from the system by removing all hardlinks.
-    WCHAR               CreationDirectory[RvdDiskLogConstants::MaxCreationPathSize];        // zero-term
-    static const ULONG  CreationDirectoryMaxSize = RvdDiskLogConstants::MaxCreationPathSize * sizeof(WCHAR);
+    CHAR               CreationDirectory[RvdDiskLogConstants::MaxCreationPathSize];        // zero-term
+    static const ULONG  CreationDirectoryMaxSize = RvdDiskLogConstants::MaxCreationPathSize * sizeof(CHAR);
 
-    // LogFile type is limited to 32 WCHAR
-    WCHAR               LogType[RvdLogManager::AsyncCreateLog::MaxLogTypeLength];
-    static const ULONG  LogTypeMaxSize = RvdLogManager::AsyncCreateLog::MaxLogTypeLength * sizeof(WCHAR);
+    // LogFile type is limited to 32 CHAR
+    CHAR               LogType[RvdLogManager::AsyncCreateLog::MaxLogTypeLength];
+    static const ULONG  LogTypeMaxSize = RvdLogManager::AsyncCreateLog::MaxLogTypeLength * sizeof(CHAR);
 
     // Checksum of this header.
     ULONGLONG           ThisBlockChecksum;
@@ -2175,8 +2175,8 @@ public:
 
     ULONG                       _NumberOfStreams;
     KArray<StreamDescriptor>    _StreamDescs;
-    WCHAR                       _CreationDirectory[RvdDiskLogConstants::MaxCreationPathSize];
-    WCHAR                       _LogType[RvdLogManager::AsyncCreateLog::MaxLogTypeLength];
+    CHAR                       _CreationDirectory[RvdDiskLogConstants::MaxCreationPathSize];
+    CHAR                       _LogType[RvdLogManager::AsyncCreateLog::MaxLogTypeLength];
 };
 
 
@@ -2396,7 +2396,7 @@ public:
     //
     static const ULONG ReadAheadSize = 0;
 
-    const WCHAR* LogContainerText = L"LogContainer";
+    const CHAR* LogContainerText = "LogContainer";
 
     VOID
     QueryLogType(__out KWString& LogType);
@@ -2852,7 +2852,7 @@ private:
     BOOLEAN                         _IsLogFailed;
     RvdLogConfig                    _Config;
     KAsyncEvent*                    _ShutdownEvent;
-    WCHAR                           _LogType[RvdLogManager::AsyncCreateLog::MaxLogTypeLength];
+    CHAR                           _LogType[RvdLogManager::AsyncCreateLog::MaxLogTypeLength];
 
     KAsyncLock                      _CreateOpenDeleteGate;      // Used to serialize all log open/close/del ops
     BOOLEAN                         _IsOpen;

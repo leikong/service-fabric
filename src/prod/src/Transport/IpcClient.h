@@ -14,15 +14,15 @@ namespace Transport
     public:
         IpcClient(
             Common::ComponentRoot const & root,
-            std::wstring const & clientId,
-            std::wstring const & serverTransportAddress,
+            std::string const & clientId,
+            std::string const & serverTransportAddress,
             bool useUnreliableTransport,
-            std::wstring const & owner);
+            std::string const & owner);
 
         ~IpcClient();
 
-        __declspec (property(get=get_ClientId)) std::wstring ClientId;
-        std::wstring get_ClientId() const { return clientId_; }
+        __declspec (property(get=get_ClientId)) std::string ClientId;
+        std::string get_ClientId() const { return clientId_; }
 
         __declspec (property(get=get_ProcessId)) DWORD ProcessId;
         DWORD get_ProcessId() const { return processId_; }
@@ -51,8 +51,8 @@ namespace Transport
             Common::TimeSpan expiration = Common::TimeSpan::MaxValue,
             TransportPriority::Enum priority = TransportPriority::Normal);
 
-        __declspec(property(get=get_ServerTransportAddress)) std::wstring const & ServerTransportAddress;
-        std::wstring const & get_ServerTransportAddress() const { return serverTransportAddress_; };
+        __declspec(property(get=get_ServerTransportAddress)) std::string const & ServerTransportAddress;
+        std::string const & get_ServerTransportAddress() const { return serverTransportAddress_; };
 
         __declspec(property(get=get_SecuritySettings, put=set_SecuritySettings)) Transport::SecuritySettings & SecuritySettings;
         Transport::SecuritySettings const & get_SecuritySettings() const;
@@ -72,10 +72,10 @@ namespace Transport
         void OnDisconnect(Common::ErrorCode error);
         void Cleanup();
 
-        std::wstring const clientId_;
-        std::wstring const traceId_;
+        std::string const clientId_;
+        std::string const traceId_;
         DWORD processId_;
-        std::wstring const serverTransportAddress_;
+        std::string const serverTransportAddress_;
         std::shared_ptr<IDatagramTransport> transport_;
         IpcDemuxer demuxer_;
         RequestReply requestReply_;

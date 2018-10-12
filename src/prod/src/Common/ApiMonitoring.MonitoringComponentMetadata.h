@@ -18,8 +18,8 @@ namespace Common
             MonitoringComponentMetadata() = default;
             
             MonitoringComponentMetadata(
-                std::wstring const & nodeName,
-                std::wstring const & nodeInstance) :
+                std::string const & nodeName,
+                std::string const & nodeInstance) :
                 nodeName_(nodeName),
                 nodeInstance_(nodeInstance)
             {
@@ -42,14 +42,14 @@ namespace Common
                 return *this;
             }
 
-            __declspec(property(get = get_NodeName)) std::wstring const & NodeName;
-            std::wstring const & get_NodeName() const { return nodeName_; }
+            __declspec(property(get = get_NodeName)) std::string const & NodeName;
+            std::string const & get_NodeName() const { return nodeName_; }
 
-            __declspec(property(get = get_NodeInstance)) std::wstring const & NodeInstance;
-            std::wstring const & get_NodeInstance() const { return nodeInstance_; }
+            __declspec(property(get = get_NodeInstance)) std::string const & NodeInstance;
+            std::string const & get_NodeInstance() const { return nodeInstance_; }
             
         private:
-            std::wstring nodeName_;
+            std::string nodeName_;
 
             /*
                 The node instance field here is special and actually 
@@ -78,7 +78,7 @@ namespace Common
                 Eventually, this component needs to be generalized further, the challenge is 
                 to define a generic enough runtime environment for it.
             */
-            std::wstring nodeInstance_;
+            std::string nodeInstance_;
         };
     }
 }

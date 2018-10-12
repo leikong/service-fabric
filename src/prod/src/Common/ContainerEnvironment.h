@@ -12,12 +12,12 @@ namespace Common
     public:
         
         static bool IsContainerHost();
-        static std::wstring GetContainerTracePath();
-        static std::wstring GetContainerNetworkingMode();
+        static std::string GetContainerTracePath();
+        static std::string GetContainerNetworkingMode();
 
-        static GlobalWString IsContainerHostEnvironmentVariableName;
-        static GlobalWString ContainerNetworkingModeEnvironmentVariable;
+        static GlobalString IsContainerHostEnvironmentVariableName;
+        static GlobalString ContainerNetworkingModeEnvironmentVariable;
     private:
-        static GlobalWString ContainertracePathEnvironmentVariableName;        
+        static GlobalString ContainertracePathEnvironmentVariableName;        
     };
 }

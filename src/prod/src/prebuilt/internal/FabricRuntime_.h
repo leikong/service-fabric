@@ -501,7 +501,7 @@ EXTERN_C const IID IID_IFabricCodePackageHost;
     {
     public:
         virtual HRESULT STDMETHODCALLTYPE BeginActivate( 
-            /* [in] */ LPCWSTR codePackageId,
+            /* [in] */ LPCSTR codePackageId,
             /* [in] */ IFabricCodePackageActivationContext *activationContext,
             /* [in] */ IFabricRuntime *fabricRuntime,
             /* [in] */ IFabricAsyncOperationCallback *callback,
@@ -511,7 +511,7 @@ EXTERN_C const IID IID_IFabricCodePackageHost;
             /* [in] */ IFabricAsyncOperationContext *operationContext) = 0;
         
         virtual HRESULT STDMETHODCALLTYPE BeginDeactivate( 
-            /* [in] */ LPCWSTR codePackageId,
+            /* [in] */ LPCSTR codePackageId,
             /* [in] */ IFabricAsyncOperationCallback *callback,
             /* [retval][out] */ IFabricAsyncOperationContext **operationContext) = 0;
         
@@ -541,7 +541,7 @@ EXTERN_C const IID IID_IFabricCodePackageHost;
         
         HRESULT ( STDMETHODCALLTYPE *BeginActivate )( 
             IFabricCodePackageHost * This,
-            /* [in] */ LPCWSTR codePackageId,
+            /* [in] */ LPCSTR codePackageId,
             /* [in] */ IFabricCodePackageActivationContext *activationContext,
             /* [in] */ IFabricRuntime *fabricRuntime,
             /* [in] */ IFabricAsyncOperationCallback *callback,
@@ -553,7 +553,7 @@ EXTERN_C const IID IID_IFabricCodePackageHost;
         
         HRESULT ( STDMETHODCALLTYPE *BeginDeactivate )( 
             IFabricCodePackageHost * This,
-            /* [in] */ LPCWSTR codePackageId,
+            /* [in] */ LPCSTR codePackageId,
             /* [in] */ IFabricAsyncOperationCallback *callback,
             /* [retval][out] */ IFabricAsyncOperationContext **operationContext);
         
@@ -1093,14 +1093,14 @@ EXTERN_C const IID IID_IFabricBackupRestoreHandler;
 
 /* [entry] */ HRESULT FabricLoadTransactionalReplicatorSettings( 
     /* [in] */ __RPC__in_opt const IFabricCodePackageActivationContext *codePackageActivationContext,
-    /* [in] */ __RPC__in LPCWSTR configurationPackageName,
-    /* [in] */ __RPC__in LPCWSTR sectionName,
+    /* [in] */ __RPC__in LPCSTR configurationPackageName,
+    /* [in] */ __RPC__in LPCSTR sectionName,
     /* [retval][out] */ __RPC__deref_out_opt IFabricTransactionalReplicatorSettingsResult **replicatorSettings);
 
 /* [entry] */ HRESULT GetFabricKeyValueStoreReplicaDefaultSettings_V2( 
-    /* [in] */ __RPC__in LPCWSTR workingDirectory,
-    /* [in] */ __RPC__in LPCWSTR sharedLogDirectory,
-    /* [in] */ __RPC__in LPCWSTR sharedLogFileName,
+    /* [in] */ __RPC__in LPCSTR workingDirectory,
+    /* [in] */ __RPC__in LPCSTR sharedLogDirectory,
+    /* [in] */ __RPC__in LPCSTR sharedLogFileName,
     /* [in] */ GUID sharedLogGuid,
     /* [out] */ __RPC__deref_out_opt IFabricKeyValueStoreReplicaSettings_V2Result **result);
 
@@ -1115,9 +1115,9 @@ EXTERN_C const IID IID_IFabricBackupRestoreHandler;
     /* [retval][out] */ __RPC__deref_out_opt void **keyValueStore);
 
 /* [entry] */ HRESULT GetFabricSharedLogDefaultSettings( 
-    /* [in] */ __RPC__in LPCWSTR workingDirectory,
-    /* [in] */ __RPC__in LPCWSTR sharedLogDirectory,
-    /* [in] */ __RPC__in LPCWSTR sharedLogFileName,
+    /* [in] */ __RPC__in LPCSTR workingDirectory,
+    /* [in] */ __RPC__in LPCSTR sharedLogDirectory,
+    /* [in] */ __RPC__in LPCSTR sharedLogFileName,
     /* [in] */ GUID sharedLogGuid,
     /* [out] */ __RPC__deref_out_opt IFabricSharedLogSettingsResult **result);
 
@@ -2289,7 +2289,7 @@ EXTERN_C const IID IID_IFabricTransactionalReplicatorRuntimeConfigurations;
     IFabricTransactionalReplicatorRuntimeConfigurations : public IUnknown
     {
     public:
-        virtual LPCWSTR STDMETHODCALLTYPE get_WorkDirectory( void) = 0;
+        virtual LPCSTR STDMETHODCALLTYPE get_WorkDirectory( void) = 0;
         
     };
     
@@ -2312,7 +2312,7 @@ EXTERN_C const IID IID_IFabricTransactionalReplicatorRuntimeConfigurations;
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IFabricTransactionalReplicatorRuntimeConfigurations * This);
         
-        LPCWSTR ( STDMETHODCALLTYPE *get_WorkDirectory )( 
+        LPCSTR ( STDMETHODCALLTYPE *get_WorkDirectory )( 
             IFabricTransactionalReplicatorRuntimeConfigurations * This);
         
         END_INTERFACE

@@ -29,7 +29,7 @@ namespace Common
         unique_ptr<int> resultSPtr;
 
         bool success = queue->EnqueueAndDispatch(make_unique<int>(142));
-        BOOST_TEST_MESSAGE(formatString("Enqueue result = '{0}'", success));
+        BOOST_TEST_MESSAGE(formatString.L("Enqueue result = '{0}'", success));
         VERIFY_IS_TRUE(success);
 
         readerDoneEvent.Reset();
@@ -40,7 +40,7 @@ namespace Common
             {
                 ErrorCode err = queue->EndDequeue(operationSPtr, resultSPtr);
                     
-                BOOST_TEST_MESSAGE(formatString("Error code = '{0}'", static_cast<int>(err.ReadValue())));
+                BOOST_TEST_MESSAGE(formatString.L("Error code = '{0}'", static_cast<int>(err.ReadValue())));
                 VERIFY_IS_TRUE(err.IsError(ErrorCodeValue::Success));
 
                 readerDoneEvent.Set();
@@ -49,13 +49,13 @@ namespace Common
 
         readerDoneEvent.WaitOne(TimeSpan::MaxValue);
 
-        BOOST_TEST_MESSAGE(formatString("BeginDequeue use_count = '{0}'", contextSPtr.use_count()));
+        BOOST_TEST_MESSAGE(formatString.L("BeginDequeue use_count = '{0}'", contextSPtr.use_count()));
         VERIFY_IS_TRUE(1 == contextSPtr.use_count());
 
         // Abort before accessing result
         queue->Abort();
 
-        BOOST_TEST_MESSAGE(formatString("Dequeue result = '{0}'", *resultSPtr.get()));
+        BOOST_TEST_MESSAGE(formatString.L("Dequeue result = '{0}'", *resultSPtr.get()));
         VERIFY_IS_TRUE(142 == *resultSPtr.get());
     }
         
@@ -74,7 +74,7 @@ namespace Common
                 unique_ptr<int> resultSPtr;
                 ErrorCode err = queue->EndDequeue(contextSPtr, resultSPtr);
 
-                BOOST_TEST_MESSAGE(formatString("Dequeue result = '{0}'", *resultSPtr.get()));
+                BOOST_TEST_MESSAGE(formatString.L("Dequeue result = '{0}'", *resultSPtr.get()));
                 VERIFY_IS_TRUE(242 == *resultSPtr.get());
 
                 BOOST_TEST_MESSAGE(formatString(
@@ -87,7 +87,7 @@ namespace Common
         // Don't need waitHandle in this testcase - the following call should dispatch in the same thread
         bool success = queue->EnqueueAndDispatch(make_unique<int>(242));
 
-        BOOST_TEST_MESSAGE(formatString("Enqueue result = '{0}'", success));
+        BOOST_TEST_MESSAGE(formatString.L("Enqueue result = '{0}'", success));
         VERIFY_IS_TRUE(success);
 
         queue->Abort();
@@ -103,11 +103,11 @@ namespace Common
         for (int ix = 0; ix < 3; ++ix)
         {
             bool success = queue->EnqueueAndDispatch(make_unique<int>(3421 + ix));
-            BOOST_TEST_MESSAGE(formatString("Enqueue result = '{0}'", success));
+            BOOST_TEST_MESSAGE(formatString.L("Enqueue result = '{0}'", success));
             VERIFY_IS_TRUE(success);
         }
 
-        BOOST_TEST_MESSAGE(formatString("Item Count = '{0}'", queue->ItemCount));
+        BOOST_TEST_MESSAGE(formatString.L("Item Count = '{0}'", queue->ItemCount));
         VERIFY_IS_TRUE(3 == queue->ItemCount);
 
         queue->Abort();
@@ -125,12 +125,12 @@ namespace Common
                 ErrorCode err = queue->EndWaitForQueueToDrain(asyncOperation);
                 VERIFY_IS_TRUE(
                     err.IsSuccess(),
-                    wformatString(
+                    formatString(
                         "Scheduled WaitForQueueToDrain returned error code = '{0}'", 
                         static_cast<int>(err.ReadValue())).c_str());
                 queueDrainedEvent.Set();
 
-                VERIFY_IS_TRUE(queue->ItemCount == 0, L"Queue has 0 items after WaitForQueueToDrain returns");
+                VERIFY_IS_TRUE(queue->ItemCount == 0, "Queue has 0 items after WaitForQueueToDrain returns");
             },
             AsyncOperationSPtr());
 
@@ -142,12 +142,12 @@ namespace Common
             "Delay WaitForQueueToDrain = '{0}'. Acceptable delay = '{1}'", 
             stopwatch.ElapsedMilliseconds,
             accuracyMargin));
-        VERIFY_IS_TRUE(stopwatch.Elapsed <= accuracyMargin, L"After Abort, WaitForQueueToDrain should return immediately");
+        VERIFY_IS_TRUE(stopwatch.Elapsed <= accuracyMargin, "After Abort, WaitForQueueToDrain should return immediately");
                       
         for (int ix = 0; ix < 2; ++ix)
         {
             bool success = queue->EnqueueAndDispatch(make_unique<int>(3424 + ix));
-            BOOST_TEST_MESSAGE(formatString("Enqueue result = '{0}'", success));
+            BOOST_TEST_MESSAGE(formatString.L("Enqueue result = '{0}'", success));
             VERIFY_IS_FALSE(success);
 
             unique_ptr<int> resultSPtr;
@@ -176,7 +176,7 @@ namespace Common
             VERIFY_IS_TRUE(nullptr == resultSPtr.get());
         }
 
-        BOOST_TEST_MESSAGE(formatString("Item Count = '{0}'", queue->ItemCount));
+        BOOST_TEST_MESSAGE(formatString.L("Item Count = '{0}'", queue->ItemCount));
         VERIFY_IS_TRUE(0 == queue->ItemCount);
     }
 
@@ -193,7 +193,7 @@ namespace Common
             bool success = queue->EnqueueAndDispatch(make_unique<int>(3421 + ix));
             VERIFY_IS_TRUE(
                 success, 
-                wformatString("Enqueue result = '{0}'", success).c_str());
+                formatString.L("Enqueue result = '{0}'", success).c_str());
         }
 
         queue->Close();
@@ -206,10 +206,10 @@ namespace Common
                 ErrorCode err = queue->EndWaitForQueueToDrain(asyncOperation);
                 VERIFY_IS_TRUE(
                     err.IsSuccess(),
-                    wformatString(
+                    formatString(
                         "Scheduled WaitForQueueToDrain returned error code = '{0}'", 
                         static_cast<int>(err.ReadValue())).c_str());
-                VERIFY_IS_TRUE(queue->ItemCount == 0, L"Queue has 0 items after WaitForQueueToDrain returns");
+                VERIFY_IS_TRUE(queue->ItemCount == 0, "Queue has 0 items after WaitForQueueToDrain returns");
                 queueDrainedTime = DateTime::Now();
                 queueDrainedEvent.Set();
             },
@@ -218,7 +218,7 @@ namespace Common
         for (int ix = 0; ix < 2; ++ix)
         {
             bool success = queue->EnqueueAndDispatch(make_unique<int>(3424 + ix));
-            VERIFY_IS_FALSE(success, wformatString("Enqueue result = '{0}'", success).c_str());
+            VERIFY_IS_FALSE(success, formatString.L("Enqueue result = '{0}'", success).c_str());
         }
 
         for (int ix = 0; ix < 5; ++ix)
@@ -234,7 +234,7 @@ namespace Common
                     ErrorCode err = queue->EndDequeue(operationSPtr, resultSPtr);
                     VERIFY_IS_TRUE(
                         err.IsError(ErrorCodeValue::Success), 
-                        wformatString(
+                        formatString(
                             "Error code = '{0}'", 
                             static_cast<int>(err.ReadValue())).c_str());
 
@@ -250,16 +250,16 @@ namespace Common
 
             if (ix < 3)
             {
-                VERIFY_IS_TRUE((3421 + ix) == *resultSPtr.get(), L"Dequeue returned correct number");
+                VERIFY_IS_TRUE((3421 + ix) == *resultSPtr.get(), "Dequeue returned correct number");
             }
             else
             {
-                VERIFY_IS_TRUE(nullptr == resultSPtr.get(), L"Dequeue returned expected null");
+                VERIFY_IS_TRUE(nullptr == resultSPtr.get(), "Dequeue returned expected null");
             }
         }
 
         queueDrainedEvent.WaitOne();
-        VERIFY_IS_TRUE(queueDrainedTime <= DateTime::Now(), L"Queue should be drained when all items are dequeued");
+        VERIFY_IS_TRUE(queueDrainedTime <= DateTime::Now(), "Queue should be drained when all items are dequeued");
         
         queue->Abort();
 
@@ -268,7 +268,7 @@ namespace Common
             bool success = queue->EnqueueAndDispatch(make_unique<int>(3424 + ix));
             VERIFY_IS_FALSE(
                 success, 
-                wformatString("Enqueue result = '{0}'", success).c_str());
+                formatString.L("Enqueue result = '{0}'", success).c_str());
 
             unique_ptr<int> resultSPtr;
                 
@@ -282,7 +282,7 @@ namespace Common
 
                     VERIFY_IS_TRUE(
                         err.IsError(ErrorCodeValue::Success), 
-                        wformatString("Error code = '{0}'", static_cast<int>(err.ReadValue())).c_str());
+                        formatString.L("Error code = '{0}'", static_cast<int>(err.ReadValue())).c_str());
                         
                     readerDoneEvent.Set();
                 },
@@ -292,7 +292,7 @@ namespace Common
                 
             VERIFY_IS_TRUE(
                 nullptr == resultSPtr.get(), 
-                wformatString("Dequeue result = '{0}'", (resultSPtr.get() == nullptr ? 0 : *resultSPtr.get())).c_str());
+                formatString.L("Dequeue result = '{0}'", (resultSPtr.get() == nullptr ? 0 : *resultSPtr.get())).c_str());
         }
     }
 
@@ -318,8 +318,8 @@ namespace Common
 
                 unique_ptr<int> resultSPtr;
                 ErrorCode err = queue->EndDequeue(contextSPtr, resultSPtr);
-                BOOST_TEST_MESSAGE(formatString("Dequeue result = '{0}'", (resultSPtr.get() == nullptr ? 0 : *resultSPtr.get())));
-                BOOST_TEST_MESSAGE(formatString("Error code = '{0}'", static_cast<int>(err.ReadValue())));
+                BOOST_TEST_MESSAGE(formatString.L("Dequeue result = '{0}'", (resultSPtr.get() == nullptr ? 0 : *resultSPtr.get())));
+                BOOST_TEST_MESSAGE(formatString.L("Error code = '{0}'", static_cast<int>(err.ReadValue())));
 
                 VERIFY_IS_TRUE(nullptr == resultSPtr.get());
                 VERIFY_IS_TRUE(err.IsError(ErrorCodeValue::Timeout));
@@ -329,14 +329,14 @@ namespace Common
 
         waitHandle.WaitOne(TimeSpan::MaxValue);
 
-        BOOST_TEST_MESSAGE(formatString("Delay = '{0}'", stopwatch.ElapsedMilliseconds));
+        BOOST_TEST_MESSAGE(formatString.L("Delay = '{0}'", stopwatch.ElapsedMilliseconds));
         TimeSpan accuracyMargin = TimeSpan::FromMilliseconds(1000);
         VERIFY_IS_TRUE((stopwatch.Elapsed + accuracyMargin) >= TimeSpan::FromSeconds(5));
 
-        BOOST_TEST_MESSAGE(formatString("Pending readers = '{0}'", queue->PendingReaderCount));
+        BOOST_TEST_MESSAGE(formatString.L("Pending readers = '{0}'", queue->PendingReaderCount));
         VERIFY_IS_TRUE(0 == queue->PendingReaderCount);
 
-        BOOST_TEST_MESSAGE(formatString("Pending dispatch = '{0}'", queue->PendingDispatchCount));
+        BOOST_TEST_MESSAGE(formatString.L("Pending dispatch = '{0}'", queue->PendingDispatchCount));
         VERIFY_IS_TRUE(0 == queue->PendingDispatchCount);
     }
 
@@ -355,37 +355,37 @@ namespace Common
                 unique_ptr<int> resultSPtr;
                 ErrorCode err = queue->EndDequeue(contextSPtr, resultSPtr);
 
-                BOOST_TEST_MESSAGE(formatString("Error code = '{0}'", static_cast<int>(err.ReadValue())));
+                BOOST_TEST_MESSAGE(formatString.L("Error code = '{0}'", static_cast<int>(err.ReadValue())));
                 VERIFY_IS_TRUE(err.IsError(ErrorCodeValue::Success));
 
-                BOOST_TEST_MESSAGE(formatString("Dequeue result = '{0}'", *resultSPtr.get()));
+                BOOST_TEST_MESSAGE(formatString.L("Dequeue result = '{0}'", *resultSPtr.get()));
                 VERIFY_IS_TRUE(442 == *resultSPtr.get());
 
             }, 
             AsyncOperationSPtr());
 
-        BOOST_TEST_MESSAGE(formatString("Pending readers = '{0}'", queue->PendingReaderCount));
+        BOOST_TEST_MESSAGE(formatString.L("Pending readers = '{0}'", queue->PendingReaderCount));
         VERIFY_IS_TRUE(1 == queue->PendingReaderCount);
 
-        BOOST_TEST_MESSAGE(formatString("Pending dispatch = '{0}'", queue->PendingDispatchCount));
+        BOOST_TEST_MESSAGE(formatString.L("Pending dispatch = '{0}'", queue->PendingDispatchCount));
         VERIFY_IS_TRUE(0 == queue->PendingDispatchCount);
 
         bool success = queue->EnqueueWithoutDispatch(make_unique<int>(442));
-        BOOST_TEST_MESSAGE(formatString("Enqueue result = '{0}'", success));
+        BOOST_TEST_MESSAGE(formatString.L("Enqueue result = '{0}'", success));
         VERIFY_IS_TRUE(success);
 
-        BOOST_TEST_MESSAGE(formatString("Pending readers = '{0}'", queue->PendingReaderCount));
+        BOOST_TEST_MESSAGE(formatString.L("Pending readers = '{0}'", queue->PendingReaderCount));
         VERIFY_IS_TRUE(0 == queue->PendingReaderCount);
 
-        BOOST_TEST_MESSAGE(formatString("Pending dispatch = '{0}'", queue->PendingDispatchCount));
+        BOOST_TEST_MESSAGE(formatString.L("Pending dispatch = '{0}'", queue->PendingDispatchCount));
         VERIFY_IS_TRUE(1 == queue->PendingDispatchCount);
 
         queue->Dispatch();
 
-        BOOST_TEST_MESSAGE(formatString("Pending readers = '{0}'", queue->PendingReaderCount));
+        BOOST_TEST_MESSAGE(formatString.L("Pending readers = '{0}'", queue->PendingReaderCount));
         VERIFY_IS_TRUE(0 == queue->PendingReaderCount);
 
-        BOOST_TEST_MESSAGE(formatString("Pending dispatch = '{0}'", queue->PendingDispatchCount));
+        BOOST_TEST_MESSAGE(formatString.L("Pending dispatch = '{0}'", queue->PendingDispatchCount));
         VERIFY_IS_TRUE(0 == queue->PendingDispatchCount);
 
         queue->Abort();
@@ -427,7 +427,7 @@ namespace Common
                             readerDoneEvent.Set();
                             if(!err.IsSuccess()) 
                             {
-                                VERIFY_FAIL(L"EndDequeue returned error");
+                                VERIFY_FAIL("EndDequeue returned error");
                             }
                         },
                         AsyncOperationSPtr());
@@ -443,18 +443,18 @@ namespace Common
                 waitHandle.Set();
             });
 
-        BOOST_TEST_MESSAGE(formatString("Waiting for queue to drain ..."));
+        BOOST_TEST_MESSAGE(formatString.L("Waiting for queue to drain ..."));
         waitHandle.WaitOne();
 
-        BOOST_TEST_MESSAGE(formatString("Verifying item values ..."));
+        BOOST_TEST_MESSAGE(formatString.L("Verifying item values ..."));
         for (int ix = 0; ix < numItems; ++ix)
         {
             if(ix != results[ix])
             {
-                BOOST_FAIL(formatString("Error: {0} != {1}", ix, results[ix]));
+                BOOST_FAIL(formatString.L("Error: {0} != {1}", ix, results[ix]));
             }
         }
-        BOOST_TEST_MESSAGE(formatString("Queue drained. Item values verified."));
+        BOOST_TEST_MESSAGE(formatString.L("Queue drained. Item values verified."));
 
         queue->Abort();
     }
@@ -497,7 +497,7 @@ namespace Common
                             readerDoneEvent.Set();
                             if(!err.IsSuccess()) 
                             {
-                                VERIFY_FAIL(L"EndDequeue returned error");
+                                VERIFY_FAIL("EndDequeue returned error");
                             }
                         },
                         AsyncOperationSPtr());
@@ -514,18 +514,18 @@ namespace Common
                 waitHandle.Set();
             });
 
-        BOOST_TEST_MESSAGE(formatString("Waiting for queue to drain ..."));
+        BOOST_TEST_MESSAGE(formatString.L("Waiting for queue to drain ..."));
         waitHandle.WaitOne();
 
-        BOOST_TEST_MESSAGE(formatString("Verifying item values ..."));
+        BOOST_TEST_MESSAGE(formatString.L("Verifying item values ..."));
         for (int ix = 0; ix < numItems; ++ix)
         {
             if(ix != results[ix])
             {
-                BOOST_FAIL(formatString("Error: {0} != {1}", ix, results[ix]));
+                BOOST_FAIL(formatString.L("Error: {0} != {1}", ix, results[ix]));
             }
         }
-        BOOST_TEST_MESSAGE(formatString("Queue drained. Item values verified."));
+        BOOST_TEST_MESSAGE(formatString.L("Queue drained. Item values verified."));
 
         queue->Abort();
     }

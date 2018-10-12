@@ -52,7 +52,7 @@ extern "C" {
 #endif
 
 // This macro is used to standardize the wide character string literals between UNIX and Windows.
-// Unix L"" is UTF32, and on windows it's UTF16.  Because of built-in assumptions on the size
+// Unix "" is UTF32, and on windows it's UTF16.  Because of built-in assumptions on the size
 // of string literals, it's important to match behaviour between Unix and Windows.  Unix will be defined
 // as u"" (char16_t)
 #define W(str)  u##str
@@ -461,7 +461,7 @@ PALIMPORT
 BOOL
 PALAPI
 PAL_GetPALDirectoryW(
-    OUT LPWSTR lpDirectoryName,
+    OUT LPSTR lpDirectoryName,
     IN OUT UINT* cchDirectoryName);
 #ifdef UNICODE
 #define PAL_GetPALDirectory PAL_GetPALDirectoryW
@@ -553,8 +553,8 @@ int
 PALAPI
 MessageBoxW(
         IN LPVOID hWnd,  // NOTE: diff from winuser.h
-        IN LPCWSTR lpText,
-        IN LPCWSTR lpCaption,
+        IN LPCSTR lpText,
+        IN LPCSTR lpCaption,
         IN UINT uType);
 
 
@@ -625,7 +625,7 @@ PALIMPORT
 HANDLE
 PALAPI
 CreateFileW(
-        IN LPCWSTR lpFileName,
+        IN LPCSTR lpFileName,
         IN DWORD dwDesiredAccess,
         IN DWORD dwShareMode,
         IN LPSECURITY_ATTRIBUTES lpSecurityAttributes,
@@ -644,12 +644,12 @@ PALIMPORT
 DWORD
 PALAPI
 SearchPathW(
-    IN LPCWSTR lpPath,
-    IN LPCWSTR lpFileName,
-    IN LPCWSTR lpExtension,
+    IN LPCSTR lpPath,
+    IN LPCSTR lpFileName,
+    IN LPCSTR lpExtension,
     IN DWORD nBufferLength,
-    OUT LPWSTR lpBuffer,
-    OUT LPWSTR *lpFilePart
+    OUT LPSTR lpBuffer,
+    OUT LPSTR *lpFilePart
     );
 #ifdef UNICODE
 #define SearchPath  SearchPathW
@@ -663,8 +663,8 @@ PALIMPORT
 BOOL
 PALAPI
 CopyFileW(
-      IN LPCWSTR lpExistingFileName,
-      IN LPCWSTR lpNewFileName,
+      IN LPCSTR lpExistingFileName,
+      IN LPCSTR lpNewFileName,
       IN BOOL bFailIfExists);
 
 #ifdef UNICODE
@@ -678,7 +678,7 @@ PALIMPORT
 BOOL
 PALAPI
 DeleteFileW(
-        IN LPCWSTR lpFileName);
+        IN LPCSTR lpFileName);
 
 #ifdef UNICODE
 #define DeleteFile DeleteFileW
@@ -696,8 +696,8 @@ PALIMPORT
 BOOL
 PALAPI
 MoveFileExW(
-        IN LPCWSTR lpExistingFileName,
-        IN LPCWSTR lpNewFileName,
+        IN LPCSTR lpExistingFileName,
+        IN LPCSTR lpNewFileName,
         IN DWORD dwFlags);
 
 #ifdef UNICODE
@@ -710,7 +710,7 @@ PALIMPORT
 BOOL
 PALAPI
 CreateDirectoryW(
-         IN LPCWSTR lpPathName,
+         IN LPCSTR lpPathName,
          IN LPSECURITY_ATTRIBUTES lpSecurityAttributes);
 
 #ifdef UNICODE
@@ -723,7 +723,7 @@ PALIMPORT
 BOOL
 PALAPI
 RemoveDirectoryW(
-         IN LPCWSTR lpPathName);
+         IN LPCSTR lpPathName);
 
 #ifdef UNICODE
 #define RemoveDirectory RemoveDirectoryW
@@ -766,8 +766,8 @@ typedef struct _WIN32_FIND_DATAW {
     DWORD nFileSizeLow;
     DWORD dwReserved0;
     DWORD dwReserved1;
-    WCHAR cFileName[ MAX_PATH_FNAME ];
-    WCHAR cAlternateFileName[ 14 ];
+    CHAR cFileName[ MAX_PATH_FNAME ];
+    CHAR cAlternateFileName[ 14 ];
 } WIN32_FIND_DATAW, *PWIN32_FIND_DATAW, *LPWIN32_FIND_DATAW;
 
 #ifdef UNICODE
@@ -784,7 +784,7 @@ PALIMPORT
 HANDLE
 PALAPI
 FindFirstFileW(
-           IN LPCWSTR lpFileName,
+           IN LPCSTR lpFileName,
            OUT LPWIN32_FIND_DATAW lpFindFileData);
 
 #ifdef UNICODE
@@ -816,7 +816,7 @@ PALIMPORT
 DWORD
 PALAPI
 GetFileAttributesW(
-           IN LPCWSTR lpFileName);
+           IN LPCSTR lpFileName);
 
 #ifdef UNICODE
 #define GetFileAttributes GetFileAttributesW
@@ -854,7 +854,7 @@ PALIMPORT
 BOOL
 PALAPI
 GetFileAttributesExW(
-             IN LPCWSTR lpFileName,
+             IN LPCSTR lpFileName,
              IN GET_FILEEX_INFO_LEVELS fInfoLevelId,
              OUT LPVOID lpFileInformation);
 
@@ -866,7 +866,7 @@ PALIMPORT
 BOOL
 PALAPI
 SetFileAttributesW(
-           IN LPCWSTR lpFileName,
+           IN LPCSTR lpFileName,
            IN DWORD dwFileAttributes);
 
 #ifdef UNICODE
@@ -1018,10 +1018,10 @@ PALIMPORT
 DWORD
 PALAPI
 GetFullPathNameW(
-         IN LPCWSTR lpFileName,
+         IN LPCSTR lpFileName,
          IN DWORD nBufferLength,
-         OUT LPWSTR lpBuffer,
-         OUT LPWSTR *lpFilePart);
+         OUT LPSTR lpBuffer,
+         OUT LPSTR *lpFilePart);
 
 #ifdef UNICODE
 #define GetFullPathName GetFullPathNameW
@@ -1033,8 +1033,8 @@ PALIMPORT
 DWORD
 PALAPI
 GetLongPathNameW(
-         IN LPCWSTR lpszShortPath,
-                 OUT LPWSTR lpszLongPath,
+         IN LPCSTR lpszShortPath,
+                 OUT LPSTR lpszLongPath,
          IN DWORD cchBuffer);
 
 #ifdef UNICODE
@@ -1045,8 +1045,8 @@ PALIMPORT
 DWORD
 PALAPI
 GetShortPathNameW(
-         IN LPCWSTR lpszLongPath,
-                 OUT LPWSTR lpszShortPath,
+         IN LPCSTR lpszLongPath,
+                 OUT LPSTR lpszShortPath,
          IN DWORD cchBuffer);
 
 #ifdef UNICODE
@@ -1058,10 +1058,10 @@ PALIMPORT
 UINT
 PALAPI
 GetTempFileNameW(
-         IN LPCWSTR lpPathName,
-         IN LPCWSTR lpPrefixString,
+         IN LPCSTR lpPathName,
+         IN LPCSTR lpPrefixString,
          IN UINT uUnique,
-         OUT LPWSTR lpTempFileName);
+         OUT LPSTR lpTempFileName);
 
 #ifdef UNICODE
 #define GetTempFileName GetTempFileNameW
@@ -1074,7 +1074,7 @@ DWORD
 PALAPI
 GetTempPathW(
          IN DWORD nBufferLength,
-         OUT LPWSTR lpBuffer);
+         OUT LPSTR lpBuffer);
 
 #ifdef UNICODE
 #define GetTempPath GetTempPathW
@@ -1087,7 +1087,7 @@ DWORD
 PALAPI
 GetCurrentDirectoryW(
              IN DWORD nBufferLength,
-             OUT LPWSTR lpBuffer);
+             OUT LPSTR lpBuffer);
 
 #ifdef UNICODE
 #define GetCurrentDirectory GetCurrentDirectoryW
@@ -1099,7 +1099,7 @@ PALIMPORT
 BOOL
 PALAPI
 SetCurrentDirectoryW(
-            IN LPCWSTR lpPathName);
+            IN LPCSTR lpPathName);
 
 
 #ifdef UNICODE
@@ -1115,7 +1115,7 @@ CreateSemaphoreW(
          IN LPSECURITY_ATTRIBUTES lpSemaphoreAttributes,
          IN LONG lInitialCount,
          IN LONG lMaximumCount,
-         IN LPCWSTR lpName);
+         IN LPCSTR lpName);
 
 PALIMPORT
 HANDLE
@@ -1124,7 +1124,7 @@ CreateSemaphoreExW(
         IN LPSECURITY_ATTRIBUTES lpSemaphoreAttributes,
         IN LONG lInitialCount,
         IN LONG lMaximumCount,
-        IN LPCWSTR lpName,
+        IN LPCSTR lpName,
         IN /*_Reserved_*/  DWORD dwFlags,
         IN DWORD dwDesiredAccess);
 
@@ -1134,7 +1134,7 @@ PALAPI
 OpenSemaphoreW(
     IN DWORD dwDesiredAccess,
     IN BOOL bInheritHandle,
-    IN LPCWSTR lpName);
+    IN LPCSTR lpName);
 
 #ifdef UNICODE
 #define CreateSemaphore CreateSemaphoreW
@@ -1159,14 +1159,14 @@ CreateEventW(
          IN LPSECURITY_ATTRIBUTES lpEventAttributes,
          IN BOOL bManualReset,
          IN BOOL bInitialState,
-         IN LPCWSTR lpName);
+         IN LPCSTR lpName);
 
 PALIMPORT
 HANDLE
 PALAPI
 CreateEventExW(
          IN LPSECURITY_ATTRIBUTES lpEventAttributes,
-         IN LPCWSTR lpName,
+         IN LPCSTR lpName,
          IN DWORD dwFlags,
          IN DWORD dwDesiredAccess);
 
@@ -1198,7 +1198,7 @@ PALAPI
 OpenEventW(
        IN DWORD dwDesiredAccess,
        IN BOOL bInheritHandle,
-       IN LPCWSTR lpName);
+       IN LPCSTR lpName);
 
 #ifdef UNICODE
 #define OpenEvent OpenEventW
@@ -1210,14 +1210,14 @@ PALAPI
 CreateMutexW(
     IN LPSECURITY_ATTRIBUTES lpMutexAttributes,
     IN BOOL bInitialOwner,
-    IN LPCWSTR lpName);
+    IN LPCSTR lpName);
 
 PALIMPORT
 HANDLE
 PALAPI
 CreateMutexExW(
     IN LPSECURITY_ATTRIBUTES lpMutexAttributes,
-    IN LPCWSTR lpName,
+    IN LPCSTR lpName,
     IN DWORD dwFlags,
     IN DWORD dwDesiredAccess);
 
@@ -1236,7 +1236,7 @@ PALAPI
 OpenMutexW(
        IN DWORD dwDesiredAccess,
        IN BOOL bInheritHandle,
-       IN LPCWSTR lpName);
+       IN LPCSTR lpName);
 
 
 #ifdef UNICODE
@@ -1288,9 +1288,9 @@ GetCurrentThread(
 
 typedef struct _STARTUPINFOW {
     DWORD cb;
-    LPWSTR lpReserved_PAL_Undefined;
-    LPWSTR lpDesktop_PAL_Undefined;
-    LPWSTR lpTitle_PAL_Undefined;
+    LPSTR lpReserved_PAL_Undefined;
+    LPSTR lpDesktop_PAL_Undefined;
+    LPSTR lpTitle_PAL_Undefined;
     DWORD dwX_PAL_Undefined;
     DWORD dwY_PAL_Undefined;
     DWORD dwXSize_PAL_Undefined;
@@ -1351,14 +1351,14 @@ PALIMPORT
 BOOL
 PALAPI
 CreateProcessW(
-           IN LPCWSTR lpApplicationName,
-           IN LPWSTR lpCommandLine,
+           IN LPCSTR lpApplicationName,
+           IN LPSTR lpCommandLine,
            IN LPSECURITY_ATTRIBUTES lpProcessAttributes,
            IN LPSECURITY_ATTRIBUTES lpThreadAttributes,
            IN BOOL bInheritHandles,
            IN DWORD dwCreationFlags,
            IN LPVOID lpEnvironment,
-           IN LPCWSTR lpCurrentDirectory,
+           IN LPCSTR lpCurrentDirectory,
            IN LPSTARTUPINFOW lpStartupInfo,
            OUT LPPROCESS_INFORMATION lpProcessInformation);
 
@@ -2490,7 +2490,7 @@ CreateFileMappingW(
            IN DWORD flProtect,
            IN DWORD dwMaxmimumSizeHigh,
            IN DWORD dwMaximumSizeLow,
-           IN LPCWSTR lpName);
+           IN LPCSTR lpName);
 
 #ifdef UNICODE
 #define CreateFileMapping CreateFileMappingW
@@ -2514,7 +2514,7 @@ PALAPI
 OpenFileMappingW(
          IN DWORD dwDesiredAccess,
          IN BOOL bInheritHandle,
-         IN LPCWSTR lpName);
+         IN LPCSTR lpName);
 
 #ifdef UNICODE
 #define OpenFileMapping OpenFileMappingW
@@ -2554,13 +2554,13 @@ PALIMPORT
 HMODULE
 PALAPI
 LoadLibraryW(
-        IN LPCWSTR lpLibFileName);
+        IN LPCSTR lpLibFileName);
 
 PALIMPORT
 HMODULE
 PALAPI
 LoadLibraryExW(
-        IN LPCWSTR lpLibFileName,
+        IN LPCSTR lpLibFileName,
         IN /*Reserved*/ HANDLE hFile,
         IN DWORD dwFlags);
 
@@ -2568,14 +2568,14 @@ PALIMPORT
 void *
 PALAPI
 PAL_LoadLibraryDirect(
-        IN LPCWSTR lpLibFileName);
+        IN LPCSTR lpLibFileName);
 
 PALIMPORT
 HMODULE
 PALAPI
 PAL_RegisterLibraryDirect(
         IN void *dl_handle,
-        IN LPCWSTR lpLibFileName);
+        IN LPCSTR lpLibFileName);
 
 /*++
 Function:
@@ -2654,7 +2654,7 @@ DWORD
 PALAPI
 GetModuleFileNameW(
     IN HMODULE hModule,
-    OUT LPWSTR lpFileName,
+    OUT LPSTR lpFileName,
     IN DWORD nSize);
 
 #ifdef UNICODE
@@ -2669,7 +2669,7 @@ PALAPI
 GetModuleFileNameExW(
     IN HANDLE hProcess,
     IN HMODULE hModule,
-    OUT LPWSTR lpFilename,
+    OUT LPSTR lpFilename,
     IN DWORD nSize
     );
 
@@ -2913,7 +2913,7 @@ MultiByteToWideChar(
             IN DWORD dwFlags,
             IN LPCSTR lpMultiByteStr,
             IN int cbMultiByte,
-            OUT LPWSTR lpWideCharStr,
+            OUT LPSTR lpWideCharStr,
             IN int cchWideChar);
 
 #define WC_NO_BEST_FIT_CHARS      0x00000400
@@ -2924,7 +2924,7 @@ PALAPI
 WideCharToMultiByte(
             IN UINT CodePage,
             IN DWORD dwFlags,
-            IN LPCWSTR lpWideCharStr,
+            IN LPCSTR lpWideCharStr,
             IN int cchWideChar,
             OUT LPSTR lpMultiByteStr,
             IN int cbMultyByte,
@@ -2937,7 +2937,7 @@ PALAPI
 PAL_GetResourceString(
         IN LPCSTR lpDomain,
         IN LPCSTR lpResourceStr,
-        OUT LPWSTR lpWideCharStr,
+        OUT LPSTR lpWideCharStr,
         IN int cchWideChar);
 
 PALIMPORT
@@ -3071,7 +3071,7 @@ PALIMPORT
 VOID
 PALAPI
 OutputDebugStringW(
-    IN LPCWSTR lpOutputStrig);
+    IN LPCSTR lpOutputStrig);
 
 #ifdef UNICODE
 #define OutputDebugString OutputDebugStringW
@@ -3095,7 +3095,7 @@ PALIMPORT
 int
 PALAPI
 lstrlenW(
-     IN LPCWSTR lpString);
+     IN LPCSTR lpString);
 
 #ifdef UNICODE
 #define lstrlen lstrlenW
@@ -3107,8 +3107,8 @@ PALIMPORT
 DWORD
 PALAPI
 GetEnvironmentVariableW(
-            IN LPCWSTR lpName,
-            OUT LPWSTR lpBuffer,
+            IN LPCSTR lpName,
+            OUT LPSTR lpBuffer,
             IN DWORD nSize);
 
 #ifdef UNICODE
@@ -3121,8 +3121,8 @@ PALIMPORT
 BOOL
 PALAPI
 SetEnvironmentVariableW(
-            IN LPCWSTR lpName,
-            IN LPCWSTR lpValue);
+            IN LPCSTR lpName,
+            IN LPCSTR lpValue);
 
 #ifdef UNICODE
 #define SetEnvironmentVariable SetEnvironmentVariableW
@@ -3131,7 +3131,7 @@ SetEnvironmentVariableW(
 #endif
 
 PALIMPORT
-LPWSTR
+LPSTR
 PALAPI
 GetEnvironmentStringsW(
                VOID);
@@ -3146,7 +3146,7 @@ PALIMPORT
 BOOL
 PALAPI
 FreeEnvironmentStringsW(
-            IN LPWSTR);
+            IN LPSTR);
 
 #ifdef UNICODE
 #define FreeEnvironmentStrings FreeEnvironmentStringsW
@@ -3693,7 +3693,7 @@ FormatMessageW(
            IN LPCVOID lpSource,
            IN DWORD dwMessageId,
            IN DWORD dwLanguageId,
-           OUT LPWSTR lpBffer,
+           OUT LPSTR lpBffer,
            IN DWORD nSize,
            IN va_list *Arguments);
 
@@ -3715,7 +3715,7 @@ SetLastError(
          IN DWORD dwErrCode);
 
 PALIMPORT
-LPWSTR
+LPSTR
 PALAPI
 GetCommandLineW(
         VOID);
@@ -3801,7 +3801,7 @@ typedef struct _OSVERSIONINFOW {
     DWORD dwMinorVersion;
     DWORD dwBuildNumber;
     DWORD dwPlatformId;
-    WCHAR szCSDVersion[ 128 ];
+    CHAR szCSDVersion[ 128 ];
 } OSVERSIONINFOW, *POSVERSIONINFOW, *LPOSVERSIONINFOW;
 
 #ifdef UNICODE
@@ -3834,7 +3834,7 @@ typedef struct _OSVERSIONINFOEXW {
     DWORD dwMinorVersion;
     DWORD dwBuildNumber;
     DWORD dwPlatformId;
-    WCHAR szCSDVersion[ 128 ];
+    CHAR szCSDVersion[ 128 ];
     WORD  wServicePackMajor;
     WORD  wServicePackMinor;
     WORD  wSuiteMask;
@@ -4087,16 +4087,16 @@ SetThreadIdealProcessorEx(
 #define wcstoul       PAL_wcstoul
 #define wcscat        PAL_wcscat
 #define wcscpy        PAL_wcscpy
-#define wcslen        PAL_wcslen
-#define wcsncmp       PAL_wcsncmp
+#define strlen        PAL_strlen
+#define strncmp       PAL_strncmp
 #define wcschr        PAL_wcschr
 #define wcsrchr       PAL_wcsrchr
 #define wcsstr        PAL_wcsstr
 #define swscanf       PAL_swscanf
 #define wcspbrk       PAL_wcspbrk
-#define wcscmp        PAL_wcscmp
+#define strcmp        PAL_strcmp
 #define wcsncat       PAL_wcsncat
-#define wcsncpy       PAL_wcsncpy
+#define strncpy       PAL_strncpy
 #define wcstok        PAL_wcstok
 #define wcscspn       PAL_wcscspn
 #define iswprint      PAL_iswprint
@@ -4174,7 +4174,7 @@ SetThreadIdealProcessorEx(
 #define _wcstoui64    PAL__wcstoui64
 #define _flushall     PAL__flushall
 #define strnlen       PAL_strnlen
-#define wcsnlen       PAL_wcsnlen
+#define strnlen       PAL_strnlen
 
 #ifdef _AMD64_ 
 #define _mm_getcsr    PAL__mm_getcsr
@@ -4283,64 +4283,64 @@ PALIMPORT int __cdecl __iscsym(int);
 PALIMPORT unsigned char * __cdecl _mbsinc(const unsigned char *);
 PALIMPORT unsigned char * __cdecl _mbsninc(const unsigned char *, size_t);
 PALIMPORT unsigned char * __cdecl _mbsdec(const unsigned char *, const unsigned char *);
-PALIMPORT int __cdecl _wcsicmp(const WCHAR *, const WCHAR*);
-PALIMPORT int __cdecl _wcsnicmp(const WCHAR *, const WCHAR *, size_t);
+PALIMPORT int __cdecl strcasecmp(const CHAR *, const CHAR*);
+PALIMPORT int __cdecl _wcsnicmp(const CHAR *, const CHAR *, size_t);
 PALIMPORT int __cdecl _vsnprintf(char *, size_t, const char *, va_list);
 PALIMPORT int __cdecl _vsnprintf_s(char *, size_t, size_t, const char *, va_list);
-PALIMPORT int __cdecl _vsnwprintf_s(WCHAR *, size_t, size_t, const WCHAR *, va_list);
-PALIMPORT int __cdecl _snwprintf_s(WCHAR *, size_t, size_t, const WCHAR *, ...);
+PALIMPORT int __cdecl _vsnwprintf_s(CHAR *, size_t, size_t, const CHAR *, va_list);
+PALIMPORT int __cdecl _snwprintf_s(CHAR *, size_t, size_t, const CHAR *, ...);
 PALIMPORT int __cdecl _snprintf_s(char *, size_t, size_t, const char *, ...);
 PALIMPORT int __cdecl sprintf_s(char *, size_t, const char *, ... );
-PALIMPORT int __cdecl swprintf_s(WCHAR *, size_t, const WCHAR *, ... );
-PALIMPORT int __cdecl _snwprintf_s(WCHAR *, size_t, size_t, const WCHAR *, ...);
-PALIMPORT int __cdecl vswprintf_s( WCHAR *, size_t, const WCHAR *, va_list);
+PALIMPORT int __cdecl snprintf_s(CHAR *, size_t, const CHAR *, ... );
+PALIMPORT int __cdecl _snwprintf_s(CHAR *, size_t, size_t, const CHAR *, ...);
+PALIMPORT int __cdecl vsnprintf_s( CHAR *, size_t, const CHAR *, va_list);
 PALIMPORT int __cdecl sscanf_s(const char *, const char *, ...);
-PALIMPORT errno_t __cdecl _itow_s(int, WCHAR *, size_t, int);
+PALIMPORT errno_t __cdecl _itow_s(int, CHAR *, size_t, int);
 
-PALIMPORT size_t __cdecl PAL_wcslen(const WCHAR *);
-PALIMPORT int __cdecl PAL_wcscmp(const WCHAR*, const WCHAR*);
-PALIMPORT int __cdecl PAL_wcsncmp(const WCHAR *, const WCHAR *, size_t);
-PALIMPORT WCHAR * __cdecl PAL_wcscat(WCHAR *, const WCHAR *);
-PALIMPORT WCHAR * __cdecl PAL_wcsncat(WCHAR *, const WCHAR *, size_t);
-PALIMPORT WCHAR * __cdecl PAL_wcscpy(WCHAR *, const WCHAR *);
-PALIMPORT WCHAR * __cdecl PAL_wcsncpy(WCHAR *, const WCHAR *, size_t);
-PALIMPORT const WCHAR * __cdecl PAL_wcschr(const WCHAR *, WCHAR);
-PALIMPORT const WCHAR * __cdecl PAL_wcsrchr(const WCHAR *, WCHAR);
-PALIMPORT WCHAR _WConst_return * __cdecl PAL_wcspbrk(const WCHAR *, const WCHAR *);
-PALIMPORT WCHAR _WConst_return * __cdecl PAL_wcsstr(const WCHAR *, const WCHAR *);
-PALIMPORT WCHAR * __cdecl PAL_wcstok(WCHAR *, const WCHAR *);
-PALIMPORT size_t __cdecl PAL_wcscspn(const WCHAR *, const WCHAR *);
-PALIMPORT int __cdecl PAL_swprintf(WCHAR *, const WCHAR *, ...);
-PALIMPORT int __cdecl PAL_vswprintf(WCHAR *, const WCHAR *, va_list);
-PALIMPORT int __cdecl PAL_swscanf(const WCHAR *, const WCHAR *, ...);
-PALIMPORT LONG __cdecl PAL_wcstol(const WCHAR *, WCHAR **, int);
-PALIMPORT ULONG __cdecl PAL_wcstoul(const WCHAR *, WCHAR **, int);
-PALIMPORT size_t __cdecl PAL_wcsspn (const WCHAR *, const WCHAR *);
-PALIMPORT double __cdecl PAL_wcstod(const WCHAR *, WCHAR **);
-PALIMPORT int __cdecl PAL_iswalpha(WCHAR);
-PALIMPORT int __cdecl PAL_iswprint(WCHAR);
-PALIMPORT int __cdecl PAL_iswupper(WCHAR);
-PALIMPORT int __cdecl PAL_iswspace(WCHAR);
-PALIMPORT int __cdecl PAL_iswdigit(WCHAR);
-PALIMPORT int __cdecl PAL_iswxdigit(WCHAR);
-PALIMPORT WCHAR __cdecl PAL_towlower(WCHAR);
-PALIMPORT WCHAR __cdecl PAL_towupper(WCHAR);
+PALIMPORT size_t __cdecl PAL_strlen(const CHAR *);
+PALIMPORT int __cdecl PAL_strcmp(const CHAR*, const CHAR*);
+PALIMPORT int __cdecl PAL_strncmp(const CHAR *, const CHAR *, size_t);
+PALIMPORT CHAR * __cdecl PAL_wcscat(CHAR *, const CHAR *);
+PALIMPORT CHAR * __cdecl PAL_wcsncat(CHAR *, const CHAR *, size_t);
+PALIMPORT CHAR * __cdecl PAL_wcscpy(CHAR *, const CHAR *);
+PALIMPORT CHAR * __cdecl PAL_strncpy(CHAR *, const CHAR *, size_t);
+PALIMPORT const CHAR * __cdecl PAL_wcschr(const CHAR *, CHAR);
+PALIMPORT const CHAR * __cdecl PAL_wcsrchr(const CHAR *, CHAR);
+PALIMPORT CHAR _WConst_return * __cdecl PAL_wcspbrk(const CHAR *, const CHAR *);
+PALIMPORT CHAR _WConst_return * __cdecl PAL_wcsstr(const CHAR *, const CHAR *);
+PALIMPORT CHAR * __cdecl PAL_wcstok(CHAR *, const CHAR *);
+PALIMPORT size_t __cdecl PAL_wcscspn(const CHAR *, const CHAR *);
+PALIMPORT int __cdecl PAL_snprintf(CHAR *, const CHAR *, ...);
+PALIMPORT int __cdecl PAL_vsnprintf(CHAR *, const CHAR *, va_list);
+PALIMPORT int __cdecl PAL_swscanf(const CHAR *, const CHAR *, ...);
+PALIMPORT LONG __cdecl PAL_strtol(const CHAR *, CHAR **, int);
+PALIMPORT ULONG __cdecl PAL_wcstoul(const CHAR *, CHAR **, int);
+PALIMPORT size_t __cdecl PAL_wcsspn (const CHAR *, const CHAR *);
+PALIMPORT double __cdecl PAL_strtod(const CHAR *, CHAR **);
+PALIMPORT int __cdecl PAL_iswalpha(CHAR);
+PALIMPORT int __cdecl PAL_iswprint(CHAR);
+PALIMPORT int __cdecl PAL_iswupper(CHAR);
+PALIMPORT int __cdecl PAL_iswspace(CHAR);
+PALIMPORT int __cdecl PAL_iswdigit(CHAR);
+PALIMPORT int __cdecl PAL_iswxdigit(CHAR);
+PALIMPORT CHAR __cdecl PAL_towlower(CHAR);
+PALIMPORT CHAR __cdecl PAL_towupper(CHAR);
 
-PALIMPORT WCHAR * __cdecl _wcslwr(WCHAR *);
-PALIMPORT ULONGLONG _wcstoui64(const WCHAR *, WCHAR **, int);
-PALIMPORT errno_t __cdecl _i64tow_s(long long, WCHAR *, size_t, int);
-PALIMPORT int __cdecl _wtoi(const WCHAR *);
+PALIMPORT CHAR * __cdecl _wcslwr(CHAR *);
+PALIMPORT ULONGLONG _wcstoui64(const CHAR *, CHAR **, int);
+PALIMPORT errno_t __cdecl _i64tow_s(long long, CHAR *, size_t, int);
+PALIMPORT int __cdecl _wtoi(const CHAR *);
 
 #ifdef __cplusplus
 extern "C++" {
-inline WCHAR *PAL_wcschr(WCHAR *_S, WCHAR _C)
-        {return ((WCHAR *)PAL_wcschr((const WCHAR *)_S, _C)); }
-inline WCHAR *PAL_wcsrchr(WCHAR *_S, WCHAR _C)
-        {return ((WCHAR *)PAL_wcsrchr((const WCHAR *)_S, _C)); }
-inline WCHAR *PAL_wcspbrk(WCHAR *_S, const WCHAR *_P)
-        {return ((WCHAR *)PAL_wcspbrk((const WCHAR *)_S, _P)); }
-inline WCHAR *PAL_wcsstr(WCHAR *_S, const WCHAR *_P)
-        {return ((WCHAR *)PAL_wcsstr((const WCHAR *)_S, _P)); }
+inline CHAR *PAL_wcschr(CHAR *_S, CHAR _C)
+        {return ((CHAR *)PAL_wcschr((const CHAR *)_S, _C)); }
+inline CHAR *PAL_wcsrchr(CHAR *_S, CHAR _C)
+        {return ((CHAR *)PAL_wcsrchr((const CHAR *)_S, _C)); }
+inline CHAR *PAL_wcspbrk(CHAR *_S, const CHAR *_P)
+        {return ((CHAR *)PAL_wcspbrk((const CHAR *)_S, _P)); }
+inline CHAR *PAL_wcsstr(CHAR *_S, const CHAR *_P)
+        {return ((CHAR *)PAL_wcsstr((const CHAR *)_S, _P)); }
 }
 #endif
 
@@ -4566,16 +4566,16 @@ PALIMPORT int __cdecl PAL_getc(PAL_FILE *stream);
 PALIMPORT int __cdecl PAL_fgetc(PAL_FILE *stream);
 PALIMPORT int __cdecl PAL_ungetc(int c, PAL_FILE *stream);
 PALIMPORT int __cdecl PAL_setvbuf(PAL_FILE *stream, char *, int, size_t);
-PALIMPORT WCHAR * __cdecl PAL_fgetws(WCHAR *, int, PAL_FILE *);
-PALIMPORT int __cdecl PAL_fwprintf(PAL_FILE *, const WCHAR *, ...);
-PALIMPORT int __cdecl PAL_vfwprintf(PAL_FILE *, const WCHAR *, va_list);
-PALIMPORT int __cdecl PAL_wprintf(const WCHAR*, ...);
+PALIMPORT CHAR * __cdecl PAL_fgetws(CHAR *, int, PAL_FILE *);
+PALIMPORT int __cdecl PAL_fwprintf(PAL_FILE *, const CHAR *, ...);
+PALIMPORT int __cdecl PAL_vfwprintf(PAL_FILE *, const CHAR *, va_list);
+PALIMPORT int __cdecl PAL_wprintf(const CHAR*, ...);
 
 PALIMPORT int __cdecl _getw(PAL_FILE *);
 PALIMPORT int __cdecl _putw(int, PAL_FILE *);
 PALIMPORT PAL_FILE * __cdecl _fdopen(int, const char *);
-PALIMPORT PAL_FILE * __cdecl _wfopen(const WCHAR *, const WCHAR *);
-PALIMPORT PAL_FILE * __cdecl _wfsopen(const WCHAR *, const WCHAR *, int);
+PALIMPORT PAL_FILE * __cdecl _wfopen(const CHAR *, const CHAR *);
+PALIMPORT PAL_FILE * __cdecl _wfsopen(const CHAR *, const CHAR *, int);
 
 /* Maximum value that can be returned by the rand function. */
 

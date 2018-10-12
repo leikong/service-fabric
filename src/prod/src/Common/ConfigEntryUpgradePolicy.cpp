@@ -13,44 +13,44 @@ void ConfigEntryUpgradePolicy::WriteToTextWriter(TextWriter & w, Enum const & va
     switch (val)
     {
     case Dynamic: 
-        w << L"Dynamic";
+        w << "Dynamic";
         return;
     case Static: 
-        w << L"Static";
+        w << "Static";
         return;
     case NotAllowed: 
-        w << L"NotAllowed";        
+        w << "NotAllowed";        
         return;
     case SingleChange:
-        w << L"SingleChange";
+        w << "SingleChange";
         return;
     default: 
         Assert::CodingError("Unknown UpgradePolicy");
     }
 }
 
-wstring ConfigEntryUpgradePolicy::ToString(ConfigEntryUpgradePolicy::Enum const & val)
+string ConfigEntryUpgradePolicy::ToString(ConfigEntryUpgradePolicy::Enum const & val)
 {
-    wstring upgradePolicy;
+    string upgradePolicy;
     StringWriter(upgradePolicy).Write(val);
     return upgradePolicy;
 }
 
-ConfigEntryUpgradePolicy::Enum ConfigEntryUpgradePolicy::FromString(wstring const & val)
+ConfigEntryUpgradePolicy::Enum ConfigEntryUpgradePolicy::FromString(string const & val)
 {
-    if(StringUtility::AreEqualCaseInsensitive(val, L"Dynamic"))
+    if(StringUtility::AreEqualCaseInsensitive(val, "Dynamic"))
     {
         return ConfigEntryUpgradePolicy::Dynamic;
     }
-    else if(StringUtility::AreEqualCaseInsensitive(val, L"Static"))
+    else if(StringUtility::AreEqualCaseInsensitive(val, "Static"))
     {
         return ConfigEntryUpgradePolicy::Static;
     }
-    else if(StringUtility::AreEqualCaseInsensitive(val, L"NotAllowed"))
+    else if(StringUtility::AreEqualCaseInsensitive(val, "NotAllowed"))
     {
         return ConfigEntryUpgradePolicy::NotAllowed;
     }
-    else if (StringUtility::AreEqualCaseInsensitive(val, L"SingleChange"))
+    else if (StringUtility::AreEqualCaseInsensitive(val, "SingleChange"))
     {
         return ConfigEntryUpgradePolicy::SingleChange;
     }

@@ -15,7 +15,7 @@ namespace Transport
         ~SecurityCredentials();
 
         static Common::ErrorCode AcquireWin(
-            std::wstring const & securityPrincipal,
+            std::string const & securityPrincipal,
             SecurityProvider::Enum securityProvider,
             bool outboundOnly,
             _In_ PVOID authenticationData,
@@ -28,7 +28,7 @@ namespace Transport
 
         static Common::ErrorCode AcquireSsl(
             Common::X509StoreLocation::Enum certStoreLocation,
-            std::wstring const & certStoreName,
+            std::string const & certStoreName,
             std::shared_ptr<Common::X509FindValue> const & findValue,
             _Out_opt_ std::vector<SecurityCredentialsSPtr> * credentials,
             _Out_opt_ std::vector<SecurityCredentialsSPtr> * svrCredentials);
@@ -51,7 +51,7 @@ namespace Transport
         Common::X509PubKey const * X509PublicKey() { return x509PubKey_.get(); }
 
         static bool SortedVectorsEqual(std::vector<SecurityCredentialsSPtr> const& a, std::vector<SecurityCredentialsSPtr> const& b);
-        static std::wstring VectorsToString(std::vector<SecurityCredentialsSPtr> const& v);
+        static std::string VectorsToString(std::vector<SecurityCredentialsSPtr> const& v);
 
 #ifdef PLATFORM_UNIX
         SSL_CTX* SslCtx() const; 

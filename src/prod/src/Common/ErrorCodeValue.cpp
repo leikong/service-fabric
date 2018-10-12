@@ -695,7 +695,7 @@ namespace Common
 
             case NotEnoughMemoryForServicePackage: w << "NotEnoughMemoryForServicePackage"; return;
 
-            case ServicePackageAlreadyRegisteredWithLRM: w << L"ServicePackageAlreadyRegisteredWithLRM"; return;
+            case ServicePackageAlreadyRegisteredWithLRM: w << "ServicePackageAlreadyRegisteredWithLRM"; return;
             }
 
             w.Write("0x{0:x}", static_cast<uint>(e));

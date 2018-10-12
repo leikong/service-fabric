@@ -46,7 +46,7 @@ namespace Common
 
         static Common::ErrorCode CreateSPtr(__out SecurityDescriptorSPtr & sd);
         static Common::ErrorCode CreateSPtrFromKernelObject(HANDLE object, __out SecurityDescriptorSPtr & sd);
-        static Common::ErrorCode CreateSPtr(std::wstring const & accountName, __out SecurityDescriptorSPtr & sd);        
+        static Common::ErrorCode CreateSPtr(std::string const & accountName, __out SecurityDescriptorSPtr & sd);        
         static Common::ErrorCode CreateSPtr(PSECURITY_DESCRIPTOR const pSecurityDescriptor, __out SecurityDescriptorSPtr & sd);
 
         // Create self-relative security descriptor from owner token and allowed SIDs.
@@ -64,7 +64,7 @@ namespace Common
             _Out_ SecurityDescriptorSPtr & sd);
 
         static Common::ErrorCode ConvertSecurityDescriptorStringToSecurityDescriptor(
-            std::wstring const & stringSecurityDescriptor,
+            std::string const & stringSecurityDescriptor,
              __out SecurityDescriptorSPtr & sd);
 
         static PSECURITY_DESCRIPTOR GetPSECURITY_DESCRIPTOR(Common::ByteBuffer const & buffer);

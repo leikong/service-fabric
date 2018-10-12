@@ -665,7 +665,7 @@ void ArbitrationOperation::ReportResult(shared_ptr<ArbitrationOperation> const &
 {
     WriteInfo("Result", siteNode_->IdString,
         "{0} result {1}/{2}{3}",
-        *this, localResult_, remoteResult_, isDelayed ? L" delayed" : L"");
+        *this, localResult_, remoteResult_, isDelayed ? " delayed" : "");
 
     if (type_ == ArbitrationType::Implicit)
     {

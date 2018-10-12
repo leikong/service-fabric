@@ -27,13 +27,13 @@ TRACEPOINT_EVENT(
             char*, taskNameArg,
             char*, eventNameArg,
             char*, idArg,
-            wchar_t*, dataArg
+            char*, dataArg
             ),
         TP_FIELDS(
             ctf_string(taskNameField, taskNameArg)
             ctf_string(eventNameField, eventNameArg)
-            ctf_sequence_text(char, idField, idArg, size_t, wcslen(idArg) * 2 + 2)
-            ctf_sequence_text(wchar_t, dataField, dataArg, size_t, wcslen(dataArg))
+            ctf_sequence_text(char, idField, idArg, size_t, strlen(idArg) * 2 + 2)
+            ctf_sequence_text(char, dataField, dataArg, size_t, strlen(dataArg))
             )
         )
 TRACEPOINT_LOGLEVEL(service_fabric, tracepoint_silent, TRACE_ALERT)
@@ -45,13 +45,13 @@ TRACEPOINT_LOGLEVEL(service_fabric, tracepoint_silent, TRACE_ALERT)
                 char*, taskNameArg,
                 char*, eventNameArg,
                 char*, idArg,
-                wchar_t*, dataArg
+                char*, dataArg
                 ),
             TP_FIELDS(
                 ctf_string(taskNameField, taskNameArg)
                 ctf_string(eventNameField, eventNameArg)
-                ctf_sequence_text(char, idField, idArg, size_t, wcslen(idArg) * 2 + 2)
-                ctf_sequence_text(wchar_t, dataField, dataArg, size_t, wcslen(dataArg))
+                ctf_sequence_text(char, idField, idArg, size_t, strlen(idArg) * 2 + 2)
+                ctf_sequence_text(char, dataField, dataArg, size_t, strlen(dataArg))
                 )
             )
 TRACEPOINT_LOGLEVEL(service_fabric, tracepoint_critical, TRACE_CRIT)
@@ -63,13 +63,13 @@ TRACEPOINT_LOGLEVEL(service_fabric, tracepoint_critical, TRACE_CRIT)
                 char*, taskNameArg,
                 char*, eventNameArg,
                 char*, idArg,
-                wchar_t*, dataArg
+                char*, dataArg
                 ),
             TP_FIELDS(
                 ctf_string(taskNameField, taskNameArg)
                 ctf_string(eventNameField, eventNameArg)
-                ctf_sequence_text(char, idField, idArg, size_t, wcslen(idArg) * 2 + 2)
-                ctf_sequence_text(wchar_t, dataField, dataArg, size_t, wcslen(dataArg))
+                ctf_sequence_text(char, idField, idArg, size_t, strlen(idArg) * 2 + 2)
+                ctf_sequence_text(char, dataField, dataArg, size_t, strlen(dataArg))
                 )
             )
 TRACEPOINT_LOGLEVEL(service_fabric, tracepoint_error, TRACE_ERR)
@@ -81,13 +81,13 @@ TRACEPOINT_LOGLEVEL(service_fabric, tracepoint_error, TRACE_ERR)
                 char*, taskNameArg,
                 char*, eventNameArg,
                 char*, idArg,
-                wchar_t*, dataArg
+                char*, dataArg
                 ),
             TP_FIELDS(
                 ctf_string(taskNameField, taskNameArg)
                 ctf_string(eventNameField, eventNameArg)
-                ctf_sequence_text(char, idField, idArg, size_t, wcslen(idArg) * 2 + 2)
-                ctf_sequence_text(wchar_t, dataField, dataArg, size_t, wcslen(dataArg))
+                ctf_sequence_text(char, idField, idArg, size_t, strlen(idArg) * 2 + 2)
+                ctf_sequence_text(char, dataField, dataArg, size_t, strlen(dataArg))
                 )
             )
 TRACEPOINT_LOGLEVEL(service_fabric, tracepoint_warning, TRACE_WARNING)
@@ -99,13 +99,13 @@ TRACEPOINT_LOGLEVEL(service_fabric, tracepoint_warning, TRACE_WARNING)
                 char*, taskNameArg,
                 char*, eventNameArg,
                 char*, idArg,
-                wchar_t*, dataArg
+                char*, dataArg
                 ),
             TP_FIELDS(
                 ctf_string(taskNameField, taskNameArg)
                 ctf_string(eventNameField, eventNameArg)
-                ctf_sequence_text(char, idField, idArg, size_t, wcslen(idArg) * 2 + 2)
-                ctf_sequence_text(wchar_t, dataField, dataArg, size_t, wcslen(dataArg))
+                ctf_sequence_text(char, idField, idArg, size_t, strlen(idArg) * 2 + 2)
+                ctf_sequence_text(char, dataField, dataArg, size_t, strlen(dataArg))
                 )
             )
 TRACEPOINT_LOGLEVEL(service_fabric, tracepoint_info, TRACE_INFO)
@@ -117,13 +117,13 @@ TRACEPOINT_LOGLEVEL(service_fabric, tracepoint_info, TRACE_INFO)
                 char*, taskNameArg,
                 char*, eventNameArg,
                 char*, idArg,
-                wchar_t*, dataArg
+                char*, dataArg
                 ),
             TP_FIELDS(
                 ctf_string(taskNameField, taskNameArg)
                 ctf_string(eventNameField, eventNameArg)
-                ctf_sequence_text(char, idField, idArg, size_t, wcslen(idArg) * 2 + 2)
-                ctf_sequence_text(wchar_t, dataField, dataArg, size_t, wcslen(dataArg))
+                ctf_sequence_text(char, idField, idArg, size_t, strlen(idArg) * 2 + 2)
+                ctf_sequence_text(char, dataField, dataArg, size_t, strlen(dataArg))
                 )
             )
 TRACEPOINT_LOGLEVEL(service_fabric, tracepoint_noise, TRACE_DEBUG_SYSTEM)
@@ -135,13 +135,13 @@ TRACEPOINT_LOGLEVEL(service_fabric, tracepoint_noise, TRACE_DEBUG_SYSTEM)
                 char*, taskNameArg,
                 char*, eventNameArg,
                 char*, idArg,
-                wchar_t*, dataArg
+                char*, dataArg
                 ),
             TP_FIELDS(
                 ctf_string(taskNameField, taskNameArg)
                 ctf_string(eventNameField, eventNameArg)
-                ctf_sequence_text(char, idField, idArg, size_t, wcslen(idArg) * 2 + 2)
-                ctf_sequence_text(wchar_t, dataField, dataArg, size_t, wcslen(dataArg))
+                ctf_sequence_text(char, idField, idArg, size_t, strlen(idArg) * 2 + 2)
+                ctf_sequence_text(char, dataField, dataArg, size_t, strlen(dataArg))
                 )
             )
 TRACEPOINT_LOGLEVEL(service_fabric, tracepoint_all, TRACE_DEBUG_LINE)

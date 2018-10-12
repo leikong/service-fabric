@@ -18,35 +18,35 @@ namespace Common
         ConfigSettingsConfigStore(ConfigSettings && configSettings);
         virtual ~ConfigSettingsConfigStore();
 
-        virtual std::wstring ReadString(
-            std::wstring const & section,
-            std::wstring const & key,
+        virtual std::string ReadString(
+            std::string const & section,
+            std::string const & key,
             __out bool & isEncrypted) const; 
        
         virtual void GetSections(
             Common::StringCollection & sectionNames, 
-            std::wstring const & partialName = L"") const;
+            std::string const & partialName = "") const;
 
         virtual void GetKeys(
-            std::wstring const & section,
+            std::string const & section,
             Common::StringCollection & keyNames, 
-            std::wstring const & partialName = L"") const;
+            std::string const & partialName = "") const;
 
-        void Set(std::wstring const & sectionName, ConfigParameter && parameter);
+        void Set(std::string const & sectionName, ConfigParameter && parameter);
 
-        void Remove(std::wstring const & sectionName);
+        void Remove(std::string const & sectionName);
 
         bool Update(ConfigSettings const & updatedSettings);
 
     private:
         void ProcessAddedOrRemovedSection(
             ConfigSection const & section,
-            __inout std::vector<std::pair<std::wstring, std::wstring>> & changes);
+            __inout std::vector<std::pair<std::string, std::string>> & changes);
 
         void ProcessModifiedSection(
             ConfigSection const & existingSection,
             ConfigSection const & updatedSection,
-            __inout std::vector<std::pair<std::wstring, std::wstring>> & changes);
+            __inout std::vector<std::pair<std::string, std::string>> & changes);
 
         ConfigSettings settings_;
         mutable RwLock lock_;

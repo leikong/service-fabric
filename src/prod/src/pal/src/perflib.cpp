@@ -41,7 +41,7 @@ PPERF_COUNTERSET_INSTANCE __stdcall
 PerfCreateInstance(
     __in HANDLE  hProvider,
     __in LPCGUID CounterSetGuid,
-    __in LPCWSTR szInstanceName,
+    __in LPCSTR szInstanceName,
     __in ULONG   dwInstance
 )
 {

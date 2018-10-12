@@ -148,7 +148,7 @@ void JoinLockInfo::WriteTo(Common::TextWriter& w, Common::FormatOptions const&) 
     w.Write(partner_->Instance);
     if (isPhaseCompleted_)
     {
-        w.Write(L" ");
+        w.Write(" ");
         w.Write(lock_);
     }
 }

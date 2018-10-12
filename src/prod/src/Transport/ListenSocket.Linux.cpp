@@ -14,7 +14,7 @@ static const StringLiteral TraceType("ListenSocket");
 ListenSocket::ListenSocket(
     Endpoint const & endpoint,
     AcceptCompleteCallback && acceptCompleteCallback,
-    wstring const & traceId)
+    string const & traceId)
     : IListenSocket(endpoint, move(acceptCompleteCallback), traceId)
     , eventLoop_(IDatagramTransport::GetDefaultTransportEventLoopPool()->Assign())
     , fdContext_(nullptr)

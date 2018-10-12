@@ -22,7 +22,7 @@ class KtlLoggerNode::InitializeKtlLoggerAsyncOperation : public KtlProxyAsyncOpe
         BOOLEAN useInprocLogger,
         KtlLogManager::MemoryThrottleLimits const & memoryLimit,
         KtlLogManager::SharedLogContainerSettings const & sharedLogSettings,
-        std::wstring const & fabricDataRoot,
+        std::string const & fabricDataRoot,
         AsyncCallback const& callback,
         AsyncOperationSPtr const& parent)
         : KtlProxyAsyncOperation(&asyncContext, nullptr, callback, parent)
@@ -65,7 +65,7 @@ private:
     BOOLEAN useInprocLogger_;
     KtlLogManager::MemoryThrottleLimits memoryLimits_;
     KtlLogManager::SharedLogContainerSettings sharedLogSettings_;
-    std::wstring fabricDataRoot_;
+    std::string fabricDataRoot_;
 };
 
 //
@@ -161,21 +161,21 @@ void KtlLoggerNode::OpenAsyncOperation::OnStart(AsyncOperationSPtr const & thisS
     bool sharedLogIdOk = true;
     Guid g;
 
-    std::wstring sharedLogPath;
-    std::wstring sharedLogId;
+    std::string sharedLogPath;
+    std::string sharedLogId;
     LONGLONG sharedLogSizeInMB;
 
     //
     // NodeType settings take precidence over global settings
     //
     sharedLogPath = fabricNodeConfig_->SharedLogFilePath;
-    if (sharedLogPath == L"")
+    if (sharedLogPath == "")
     {
         sharedLogPath = smConfig.SharedLogPath;
     }
 
     sharedLogId = fabricNodeConfig_->SharedLogFileId;
-    if (sharedLogId == L"")
+    if (sharedLogId == "")
     {
         sharedLogId = smConfig.SharedLogId;
     }
@@ -186,10 +186,10 @@ void KtlLoggerNode::OpenAsyncOperation::OnStart(AsyncOperationSPtr const & thisS
         sharedLogSizeInMB = smConfig.SharedLogSizeInMB;
     }
 
-    if (sharedLogId != L"")
+    if (sharedLogId != "")
     {
         HRESULT hr;
-        LPCWSTR wstr = sharedLogId.c_str();
+        LPCSTR wstr = sharedLogId.c_str();
         size_t len;
         hr = StringCchLength(wstr, MAX_PATH, &len);
         if (SUCCEEDED(hr))
@@ -197,12 +197,12 @@ void KtlLoggerNode::OpenAsyncOperation::OnStart(AsyncOperationSPtr const & thisS
             //
             // get rid of { and } if present
             //
-            if (wstr[len - 1] == L'}')
+            if (wstr[len - 1] == '}')
             {
                 sharedLogId.erase(len - 1, 1);
             }
 
-            if (wstr[0] == L'{')
+            if (wstr[0] == '{')
             {
                 sharedLogId.erase(0, 1);
             }
@@ -228,15 +228,15 @@ void KtlLoggerNode::OpenAsyncOperation::OnStart(AsyncOperationSPtr const & thisS
 
     if (!sharedLogIdOk)
     {
-        sharedLogPath = L"";
+        sharedLogPath = "";
     }
 
-    if (sharedLogId == L"" || sharedLogId == Constants::NullGuidString)
+    if (sharedLogId == "" || sharedLogId == Constants::NullGuidString)
     {
         g = Constants::DefaultApplicationSharedLogId;
     }
 
-    if (sharedLogPath == L"")
+    if (sharedLogPath == "")
     {
 #if !defined(PLATFORM_UNIX) 
         Path::CombineInPlace(sharedLogPath, fabricDataRoot_);
@@ -253,7 +253,7 @@ void KtlLoggerNode::OpenAsyncOperation::OnStart(AsyncOperationSPtr const & thisS
 #if !defined(PLATFORM_UNIX) 
     if (sharedLogPath.find(KtlLoggerSharedLogSettings::WindowsPathPrefix) != 0)
     {
-        sharedLogPath = wformatString("{0}{1}", *KtlLoggerSharedLogSettings::WindowsPathPrefix, sharedLogPath);
+        sharedLogPath = formatString.L("{0}{1}", *KtlLoggerSharedLogSettings::WindowsPathPrefix, sharedLogPath);
     }
 #endif
 
@@ -301,7 +301,7 @@ void KtlLoggerNode::OpenAsyncOperation::OnStart(AsyncOperationSPtr const & thisS
 #if !defined(PLATFORM_UNIX) 
             if (systemServicesSharedLogPath.find(KtlLoggerSharedLogSettings::WindowsPathPrefix) != 0)
             {
-                systemServicesSharedLogPath = wformatString("{0}{1}", KtlLoggerSharedLogSettings::WindowsPathPrefix, systemServicesSharedLogPath);
+                systemServicesSharedLogPath = formatString.L("{0}{1}", KtlLoggerSharedLogSettings::WindowsPathPrefix, systemServicesSharedLogPath);
             }
 #endif
 
@@ -524,7 +524,7 @@ void KtlLoggerNode::PostThreadDeactivateKtlLoggerAndSystem(TimeSpan const timeou
 //
 KtlLoggerNode::KtlLoggerNode(
     Common::ComponentRoot const & root, 
-    std::wstring const & fabricDataRoot,
+    std::string const & fabricDataRoot,
     FabricNodeConfigSPtr const & fabricNodeConfig)
     : Common::RootedObject(root)
     , fabricDataRoot_(fabricDataRoot)

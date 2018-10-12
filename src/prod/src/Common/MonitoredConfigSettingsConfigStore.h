@@ -16,7 +16,7 @@ namespace Common
 
     protected:
         MonitoredConfigSettingsConfigStore(
-            std::wstring const & fileToMonitor, 
+            std::string const & fileToMonitor, 
             ConfigSettingsConfigStore::Preprocessor const & preprocessor = nullptr);
 
     public:
@@ -38,7 +38,7 @@ namespace Common
 	private:
 		class ChangeMonitor;
         friend class ChangeMonitor;
-        std::wstring fileName_;
+        std::string fileName_;
         std::shared_ptr<ChangeMonitor> changeMonitor_;
         ConfigSettingsConfigStore::Preprocessor const preprocessor_;
     };

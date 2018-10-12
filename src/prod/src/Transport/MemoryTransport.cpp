@@ -18,10 +18,10 @@ size_t MemoryTransport::TransportCount()
     return transportTable->Count();
 }
 
-MemoryTransport::MemoryTransport(wstring const & name, std::wstring const & id)
+MemoryTransport::MemoryTransport(string const & name, std::string const & id)
     : started_(false)
     , stopped_(false)
-    , traceId_(id.empty()? wformatString("{0}", TraceTransport) : wformatString("{0}-{1}", TraceTransport, id))
+    , traceId_(id.empty()? formatString.L("{0}", TraceTransport) : formatString.L("{0}-{1}", TraceTransport, id))
     , name_(name)
     , messageHandler_()
     , myTarget_(make_shared<MemorySendTarget>(name, id))
@@ -49,16 +49,16 @@ ErrorCode MemoryTransport::Start(bool)
 
     // create empty pointer
     shared_ptr<MemoryTransport> transport;
-    if (StringUtility::EndsWith<wstring>(this->name_, L":0"))
+    if (StringUtility::EndsWith<string>(this->name_, ":0"))
     {
         Random random;
 
         this->name_ = this->name_.substr(0, this->name_.size() - 2);
-        wstring name;
+        string name;
         do
         {
             int port = random.Next(25536) + 40000;
-            name = wformatString("{0}:{1}", this->name_, port);
+            name = formatString.L("{0}:{1}", this->name_, port);
         } while (transportTable->Contains(name));
         this->name_ = name;
     }
@@ -105,7 +105,7 @@ void MemoryTransport::SetMessageHandler(MessageHandler const & handler)
 }
 
 ISendTarget::SPtr MemoryTransport::Resolve(
-    wstring const & address, wstring const & targetId, wstring const & sspiTarget, uint64 instance)
+    string const & address, string const & targetId, string const & sspiTarget, uint64 instance)
 {
     instance;
     sspiTarget;
@@ -113,7 +113,7 @@ ISendTarget::SPtr MemoryTransport::Resolve(
     ASSERT_IFNOT(this->started_, "Transport has not been started");
 
     WriteNoise(Constants::MemoryTrace, "Resolving: {0}", address);
-    wstring effectiveAddress = TargetAddressToTransportAddress(address);
+    string effectiveAddress = TargetAddressToTransportAddress(address);
 
     AcquireExclusiveLock lock(*transportTableLock);
 
@@ -321,12 +321,12 @@ ErrorCode MemoryTransport::SetOutgoingMessageExpiration(Common::TimeSpan expirat
     return ErrorCode();
 }
 
-wstring const & MemoryTransport::ListenAddress() const
+string const & MemoryTransport::ListenAddress() const
 {
     return name_;
 }
 
-wstring const & MemoryTransport::get_IdString() const
+string const & MemoryTransport::get_IdString() const
 {
     return myTarget_->Id();
 }
@@ -418,7 +418,7 @@ void MemoryTransport::SetConnectionOpenTimeout(Common::TimeSpan)
 {
 }
 
-wstring const & MemoryTransport::TraceId() const
+string const & MemoryTransport::TraceId() const
 {
     return traceId_;
 }

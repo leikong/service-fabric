@@ -73,8 +73,8 @@ namespace Ktl
         ComIKPhysicalLogContainer::BeginCreateLogStream(
             __in KTL_LOG_STREAM_ID LogStreamId,
             __in KTL_LOG_STREAM_TYPE_ID LogStreamTypeId,
-            __in_opt LPCWSTR OptionalLogStreamAlias,
-            __in LPCWSTR Path,
+            __in_opt LPCSTR OptionalLogStreamAlias,
+            __in LPCSTR Path,
             __in_opt IKBuffer* const OptionalSecurityInfo,
             __in LONGLONG MaximumSize,
             __in ULONG MaximumBlockSize,
@@ -321,7 +321,7 @@ namespace Ktl
         //** AssignAlias
         HRESULT 
         ComIKPhysicalLogContainer::BeginAssignAlias(
-            __in LPCWSTR Alias,
+            __in LPCSTR Alias,
             __in KTL_LOG_STREAM_ID LogStreamId,
             __in IFabricAsyncOperationCallback* Callback,       
             __out IFabricAsyncOperationContext** Context) 
@@ -386,7 +386,7 @@ namespace Ktl
         //** RemoveAlias
         HRESULT 
         ComIKPhysicalLogContainer::BeginRemoveAlias(
-            __in LPCWSTR Alias,
+            __in LPCSTR Alias,
             __in IFabricAsyncOperationCallback* Callback,       
             __out IFabricAsyncOperationContext** Context) 
         {
@@ -454,7 +454,7 @@ namespace Ktl
 
         HRESULT 
         ComIKPhysicalLogContainer::BeginResolveAlias(
-            __in LPCWSTR Alias,
+            __in LPCSTR Alias,
             __in IFabricAsyncOperationCallback* Callback,       
             __out IFabricAsyncOperationContext** Context) 
         {

@@ -9,11 +9,11 @@ using namespace std;
 using namespace Common;
 using namespace Federation;
 
-GlobalWString Constants::SeedNodeVoteType = make_global<wstring>(L"SeedNode");
-GlobalWString Constants::SqlServerVoteType = make_global<wstring>(L"SqlServer");
-GlobalWString Constants::WindowsAzureVoteType = make_global<wstring>(L"WindowsAzure");
+GlobalString Constants::SeedNodeVoteType = make_global<string>("SeedNode");
+GlobalString Constants::SqlServerVoteType = make_global<string>("SqlServer");
+GlobalString Constants::WindowsAzureVoteType = make_global<string>("WindowsAzure");
 
-GlobalWString Constants::GlobalTimestampEpochName = make_global<wstring>(L"GlobalTimestampEpoch");
+GlobalString Constants::GlobalTimestampEpochName = make_global<string>("GlobalTimestampEpoch");
 
 char const* Constants::RejectedTokenKey = "RejectedTokens";
 char const* Constants::NeighborHeadersIgnoredKey = "NeighborHeadersIgnored";

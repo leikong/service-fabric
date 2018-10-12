@@ -18,7 +18,7 @@ XmlWriter::~XmlWriter()
 {
 }
 
-ErrorCode XmlWriter::Create(wstring const & fileName, __out XmlWriterUPtr & writer, bool writeByteOrderMark, bool indent)
+ErrorCode XmlWriter::Create(string const & fileName, __out XmlWriterUPtr & writer, bool writeByteOrderMark, bool indent)
 {
     ComProxyXmlLiteWriterUPtr liteWriter;
 
@@ -54,7 +54,7 @@ ErrorCode XmlWriter::WriteNode(XmlReader & creader, bool writeDefaultAttributes)
     UINT endDepth = -1;
 
     ::XmlNodeType nodeType;
-    wstring elemName, elemContent;
+    string elemName, elemContent;
 
     do {
         nodeType = reader.GetNodeType();
@@ -117,49 +117,49 @@ ErrorCode XmlWriter::WriteStartDocument(XmlStandalone value)
     return liteWriter_->WriteStartDocument(value);
 }
 
-ErrorCode XmlWriter::WriteAttribute(std::wstring const & attrName, std::wstring const & value,
-    std::wstring const & prefix, std::wstring const & nameSpace )
+ErrorCode XmlWriter::WriteAttribute(std::string const & attrName, std::string const & value,
+    std::string const & prefix, std::string const & nameSpace )
 {
     return liteWriter_->WriteAttribute(attrName, value, prefix, nameSpace);
 }
 
 
 
-ErrorCode XmlWriter::WriteBooleanAttribute(std::wstring const & attrName, bool const & value,
-	std::wstring const & prefix, std::wstring const & nameSpace)
+ErrorCode XmlWriter::WriteBooleanAttribute(std::string const & attrName, bool const & value,
+	std::string const & prefix, std::string const & nameSpace)
 {
-	wstring attrValue = value ? L"true" : L"false";
+	string attrValue = value ? "true" : "false";
 	return liteWriter_->WriteAttribute(attrName, attrValue, prefix, nameSpace);
 }
 
 
-ErrorCode XmlWriter::WriteComment(std::wstring const & comment)
+ErrorCode XmlWriter::WriteComment(std::string const & comment)
 {
     return liteWriter_->WriteComment(comment);
 }
 
-ErrorCode XmlWriter::WriteDocType(std::wstring const & name, std::wstring const & pubId, std::wstring const & sysid,
-    std::wstring const & subset)
+ErrorCode XmlWriter::WriteDocType(std::string const & name, std::string const & pubId, std::string const & sysid,
+    std::string const & subset)
 {
     return liteWriter_->WriteDocType(name, pubId, sysid, subset);
 }
 
 
 
-ErrorCode XmlWriter::WriteString(std::wstring const & content)
+ErrorCode XmlWriter::WriteString(std::string const & content)
 {
     return liteWriter_->WriteString(content);
 }
 
 
-ErrorCode XmlWriter::WriteStartElement(std::wstring const & name, std::wstring const & prefix,
-    std::wstring const & nameSpace)
+ErrorCode XmlWriter::WriteStartElement(std::string const & name, std::string const & prefix,
+    std::string const & nameSpace)
 {
     return liteWriter_->WriteStartElement(name, prefix, nameSpace);
 }
 
-ErrorCode XmlWriter::WriteElementWithContent(std::wstring const & name, std::wstring const content,
-    std::wstring const & prefix, std::wstring const & nameSpace)
+ErrorCode XmlWriter::WriteElementWithContent(std::string const & name, std::string const content,
+    std::string const & prefix, std::string const & nameSpace)
 {
     return liteWriter_->WriteElementWithContent(name, content, prefix, nameSpace);
 }

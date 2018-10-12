@@ -10,36 +10,36 @@ namespace Common
     class FabricConstants
     {
     public:
-        static Common::GlobalWString WindowsFabricAllowedUsersGroupName;
-        static Common::GlobalWString WindowsFabricAllowedUsersGroupComment;
-        static Common::GlobalWString WindowsFabricAdministratorsGroupName;
-        static Common::GlobalWString WindowsFabricAdministratorsGroupComment;
-        static Common::GlobalWString CurrentClusterManifestFileName;
-        static Common::GlobalWString InfrastructureManifestFileName;
-        static Common::GlobalWString TargetInformationFileName;
-        static Common::GlobalWString FabricFolderName;
-        static Common::GlobalWString FabricDataFolderName;
-        static Common::GlobalWString DefaultFileConfigStoreLocation;
-        static Common::GlobalWString DefaultPackageConfigStoreLocation;
-        static Common::GlobalWString DefaultSettingsConfigStoreLocation;
-        static Common::GlobalWString DefaultClientSettingsConfigStoreLocation;
-        static Common::GlobalWString FabricGatewayName;
-        static Common::GlobalWString FabricApplicationGatewayName;
-        static Common::GlobalWString AppsFolderName;
+        static Common::GlobalString WindowsFabricAllowedUsersGroupName;
+        static Common::GlobalString WindowsFabricAllowedUsersGroupComment;
+        static Common::GlobalString WindowsFabricAdministratorsGroupName;
+        static Common::GlobalString WindowsFabricAdministratorsGroupComment;
+        static Common::GlobalString CurrentClusterManifestFileName;
+        static Common::GlobalString InfrastructureManifestFileName;
+        static Common::GlobalString TargetInformationFileName;
+        static Common::GlobalString FabricFolderName;
+        static Common::GlobalString FabricDataFolderName;
+        static Common::GlobalString DefaultFileConfigStoreLocation;
+        static Common::GlobalString DefaultPackageConfigStoreLocation;
+        static Common::GlobalString DefaultSettingsConfigStoreLocation;
+        static Common::GlobalString DefaultClientSettingsConfigStoreLocation;
+        static Common::GlobalString FabricGatewayName;
+        static Common::GlobalString FabricApplicationGatewayName;
+        static Common::GlobalString AppsFolderName;
 
-        static Common::GlobalWString FabricRegistryKeyPath;
-        static Common::GlobalWString FabricEtcConfigPath;
-        static Common::GlobalWString FabricRootRegKeyName;
-        static Common::GlobalWString FabricBinRootRegKeyName;
-        static Common::GlobalWString FabricCodePathRegKeyName;
-        static Common::GlobalWString FabricDataRootRegKeyName;
-        static Common::GlobalWString FabricLogRootRegKeyName;
-        static Common::GlobalWString EnableCircularTraceSessionRegKeyName;
-        static Common::GlobalWString EnableUnsupportedPreviewFeaturesRegKeyName;
-        static Common::GlobalWString IsSFVolumeDiskServiceEnabledRegKeyName;
-        static Common::GlobalWString UseFabricInstallerSvcKeyName;
+        static Common::GlobalString FabricRegistryKeyPath;
+        static Common::GlobalString FabricEtcConfigPath;
+        static Common::GlobalString FabricRootRegKeyName;
+        static Common::GlobalString FabricBinRootRegKeyName;
+        static Common::GlobalString FabricCodePathRegKeyName;
+        static Common::GlobalString FabricDataRootRegKeyName;
+        static Common::GlobalString FabricLogRootRegKeyName;
+        static Common::GlobalString EnableCircularTraceSessionRegKeyName;
+        static Common::GlobalString EnableUnsupportedPreviewFeaturesRegKeyName;
+        static Common::GlobalString IsSFVolumeDiskServiceEnabledRegKeyName;
+        static Common::GlobalString UseFabricInstallerSvcKeyName;
 
-        static Common::GlobalWString FabricDnsServerIPAddressRegKeyName;
+        static Common::GlobalString FabricDnsServerIPAddressRegKeyName;
 
         static DWORD MaxFileSize;
     };

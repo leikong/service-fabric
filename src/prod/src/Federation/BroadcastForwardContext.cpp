@@ -15,7 +15,7 @@ StringLiteral TraceComplete("Complete");
 BroadcastForwardContext::ForwardRequest::ForwardRequest(
     NodeIdRange const & requestRange,
     vector<NodeIdRange> && subRanges,
-    vector<wstring> const & externalRings,
+    vector<string> const & externalRings,
     AsyncOperationSPtr const & operation, 
     RequestReceiverContextUPtr && requestContext)
     :   requestRange_(requestRange),
@@ -100,7 +100,7 @@ void BroadcastForwardContext::ForwardRequest::CompleteLocalRange(NodeId nodeId, 
     }
 }
 
-void BroadcastForwardContext::ForwardRequest::CompleteRing(wstring const & ringName)
+void BroadcastForwardContext::ForwardRequest::CompleteRing(string const & ringName)
 {
     for (auto it = pendingRings_.begin(); it != pendingRings_.end(); ++it)
     {
@@ -132,7 +132,7 @@ BroadcastForwardContext::BroadcastForwardContext(
     std::vector<NodeIdRange> && subRanges,
     AsyncOperationSPtr const & operation,
     RequestReceiverContextUPtr && requestContext,
-    vector<wstring> const & externalRings)
+    vector<string> const & externalRings)
     :   nodeId_(nodeId),
         broadcastId_(broadcastId),
         error_(ErrorCode::Success())
@@ -201,7 +201,7 @@ void BroadcastForwardContext::CompleteLocalRange()
     CompletIfNeeded();
 }
 
-void BroadcastForwardContext::CompleteRing(wstring const & ringName)
+void BroadcastForwardContext::CompleteRing(string const & ringName)
 {
     for (auto it = requests_.begin(); it != requests_.end(); ++it)
     {
@@ -245,7 +245,7 @@ bool BroadcastForwardContext::AddRange(
         return false;
     }
 
-    requests_.push_back(ForwardRequest(range, move(pending), vector<wstring>(), nullptr, move(requestContext)));
+    requests_.push_back(ForwardRequest(range, move(pending), vector<string>(), nullptr, move(requestContext)));
 
     return true;
 }

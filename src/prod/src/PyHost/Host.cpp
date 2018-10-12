@@ -35,20 +35,20 @@ public:
     void OnRoutingTokenChanged(shared_ptr<FederationSubsystem> const & fs)
     {
         auto range = fs->Token.getRange();
-        wstring rangeString;
+        string rangeString;
         StringWriter rangeWriter(rangeString);
         range.WriteTo(rangeWriter, null_format);
 
-        printf("OnRoutingTokenChanged: %s \n", StringUtility::Utf16ToUtf8(rangeString).c_str());
+        printf("OnRoutingTokenChanged: %s \n", Utf16ToUtf8NotNeeded(rangeString).c_str());
     }
 
     void Initialize()
     {
         auto moduleName = PyHostConfig::GetConfig().ModuleName;
 
-        vector<wstring> args;
-        args.push_back(L"MyTestArg");
-        pyInterpreter_.Execute(moduleName, L"OnInitialize", args);
+        vector<string> args;
+        args.push_back("MyTestArg");
+        pyInterpreter_.Execute(moduleName, "OnInitialize", args);
     }
 
 private:

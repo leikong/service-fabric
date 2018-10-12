@@ -347,7 +347,7 @@ NTSTATUS
 BasicStringTests()
 {
    // Allocate a KString::SPtr
-   KString::SPtr Str = KString::Create(L"ABCD", *g_Allocator);
+   KString::SPtr Str = KString::Create("ABCD", *g_Allocator);
 
 
    KVariant v1;
@@ -362,15 +362,15 @@ BasicStringTests()
 
    v2 = Str2;
 
-   if (KString::SPtr(v2)->Compare(KStringView(L"ABCD")) != 0)
+   if (KString::SPtr(v2)->Compare(KStringView("ABCD")) != 0)
    {
        return STATUS_UNSUCCESSFUL;
    }
 
    // Reassign
 
-   KString::SPtr Str3 = KString::Create(L"XXXX", *g_Allocator);
-   KString::SPtr Str4 = KString::Create(L"YYYY", *g_Allocator);
+   KString::SPtr Str3 = KString::Create("XXXX", *g_Allocator);
+   KString::SPtr Str4 = KString::Create("YYYY", *g_Allocator);
 
    v2 = Str3;
    v1 = Str4;
@@ -379,7 +379,7 @@ BasicStringTests()
    v2 = Str;
    v2 = v1;
 
-   if (KString::SPtr(v2)->Compare(KStringView(L"XXXX")) != 0)
+   if (KString::SPtr(v2)->Compare(KStringView("XXXX")) != 0)
    {
        return STATUS_UNSUCCESSFUL;
    }
@@ -412,8 +412,8 @@ BasicStringTests()
       return STATUS_UNSUCCESSFUL;
    }
 
-   KString::SPtr(s2)->ReplaceChar(0, L'X');
-   KString::SPtr(s2)->ReplaceChar(3, L'Z');
+   KString::SPtr(s2)->ReplaceChar(0, 'X');
+   KString::SPtr(s2)->ReplaceChar(3, 'Z');
 
    if (KString::SPtr(s2)->Compare(*KString::SPtr(s1)) == 0)
    {
@@ -424,12 +424,12 @@ BasicStringTests()
    s3 = s2;            // assign
    KVariant s4(s3);    // copy cons truct
 
-   if (KString::SPtr(s4)->Compare(KStringView(L"XBCZ")) != 0)
+   if (KString::SPtr(s4)->Compare(KStringView("XBCZ")) != 0)
    {
       return STATUS_UNSUCCESSFUL;
    }
 
-   if (KString::SPtr(s1)->Compare(KStringView(L"ABCD")) != 0)
+   if (KString::SPtr(s1)->Compare(KStringView("ABCD")) != 0)
    {
       return STATUS_UNSUCCESSFUL;
    }
@@ -437,25 +437,25 @@ BasicStringTests()
    const UNICODE_STRING& Ustr = (UNICODE_STRING) s1;
    KWString x(KtlSystem::GlobalNonPagedAllocator(), Ustr);
 
-   if (x.Compare(KWString(KtlSystem::GlobalNonPagedAllocator(), L"ABCD")) != 0)
+   if (x.Compare(KWString(KtlSystem::GlobalNonPagedAllocator(), "ABCD")) != 0)
    {
       return STATUS_UNSUCCESSFUL;
    }
 
    // KVariant string creation ambiguity
 
-   KVariant t1 = KVariant::Create(L"abc", *g_Allocator);
+   KVariant t1 = KVariant::Create("abc", *g_Allocator);
 
-   KVariant t2 = KVariant::Create(KStringView(L"abcd"), *g_Allocator);
+   KVariant t2 = KVariant::Create(KStringView("abcd"), *g_Allocator);
 
    KStringView xx = t2;
    if (!xx.IsNullTerminated())
    {
        return STATUS_UNSUCCESSFUL;
    }
-   ((KStringView&)t1).ReplaceChar(0, L'x');
+   ((KStringView&)t1).ReplaceChar(0, 'x');
 
-   if (((KStringView&)t1).Compare(KStringView(L"xbc")) != 0)
+   if (((KStringView&)t1).Compare(KStringView("xbc")) != 0)
    {
        return STATUS_UNSUCCESSFUL;
    }
@@ -563,7 +563,7 @@ ConvertTests()
         return STATUS_UNSUCCESSFUL;
     }
 
-    if (v2str->Compare(KStringView(L"123")) != 0)
+    if (v2str->Compare(KStringView("123")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
@@ -571,7 +571,7 @@ ConvertTests()
 
     //
 
-    KVariant str = KVariant::Create(L"123", *g_Allocator);
+    KVariant str = KVariant::Create("123", *g_Allocator);
 
     LONG n1;
     ULONG n2;
@@ -587,7 +587,7 @@ ConvertTests()
         return STATUS_UNSUCCESSFUL;
     }
 
-    str = KVariant::Create(L"{13AE2A2F-D87B-4796-8694-621C3A908D30}", *g_Allocator);
+    str = KVariant::Create("{13AE2A2F-D87B-4796-8694-621C3A908D30}", *g_Allocator);
 
     GUID g;
     if (!str.Convert(g))
@@ -600,7 +600,7 @@ ConvertTests()
         return STATUS_UNSUCCESSFUL;
     }
 
-    str = KVariant::Create(L"http://www.google.com", *g_Allocator);
+    str = KVariant::Create("http://www.google.com", *g_Allocator);
 
     KUri::SPtr Tmp;
     if (!str.Convert(*g_Allocator, Tmp))
@@ -613,7 +613,7 @@ ConvertTests()
         return STATUS_UNSUCCESSFUL;
     }
 
-    if (Tmp->Get(KUriView::eHost).Compare(KStringView(L"www.google.com")) != 0)
+    if (Tmp->Get(KUriView::eHost).Compare(KStringView("www.google.com")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
@@ -624,9 +624,9 @@ ConvertTests()
         return STATUS_UNSUCCESSFUL;
     }
 
-    KStringView ViewOfBuf((PWCHAR)Buf->GetBuffer(), Buf->QuerySize()/2, (Buf->QuerySize()/2)-1);
+    KStringView ViewOfBuf((PCHAR)Buf->GetBuffer(), Buf->QuerySize()/2, (Buf->QuerySize()/2)-1);
 
-    if (ViewOfBuf.Compare(KStringView(L"http://www.google.com")) != 0)
+    if (ViewOfBuf.Compare(KStringView("http://www.google.com")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
@@ -644,7 +644,7 @@ KBufferTests()
         return Res;
     }
 
-    RtlFillMemory(Tmp->GetBuffer(), 1024, L'Z');
+    RtlFillMemory(Tmp->GetBuffer(), 1024, 'Z');
 
 
     KVariant t(Tmp);
@@ -665,7 +665,7 @@ KBufferTests()
 NTSTATUS
 UriTests()
 {
-    KUriView v(L"http://google.com");
+    KUriView v("http://google.com");
     KUri::SPtr Tmp;
 
     NTSTATUS Res = KUri::Create(v, *g_Allocator, Tmp);
@@ -683,17 +683,17 @@ UriTests()
     KUri::SPtr TheUri = (KUri::SPtr) u2;
 
 #ifdef PLATFORM_UNIX
-    KTestPrintf("URI = %s\n", Utf16To8(LPCWSTR(*TheUri)).c_str());
+    KTestPrintf("URI = %s\n", Utf16To8(LPCSTR(*TheUri)).c_str());
 #else
-    KTestPrintf("URI = %S\n", LPCWSTR(*TheUri));
+    KTestPrintf("URI = %S\n", LPCSTR(*TheUri));
 #endif
 
     KUriView Test = u2;
 
 #ifdef PLATFORM_UNIX
-    KTestPrintf("URI = %s\n", Utf16To8(LPCWSTR(u2)).c_str());
+    KTestPrintf("URI = %s\n", Utf16To8(LPCSTR(u2)).c_str());
 #else
-    KTestPrintf("URI = %S\n", LPCWSTR(u2));
+    KTestPrintf("URI = %S\n", LPCSTR(u2));
 #endif
 
     KVariant x;
@@ -701,21 +701,21 @@ UriTests()
     u2.Clear();
 
 #ifdef PLATFORM_UNIX
-    KTestPrintf("URI = %s\n", Utf16To8(LPCWSTR(x)).c_str());
+    KTestPrintf("URI = %s\n", Utf16To8(LPCSTR(x)).c_str());
 #else
-    KTestPrintf("URI = %S\n", LPCWSTR(x));
+    KTestPrintf("URI = %S\n", LPCSTR(x));
 #endif
 
-    KVariant vv = KVariant::Create(KStringView(L"http://www.bing.com"), KVariant::Type_KUri_SPtr, *g_Allocator);
+    KVariant vv = KVariant::Create(KStringView("http://www.bing.com"), KVariant::Type_KUri_SPtr, *g_Allocator);
     if (!vv)
     {
         return STATUS_UNSUCCESSFUL;
     }
 
 #ifdef PLATFORM_UNIX
-    KTestPrintf("URI = %s\n", Utf16To8(LPCWSTR(vv)).c_str());
+    KTestPrintf("URI = %s\n", Utf16To8(LPCSTR(vv)).c_str());
 #else
-    KTestPrintf("URI = %S\n", LPCWSTR(vv));
+    KTestPrintf("URI = %S\n", LPCSTR(vv));
 #endif
 
     return STATUS_SUCCESS;
@@ -736,7 +736,7 @@ ToStringTests()
     {
         return STATUS_UNSUCCESSFUL;
     }
-    if (Str->Compare(KStringView(L"")) != 0)
+    if (Str->Compare(KStringView("")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
@@ -748,7 +748,7 @@ ToStringTests()
         return STATUS_UNSUCCESSFUL;
     }
 
-    if (Str->Compare(KStringView(L"12")) != 0)
+    if (Str->Compare(KStringView("12")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
@@ -759,7 +759,7 @@ ToStringTests()
     {
         return STATUS_UNSUCCESSFUL;
     }
-    if (Str->Compare(KStringView(L"-13")) != 0)
+    if (Str->Compare(KStringView("-13")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
@@ -770,7 +770,7 @@ ToStringTests()
     {
         return STATUS_UNSUCCESSFUL;
     }
-    if (Str->Compare(KStringView(L"14")) != 0)
+    if (Str->Compare(KStringView("14")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
@@ -782,7 +782,7 @@ ToStringTests()
     {
         return STATUS_UNSUCCESSFUL;
     }
-    if (Str->Compare(KStringView(L"1500")) != 0)
+    if (Str->Compare(KStringView("1500")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
@@ -793,7 +793,7 @@ ToStringTests()
     {
         return STATUS_UNSUCCESSFUL;
     }
-    if (Str->CompareNoCase(KStringView(L"{13AE2A2F-D87B-4796-8694-621C3A908D30}")) != 0)
+    if (Str->CompareNoCase(KStringView("{13AE2A2F-D87B-4796-8694-621C3A908D30}")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
@@ -804,7 +804,7 @@ ToStringTests()
     {
         return STATUS_UNSUCCESSFUL;
     }
-    if (Str->CompareNoCase(KStringView(L"true")) != 0)
+    if (Str->CompareNoCase(KStringView("true")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
@@ -814,7 +814,7 @@ ToStringTests()
     {
         return STATUS_UNSUCCESSFUL;
     }
-    if (Str->CompareNoCase(KStringView(L"False")) != 0)
+    if (Str->CompareNoCase(KStringView("False")) != 0)
     {
         return STATUS_UNSUCCESSFUL;
     }
@@ -853,13 +853,13 @@ ToStringTests()
 
 NTSTATUS Test2(KAllocator& Alloc)
 {
-    KVariant v1 = KVariant::Create(KStringView(L"A string"), KVariant::Type_KString_SPtr, Alloc);
-    PWSTR Test = L"A string";
+    KVariant v1 = KVariant::Create(KStringView("A string"), KVariant::Type_KString_SPtr, Alloc);
+    PWSTR Test = "A string";
     KVariant v2;
     KVariant v3(v1);
 
     PWSTR pTest = PWSTR(v1);
-    if (wcscmp(Test, pTest) != 0)
+    if (strcmp(Test, pTest) != 0)
     {
         KTestPrintf("FAILURE: Test2() (a) Basic comparison failed\n");
         return STATUS_UNSUCCESSFUL;
@@ -867,13 +867,13 @@ NTSTATUS Test2(KAllocator& Alloc)
 
     v2 = v1;
 
-    if (wcscmp(Test, v2) != 0)
+    if (strcmp(Test, v2) != 0)
     {
         KTestPrintf("FAILURE: Test2() (b) Basic comparison failed\n");
         return STATUS_UNSUCCESSFUL;
     }
 
-    if (wcscmp(Test, v3) != 0)
+    if (strcmp(Test, v3) != 0)
     {
         KTestPrintf("FAILURE: Test2() (c) Basic comparison failed\n");
         return STATUS_UNSUCCESSFUL;
@@ -881,7 +881,7 @@ NTSTATUS Test2(KAllocator& Alloc)
 
     UNICODE_STRING pu = v3;
 
-    if (wcscmp(pu.Buffer, Test) != 0)
+    if (strcmp(pu.Buffer, Test) != 0)
     {
         KTestPrintf("FAILURE: Test3() (d) Basic comparison failed\n");
         return STATUS_UNSUCCESSFUL;
@@ -897,7 +897,7 @@ NTSTATUS Test2(KAllocator& Alloc)
 
     v3 = v2;
 
-    if (wcscmp(Test, v3) != 0)
+    if (strcmp(Test, v3) != 0)
     {
         KTestPrintf("FAILURE: Test2() (f) Conversion back to string failed\n");
         return STATUS_UNSUCCESSFUL;
@@ -950,7 +950,7 @@ NTSTATUS MetadataTest1(KAllocator& Alloc)
 
     Md->Set(0, KVariant(ULONG(1000)));
 
-    KVariant v2 = KVariant::Create(KStringView(L"MyString"), KVariant::Type_KString_SPtr, Alloc);
+    KVariant v2 = KVariant::Create(KStringView("MyString"), KVariant::Type_KString_SPtr, Alloc);
 
     Md->Set(1, v2);
 
@@ -970,9 +970,9 @@ NTSTATUS MetadataTest1(KAllocator& Alloc)
         return STATUS_UNSUCCESSFUL;
     }
 
-    LPCWSTR Tmp = PWSTR(k2);
+    LPCSTR Tmp = PWSTR(k2);
 
-    if (wcscmp(Tmp, L"MyString") != 0)
+    if (strcmp(Tmp, "MyString") != 0)
     {
         KTestPrintf("MetadataTest1() failure ; item corrupted");
         return STATUS_UNSUCCESSFUL;
@@ -1000,15 +1000,15 @@ NTSTATUS MetadataTest2(KAllocator& Alloc)
         return(status);
     }
 
-    KVariant v1 = KVariant::Create(KStringView(L"String100"), KVariant::Type_KString_SPtr, Alloc);
+    KVariant v1 = KVariant::Create(KStringView("String100"), KVariant::Type_KString_SPtr, Alloc);
 
-    KVariant v2 = KVariant::Create(KStringView(L"String200"), KVariant::Type_KString_SPtr, Alloc);
+    KVariant v2 = KVariant::Create(KStringView("String200"), KVariant::Type_KString_SPtr, Alloc);
 
-    KVariant v3 = KVariant::Create(KStringView(L"String300"), KVariant::Type_KString_SPtr, Alloc);
+    KVariant v3 = KVariant::Create(KStringView("String300"), KVariant::Type_KString_SPtr, Alloc);
 
-    KVariant v4 = KVariant::Create(KStringView(L"String400"), KVariant::Type_KString_SPtr, Alloc);
+    KVariant v4 = KVariant::Create(KStringView("String400"), KVariant::Type_KString_SPtr, Alloc);
 
-    KVariant v5 = KVariant::Create(KStringView(L"String500"), KVariant::Type_KString_SPtr, Alloc);
+    KVariant v5 = KVariant::Create(KStringView("String500"), KVariant::Type_KString_SPtr, Alloc);
 
     Md->Set(100, v1);
     Md->Set(200, v2);
@@ -1036,7 +1036,7 @@ NTSTATUS MetadataTest2(KAllocator& Alloc)
     // Swap some items around.
 
     Md->Get(500, Check);
-    Check = KString::Create(L"501", *g_Allocator);
+    Check = KString::Create("501", *g_Allocator);
     Res = Md->Set(500, Check);   // Update
 
     // Check count
@@ -1070,9 +1070,9 @@ NTSTATUS MetadataTest2(KAllocator& Alloc)
             case KVariant::Type_ULONG:          KTestPrintf("[%u]  ULONG=%I32u\n", Index, ULONG(Item)); break;
             case KVariant::Type_ULONGLONG:      KTestPrintf("[%u]  ULONGLONG=%I64u\n", Index,  ULONGLONG(Item)); break;
 #ifdef PLATFORM_UNIX
-            case KVariant::Type_KString_SPtr:   KTestPrintf("[%u]  String=%s\n", Index,  Utf16To8(PWCHAR(Item)).c_str()); break;
+            case KVariant::Type_KString_SPtr:   KTestPrintf("[%u]  String=%s\n", Index,  Utf16To8(PCHAR(Item)).c_str()); break;
 #else
-            case KVariant::Type_KString_SPtr:   KTestPrintf("[%u]  String=%S\n", Index,  PWCHAR(Item)); break;
+            case KVariant::Type_KString_SPtr:   KTestPrintf("[%u]  String=%S\n", Index,  PCHAR(Item)); break;
 #endif
             default:
                 KTestPrintf("[%u] <error>\n", Index);
@@ -1173,7 +1173,7 @@ TestSequence()
 
 NTSTATUS
 KVariantTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     )
 {
     UNREFERENCED_PARAMETER(argc);
@@ -1223,18 +1223,18 @@ KVariantTest(
 #if CONSOLE_TEST
 int
 #if !defined(PLATFORM_UNIX)
-main(int argc, WCHAR* args[])
+main(int argc, CHAR* args[])
 {
 #else
 main(int argc, char* cargs[])
 {
-    std::vector<WCHAR*> args_vec(argc);
-    WCHAR** args = (WCHAR**)args_vec.data();
-    std::vector<std::wstring> wargs(argc);
+    std::vector<CHAR*> args_vec(argc);
+    CHAR** args = (CHAR**)args_vec.data();
+    std::vector<std::string> wargs(argc);
     for (int iter = 0; iter < argc; iter++)
     {
         wargs[iter] = Utf8To16(cargs[iter]);
-        args[iter] = (WCHAR*)(wargs[iter].data());
+        args[iter] = (CHAR*)(wargs[iter].data());
     }
 #endif
     KVariantTest(argc, args);

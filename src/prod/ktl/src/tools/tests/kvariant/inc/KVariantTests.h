@@ -28,5 +28,5 @@ Abstract:
 
 NTSTATUS
 KVariantTest(
-    int argc, WCHAR* args[]
+    int argc, CHAR* args[]
     );

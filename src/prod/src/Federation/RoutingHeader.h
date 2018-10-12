@@ -16,9 +16,9 @@ namespace Federation
 
         RoutingHeader(
             NodeInstance const & from,
-            std::wstring const & fromRing,
+            std::string const & fromRing,
             NodeInstance const & to,
-            std::wstring const & toRing,
+            std::string const & toRing,
             Transport::MessageId const & messageId,
             Common::TimeSpan expiration,
             Common::TimeSpan retryTimeout,
@@ -44,8 +44,8 @@ namespace Federation
         __declspec(property(get=get_RetryTimeout)) Common::TimeSpan RetryTimeout;
         __declspec(property(get=get_UseExactRouting)) bool UseExactRouting;
         __declspec(property(get=get_ExpectsReply)) bool ExpectsReply;
-        __declspec(property(get=get_FromRing)) std::wstring const & FromRing;
-        __declspec(property(get=get_ToRing)) std::wstring const & ToRing;
+        __declspec(property(get=get_FromRing)) std::string const & FromRing;
+        __declspec(property(get=get_ToRing)) std::string const & ToRing;
 
         NodeInstance const & get_From() const { return this->from_; }
         NodeInstance const & get_To() const { return this->to_; }
@@ -54,8 +54,8 @@ namespace Federation
         Common::TimeSpan get_RetryTimeout() const { return this->retryTimeout_; }
         bool get_UseExactRouting() const { return this->useExactRouting_; }
         bool get_ExpectsReply() const { return this->expectsReply_; }
-        std::wstring const & get_FromRing() const { return fromRing_; }
-        std::wstring const & get_ToRing() const { return toRing_; }
+        std::string const & get_FromRing() const { return fromRing_; }
+        std::string const & get_ToRing() const { return toRing_; }
 
         void set_Expiration(Common::TimeSpan expiration) { this->expiration_ = expiration; }
 
@@ -64,13 +64,13 @@ namespace Federation
             w << "[From: " << this->from_;
             if (!fromRing_.empty())
             {
-                w << L"@" << fromRing_;
+                w << "@" << fromRing_;
             }
 
             w << ", To: " << this->to_;
             if (!toRing_.empty())
             {
-                w << L"@" << toRing_;
+                w << "@" << toRing_;
             }
 
             w << ", MessageId: " <<  this->messageId_ <<
@@ -85,9 +85,9 @@ namespace Federation
 
     private:
         NodeInstance from_;
-        std::wstring fromRing_;
+        std::string fromRing_;
         NodeInstance to_;
-        std::wstring toRing_;
+        std::string toRing_;
         Transport::MessageId messageId_;
         Common::TimeSpan expiration_;
         Common::TimeSpan retryTimeout_;
